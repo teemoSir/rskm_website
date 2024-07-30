@@ -1,0 +1,29 @@
+{
+    "version": 8,
+    "sprite": "http://localhost:9000/mapboxgl/sprites/sprite",
+    "glyphs": "http://localhost:9000/mapboxgl/fonts/{fontstack}/{range}.pbf",
+    "light": {
+      "anchor": "map",
+      "color": "#F5F5F5",
+      "intensity": 0.2
+    },
+    "sources": {
+  
+    
+    },
+    "layers": [
+      {
+        "id": "background",
+        "type": "background",
+        "layout": {},
+        "paint": {
+          "background-color": "#f5f5f5"
+        },
+        "interactive": true
+      }
+      
+    
+  
+    ],
+    "_ssl": true
+  }
