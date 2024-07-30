@@ -25,25 +25,27 @@ const eventRender = () => {
         lng: (window["lnglatrender"] || { lng: 0, lat: 0 }).lng.toFixed(6),
         lat: (window["lnglatrender"] || { lng: 0, lat: 0 }).lat.toFixed(6),
     } || { lng: 0, lat: 0 };
-    let sth = JSON.parse(name).st ? "审图号：" + JSON.parse(name).st : "";
+    let sth = JSON.parse(MAP_LAYERS).st ? "审图号：" + JSON.parse(MAP_LAYERS).st : "";
     let mc = "RSKM";
     let zoom = map.getZoom().toFixed(2); //
-    let ty = JSON.parse(name).name || "";
+    let ty = JSON.parse(MAP_LAYERS).name || "";
+    let pro = map.getProjection().name || "default";
+
 
     document.getElementById("xyz").innerHTML = `
     <span style='padding-right: 10px;'>${sth}</span>
     <span style='padding-right: 10px;' >© ${mc}</span>
-    <span style='padding-right: 10px;'>经纬度：${ll.lng} ${ll.lat}</span>
+    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ ll.lat}°</span>
     <span style='padding-right: 10px;'>等级：${zoom} </span>
+     <span style='padding-right: 10px;'>模式：${(pro == "globe") ? "三维" : "二维"} </span>
     <span style='padding-right: 10px;'>图源：${ty}</span>`;
 
-    name = undefined;
+    MAP_LAYERS = undefined;
     ll = undefined;
     sth = undefined;
     zoom = undefined;
     ty = undefined;
 }
-
 
 /**
  * 鼠标浮动
