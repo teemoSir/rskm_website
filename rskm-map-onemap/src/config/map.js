@@ -16,6 +16,12 @@ const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
     admin_2022_province: apiService.get(`/v1/bbox/admin_2022_province?geom_column=geom&srid=4326&filter=name='{name}'`),
+    get_table_pagesize: (table, page, size) => {
+        return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}`)
+    },
+    get_table_count: (table) => {
+        return apiService.get(`/v1/list_get_count/${table}`)
+    }
 }
 
 const config = {
@@ -27,10 +33,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date`
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
             ],
             minzoom: 7,
             maxzoom: 14
@@ -42,9 +45,6 @@ const config = {
             type: "vector",
             tiles: [
                 `${host}/v1/mvt/world_poi/{z}/{x}/{y}?geom_column=geom&columns=name_chn,priority`,
-                `${host}/v1/mvt/world_poi/{z}/{x}/{y}?geom_column=geom&columns=name_chn,priority`,
-                `${host}/v1/mvt/world_poi/{z}/{x}/{y}?geom_column=geom&columns=name_chn,priority`,
-                `${host}/v1/mvt/world_poi/{z}/{x}/{y}?geom_column=geom&columns=name_chn,priority`
             ],
             minzoom: 2,
             maxzoom: 14
@@ -58,9 +58,6 @@ const config = {
             type: "vector",
             tiles: [
                 `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name`
             ],
             minzoom: 2,
             maxzoom: 12.99
@@ -73,9 +70,6 @@ const config = {
             type: "vector",
             tiles: [
                 `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`
             ],
             minzoom: 7.5,
             maxzoom: 12.99
@@ -88,12 +82,21 @@ const config = {
             type: "vector",
             tiles: [
                 `${host}/v1/mvt/admin_2024_county/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2024_county/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2024_county/{z}/{x}/{y}?geom_column=geom&columns=name`,
-                `${host}/v1/mvt/admin_2024_county/{z}/{x}/{y}?geom_column=geom&columns=name`
             ]
             , minzoom: 9,
             maxzoom: 14
+
+        }
+    },
+    admin_2024_town: {
+        name: "admin_2024_town",
+        tile: {
+            type: "vector",
+            tiles: [
+                `${host}/v1/mvt/admin_2024_town/{z}/{x}/{y}?geom_column=geom&columns=t_xzqmc`,
+            ]
+            , minzoom: 10,
+            maxzoom: 13
 
         }
     },
@@ -103,9 +106,6 @@ const config = {
             type: "vector",
             tiles: [
                 `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`,
-                `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`,
-                `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`,
-                `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`
             ]
             , minzoom: 12.5,
             maxzoom: 14

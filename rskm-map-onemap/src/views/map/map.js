@@ -1,6 +1,6 @@
 import { config, mapbox, api } from "@/config/map.js";
-import { waySpec } from "../config/spec";
-import { fills } from "../config/fill";
+import { waySpec } from "../../config/spec";
+import { fills } from "../../config/fill";
 /**
  * 旋转事件
  */

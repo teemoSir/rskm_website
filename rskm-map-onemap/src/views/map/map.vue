@@ -1,15 +1,15 @@
 <script setup>
-import "../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
-import "../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
-import "../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
-import "../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
-import "../../public/mapboxgl/pulgins/rasterTileLayer";
+import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
+import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
+import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
-import { layers, waySpec } from "../config/spec";
+import { layers, waySpec } from "@/config/spec-v2";
 import { message } from "ant-design-vue";
 import moment from "moment";
-import bboxx from "../utils/bbox";
+import bboxx from "@/utils/bbox";
 import * as turf from "@turf/turf";
 
 import {
@@ -35,19 +35,16 @@ import {
   Circle,
   Slash,
   MoveHorizontal,
-  Scale3D
+  Scale3D,
+  House,
 } from "lucide-vue-next";
 
-// import d2 from "@/assets/images/map/icon-2d.webp";
-// import d3 from "@/assets/images/map/icon-3d.webp";
-// import dd2 from "@/assets/images/map/二维视图.png";
-// import dd3 from "@/assets/images/map/三维视图.png";
 import c7 from "@/assets/images/map/c7.svg";
 import c2 from "@/assets/images/map/c2.svg";
 import compass from "@/assets/images/map/compass.png";
 import compassPointer from "@/assets/images/map/compassPointer.png";
 import north from "@/assets/images/map/north-b.png";
-import { fills } from "../config/fill";
+import { fills } from "@/config/fill";
 import {
   eventRotate,
   eventRender,
@@ -55,21 +52,20 @@ import {
   popup,
   addLayers,
   addIcon,
-} from "../views/SDMap";
+} from "@/views/map/map.js";
 
 window.map = null;
 const initMap = () => {
-  mapboxgl.workerCount = 12;
-  mapboxgl.maxParallelImageRequests = 12;
+  mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
+  mapboxgl.maxParallelImageRequests = 10;
   mapboxgl.accessToken = mapbox.key;
-  mapboxgl.prewarm();
 
   map = new mapboxgl.Map({
     container: "map",
-    center: [106, 36],
-    zoom: 3,
+    center: [100, 36],
+    zoom: 2,
     maxZoom: 20,
-    minZoom: 3,
+    minZoom: 2,
     style: {
       version: 8,
       sprite: `http://${window.location.host}/mapboxgl/sprites/sprite`,
@@ -100,7 +96,7 @@ const initMap = () => {
       ],
       _ssl: true,
     },
-    //projection: "globe",
+    projection: "globe",
   });
 
   map.addControl(
@@ -116,39 +112,6 @@ const initMap = () => {
     })
   );
 };
-
-// window["drawPolygon"] = undefined;
-// const drawPolygon = () => {
-//   if (!window["drawPolygon"]) {
-//     const draw = new MapboxDraw({
-//       displayControlsDefault: false,
-//       controls: {
-//         polygon: true,
-//         trash: true,
-//       },
-
-//       defaultMode: "draw_polygon",
-//     });
-//     map.addControl(draw);
-//     window["drawPolygon"] = draw;
-
-//     map.on("draw.create", updateArea);
-//     map.on("draw.delete", updateArea);
-//     map.on("draw.update", updateArea);
-
-//     function updateArea(e) {
-//       const data = draw.getAll();
-//       //  const answer = document.getElementById("calculated-area");
-//       if (data.features.length > 0) {
-//         const area = turf.area(data);
-//         const rounded_area = Math.round(area * 100) / 100;
-//         message.info(`${rounded_area}平方米`, 3);
-//       } else {
-//         if (e.type !== "draw.delete") message.info(`<p>点击绘制量测区域</p>`, 2);
-//       }
-//     }
-//   }
-// };
 
 /**
  * 量测
@@ -186,7 +149,7 @@ const eventLoad = () => {
     eventRender();
   });
 
-  let layerDK = "rskm_pt_fill_1";
+  let layerDK = "rskm_pt";
 
   /**
    * 鼠标移入监听地块
@@ -216,7 +179,9 @@ const eventLoad = () => {
       (feature.properties.town || "") +
       (feature.properties.village || "");
     let r_data = feature.properties.r_data || "";
-    let com = "";
+    let insurcompany_code = feature.properties.insurcompany_code || "";
+    let insurcompany =window["rskm_pt_insure_com"].filter(r=>r.insurcompanycode==insurcompany_code);
+    insurcompany_code = insurcompany[0].insurcompanyname;
     //rskm_pt_insure_com.filter((com)=>{com.})
 
     //  map.setFilter("Highlight_DK", ["all", ["in", "gid", feature.properties.gid]]);
@@ -225,15 +190,14 @@ const eventLoad = () => {
     map.setFilter("Highlight_DK_Line", ["all", ["in", "gid", feature.properties.gid]]);
     map.setLayoutProperty("Highlight_DK_Line", "visibility", "visible");
 
-    //   <tr ><th>起保时间：</th><td>${start_date}</td></tr>
-    //         <tr ><th>到期时间：</th><td>${end_date}</td></tr>
-    //         <tr > <th style="vertical-align: top;">备注说明：</th><td>${r_data}</td></tr>
+    //   <tr ><th>起保时间:</th><td>${start_date}</td></tr>
+    //         <tr ><th>到期时间:</th><td>${end_date}</td></tr>
+    //         <tr > <th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
     let text = `
-        <table style="line-height:1.5;width:100%;" >
-        <tr><th width="120" style="vertical-align: top;">保单:</th><td  style="" >${insurancenum}</td><tr>
-        <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mi} / ${area_mu}</td><tr>
-        <tr><th style="vertical-align: top;">数量:</th><td style="">${insured_quantity}</td></tr>
-        <tr><th style="vertical-align: top;">区划:</th><td style="">${province_city_county_town_village} </td></tr>
+        <table style="line-height:1.5;width:100%;letter-spacing: -1px; font-size: 14px;" >
+        <tr><th style="vertical-align: top;width:80px">机构:</th><td style="">${insurcompany_code} </td></tr>
+        <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} </td><tr>
+        <tr><th style="vertical-align: top;">位置:</th><td style="">${province_city_county_town_village} </td></tr>
         </table>
     `;
     popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
@@ -263,13 +227,13 @@ const eventLoad = () => {
 
     let insurancenum = feature.properties.insurancenum || "";
     let area_mi = feature.properties.area_mi
-      ? Number(feature.properties.area_mi).toFixed(2) + "㎡"
+      ? Number(feature.properties.area_mi).toFixed(2) 
       : "";
     let area_mu = feature.properties.area_mi
-      ? (Number(feature.properties.area_mi) / 667).toFixed(2) + "亩"
+      ? (Number(feature.properties.area_mi) / 667).toFixed(2) 
       : "";
-    let start_date = moment(feature.properties.start_date).format("YYYY年MM月DD日") || "";
-    let end_date = moment(feature.properties.end_date).format("YYYY年MM月DD日");
+    let start_date = moment(feature.properties.start_date).format("YYYY/MM/DD") || "";
+    let end_date = moment(feature.properties.end_date).format("YYYY/MM/DD");
     let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
     let province_city_county_town_village =
       (feature.properties.province || "") +
@@ -278,6 +242,17 @@ const eventLoad = () => {
       (feature.properties.town || "") +
       (feature.properties.village || "");
     let r_data = feature.properties.r_data || "";
+    let t_data = feature.properties.t_data || "";
+    let insurcompany_code = feature.properties.insurcompany_code || "";
+    let insurcompany =window["rskm_pt_insure_com"].filter(r=>r.insurcompanycode==insurcompany_code);
+    insurcompany_code = insurcompany[0].insurcompanyname;
+
+
+    let insurancetarget = feature.properties.insurancetarget || "";
+    let codenum_code = feature.properties.codenum || "";
+    let codenum =window["rskm_pt_insure_type"].filter(r=>r.codenum==insurancetarget);
+    codenum_code = codenum[0].xzname;
+   let codenum_type = codenum[0].insurancetype;
 
     // map.setFilter("Highlight_DK_Click", ["all", ["in", "gid", feature.properties.gid]]);
     // map.setLayoutProperty("Highlight_DK_Click", "visibility", "visible");
@@ -288,20 +263,52 @@ const eventLoad = () => {
     ]);
     map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
 
+    // let text = `
+    // <table style="line-height:2;width:100%;" >
+    // <tr><th width="100" style="vertical-align: top;">保单编号:</th><td  style="" >${insurancenum}</td><tr>
+    // <tr><th style="vertical-align: top;">投保面积:</th><td style="" >${area_mi} / ${area_mu}</td><tr>
+    // <tr><th style="vertical-align: top;">投保数量:</th><td style="">${insured_quantity}</td></tr>
+    // <tr><th style="vertical-align: top;">行政区划:</th><td style="">${province_city_county_town_village} </td></tr>
+    // <tr><th style="vertical-align: top;">起保时间:</th><td>${start_date}</td></tr>
+    // <tr><th style="vertical-align: top;">到期时间:</th><td>${end_date}</td></tr>
+    // <tr><th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
+    // </table>
+    // `;
     let text = `
-    <table style="line-height:2;width:100%;" >
+        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 14px;"  title="${r_data+t_data}" >
+        <tr style="line-height:1.5;border-top:0.5px dotted rgba(255,255,255,0.1);    font-size: 14px;"><th width="60" style="vertical-align: center;" rowspan="12" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-chart-gantt"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 8h7"/><path d="M8 12h6"/><path d="M11 16h5"/></svg>
+            <br>基本<br>信息</th>
+        </tr>
+        <tr style="line-height:1.5;" ><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;  ">保单:</th><td >${insurancenum}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${insurcompany_code}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">承保数量:</th><td >${insured_quantity}亩</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">保期:</th><td >${start_date} 至 ${end_date}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${ codenum_code}</td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">分类:</th><td > ${ codenum_type}</td></tr>
+    
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">位置:</th><td>${province_city_county_town_village} </td></tr>
+        <tr style="   font-size: 14px;"><th rowspan="4" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
+        <br>分析<br>数据</th> </tr>
+        <tr><th style="text-align: right;width:80px;padding-right:5px;">数据符合:</th><td style="" ><span style=" letter-spacing:0.5px;">${(area_mu/insured_quantity*100).toFixed(2)} %</span></td><td></td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">标的面积:</th><td style=""> ${area_mi} ㎡ / ${area_mu} 亩
+        </td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">重复地块:</th><td style=""> 0
+        </td></tr>
+        </table>
+    `;
 
-    <tr><th width="100" style="vertical-align: top;">保单编号:</th><td  style="" >${insurancenum}</td><tr>
-    <tr><th style="vertical-align: top;">投保面积:</th><td style="" >${area_mi} / ${area_mu}</td><tr>
-    <tr><th style="vertical-align: top;">投保数量:</th><td style="">${insured_quantity}</td></tr>
-    <tr><th style="vertical-align: top;">行政区划:</th><td style="">${province_city_county_town_village} </td></tr>
-    <tr><th style="vertical-align: top;">起保时间:</th><td>${start_date}</td></tr>
-    <tr><th style="vertical-align: top;">到期时间:</th><td>${end_date}</td></tr>
-    <tr><th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
-    </table>
-`;
-
-    fitBox(feature);
+    // fitBox(feature);
+    map.flyTo({
+      center: e.lngLat,
+      // zoom: 7.5,
+      speed: 1,
+      curve: 1,
+      easing(t) {
+        return t;
+      },
+    });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(map);
     window["tgid"] = feature.properties.gid;
   });
@@ -367,7 +374,7 @@ const loadBaseSource = () => {
  */
 const addTiles = () => {
   //  历史缓存 重置底图
-  addRasterTileLayer(layers[12].param, layers[12].key);
+  addRasterTileLayer(layers.value[17].param, layers.value[17].key);
 };
 
 let loadLayer = [];
@@ -387,7 +394,7 @@ const addRasterTileLayer = (layerList, key) => {
     loadLayer.push(layer[0]);
     //调用接口，添加图层
     var param = key ? { key: key } : null;
-    map.addLayer(rasterTileLayer(layer[0], layer[1], param));
+    !map.getLayer(layer[0]) && map.addLayer(rasterTileLayer(layer[0], layer[1], param));
   });
 };
 
@@ -415,29 +422,31 @@ const three3D = () => {
     map.setProjection("mercator");
     //map.setTerrain(undefined);
     // map.setPitch(0);
-    map.flyTo({
-      pitch: 0,
-      speed: 1,
+    // map.flyTo({
+    //   pitch: 0,
+    //   speed: 1,
 
-      curve: 2,
-      easing(t) {
-        return t;
-      },
-    });
+    //   curve: 2,
+    //   easing(t) {
+    //     return t;
+    //   },
+    // });
+    message.success("二维地图切换完成", 1);
   } else {
     map.setProjection("globe");
     // map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
     //map.setPitch(60);
 
-    map.flyTo({
-      pitch: 60,
-      speed: 1,
+    // map.flyTo({
+    //   pitch: 60,
+    //   speed: 1,
 
-      curve: 2,
-      easing(t) {
-        return t;
-      },
-    });
+    //   curve: 2,
+    //   easing(t) {
+    //     return t;
+    //   },
+    // });
+    message.success("三维地图切换完成", 1);
   }
 
   machine.value = map.getProjection().name;
@@ -455,18 +464,33 @@ const Zero = () => {
 
 // 图层切换
 const switchTile = (layer) => {
-  // 投影转换
-  //layer.projection ? map.setProjection("globe") : map.setProjection("mercator");
-  message.loading("底图设置为" + layer.name, 1);
+  layers.value.forEach((ll) => {
+    ll.isShow = false;
+  });
+  layer.isShow = true;
+
+  message.success("已更新为" + layer.name, 1);
 
   // 图层叠加
   addRasterTileLayer(layer.param, layer.key);
 
   // 历史缓存
-  localStorage.setItem("MAP_LAYERS", JSON.stringify(layer));
+  StateManager.set("MAP_LAYERS", layer);
 
   // 叠加
   addLayers();
+};
+
+const goGlobal = () => {
+  map.flyTo({
+    center: [100.223855, 36.315451],
+    zoom: 3,
+    speed: 1,
+    curve: 2,
+    easing(t) {
+      return t;
+    },
+  });
 };
 
 const state = reactive({
@@ -494,8 +518,8 @@ watch(state, () => {
     "admin_2022_province",
     "admin_2022_city",
     "admin_2024_county",
+    "admin_2024_town",
     "admin_2024_village",
-    "admin_2024_village_outline",
   ].forEach((v) => {
     map.setLayoutProperty(v, "visibility", state.ZJiSHow ? "visible" : "none");
   });
@@ -602,7 +626,7 @@ onMounted(() => {
               </template>
               <a-button size="large" class="boxshadow">
                 <!-- <MapPinned /> -->
-                <Scale3D  />
+                <Scale3D />
               </a-button>
             </a-tooltip>
             <a-tooltip placement="leftTop">
@@ -636,6 +660,15 @@ onMounted(() => {
           <ScanEye />
         </a-button>
       </a-tooltip>
+
+      <a-tooltip placement="leftTop">
+        <template #title>
+          <span>地球视野</span>
+        </template>
+        <a-button @click="goGlobal()" size="large" class="boxshadow">
+          <House />
+        </a-button>
+      </a-tooltip>
       <a-tooltip placement="leftTop">
         <template #title>
           <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
@@ -667,7 +700,6 @@ onMounted(() => {
               </template>
               <a-button size="large" class="boxshadow">
                 <Dot />
-              
               </a-button>
             </a-tooltip>
             <a-tooltip placement="leftTop">
@@ -726,7 +758,7 @@ onMounted(() => {
             style="width: 100%; height: 100px; border-radius: 2px"
             @click="switchTile(item)"
           />
-          <div class="mmapcs">
+          <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
             {{ item.name }}
           </div>
         </a-card-grid>
@@ -742,7 +774,7 @@ onMounted(() => {
           @click="switchTile(item)"
         >
           <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
-          <div class="mmapcs">
+          <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
             {{ item.name }}
           </div>
         </a-card-grid>
@@ -884,6 +916,16 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 3000;
 }
+
+.mmapcs-av {
+  /* background-color: #2b8ee7; */
+  background: linear-gradient(to bottom, #2b8fe79c, #2b8fe7f8);
+  z-index: 1000;
+  position: relative;
+  margin-top: -22px;
+  color: #f2f2f8ec;
+  font-size: 14px;
+}
 /deep/ .mapboxgl-ctrl-attrib {
   background-color: rgba(0, 0, 0, 0.5);
   color: #eee9e9e7;
@@ -1003,4 +1045,4 @@ onMounted(() => {
   left: 1px;
   bottom: -6px;
 }
-</style>
+</style>../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/mapbox-gl-draw.js../../../public/mapboxgl/pulgins/rasterTileLayer.js../../config/spec-v2.js../../utils/bbox.js../../config/fill.js../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/rasterTileLayer.js

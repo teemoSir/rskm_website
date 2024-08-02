@@ -18,7 +18,8 @@ import TDT_WX from "@/assets/images/map/TDT_WX.jpg";
 import { config } from "@/config/map.js";
 import { ref } from "vue";
 
-let layers = ref([
+
+let layers =ref( [
     {
         id: 1,
         projection: false,
@@ -166,7 +167,6 @@ let layers = ref([
         param: [["arcc", "ArcGIS.Satellite.Map"]],
     },
 
-
     // {
     //     id: 14,
     //     name: "ESRI标准",
@@ -248,8 +248,8 @@ let layers = ref([
 ])
 
 let waySpec = [
-
-
+    
+  
     {
         id: "admin_2022_province",
         'type': 'line',
@@ -285,7 +285,7 @@ let waySpec = [
         layout: {
             visibility: "visible",
         },
-
+        'slot': 'middle',
         'paint': {
             'line-width': 1,
             'line-color': '#fff',
@@ -295,36 +295,51 @@ let waySpec = [
         maxzoom: 20
 
     },
-   
     {
-        id: "admin_2024_village",
+        id: "admin_2024_county",
         'type': 'line',
-        source: config.admin_2024_village.name,
-        "source-layer": config.admin_2024_village.name,
+        source: config.admin_2024_county.name,
+        "source-layer": config.admin_2024_county.name,
         layout: {
             visibility: "visible",
         },
         'slot': 'middle',
         'paint': {
-            'line-color': '#faad14',
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                0.5,
-                13,
-                3.5,
-                14,
-                4.5,],
-            'line-opacity': 0.8,
-            "line-dasharray": [1, 2]
-
-
-        }
-        , minzoom: 12,
+            'line-width': 1,
+            'line-color': '#fff',
+            'line-opacity': 0.4
+        },
+        minzoom: 10,
         maxzoom: 20
     },
+    // {
+    //     id: "admin_2024_village_outline",
+    //     'type': 'line',
+    //     source: config.admin_2024_village.name,
+    //     "source-layer": config.admin_2024_village.name,
+    //     layout: {
+    //         visibility: "visible",
+    //     },
+    //     'slot': 'middle',
+    //     'paint': {
+    //         'line-color': 'RGB(253,77,81)',
+    //         'line-width': ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             2,
+    //             0.5,
+    //             13,
+    //             3.5,
+    //             14,
+    //             6.5,],
+    //         'line-opacity': 0.8,
 
+
+    //     }
+    //     , minzoom: 12,
+    //     maxzoom: 20
+    // },
+    
     {
         id: "admin_2024_town",
         'type': 'line',
@@ -345,25 +360,36 @@ let waySpec = [
         maxzoom: 20
     },
 
-
     {
-        id: "admin_2024_county",
+        id: "admin_2024_village",
         'type': 'line',
-        source: config.admin_2024_county.name,
-        "source-layer": config.admin_2024_county.name,
+        source: config.admin_2024_village.name,
+        "source-layer": config.admin_2024_village.name,
         layout: {
-            //  visibility: "visible",
+            visibility: "visible",
         },
-
+        'slot': 'middle',
         'paint': {
-            'line-width': 3,
-            'line-color': 'yellow',
-            'line-opacity': 1
-        },
-        minzoom: 9,
+            'line-color': '#ffffff',
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                2,
+                0.5,
+                13,
+                2.5,
+                14,
+                5.5,],
+            'line-opacity': 0.5,
+            "line-dasharray": [0.5, 4]
+
+
+        }
+        , minzoom: 12,
         maxzoom: 20
     },
 
+   
     {
         id: "POI_WORLD_1",
         type: "symbol",
@@ -505,7 +531,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            // "text-padding": 10,
+            "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -518,7 +544,7 @@ let waySpec = [
                 20,
             ],
             "text-field": "{name_chn}",
-            "text-size": 16,
+            "text-size": 14,
 
         },
         paint: {
@@ -627,7 +653,7 @@ let waySpec = [
             'text-halo-width': 1.2
         },
         minzoom: 6,
-        maxzoom: 8.99,
+        maxzoom: 7.99,
 
     },
     {
@@ -705,7 +731,7 @@ let waySpec = [
                 "match",
                 ["get", "priority"],
                 "117", 16,
-                15,
+                14,
             ],
 
         },
@@ -726,8 +752,8 @@ let waySpec = [
             ],
             'text-halo-width': 1.2
         },
-        minzoom: 9,
-        maxzoom: 10.99,
+        minzoom: 8,
+        maxzoom: 9.99,
 
     },
     {
@@ -804,7 +830,7 @@ let waySpec = [
                 "match",
                 ["get", "priority"],
                 "117", 16,
-                15,
+                14,
             ],
 
         },
@@ -927,115 +953,59 @@ let waySpec = [
         minzoom: 13,
 
     },
-    // {
-    //     id: "procjet_2024_wxsd",
-    //     name: "耕地地块",
-    //     "type": "fill",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 8,
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     // 'slot': 'top',
-    //     "paint": {
-    //         "fill-color": "#bae1ff",
-    //         "fill-opacity": 0.2
-    //         // ["interpolate",
-    //         //     ["exponential", 1.5],
-    //         //     ["zoom"],
-    //         //     2,
-    //         //     0.6,
-    //         //     13,
-    //         //     0.35,
-    //         //     14,
-    //         //     0.25,],
-    //     },
-    //     interactive: true,
-    // },
 
-    // {
-    //     id: "procjet_2024_wxsd_outine",
-    //     name: "耕地地块边框",
-    //     type: "line",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 13,
-    //     layout: {
-    //         "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-    //         "line-join": ["step", ["zoom"], "miter", 1, "round"],
-    //         visibility: "none",
-    //     },
-    //     "paint": {
-    //         'line-color': '#bae1ff',
-    //         'line-width': 1.8,
-    //         'line-opacity': 0.7,
-
-    //     },
-    //     interactive: true,
-    // },
     {
-        id: "rskm_pt",
-        name: "保单地块",
+        id: "rskm_pt_fill_1",
+        name: "地块",
         "type": "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
         minzoom: 7.4,
-     
+
         'slot': 'top',
         "paint": {
-              "fill-color": "green",
-            // 'fill-color': [
-            //     'case',
-            //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
-            //     '#00FF00', // 如果大于 80，填充颜色为绿色
-            //     '#FF0000' // 否则填充颜色为红色
-            // ],
-            // "fill-outline-color": "yellow",
-            "fill-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                0.6,
-                13,
-                0.3,
-                14,
-                0.2,],
+             "fill-color": "yellow",
+             "fill-opacity": 0.3,
         },
         interactive: true,
     },
-    {
-        id: "rskm_pt_outline",
-        name: "保单地块外框",
-        type: "line",
+      {
+        id: "rskm_pt_fill_2",
+        name: "地块",
+        "type": "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
-      //  minzoom: 12.4,
-      
-        "paint": {
-            'line-color': '#000',
-          //  'line-width': 4,
+        minzoom: 7.4,
 
-          'line-width': ["interpolate",
-            ["exponential", 1.5],
-            ["zoom"],
-          
-            9,
-            0,
-            13,
-            2.5,
-            14,
-            3.5,],
-            'line-opacity': 0.8,
+        'slot': 'top',
+        "paint": {
+            "fill-pattern":"a11",
+             "fill-outline-color":"red"
         },
         interactive: true,
     },
 
 
-
+    // {
+    //     id: "Highlight_DK",
+    //     name: "高亮",
+    //     type: "fill",
+    //     source: config.rskm_pt.name,
+    //     "source-layer": config.rskm_pt.name,
+    //     minzoom: 10,
+    //     maxzoom: 18,
+    //     layout: {
+    //         visibility: "none",
+    //     },
+    //     "paint": {
+    //         "fill-color": "red",
+    //         "fill-opacity": 0.4
+    //     },
+    //     interactive: true,
+    // },
     {
         id: "Highlight_DK_Line",
-        name: "保单地块高亮",
+        name: "高亮",
         type: "line",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
@@ -1046,9 +1016,9 @@ let waySpec = [
         },
         "paint": {
             'line-color': 'red',
-            'line-width': 12,
-            'line-opacity': 0.6,
-            "line-dasharray": [0.8, 0.2]
+            'line-width': 20,
+            'line-opacity': 0.8,
+            // "line-dasharray": [0.2, 0.2]
         },
         interactive: true,
     },
@@ -1082,46 +1052,13 @@ let waySpec = [
             visibility: "none",
         },
         "paint": {
-            'line-color': '#0000FF',
-            'line-width': 12,
-            'line-opacity': 0.9,
+            'line-color': 'red',
+            'line-width': 20,
+            'line-opacity': 0.5,
             // "line-dasharray": [5, 1] 
         },
         interactive: true,
     },
-
-
-    // {
-    //     id: "procjet_2024_wxsd_name",
-    //     name: "耕地地块注记",
-    //     type: "symbol",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 16,
-
-    //     // 'slot': 'top',
-    //     layout: {
-
-    //         "symbol-avoid-edges": true,
-    //         "icon-rotation-alignment": "viewport",
-    //         "text-pitch-alignment": "viewport",
-    //         visibility: "none",
-    //         "text-font": ["Microsoft YaHei"],
-    //          "text-optional": true,
-    //         "text-padding": 10,
-    //         // "text-field": "{province}{city}{county}{town}{village}\n{area_mu}亩",
-    //         "text-field": "{village}\n{area_mu}亩",
-    //         "text-size": 14,
-
-    //     },
-    //     paint: {
-    //         "text-halo-color": "RGBA(0,0,0,0.8)",
-    //         "text-color": "RGBA(255,255, 255, 1)",
-    //         'text-halo-width': 1
-
-    //     },
-    //     interactive: true,
-    // },
     {
         id: "rskm_pt_name",
         type: "symbol",
@@ -1133,25 +1070,19 @@ let waySpec = [
             "text-pitch-alignment": "viewport",
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
-            // "text-optional": true, \n{r}{t}\n{quxian}{cun}
+            // "text-optional": true,
             "text-padding": 50,
-            "text-field": "{r}{t}\n{quxian}{cun}",
-            "text-size": 16,
+            "text-field": "{area_mi}\n{insured_quantity}\n{r_data}",
+            "text-size": 20,
 
         },
         paint: {
-         //   "text-color": "RGBA(255,255, 255, 1)",
-            "text-halo-color": "#fff",
-            'text-color': [
-                'case',
-                ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
-                'green', // 如果大于 80，填充颜色为绿色
-                'red' // 否则填充颜色为红色
-            ],
-            'text-halo-width': 2.0
-
+            "text-halo-color": "RGBA(50,42, 42, 1)",
+            "text-color": "RGBA(255,255,255,1)",
+            'text-halo-width': 10.0
+            
         },
-        minzoom: 14,
+        minzoom: 12,
 
     },
     {
@@ -1166,13 +1097,13 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true,
-            "text-padding": 200,
+            "text-padding": 100,
             "text-field": "{t_xzqmc}\n{name}",
-            "text-size": 16,
+            "text-size": 18,
             "icon-image": "500", // 引用精灵图中的图标
-            "icon-size": 1,// 根据需要调整图标大小
+            "icon-size":1 ,// 根据需要调整图标大小
             "icon-anchored": "bottom", // 设置图标的锚点位置
-            // "icon-offset": [0, 15], // 设置图标相对于锚点的偏移量，单位为像素
+           // "icon-offset": [0, 15], // 设置图标相对于锚点的偏移量，单位为像素
             "text-anchor": "top", // 设置文字的锚点位置
             "text-offset": [0, -3.0], // 设置文字相对于图标的偏移量
 
@@ -1180,9 +1111,9 @@ let waySpec = [
         paint: {
             "text-color": "RGBA(50,42, 42, 1)",
             "text-halo-color": "RGBA(255,255,255,0.8)",
-            'text-halo-width': 3.0
+             'text-halo-width': 3.0
         },
-        minzoom: 14,
+        minzoom: 13,
     },
 
 
