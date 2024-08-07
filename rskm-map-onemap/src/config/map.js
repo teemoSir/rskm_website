@@ -3,7 +3,7 @@
 import ApiService from "../utils/ajax";
 
 
-const host = `http://localhost:3000`;
+const host = `http://localhost:3001`;
 // const host = `api`;
 
 const mapbox = {
@@ -33,7 +33,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,r_data,t_data,update_data,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget,i_type_name,i_com_name`,
             ],
             minzoom: 7,
             maxzoom: 14

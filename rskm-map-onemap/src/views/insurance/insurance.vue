@@ -18,6 +18,7 @@ import {
   Locate,
   CalendarHeart,
   FolderDown,
+  TextSearch
 } from "lucide-vue-next";
 
 const dataSourceCount = ref(0);
@@ -40,12 +41,12 @@ const columns = ref([
     dataIndex: "edit",
     width: 80,
   },
-  {
-    title: "ID",
-    dataIndex: "gid",
-    key: "gid",
-    width: 100,
-  },
+  //   {
+  //     title: "ID",
+  //     dataIndex: "gid",
+  //     key: "gid",
+  //     width: 100,
+  //   },
 
   {
     title: "被保人",
@@ -64,10 +65,16 @@ const columns = ref([
     key: "area_mu",
     width: 100,
   },
+
   {
     title: "机构",
-    dataIndex: "insurancetarget",
-    key: "insurancetarget",
+    dataIndex: "i_com_name",
+    key: "i_com_name",
+  },
+  {
+    title: "险种",
+    dataIndex: "i_type_name",
+    key: "i_type_name",
   },
   {
     title: "承保数量(亩)",
@@ -183,14 +190,10 @@ const loading = ref(true);
 //   };
 // };
 
-
-
-const goGeomUn = (data)=>{
-
-}
+const goGeomUn = (data) => {};
 /**
  * 查找地块
- * @param {} data 
+ * @param {} data
  */
 const goGeom = (data) => {
   // console.log(data);
@@ -238,10 +241,69 @@ const fitBox = (f) => {
     padding: { top: 400, bottom: 400, left: 400, right: 400 },
   });
 };
+
+const formState = reactive({
+  layout: "horizontal",
+  fieldA: "",
+  fieldB: "",
+});
+const formItemLayout = computed(() => {
+  const { layout } = formState;
+  return layout === "horizontal"
+    ? {
+        labelCol: {
+          span: 8,
+        },
+        wrapperCol: {
+          span: 14,
+        },
+      }
+    : {};
+});
+const buttonItemLayout = computed(() => {
+  const { layout } = formState;
+  return layout === "horizontal"
+    ? {
+        wrapperCol: {
+          span: 14,
+          offset: 4,
+        },
+      }
+    : {};
+});
 </script>
 
 <template>
   <div class="insurance-page" v-show="dataSource.length">
+    <a-form layout="inline" :model="formState" v-bind="formItemLayout" style="margin-bottom:5px">
+      <a-form-item label="保单：">
+        <a-input v-model:value="formState.fieldA" placeholder="保单编号" />
+      </a-form-item>
+      <a-form-item label="被保人：">
+        <a-input v-model:value="formState.fieldB" placeholder="被保人" />
+      </a-form-item>
+      <a-form-item label="机构：">
+        <a-input v-model:value="formState.fieldB" placeholder="机构" />
+      </a-form-item>
+      <a-form-item label="险种：">
+        <a-input v-model:value="formState.fieldB" placeholder="险种" />
+      </a-form-item>
+      <a-form-item label="市：">
+        <a-input v-model:value="formState.fieldB" placeholder="市" />
+      </a-form-item>
+      <a-form-item label="县：">
+        <a-input v-model:value="formState.fieldB" placeholder="县" />
+      </a-form-item>
+      <a-form-item label="镇：">
+        <a-input v-model:value="formState.fieldB" placeholder="镇" />
+      </a-form-item>
+      <a-form-item label="村：">
+        <a-input v-model:value="formState.fieldB" placeholder="村" />
+      </a-form-item>
+      <a-form-item :wrapper-col="buttonItemLayout.wrapperCol">
+        <a-button type="primary"><TextSearch /></a-button>
+      </a-form-item>
+    </a-form>
     <a-table
       :dataSource="dataSource"
       :columns="columns"
@@ -264,7 +326,6 @@ const fitBox = (f) => {
           </a-popconfirm>
         </template>
         <template v-if="column.dataIndex === 'edit'">
-         
           <div style="width: 100%" @click="goGeomUn(record)">
             <LandPlot />
           </div>
@@ -283,6 +344,7 @@ const fitBox = (f) => {
 .insurance-page {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100%;
+  padding: 10px;
 }
 
 /deep/ .ant-table {
@@ -316,5 +378,10 @@ const fitBox = (f) => {
 
 /deep/ .ant-table-wrapper .ant-table-sticky-holder {
   background: rgba(0, 0, 0, 0);
+}
+
+
+/deep/ .ant-form-item .ant-form-item-label >label{
+    color: beige;
 }
 </style>

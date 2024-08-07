@@ -1143,7 +1143,7 @@ let waySpec = [
              "text-optional": true,
             "text-padding": 10,
             // "text-field": "{province}{city}{county}{town}{village}\n{area_mu}亩",
-            "text-field": "{village}\n{area_mu}亩",
+            "text-field": "{area_mu}亩",
             "text-size": 14,
 
         },
