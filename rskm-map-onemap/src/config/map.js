@@ -3,7 +3,7 @@
 import ApiService from "../utils/ajax";
 
 
-const host = `http://localhost:3001`;
+const host = `http://localhost:3000/mapserver`;
 // const host = `api`;
 
 const mapbox = {
