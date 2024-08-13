@@ -1,0 +1,21 @@
+{
+  "name": "rskm-map-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@terraformer/arcgis": "^2.1.2",
+    "@turf/turf": "^7.1.0",
+    "axios": "^1.7.3",
+    "crypto": "^1.0.1",
+    "geojson-validation": "^1.0.2",
+    "pg": "^8.12.0",
+    "turf": "^3.0.14"
+  }
+}
