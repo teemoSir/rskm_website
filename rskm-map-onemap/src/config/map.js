@@ -1,18 +1,16 @@
 
 
 import ApiService from "../utils/ajax";
+const host = import.meta.env.VITE_API_BASE_URL;
 
-
-//const host = `http://39.102.63.192:3000/mapserver`;
-const host = `http://localhost:3000`;
-// const host = `api`;
 
 const mapbox = {
     key: "pk.eyJ1IjoibHV3ZW5qdW4iLCJhIjoiY2xpODV0c2s2MWV5YjNrcmJneTJ5OHljcyJ9.STONixPRitDkS9dxJSSbHw"
 }
+console.log(host)
 
 
-const apiService = new ApiService(host);
+const apiService = new ApiService();
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),

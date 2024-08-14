@@ -1,13 +1,13 @@
-import axios from 'axios';
-
+import http from '@/utils/http';
 class ApiService {
-    constructor(baseUrl) {
-        this.baseUrl = baseUrl;
+    constructor() {
+
     }
 
     async get (url, params = {}) {
+        //    console.log(import.meta.env.VITE_APP_BASE_API)
         try {
-            const response = await axios.get(`${this.baseUrl}${url}`, { params });
+            const response = await http.get(url, { params });
             return response.data;
         } catch (error) {
             throw new Error(`请求失败: ${error.message}`);
@@ -16,7 +16,7 @@ class ApiService {
 
     async post (url, data = {}) {
         try {
-            const response = await axios.post(`${this.baseUrl}${url}`, data);
+            const response = await http.post(url, data);
             return response.data;
         } catch (error) {
             throw new Error(`请求失败: ${error.message}`);

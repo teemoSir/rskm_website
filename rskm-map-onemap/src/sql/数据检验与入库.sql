@@ -21,4 +21,11 @@ select  ST_IsValid(geom) as tf,* from  public.rskm_pt
   -- 新增公司名称
  update public.rskm_pt  set i_com_name =
  (select insurcompanyname from public.rskm_pt_insure_com  where insurcompanycode =  public.rskm_pt.insurcompany_code)
+
+
+
+ ALTER TABLE public.rskm_pt
+ADD COLUMN geom GEOMETRY(MultiPolygon, 4326) DEFAULT NULL;
+
+--delete from public.rskm_pt where geom is null
  
