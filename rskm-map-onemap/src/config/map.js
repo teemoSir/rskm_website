@@ -7,7 +7,7 @@ const host = import.meta.env.VITE_API_BASE_URL;
 const mapbox = {
     key: "pk.eyJ1IjoibHV3ZW5qdW4iLCJhIjoiY2xpODV0c2s2MWV5YjNrcmJneTJ5OHljcyJ9.STONixPRitDkS9dxJSSbHw"
 }
-console.log(host)
+
 
 
 const apiService = new ApiService();

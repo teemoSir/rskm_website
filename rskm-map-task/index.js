@@ -12,20 +12,16 @@ const dbConfig = {
     user: 'postgres',
     password: 'root',
     database: 'postgres',
-    port: 5432,
+    port: 1717,
 };
 
 // 定义要请求的URL
 const url = 'http://124.128.248.214:85/api/transfer';
+const action2 = "/api/syncinsurance/syncinsdataresult";
 const apiKey = 'nxptyzt';
 const privateKey = '46AA1572-L767-5783-F2A8-2A28F7240702';
 const size = 30;
-// 批量操作数组
-// let pgsql = [];
-// let pgsql_bj = [];
-// let pgsql_delete = [];
-// let list_bill = [];
-
+let tryBool = true;
 let lkdata = undefined;
 
 
@@ -33,6 +29,9 @@ let lkdata = undefined;
 // 批量获取数据
 async function getInsData () {
 
+
+    lkdata = undefined;
+    tryBool = true;
     let listBill = [];
     let resultList = [];
     let pgGeom = [];
@@ -59,7 +58,7 @@ async function getInsData () {
     const response = await axios.post(url, data, { headers });
     if (response.status === 200) {
         const insuranceJson = response.data;
-        console.log(insuranceJson.length)
+        // console.log(insuranceJson.length)
         for (const item of insuranceJson) {
 
             // 是否需要同步 1 同步，-1直接删除
@@ -99,7 +98,7 @@ async function getInsData () {
             }
 
             console.log("【is Polygon ：" + goboll)
-            console.log(resultList)
+            //   console.log(resultList)
 
             if (!goboll) {
                 resultList.push(-1);
@@ -112,12 +111,12 @@ async function getInsData () {
             }
 
             const geojsons = convertAToGeojson(esriJson)
-            console.log("【esriJson】:" + JSON.stringify(esriJson))
-            console.log(" ")
+            //    console.log("【esriJson】:" + JSON.stringify(esriJson))
+            //   console.log(" ")
             console.log("【geojson】:" + JSON.stringify(geojsons))
 
             let wkt = geojsonToWKT(geojsons)
-            console.log(" ")
+            //  console.log(" ")
             console.log("【wkt】:" + wkt)
 
 
@@ -141,11 +140,15 @@ async function getInsData () {
             "listBill": listBill
         }
 
+
     } else {
         console.error('请求失败' + response.status + response.data);
+        tryBool = false
     }
 
-
+    delete response;
+    delete insuranceJson;
+    delete headers;
 }
 
 
@@ -184,6 +187,8 @@ function geojsonToWKT (geojson) {
         }
     });
 
+    delete features;
+    delete geojson;
     return `MULTIPOLYGON (${wktParts.length > 0 ? wktParts.join(', ') : ''})`;
 }
 /**
@@ -250,7 +255,7 @@ async function connPgInstall () {
 
 
     let listgeojson = lkdata.pgGeom;
-    console.log(lkdata.pgGeom)
+    //  console.log(lkdata.pgGeom)
 
     if (listgeojson) {
 
@@ -293,7 +298,9 @@ async function connPgInstall () {
 
             await client.release();
         } catch (error) {
+            tryBool = false
             console.log('添加异常 跳过:', error);
+
         } finally {
             await pool.end();
         }
@@ -316,7 +323,7 @@ function getCurrentTimeMinusFiveSeconds () {
 // 提交结果
 async function submitResult () {
     const timet = getCurrentTimeMinusFiveSeconds();
-    const action = "/api/syncinsurance/syncinsdataresult";
+
 
     // 定义请求头
     const headers = {
@@ -324,7 +331,7 @@ async function submitResult () {
         "ApiKey": apiKey,
         "Sign": getMd5Sum(`apikey=${apiKey}&time=${timet}&key=${privateKey}`),
         "Time": timet,
-        "Action": action,
+        "Action": action2,
     };
 
     const params = {
@@ -340,7 +347,7 @@ async function submitResult () {
 
     // 打印响应状态码和内容
     if (response.status === 200) {
-        console.info(response.data);
+        // console.info(response.data);
         console.info("【数据闭合完成】");
 
 
@@ -351,8 +358,8 @@ async function submitResult () {
     // 清理变量
     // delete timet;
     // delete action;
-    // delete headers;
-    // delete response;
+    delete headers;
+    delete response;
     // console.log("【清理】")
     // clearData()
 
@@ -363,54 +370,32 @@ function randomDelay (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function clearData () {
-
-    // pgsql_bj = [];
-    // list_bill = [];
-    // listgeojson = []
-}
 
 
 
 
-async function runTaskLoop () {
-    while (true) {
-        // 你的任务代码
-        await getInsData()
-            .then(() => {
-                // 数据处理完成后执行更新操作
-                connPgInstall();
-            })
-            .then(() => {
-                //提交结果
-                submitResult();
-            })
 
 
-    }
-}
-
-//runTaskLoop();
-
-function getRandomInt(min, max) {
+function getRandomInt (min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
-async function task() {
-     await getInsData()
-     .then(() => {
-         // 数据处理完成后执行更新操作
-         connPgInstall();
-     })
-     .then(() => {
-         //提交结果
-         submitResult();
-     })
+async function task () {
+    await getInsData()
+        .then(() => {
+            // 数据处理完成后执行更新操作
+            tryBool && connPgInstall();
+        })
+        .then(() => {
+            //提交结果
+            tryBool && submitResult();
+        })
+
 
 }
 
 // 每隔 1 秒执行一次任务
-setInterval(task, getRandomInt(3000,9000));
+setInterval(task, getRandomInt(3000, 9000));

@@ -677,7 +677,7 @@ onMounted(() => {
           ><MountainSnow
         /></a-button>
       </a-tooltip>
-      <a-tooltip placement="leftTop">
+      <a-tooltip placement="leftTop" v-if="1==2">
         <template #title>
           <span>绘制</span>
         </template>
@@ -855,7 +855,7 @@ onMounted(() => {
 .right-tool {
   position: absolute;
   right: 20px;
-  top: 5.5rem;
+  top: 140px;
   /* width: 2rem; */
   z-index: 1000;
 }

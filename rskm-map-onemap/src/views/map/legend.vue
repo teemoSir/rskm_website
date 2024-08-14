@@ -21,18 +21,18 @@ import {
  * 图例
  */
 let legends = [
-  //   {
-  //     key: 1,
-  //     title: "耕地",
-  //     isShow: ref(false),
-  //     type: "polygon",
-  //     outlineColor: "RGBA(255,255,251,1)",
-  //     fillColor: "RGBA(43,128,251,0.5)",
-  //     outlineWidth: 1,
-  //   },
+  {
+    key: 1,
+    title: "耕地",
+    isShow: ref(false),
+    type: "polygon",
+    outlineColor: "RGBA(255,255,251,1)",
+    fillColor: "RGBA(43,128,251,0.5)",
+    outlineWidth: 1,
+  },
   {
     key: 2,
-    title: "保单地块",
+    title: "承保地块",
     isShow: ref(true),
     type: "polygon",
     outlineColor: "RGBA(0,0,0,0.8)",
@@ -48,46 +48,46 @@ let legends = [
   //     fillColor: "RGBA(237,28,36,0.8)",
   //     outlineWidth: 3,
   //   },
-  {
-    key: 4,
-    title: "县级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "yellow",
-    outlineWidth: 4,
-  },
-  {
-    key: 5,
-    title: "镇级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#faad14",
-    outlineWidth: 4,
-  },
-  {
-    key: 6,
-    title: "村级界线",
-    isShow: ref(false),
-    type: "line-dotted",
-    fillColor: "#faad14",
-    outlineWidth: 4,
-  },
-  {
-    key: 7,
-    title: "省级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#ccc",
-    outlineWidth: 2,
-  },
-  {
-    key: 8,
-    title: "市级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#ccc",
-    outlineWidth: 1,
-  },
+  //   {
+  //     key: 4,
+  //     title: "县级界线",
+  //     isShow: ref(false),
+  //     type: "line",
+  //     fillColor: "yellow",
+  //     outlineWidth: 4,
+  //   },
+  //   {
+  //     key: 5,
+  //     title: "镇级界线",
+  //     isShow: ref(false),
+  //     type: "line",
+  //     fillColor: "#faad14",
+  //     outlineWidth: 4,
+  //   },
+  //   {
+  //     key: 6,
+  //     title: "村级界线",
+  //     isShow: ref(false),
+  //     type: "line-dotted",
+  //     fillColor: "#faad14",
+  //     outlineWidth: 4,
+  //   },
+  //   {
+  //     key: 7,
+  //     title: "省级界线",
+  //     isShow: ref(false),
+  //     type: "line",
+  //     fillColor: "#ccc",
+  //     outlineWidth: 2,
+  //   },
+  //   {
+  //     key: 8,
+  //     title: "市级界线",
+  //     isShow: ref(false),
+  //     type: "line",
+  //     fillColor: "#ccc",
+  //     outlineWidth: 1,
+  //   },
 ];
 
 const tuli = ref(false);
@@ -219,14 +219,10 @@ const toggleLayerVisibility = (layerId, isVisible) => {
       color: tuli ? 'rgba(0, 0, 0, 0.7)' : 'rgba(253, 250, 250, 0.8)',
     }"
   >
-    <div
-      style="display: flex; align-items: center; padding: 15px 0"
-      @click="tuli = !tuli"
-    >
+    <div style="display: flex; align-items: center" @click="tuli = !tuli">
       <Logs />
 
       <label v-if="tuli" style="padding-left: 15px"> 图例</label>
-      <!-- <CircleX v-if="tuli"   style="position:absolute;right:15px;"  /> -->
     </div>
 
     <div v-if="tuli" style="padding: 5px 0px 10px 5px; width: 200px">
@@ -328,9 +324,9 @@ const toggleLayerVisibility = (layerId, isVisible) => {
 <style scoped>
 .tuli {
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: 0;
-  padding: 0 15px;
+  padding: 10px;
   border-radius: 2px;
 }
 </style>

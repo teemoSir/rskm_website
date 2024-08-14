@@ -23,8 +23,8 @@ import {
   ChevronDown,
   Component,
   Logs,
-  CalendarHeart,
-  NotepadText,
+  PanelBottomOpen,
+  PanelTopOpen,
 } from "lucide-vue-next";
 
 const value = ref("user1");
@@ -179,201 +179,13 @@ const setSearchListName = (d) => {
   value3.value = d.name;
 };
 
-/**
- * 图例
- */
-let legends = [
-  //   {
-  //     key: 1,
-  //     title: "耕地",
-  //     isShow: ref(false),
-  //     type: "polygon",
-  //     outlineColor: "RGBA(255,255,251,1)",
-  //     fillColor: "RGBA(43,128,251,0.5)",
-  //     outlineWidth: 1,
-  //   },
-  {
-    key: 2,
-    title: "保单地块",
-    isShow: ref(true),
-    type: "polygon",
-    outlineColor: "RGBA(0,0,0,0.8)",
-    fillColor: "RGBA(34,177,76,0.8)",
-    outlineWidth: 3,
-  },
-  //   {
-  //     key: 3,
-  //     title: "不合格地块",
-  //     isShow: ref(true),
-  //     type: "polygon",
-  //     outlineColor: "RGBA(0,0,0,0.8",
-  //     fillColor: "RGBA(237,28,36,0.8)",
-  //     outlineWidth: 3,
-  //   },
-  {
-    key: 4,
-    title: "县级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "yellow",
-    outlineWidth: 4,
-  },
-  {
-    key: 5,
-    title: "镇级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#faad14",
-    outlineWidth: 4,
-  },
-  {
-    key: 6,
-    title: "村级界线",
-    isShow: ref(false),
-    type: "line-dotted",
-    fillColor: "#faad14",
-    outlineWidth: 4,
-  },
-  {
-    key: 7,
-    title: "省级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#ccc",
-    outlineWidth: 2,
-  },
-  {
-    key: 8,
-    title: "市级界线",
-    isShow: ref(false),
-    type: "line",
-    fillColor: "#ccc",
-    outlineWidth: 1,
-  },
-];
-
-const tuli = ref(false);
-
-const state = reactive({
-  checked1: false,
-  checked2: true,
-  checked3: true,
-  checked4: true,
-  checked5: true,
-  checked6: true,
-  checked7: true,
-  checked8: true,
-});
-
-const menu = ref(false);
-
-message.config({
-  top: `100px`,
-  //   duration: 2,
-  maxCount: 2,
-  rtl: true,
-  prefixCls: "提示",
-});
-
-watch(state, () => {
-  //耕地 StateManager
-  let gds = ["procjet_2024_wxsd_name", "procjet_2024_wxsd", "procjet_2024_wxsd_outine"];
-  gds.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked1);
-  });
-
-  //保单地块
-  let hgdks = [
-    "procjet_wxsd_dk_xiaomai_name",
-    "procjet_wxsd_dk_xiaomai",
-    "procjet_wxsd_dk_xiaomai_outline",
-  ];
-
-  //合格地块不显示 不合格地块显示
-  if (!state.checked2 && state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      ["<", ["get", "bili"], 80], // bili 大于等于 80
-      [">", ["get", "bili"], 0], // bili 小于等于 100
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
-  //合格地块不显示 不合格地块显示
-  else if (state.checked2 && !state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      [">=", ["get", "bili"], 80], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
-  //合格地块he不合格地块同时显示
-  else if (state.checked2 && state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      [">", ["get", "bili"], 0], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  } //合格地块he不合格地块同时显示
-  else if (!state.checked2 && !state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      ["<", ["get", "bili"], 0], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
-
-  //县级界线
-  let xjjx = ["admin_2024_county"];
-  xjjx.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked4);
-  });
-
-  //镇级界线
-  let zjjx = ["admin_2024_town"];
-  zjjx.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked5);
-  });
-
-  //村级界线
-  let cjjx = ["admin_2024_village"];
-  cjjx.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked6);
-  });
-
-  //省级界线
-  let pjjx = ["admin_2022_province"];
-  pjjx.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked7);
-  });
-
-  //市级界线
-  let cicyjjx = ["admin_2022_city"];
-  cicyjjx.forEach((gd) => {
-    toggleLayerVisibility(gd, state.checked8);
-  });
-
-  message.success("地图已更新", 1);
-});
-
-// 切换图层可见性函数
-const toggleLayerVisibility = (layerId, isVisible) => {
-  if (isVisible) {
-    map.setLayoutProperty(layerId, "visibility", "visible");
-  } else {
-    map.setLayoutProperty(layerId, "visibility", "none");
-  }
-};
 // 菜单
-const data = reactive(["主页", "保单信息", "数据分析", "风险预警"]);
+const data = reactive(["主页", "数据分析"]);
 const value_data = ref(data[0]);
+
+// 数据列表
+const open = ref(false);
+const menu = ref(false);
 </script>
 
 <template>
@@ -384,23 +196,16 @@ const value_data = ref(data[0]);
     :avatar="{ src: logo }"
     style="color: #ccc"
   >
+    <template #footer>
+      <a-tabs>
+        <a-tab-pane key="1" tab="主页" />
+        <a-tab-pane key="2" tab="分析统计" />
+      </a-tabs>
+    </template>
+
     <template #extra>
-      <a-row style="width: 750px">
-        <a-col :span="18">
-          <a-segmented v-model:value="value_data" :options="data" block> </a-segmented>
-        </a-col>
-        <!-- <a-col :span="2">
-          <CalendarHeart color="#ccc" />
-        </a-col>
-        <a-col :span="2"> <div style="margin-top: 3px">2024年</div> </a-col> -->
-        <a-col :span="1"> </a-col>
-        <a-col :span="1">
-          <LocateFixed color="#ccc" />
-        </a-col>
-        <a-col :span="1"> <div style="margin-top: 3px">山东</div> </a-col>
-        <a-col :span="1"> </a-col>
-        <a-col :span="1"> <Info color="#ccc" /></a-col>
-      </a-row>
+      <a-button key="3" type="info" style="color: #ccc">2024年</a-button>
+      <a-button key="2" type="info" style="color: #ccc">山东省</a-button>
     </template>
   </a-page-header>
   <div class="page">
@@ -410,15 +215,18 @@ const value_data = ref(data[0]);
       <!--检索搜索-->
       <div class="search">
         <a-row>
-          <a-col :span="24"> </a-col>
-          <a-col :span="24"> &nbsp; </a-col>
+          <!-- <a-col :span="24"> </a-col>
+          <a-col :span="24"> &nbsp; </a-col> -->
 
-          <a-col :span="4">
-            <a-button size="large" class="searchshadow" @click="menu = !menu">
-              <Grip :color="!menu ? '#fff' : 'RGB(36,172,242)'" />
-            </a-button>
+          <a-col :span="2">
+            <a-tooltip placement="bottom">
+              <template #title>高级筛查</template>
+              <a-button size="large" class="searchshadow" @click="menu = !menu">
+                <Grip :color="!menu ? '#fff' : 'RGB(36,172,242)'" />
+              </a-button>
+            </a-tooltip>
           </a-col>
-          <a-col :span="20">
+          <a-col :span="16">
             <a-input-group compact>
               <a-dropdown>
                 <template #overlay>
@@ -444,11 +252,24 @@ const value_data = ref(data[0]);
                 class="searchshadow"
                 placeholder="请输入检索关键字"
               />
-              <a-button type="primary" size="large" class="searchshadow"
-                ><Search />
-              </a-button>
+              <a-tooltip placement="bottom">
+                <template #title>查询</template>
+                <a-button type="primary" size="large" class="searchshadow"
+                  ><Search />
+                </a-button>
+              </a-tooltip>
+
+              <a-tooltip placement="bottom">
+                <template #title>保单详情</template>
+                <a-button size="large" class="searchshadow" @click="open = !open">
+                  <PanelBottomOpen v-if="!open" />
+                  <PanelTopOpen v-else />
+                </a-button>
+              </a-tooltip>
             </a-input-group>
           </a-col>
+
+          <a-col :span="4"> </a-col>
         </a-row>
       </div>
       <!--类型控制单元-->
@@ -583,15 +404,27 @@ const value_data = ref(data[0]);
           </a-row>
         </div>
       </div>
-    </div>
 
-    <div v-if="value_data == '保单信息'">
-      <div class="insurance">
+      <!--保单信息-->
+      <!-- <div class="insurance" v-if="1 == 2">
+      
+      </div> -->
+
+      <a-drawer
+        title="保单详情"
+        placement="bottom"
+        :open="open"
+        @close="onClose"
+        :height="500"
+        :mask="false"
+      >
         <Insurance></Insurance>
-      </div>
+      </a-drawer>
     </div>
-  </div>
 
+    <div v-if="value_data == '保单信息'"></div>
+  </div>
+  <!--图例-->
   <div class="tuli">
     <Legend></Legend>
   </div>
@@ -603,12 +436,13 @@ const value_data = ref(data[0]);
 
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 2px;
-  font-size: 14px;
-  height: 55px;
+  font-size: 16px;
+  height: 66px;
   color: #f7f1f1;
   border: 0;
   padding: 0 26px;
 }
+
 .boxshadow {
   cursor: pointer;
 
@@ -649,9 +483,8 @@ const value_data = ref(data[0]);
   background-color: rgba(0, 0, 0, 0.6);
 }
 .header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
   z-index: 20000;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
 }
 
 /deep/.ant-page-header-heading-title {
@@ -702,13 +535,27 @@ const value_data = ref(data[0]);
 /deep/ .ant-statistic-title {
   color: #fff;
 }
+/deep/  .ant-tabs-tab {
+  width: 5rem;
+}
+/deep/ .ant-tabs-tab-btn{
+   
+    color: rgb(240, 235, 235);
+    font-size: 18px;
+}
+
+/deep/ .ant-tabs-tab-active{  
+    background: rgba(248, 247, 247, 0.096);
+ 
+  
+  
+}
 
 .search {
   position: absolute;
-  left: 20px;
-  top: 100px;
-
-  width: 550px;
+  left: 15px;
+  top: 140px;
+  width: 50%;
 }
 
 .header-menu {
@@ -724,7 +571,7 @@ const value_data = ref(data[0]);
 
 .tuli {
   position: absolute;
-  right: 10px;
+  left: 5px;
   bottom: 20px;
 }
 
@@ -738,16 +585,10 @@ const value_data = ref(data[0]);
   border-radius: 2px;
 }
 
-/deep/ .ant-segmented {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
 .insurance {
   position: absolute;
-  left: 15px;
-  bottom: 100px;
+  bottom: 15px;
 
-  width: calc(100% - 30px);
- 
+  width: calc(100% - 300px);
 }
 </style>
