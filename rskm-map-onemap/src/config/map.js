@@ -36,7 +36,7 @@ const config = {
 
                 `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
             ],
-            minzoom: 7,
+          //  minzoom: 4,
             maxzoom: 14
         }
     },

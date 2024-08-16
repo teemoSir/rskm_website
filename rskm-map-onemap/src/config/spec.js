@@ -1007,7 +1007,7 @@ let waySpec = [
         "type": "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
-        minzoom: 7.4,
+       // minzoom: 4.4,
 
         'slot': 'top',
         "paint": {
