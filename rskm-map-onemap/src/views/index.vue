@@ -54,7 +54,7 @@ const loadTreeType = () => {
       key: Number(i) + 1,
     });
   }
-  console.log(optionsType);
+//   console.log(optionsType);
   //   console.log(window["rskm_pt_insure_type"]);
 };
 
@@ -180,11 +180,15 @@ const setSearchListName = (d) => {
 };
 
 // 菜单
-const data = reactive(["主页", "数据分析"]);
-const value_data = ref(data[0]);
+// const data = reactive(["主页", "数据分析"]);
+const activeKey = ref('1');
+// const value_data = ref(data[0]);
 
 // 数据列表
 const open = ref(false);
+const onClose = (()=>{
+    open.value =false;
+})
 const menu = ref(false);
 </script>
 
@@ -197,7 +201,7 @@ const menu = ref(false);
     style="color: #ccc"
   >
     <template #footer>
-      <a-tabs>
+      <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="1" tab="主页" />
         <a-tab-pane key="2" tab="分析统计" />
       </a-tabs>
@@ -211,7 +215,7 @@ const menu = ref(false);
   <div class="page">
     <!--一张图平台-->
     <SDMap></SDMap>
-    <div v-if="value_data == '主页'">
+    <div v-if="activeKey == '1'">
       <!--检索搜索-->
       <div class="search">
         <a-row>
@@ -422,7 +426,7 @@ const menu = ref(false);
       </a-drawer>
     </div>
 
-    <div v-if="value_data == '保单信息'"></div>
+    <div v-if="activeKey == '2'"></div>
   </div>
   <!--图例-->
   <div class="tuli">
@@ -484,7 +488,7 @@ const menu = ref(false);
 }
 .header {
   z-index: 20000;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
 }
 
 /deep/.ant-page-header-heading-title {
@@ -536,12 +540,16 @@ const menu = ref(false);
   color: #fff;
 }
 /deep/  .ant-tabs-tab {
-  width: 5rem;
+  width: 10rem;
+
 }
 /deep/ .ant-tabs-tab-btn{
    
     color: rgb(240, 235, 235);
-    font-size: 18px;
+    width: 100%;
+    text-align: center;
+
+
 }
 
 /deep/ .ant-tabs-tab-active{  

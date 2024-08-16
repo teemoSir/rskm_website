@@ -14,7 +14,7 @@ const apiService = new ApiService();
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
-   // admin_2022_province: apiService.get(`/v1/bbox/admin_2022_province?geom_column=geom&srid=4326&filter=name='{name}'`),
+    // admin_2022_province: apiService.get(`/v1/bbox/admin_2022_province?geom_column=geom&srid=4326&filter=name='{name}'`),
     get_table_pagesize: (table, page, size) => {
         return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}`)
     },
@@ -111,6 +111,7 @@ const config = {
 
         }
     },
+
 
     // world_china_province: {
     //     name: "world_china_province",

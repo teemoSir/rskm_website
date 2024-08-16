@@ -1,17 +1,19 @@
 <script setup>
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
-import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
-import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
+// import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
+// import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
-import { onMounted, ref, nextTick, watch, reactive } from "vue";
+import { onMounted, ref, nextTick, watch, reactive, h } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
 import { layers, waySpec } from "@/config/spec-v2";
-import { message } from "ant-design-vue";
+import { message, notification, Button } from "ant-design-vue";
 import moment from "moment";
 import bboxx from "@/utils/bbox";
 import * as turf from "@turf/turf";
-
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import StateManager from "@/utils/state_manager";
 import {
   Ruler,
   MountainSnow,
@@ -21,30 +23,32 @@ import {
   ScanEye,
   Map,
   Globe,
-  MapPinned,
+  //   MapPinned,
   LandPlot,
   PencilRuler,
-  Pencil,
-  Dot,
-  Waypoints,
-  Pentagon,
-  Square,
-  RectangleHorizontal,
-  Route,
-  Brush,
-  Circle,
-  Slash,
-  MoveHorizontal,
+  //   Pencil,
+  //   Dot,
+  //   Waypoints,
+  //   Pentagon,
+  //   Square,
+  //   RectangleHorizontal,
+  //   Route,
+  //   Brush,
+  //   Circle,
+  //   Slash,
+  //   MoveHorizontal,
   Scale3D,
   House,
+  X,
 } from "lucide-vue-next";
 
 import c7 from "@/assets/images/map/c7.svg";
 import c2 from "@/assets/images/map/c2.svg";
-import compass from "@/assets/images/map/compass.png";
-import compassPointer from "@/assets/images/map/compassPointer.png";
-import north from "@/assets/images/map/north-b.png";
+// import compass from "@/assets/images/map/compass.png";
+// import compassPointer from "@/assets/images/map/compassPointer.png";
+// import north from "@/assets/images/map/north-b.png";
 import { fills } from "@/config/fill";
+import getCeliang from "@/utils/celiang";
 import {
   eventRotate,
   eventRender,
@@ -118,6 +122,7 @@ const initMap = () => {
  */
 const ruler = ref(false);
 const onPencilRuler = () => {
+  ruler.value && celiang_clear();
   ruler.value = !ruler.value;
 };
 
@@ -180,7 +185,9 @@ const eventLoad = () => {
       (feature.properties.village || "");
     let r_data = feature.properties.r_data || "";
     let insurcompany_code = feature.properties.insurcompany_code || "";
-    let insurcompany =window["rskm_pt_insure_com"].filter(r=>r.insurcompanycode==insurcompany_code);
+    let insurcompany = window["rskm_pt_insure_com"].filter(
+      (r) => r.insurcompanycode == insurcompany_code
+    );
     insurcompany_code = insurcompany[0].insurcompanyname;
     //rskm_pt_insure_com.filter((com)=>{com.})
 
@@ -227,10 +234,10 @@ const eventLoad = () => {
 
     let insurancenum = feature.properties.insurancenum || "";
     let area_mi = feature.properties.area_mi
-      ? Number(feature.properties.area_mi).toFixed(2) 
+      ? Number(feature.properties.area_mi).toFixed(2)
       : "";
     let area_mu = feature.properties.area_mi
-      ? (Number(feature.properties.area_mi) / 667).toFixed(2) 
+      ? (Number(feature.properties.area_mi) / 667).toFixed(2)
       : "";
     let start_date = moment(feature.properties.start_date).format("YYYY/MM/DD") || "";
     let end_date = moment(feature.properties.end_date).format("YYYY/MM/DD");
@@ -244,15 +251,18 @@ const eventLoad = () => {
     let r_data = feature.properties.r_data || "";
     let t_data = feature.properties.t_data || "";
     let insurcompany_code = feature.properties.insurcompany_code || "";
-    let insurcompany =window["rskm_pt_insure_com"].filter(r=>r.insurcompanycode==insurcompany_code);
+    let insurcompany = window["rskm_pt_insure_com"].filter(
+      (r) => r.insurcompanycode == insurcompany_code
+    );
     insurcompany_code = insurcompany[0].insurcompanyname;
-
 
     let insurancetarget = feature.properties.insurancetarget || "";
     let codenum_code = feature.properties.codenum || "";
-    let codenum =window["rskm_pt_insure_type"].filter(r=>r.codenum==insurancetarget);
+    let codenum = window["rskm_pt_insure_type"].filter(
+      (r) => r.codenum == insurancetarget
+    );
     codenum_code = codenum[0].xzname;
-   let codenum_type = codenum[0].insurancetype;
+    let codenum_type = codenum[0].insurancetype;
 
     // map.setFilter("Highlight_DK_Click", ["all", ["in", "gid", feature.properties.gid]]);
     // map.setLayoutProperty("Highlight_DK_Click", "visibility", "visible");
@@ -275,7 +285,9 @@ const eventLoad = () => {
     // </table>
     // `;
     let text = `
-        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 14px;"  title="${r_data+t_data}" >
+        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 14px;"  title="${
+          r_data + t_data
+        }" >
         <tr style="line-height:1.5;border-top:0.5px dotted rgba(255,255,255,0.1);    font-size: 14px;"><th width="60" style="vertical-align: center;" rowspan="12" >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-chart-gantt"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 8h7"/><path d="M8 12h6"/><path d="M11 16h5"/></svg>
             <br>基本<br>信息</th>
@@ -284,14 +296,17 @@ const eventLoad = () => {
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${insurcompany_code}</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">承保数量:</th><td >${insured_quantity}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">保期:</th><td >${start_date} 至 ${end_date}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${ codenum_code}</td></tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">分类:</th><td > ${ codenum_type}</td></tr>
-    
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${codenum_code}</td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">分类:</th><td > ${codenum_type}</td></tr>
+
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">位置:</th><td>${province_city_county_town_village} </td></tr>
         <tr style="   font-size: 14px;"><th rowspan="4" >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
         <br>分析<br>数据</th> </tr>
-        <tr><th style="text-align: right;width:80px;padding-right:5px;">数据符合:</th><td style="" ><span style=" letter-spacing:0.5px;">${(area_mu/insured_quantity*100).toFixed(2)} %</span></td><td></td></tr>
+        <tr><th style="text-align: right;width:80px;padding-right:5px;">数据符合:</th><td style="" ><span style=" letter-spacing:0.5px;">${(
+          (area_mu / insured_quantity) *
+          100
+        ).toFixed(2)} %</span></td><td></td></tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">标的面积:</th><td style=""> ${area_mi} ㎡ / ${area_mu} 亩
         </td></tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">重复地块:</th><td style=""> 0
@@ -311,6 +326,14 @@ const eventLoad = () => {
     });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(map);
     window["tgid"] = feature.properties.gid;
+  });
+
+  map.on("draw.create", function (e) {
+    updateGeom(e);
+  });
+
+  map.on("draw.update", function (e) {
+    updateGeom(e);
   });
 };
 
@@ -357,6 +380,8 @@ const fitBox = (f) => {
 // 基础图层
 const loadBaseSource = () => {
   map.on("load", () => {
+ 
+
     addTiles();
 
     addLayers();
@@ -364,8 +389,10 @@ const loadBaseSource = () => {
     fitCenter();
 
     addIcon();
+    loadDraw();
+    // 最后
+   // loadTerrain();
 
-    loadTerrain();
   });
 };
 
@@ -420,32 +447,11 @@ const onTerrain = () => {
 const three3D = () => {
   if (map.getProjection().name == "globe") {
     map.setProjection("mercator");
-    //map.setTerrain(undefined);
-    // map.setPitch(0);
-    // map.flyTo({
-    //   pitch: 0,
-    //   speed: 1,
 
-    //   curve: 2,
-    //   easing(t) {
-    //     return t;
-    //   },
-    // });
     message.success("二维地图切换完成", 1);
   } else {
     map.setProjection("globe");
-    // map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
-    //map.setPitch(60);
 
-    // map.flyTo({
-    //   pitch: 60,
-    //   speed: 1,
-
-    //   curve: 2,
-    //   easing(t) {
-    //     return t;
-    //   },
-    // });
     message.success("三维地图切换完成", 1);
   }
 
@@ -476,6 +482,7 @@ const switchTile = (layer) => {
 
   // 历史缓存
   StateManager.set("MAP_LAYERS", layer);
+  console.log(StateManager.get("MAP_LAYERS"));
 
   // 叠加
   addLayers();
@@ -538,14 +545,333 @@ watch(state, () => {
     "POI_WORLD_5",
     "POI_WORLD_6",
   ].forEach((v) => {
-    map.setLayoutProperty(v, "visibility", state.DMZJiSHow ? "visible" : "none");
+    map && map.setLayoutProperty(v, "visibility", state.DMZJiSHow ? "visible" : "none");
   });
 });
 
-// const rect = () => {
-//   draw.value && (draw.value = false);
-//   ruler.value && (ruler.value = false);
-// };
+// 量测 图形缓存
+let celiang_list = [];
+// 初始化绘制
+const loadDraw = () => {
+  window.gl_draw && (window.gl_draw = undefined);
+  window.gl_draw = new MapboxDraw({
+    userProperties: true,
+    displayControlsDefault: false,
+    styles: [
+      {
+        id: "highlight-active-points",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "$type", "Point"],
+          ["==", "meta", "feature"],
+          ["==", "active", "true"],
+        ],
+        paint: {
+          "circle-radius": 10,
+          "circle-color": "#fff",
+        },
+      },
+      {
+        id: "highlight-active-points-outline",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "$type", "Point"],
+          ["==", "meta", "feature"],
+          ["==", "active", "true"],
+        ],
+        paint: {
+          "circle-radius": 7,
+          "circle-color": "red",
+        },
+      },
+
+      {
+        id: "points-are-blue-outline",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "$type", "Point"],
+          ["==", "meta", "feature"],
+          ["==", "active", "false"],
+        ],
+        paint: {
+          "circle-radius": 8,
+          "circle-color": "#fff",
+        },
+      },
+      {
+        id: "points-are-blue",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "$type", "Point"],
+          ["==", "meta", "feature"],
+          ["==", "active", "false"],
+        ],
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "red",
+        },
+      },
+
+      // ACTIVE (being drawn)
+      // line stroke
+      {
+        id: "gl-draw-line",
+        type: "line",
+        filter: ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "yellow",
+          "line-dasharray": [0.2, 2],
+          "line-width": 4,
+        },
+      },
+      // polygon fill
+      {
+        id: "gl-draw-polygon-fill",
+        type: "fill",
+        filter: ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+        paint: {
+          "fill-color": "#D20C0C",
+          "fill-outline-color": "#D20C0C",
+          "fill-opacity": 0.2,
+        },
+      },
+      // polygon mid points
+      {
+        id: "gl-draw-polygon-midpoint",
+        type: "circle",
+        filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
+        paint: {
+          "circle-radius": 6,
+          "circle-color": "#fbb03b",
+        },
+      },
+      // polygon outline stroke
+      // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+      {
+        id: "gl-draw-polygon-stroke-active",
+        type: "line",
+        filter: ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "yellow",
+          "line-dasharray": [0.2, 2],
+          "line-width": 4,
+        },
+      },
+      // vertex point halos
+      {
+        id: "gl-draw-polygon-and-line-vertex-halo-active",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "meta", "vertex"],
+          ["==", "$type", "Point"],
+          ["!=", "mode", "static"],
+        ],
+        paint: {
+          "circle-radius": 8,
+          "circle-color": "#FFF",
+        },
+      },
+      // vertex points
+      {
+        id: "gl-draw-polygon-and-line-vertex-active",
+        type: "circle",
+        filter: [
+          "all",
+          ["==", "meta", "vertex"],
+          ["==", "$type", "Point"],
+          ["!=", "mode", "static"],
+        ],
+        paint: {
+          "circle-radius": 6,
+          "circle-color": "#D20C0C",
+        },
+      },
+
+      // INACTIVE (static, already drawn)
+      // line stroke
+      {
+        id: "gl-draw-line-static",
+        type: "line",
+        filter: ["all", ["==", "$type", "LineString"], ["==", "mode", "static"]],
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "yellow",
+          "line-width": 6,
+        },
+      },
+      // polygon fill
+      {
+        id: "gl-draw-polygon-fill-static",
+        type: "fill",
+        filter: ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+        paint: {
+          "fill-color": "yellow",
+          "fill-outline-color": "#000",
+          "fill-opacity": 0.23,
+        },
+      },
+      // polygon outline
+      {
+        id: "gl-draw-polygon-stroke-static",
+        type: "line",
+        filter: ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "yellow",
+          "line-width": 6,
+        },
+      },
+    ],
+  });
+  map.hasControl(window.gl_draw) && map.removeControl(window.gl_draw);
+  map.addControl(window.gl_draw);
+};
+
+// 添加统一图形操作
+const updateGeom = (e) => {
+  let m = undefined;
+  let cc = undefined;
+  if (ruler.value) {
+    celiang_list.push(e.features[0].id);
+    cc = getCeliang(e.features[0]);
+    // console.log(e.features);
+    m = e.features[0];
+    m.properties = cc.compute;
+    addText(m);
+  }
+
+  if (draw.value) {
+  }
+
+  openNotification("测量完成", cc);
+};
+// 添加描述
+const addText = (json) => {
+  let id = (Math.random() * 100000).toFixed(0);
+  map.addSource("source_" + id, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [json],
+    },
+  });
+  map.addLayer({
+    id: "layer_" + id,
+    type: "symbol",
+    source: "source_" + id,
+    // "source-layer": "source_" + id,
+    layout: {
+      "symbol-avoid-edges": true,
+      "icon-rotation-alignment": "viewport",
+      "text-pitch-alignment": "viewport",
+      visibility: "visible",
+      "text-font": ["Microsoft YaHei"],
+      "text-optional": true,
+      //   "text-padding": 200,
+      "text-field": "{a}\n{b}\n{c}",
+      "text-size": 16,
+      "text-anchor": "top", // 设置文字的锚点位置
+      "text-offset": [0, -3.0], // 设置文字相对于图标的偏移量
+    },
+    paint: {
+      "text-color": "RGBA(50,42, 42, 1)",
+      "text-halo-color": "RGBA(255,255,255,0.8)",
+      "text-halo-width": 2.0,
+    },
+  });
+
+  celiang_list.push("layer_" + id);
+};
+//清空
+const celiang_clear = () => {
+  for (let i in celiang_list) {
+    map && map.removeLayer(celiang_list[i]);
+  }
+  celiang_list = [];
+  window.gl_draw && window.gl_draw.deleteAll();
+};
+
+//面积测量
+const celiang_polygon = () => {
+  window.gl_draw && window.gl_draw.changeMode("draw_polygon");
+};
+
+//面积测量
+const celiang_line_string = () => {
+  window.gl_draw && window.gl_draw.changeMode("draw_line_string");
+};
+
+//面积测量
+const celiang_point = () => {
+  window.gl_draw && window.gl_draw.changeMode("draw_point");
+};
+
+const closeNotification = () => {};
+// 复制
+const copyToClipboard = (text) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      message.info("已复制到剪贴板");
+    })
+    .catch((error) => {
+      message.error("复制到剪贴板时发生错误:", error);
+    });
+};
+
+// 复制测量结果
+const openNotification = (title, container) => {
+  const key = `open${Date.now()}`;
+  let con = `量测结果：\n`;
+  for (let i in container.compute) {
+    con += container.compute[i] + "\n";
+  }
+
+  con += "量测坐标：\n";
+  con += JSON.stringify(container.coordinates);
+
+  notification.success({
+    message: title,
+    description: con,
+    placement: "bottomRight",
+    btn: () =>
+      h(
+        Button,
+        {
+          type: "primary",
+          size: "small",
+          onClick: () => {
+            copyToClipboard(con);
+            notification.close(key);
+          },
+        },
+        {
+          default: () => "复制",
+        }
+      ),
+    key,
+    onClose: closeNotification,
+  });
+};
 
 onMounted(() => {
   nextTick(() => {
@@ -564,33 +890,34 @@ onMounted(() => {
     <a-spin class="spin" v-if="spin" :tip="spintext" size="large"></a-spin>
     <!--地图工具栏-->
     <div class="right-tool">
+      <a-tooltip placement="leftTop">
+        <template #title>
+          <span>全球视角</span>
+        </template>
+        <a-button @click="goGlobal()" size="large" class="boxshadow">
+          <House />
+        </a-button>
+      </a-tooltip>
+
       <a-tooltip title="重置视角 " placement="left">
         <div @click="Zero()" class="pst">
           <img id="Zero" :src="c2" @click="Zero()" />
         </div>
       </a-tooltip>
+      <a-tooltip placement="leftTop">
+        <template #title>
+          <span>最佳视野</span>
+        </template>
+        <a-button @click="fitCenter()" size="large" class="boxshadow">
+          <ScanEye />
+        </a-button>
+      </a-tooltip>
       <br />
-
       <a-tooltip title="底图切换" placement="left">
         <a-button @click="switchLayer()" size="large" class="boxshadow">
-          <Layers></Layers><span class="arrow">◣</span>
-        </a-button>
-      </a-tooltip>
-
-      <a-tooltip placement="leftTop">
-        <template #title>
-          <span>放大</span>
-        </template>
-        <a-button @click="zoomIn()" size="large" class="boxshadow">
-          <Plus />
-        </a-button>
-      </a-tooltip>
-      <a-tooltip placement="leftTop">
-        <template #title>
-          <span>缩小</span>
-        </template>
-        <a-button @click="zoomOut()" size="large" class="boxshadow">
-          <Minus />
+          <Layers v-if="!rightLayer" />
+          <X color="#3277fc" v-else />
+          <span class="arrow">◣</span>
         </a-button>
       </a-tooltip>
 
@@ -604,47 +931,47 @@ onMounted(() => {
         </a-button>
       </a-tooltip>
 
-      <a-tooltip placement="leftTop">
+      <a-tooltip placement="top">
         <template #title>
-          <span>量测</span>
+          <span>{{ !ruler ? "开始量测" : "关闭量测" }}</span>
         </template>
 
         <div>
           <!-- {{ ruler }} -->
           <a-button @click="onPencilRuler()" size="large" class="boxshadow">
             <!-- <PencilRuler /> -->
-            <Ruler />
-
+            <Ruler v-if="!ruler" />
+            <X color="#3277fc" v-else="ruler" />
             <span class="arrow">◣</span>
           </a-button>
 
           <!--量测列表 -->
           <div class="right-ruler" v-if="ruler">
-            <a-tooltip placement="leftTop">
+            <a-tooltip placement="left">
               <template #title>
-                <span>坐标测量</span>
+                <span>测量坐标<br />点击左键标记位置</span>
               </template>
-              <a-button size="large" class="boxshadow">
+              <a-button size="large" class="boxshadow" @click="celiang_point">
                 <!-- <MapPinned /> -->
                 <Scale3D />
               </a-button>
             </a-tooltip>
-            <a-tooltip placement="leftTop">
+            <a-tooltip placement="left">
               <template #title>
-                <span>距离测量</span>
+                <span>距离测量<br />点击左键绘制节点<br />双击左键完成测量</span>
               </template>
-              <a-button size="large" class="boxshadow">
+              <a-button size="large" class="boxshadow" @click="celiang_line_string">
                 <Ruler />
                 <div>
                   <Minus :size="30" style="position: absolute; left: 12px; top: 26px" />
                 </div>
               </a-button>
             </a-tooltip>
-            <a-tooltip placement="leftTop">
+            <a-tooltip placement="left">
               <template #title>
-                <span>面积测量</span>
+                <span>面积测量<br />点击左键绘制节点<br />双击左键完成测量</span>
               </template>
-              <a-button size="large" class="boxshadow">
+              <a-button size="large" class="boxshadow" @click="celiang_polygon">
                 <LandPlot />
               </a-button>
             </a-tooltip>
@@ -654,30 +981,13 @@ onMounted(() => {
 
       <a-tooltip placement="leftTop">
         <template #title>
-          <span>最佳视野</span>
-        </template>
-        <a-button @click="fitCenter()" size="large" class="boxshadow">
-          <ScanEye />
-        </a-button>
-      </a-tooltip>
-
-      <a-tooltip placement="leftTop">
-        <template #title>
-          <span>地球视野</span>
-        </template>
-        <a-button @click="goGlobal()" size="large" class="boxshadow">
-          <House />
-        </a-button>
-      </a-tooltip>
-      <a-tooltip placement="leftTop">
-        <template #title>
           <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
         </template>
         <a-button @click="onTerrain()" size="large" class="boxshadow"
-          ><MountainSnow
+          ><MountainSnow :color="!terrainSP ? '#fff' : '#3277fc'"
         /></a-button>
       </a-tooltip>
-      <a-tooltip placement="leftTop" v-if="1==2">
+      <a-tooltip placement="leftTop" v-if="1 == 2">
         <template #title>
           <span>绘制</span>
         </template>
@@ -737,6 +1047,24 @@ onMounted(() => {
             </a-tooltip>
           </div>
         </div>
+      </a-tooltip>
+      <br />
+
+      <a-tooltip placement="leftTop">
+        <template #title>
+          <span>放大</span>
+        </template>
+        <a-button @click="zoomIn()" size="large" class="boxshadow">
+          <Plus />
+        </a-button>
+      </a-tooltip>
+      <a-tooltip placement="leftTop">
+        <template #title>
+          <span>缩小</span>
+        </template>
+        <a-button @click="zoomOut()" size="large" class="boxshadow">
+          <Minus />
+        </a-button>
       </a-tooltip>
     </div>
 
@@ -1045,4 +1373,5 @@ onMounted(() => {
   left: 1px;
   bottom: -6px;
 }
-</style>../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/mapbox-gl-draw.js../../../public/mapboxgl/pulgins/rasterTileLayer.js../../config/spec-v2.js../../utils/bbox.js../../config/fill.js../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/rasterTileLayer.js
+</style>
+../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/mapbox-gl-draw.js../../../public/mapboxgl/pulgins/rasterTileLayer.js../../config/spec-v2.js../../utils/bbox.js../../config/fill.js../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/rasterTileLayer.js

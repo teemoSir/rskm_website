@@ -1,6 +1,7 @@
 import { config, mapbox, api } from "@/config/map.js";
 import { waySpec } from "../../config/spec";
 import { fills } from "../../config/fill";
+import StateManager from "@/utils/state_manager"
 /**
  * 旋转事件
  */
@@ -20,25 +21,26 @@ const eventRotate = () => {
  * 渲染事件
  */
 const eventRender = () => {
-    let MAP_LAYERS = localStorage.getItem("MAP_LAYERS") || "{}";
+
+    let MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
     let ll = {
         lng: (window["lnglatrender"] || { lng: 0, lat: 0 }).lng.toFixed(6),
         lat: (window["lnglatrender"] || { lng: 0, lat: 0 }).lat.toFixed(6),
     } || { lng: 0, lat: 0 };
-    let sth = JSON.parse(MAP_LAYERS).st ? "审图号：" + JSON.parse(MAP_LAYERS).st : "";
+    let sth = MAP_LAYERS.st ? "审图号：" + MAP_LAYERS.st : "";
     let mc = "RSKM";
     let zoom = map.getZoom().toFixed(2); //
-    let ty = JSON.parse(MAP_LAYERS).name || "";
+    let ty = MAP_LAYERS.name || "";
     let pro = map.getProjection().name || "default";
 
 
     document.getElementById("xyz").innerHTML = `
     <span style='padding-right: 10px;'>${sth}</span>
     <span style='padding-right: 10px;' >© ${mc}</span>
-    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ ll.lat}°</span>
+    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
     <span style='padding-right: 10px;'>等级：${zoom} </span>
      <span style='padding-right: 10px;'>模式：${(pro == "globe") ? "三维" : "二维"} </span>
-    <span style='padding-right: 10px;'>图源：${ty}</span>`;
+    <span style='padding-right: 10px;'>${ty}</span>`;
 
     MAP_LAYERS = undefined;
     ll = undefined;
@@ -98,13 +100,13 @@ const addLayers = () => {
 
 const addIcon = () => {
     fills.forEach((f) => {
-      map.loadImage(f.icon, (err, image) => {
-        if (!map.hasImage(f.id)) {
-          map.addImage(f.id, image);
-        }
-      });
+        map.loadImage(f.icon, (err, image) => {
+            if (!map.hasImage(f.id)) {
+                map.addImage(f.id, image);
+            }
+        });
     });
-  };
+};
 
 
 export {
