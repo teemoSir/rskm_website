@@ -7,7 +7,7 @@ const sql = (params, query) => {
     WITH mvtgeom as (
       SELECT
         ST_AsMVTGeom (
-        ${simplify > 0 ? `ST_Simplify(` : ``} ST_Transform(${query.geom_column}, 3857)  ${simplify > 0 ? `, ${simplify},true)` : ``},
+        ${simplify > 0 ? `ST_Simplify(` : ``} ST_Transform(${query.geom_column}, 3857)  ${simplify > 0 ? `, ${simplify})` : ``},
           ST_TileEnvelope(${params.z}, ${params.x}, ${params.y})
         ) as geom
         ${query.columns ? `, ${query.columns}` : ''}
@@ -85,9 +85,9 @@ const getSimplify = ((type, zoom) => {
     }
     let jhv2 = 0.000000001;
     if (Number(zoom) < 7) {
-        jhv2 = 5000;
+        jhv2 = 2000;
     } else if (Number(zoom) < 9) {
-        jhv2 = 500;
+        jhv2 = 1000;
     }
     else if (Number(zoom) < 10) {
         jhv2 =300;
