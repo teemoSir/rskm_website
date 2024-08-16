@@ -1,6 +1,7 @@
 {
   "name": "RSKM-OneMap",
   "private": true,
+  "cnname":"农险一张图解决方案",
   "version": "1.0.1",
   "type": "module",
   "scripts": {

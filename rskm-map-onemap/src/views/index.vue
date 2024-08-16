@@ -27,6 +27,7 @@ import {
   PanelTopOpen,
 } from "lucide-vue-next";
 
+import page from "../../package.json";
 const value = ref("user1");
 
 const optionsType = ref([]);
@@ -54,7 +55,7 @@ const loadTreeType = () => {
       key: Number(i) + 1,
     });
   }
-//   console.log(optionsType);
+  //   console.log(optionsType);
   //   console.log(window["rskm_pt_insure_type"]);
 };
 
@@ -181,22 +182,22 @@ const setSearchListName = (d) => {
 
 // 菜单
 // const data = reactive(["主页", "数据分析"]);
-const activeKey = ref('1');
+const activeKey = ref("1");
 // const value_data = ref(data[0]);
 
 // 数据列表
 const open = ref(false);
-const onClose = (()=>{
-    open.value =false;
-})
+const onClose = () => {
+  open.value = false;
+};
 const menu = ref(false);
 </script>
 
 <template>
   <a-page-header
     class="header"
-    title="OneMap  "
-    sub-title=" 农险一张图解决方案 V1.0.0"
+    :title="page.name"
+    :sub-title="page.cnname + ' V' + page.version"
     :avatar="{ src: logo }"
     style="color: #ccc"
   >
@@ -539,24 +540,17 @@ const menu = ref(false);
 /deep/ .ant-statistic-title {
   color: #fff;
 }
-/deep/  .ant-tabs-tab {
+/deep/ .ant-tabs-tab {
   width: 10rem;
-
 }
-/deep/ .ant-tabs-tab-btn{
-   
-    color: rgb(240, 235, 235);
-    width: 100%;
-    text-align: center;
-
-
+/deep/ .ant-tabs-tab-btn {
+  color: rgb(240, 235, 235);
+  width: 100%;
+  text-align: center;
 }
 
-/deep/ .ant-tabs-tab-active{  
-    background: rgba(248, 247, 247, 0.096);
- 
-  
-  
+/deep/ .ant-tabs-tab-active {
+  background: rgba(248, 247, 247, 0.096);
 }
 
 .search {

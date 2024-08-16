@@ -4,7 +4,7 @@ import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 // import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
 // import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
-import { onMounted, ref, nextTick, watch, reactive, h } from "vue";
+import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
 import { layers, waySpec } from "@/config/spec-v2";
 import { message, notification, Button } from "ant-design-vue";
@@ -380,8 +380,6 @@ const fitBox = (f) => {
 // 基础图层
 const loadBaseSource = () => {
   map.on("load", () => {
- 
-
     addTiles();
 
     addLayers();
@@ -389,10 +387,10 @@ const loadBaseSource = () => {
     fitCenter();
 
     addIcon();
+
     loadDraw();
     // 最后
-   // loadTerrain();
-
+    loadTerrain();
   });
 };
 
@@ -881,6 +879,11 @@ onMounted(() => {
 
     loadBaseSource();
   });
+});
+
+onUnmounted(() => {
+  window.map = undefined;
+  window.gl_draw = undefined;
 });
 </script>
 

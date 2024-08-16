@@ -243,7 +243,7 @@ let layers = ref([
         zj: false,
         key: "",
         param: [["google", "Google.Satellite.Map"]],
-        isShow:true,
+        isShow: true,
     },
 ])
 
@@ -289,13 +289,22 @@ let waySpec = [
         'paint': {
             'line-width': 1,
             'line-color': '#fff',
-            'line-opacity': 0.6
+
+            "line-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                1,
+                13,
+                0.3,
+                14,
+                0.2,],
         },
         minzoom: 6,
         maxzoom: 20
 
     },
-   
+
     {
         id: "admin_2024_village",
         'type': 'line',
@@ -317,7 +326,8 @@ let waySpec = [
                 14,
                 4.5,],
             'line-opacity': 0.8,
-            "line-dasharray": [1, 2]
+            "line-dasharray": [1, 2],
+
 
 
         }
@@ -335,10 +345,18 @@ let waySpec = [
         },
         'slot': 'middle',
         'paint': {
-            'line-width': 3.5,
+            'line-width': 1.8,
             'line-color': '#faad14',
-            'line-opacity': 1
-
+            'line-opacity': 1,
+            "line-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                1,
+                13,
+                0.3,
+                14,
+                0.2,],
 
         }
         , minzoom: 10,
@@ -356,9 +374,18 @@ let waySpec = [
         },
 
         'paint': {
-            'line-width': 3,
+            'line-width': 1.5,
             'line-color': 'yellow',
-            'line-opacity': 1
+
+            "line-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                1,
+                13,
+                0.3,
+                14,
+                0.2,],
         },
         minzoom: 9,
         maxzoom: 20
@@ -981,10 +1008,10 @@ let waySpec = [
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
         minzoom: 7.4,
-     
+
         'slot': 'top',
         "paint": {
-              "fill-color": "green",
+            "fill-color": "#00FF00",
             // 'fill-color': [
             //     'case',
             //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
@@ -995,8 +1022,8 @@ let waySpec = [
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
-                2,
-                0.6,
+                7,
+                1,
                 13,
                 0.3,
                 14,
@@ -1010,23 +1037,31 @@ let waySpec = [
         type: "line",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
-      //  minzoom: 12.4,
-      
+        minzoom: 13,
+
         "paint": {
             'line-color': '#000',
-          //  'line-width': 4,
+            //  'line-width': 4,
 
-          'line-width': ["interpolate",
-            ["exponential", 1.5],
-            ["zoom"],
-          
-            9,
-            0,
-            13,
-            2.5,
-            14,
-            3.5,],
-            'line-opacity': 0.8,
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+
+                9,
+                0,
+                13,
+                1.5,
+                14,
+                2.5,],
+            "line-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                1,
+                13,
+                0.3,
+                16,
+                0.8,],
         },
         interactive: true,
     },
@@ -1140,7 +1175,7 @@ let waySpec = [
 
         },
         paint: {
-         //   "text-color": "RGBA(255,255, 255, 1)",
+            //   "text-color": "RGBA(255,255, 255, 1)",
             "text-halo-color": "#fff",
             'text-color': [
                 'case',
@@ -1185,7 +1220,7 @@ let waySpec = [
         minzoom: 14,
     },
 
-    
+
 
 
     // {
@@ -1245,7 +1280,7 @@ let waySpec = [
     //     minzoom: 1,
     // }
 
-    
+
 ]
 
 

@@ -32,7 +32,9 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget,i_type_name,i_com_name`,
+                // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
+
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
             ],
             minzoom: 7,
             maxzoom: 14
