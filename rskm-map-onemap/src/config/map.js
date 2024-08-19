@@ -9,17 +9,17 @@ const mapbox = {
 }
 
 
-
+let year = new Date().getFullYear()
 const apiService = new ApiService();
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
     // admin_2022_province: apiService.get(`/v1/bbox/admin_2022_province?geom_column=geom&srid=4326&filter=name='{name}'`),
     get_table_pagesize: (table, page, size) => {
-        return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}`)
+        return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}&year=${year}`)
     },
     get_table_count: (table) => {
-        return apiService.get(`/v1/list_get_count/${table}`)
+        return apiService.get(`/v1/list_get_count/${table}?filter=and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))='${year}'`)
     }
 }
 
@@ -33,8 +33,7 @@ const config = {
             type: "vector",
             tiles: [
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
-
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='2024'`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
             ],
             minzoom: 4,
             maxzoom: 14

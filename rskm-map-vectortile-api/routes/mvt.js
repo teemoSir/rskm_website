@@ -7,7 +7,7 @@ const sql = (params, query) => {
     WITH mvtgeom as (
       SELECT
         ST_AsMVTGeom (
-        ${simplify > 1 ? `ST_Simplify(` : ``} ST_Transform(${query.geom_column}, 3857)  ${simplify > 1 ? `, ${simplify})` : ``},
+        ST_Simplify(ST_Transform(${query.geom_column}, 3857),${params.z <10 ? 10 : 0.00000001}) ,
           ST_TileEnvelope(${params.z}, ${params.x}, ${params.y})
         ) as geom
         ${query.columns ? `, ${query.columns}` : ''}
@@ -23,6 +23,7 @@ const sql = (params, query) => {
             srid
           )
         )
+	    ${simplify > 0 ? ` and area_mu>` + simplify : ``}
 
         -- Optional Filter
         ${query.filter ? ` AND ${query.filter}` : ''}
@@ -80,22 +81,24 @@ const schema = {
 }
 
 const getSimplify = ((type, zoom) => {
-    let jhv2 = -1;
+    let jhv2 = 0;
     if (type == "rskm_pt") {
-        if (Number(zoom) < 8) {
+        if (Number(zoom) < 7) {
+            jhv2 = 3000;
+        }
+        else if (Number(zoom) < 8) {
+            jhv2 = 2500;
+        }
+        else if (Number(zoom) < 10) {
+            jhv2 = 1500;
+        }
+        else if (Number(zoom) < 12) {
             jhv2 = 800;
         }
-    } else if (Number(zoom) < 10) {
-        jhv2 = 100;
-    }
-    else if (Number(zoom) < 12) {
-        jhv2 = 0.1;
-    }
-    else if (Number(zoom) < 14) {
-        jhv2 = 0.01;
-    }
-    else {
-        jhv2 = -1;
+
+        else {
+            jhv2 = 0;
+        }
     }
 
 

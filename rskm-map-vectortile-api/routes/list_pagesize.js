@@ -8,7 +8,15 @@ const sql = (params, query) => {
         query.size = 50
     }
 
-    let str = ` SELECT * FROM ___get_paged_data('${params.table}', ${query.page}, ${query.size});`
+    //let str = ` SELECT * FROM ___get_paged_data('${params.table}', ${query.page}, ${query.size});`
+
+    let str = ``
+    if (query.year) {
+        str = `select * from  ___get_paged_data_v2('${params.table}', $$and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))=' ${query.year}'$$,${query.page} , ${query.size} )`
+    }
+    else {
+        str = ` SELECT * FROM ___get_paged_data('${params.table}', ${query.page}, ${query.size});`
+    }
 
     return str
 }
@@ -35,6 +43,10 @@ const schema = {
             type: 'integer',
             description: '每页数据条数，默认为10',
             default: 10
+        },
+        year: {
+            type: 'integer',
+            description: '数据年份，加入年份条件',
         }
     }
 }
