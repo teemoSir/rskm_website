@@ -2,9 +2,9 @@
   "name": "rskm-map-task",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "rskm-map-task.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node rskm-map-task.js"
   },
   "keywords": [],
   "author": "",
