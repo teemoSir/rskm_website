@@ -24,7 +24,6 @@ const sql = (params, query) => {
           )
         )
 
-
         -- Optional Filter
         ${query.filter ? ` AND ${query.filter}` : ''}
     )
