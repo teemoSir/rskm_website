@@ -80,25 +80,25 @@ const schema = {
 }
 
 const getSimplify = ((type, zoom) => {
-    let jhv2 = 0.000000001;
+    let jhv2 = -1;
     if (type == "rskm_pt") {
         if (Number(zoom) < 8) {
-            jhv2 = 10000;
+            jhv2 = 800;
         }
-        // } else if (Number(zoom) < 9) {
-        //     jhv2 = 1000;
-        // }
-        // else if (Number(zoom) < 10) {
-        //     jhv2 =300;
-        // }
-        // else if (Number(zoom) < 11) {
-        //     jhv2 = 200;
-        // }
-        else if (Number(zoom) < 10) {
-            jhv2 = 100;
-        }
-
+    } else if (Number(zoom) < 10) {
+        jhv2 = 100;
     }
+    else if (Number(zoom) < 12) {
+        jhv2 = 0.1;
+    }
+    else if (Number(zoom) < 14) {
+        jhv2 = 0.01;
+    }
+    else {
+        jhv2 = -1;
+    }
+
+
 
     return jhv2;
 })

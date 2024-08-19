@@ -388,7 +388,7 @@ const loadBaseSource = () => {
 
     addIcon();
 
-    loadDraw();
+    //loadDraw();
     // 最后
     loadTerrain();
   });
@@ -878,6 +878,8 @@ onMounted(() => {
     eventLoad();
 
     loadBaseSource();
+
+    loadDraw()
   });
 });
 

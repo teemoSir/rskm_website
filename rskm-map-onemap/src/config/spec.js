@@ -1007,9 +1007,9 @@ let waySpec = [
         "type": "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
-       // minzoom: 4.4,
+        minzoom: 4.4,
 
-        'slot': 'top',
+       // 'slot': 'top',
         "paint": {
             "fill-color": "#00FF00",
             // 'fill-color': [
@@ -1018,12 +1018,14 @@ let waySpec = [
             //     '#00FF00', // 如果大于 80，填充颜色为绿色
             //     '#FF0000' // 否则填充颜色为红色
             // ],
-            // "fill-outline-color": "yellow",
+           //  "fill-outline-color": "yellow",
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
-                7,
+                3,
                 1,
+                7,
+                0.5,
                 13,
                 0.3,
                 14,
@@ -1037,7 +1039,7 @@ let waySpec = [
         type: "line",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
-        minzoom: 13,
+        minzoom: 12,
 
         "paint": {
             'line-color': '#000',
