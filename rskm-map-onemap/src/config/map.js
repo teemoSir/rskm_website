@@ -34,9 +34,9 @@ const config = {
             tiles: [
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
 
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&fliter=EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))='2024'`,
             ],
-          //  minzoom: 4,
+            minzoom: 7,
             maxzoom: 14
         }
     },

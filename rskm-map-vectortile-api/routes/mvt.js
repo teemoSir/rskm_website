@@ -7,7 +7,7 @@ const sql = (params, query) => {
     WITH mvtgeom as (
       SELECT
         ST_AsMVTGeom (
-        ${simplify > 0 ? `ST_Simplify(` : ``} ST_Transform(${query.geom_column}, 3857)  ${simplify > 0 ? `, ${simplify})` : ``},
+        ${simplify > 1 ? `ST_Simplify(` : ``} ST_Transform(${query.geom_column}, 3857)  ${simplify > 1 ? `, ${simplify})` : ``},
           ST_TileEnvelope(${params.z}, ${params.x}, ${params.y})
         ) as geom
         ${query.columns ? `, ${query.columns}` : ''}
@@ -23,6 +23,7 @@ const sql = (params, query) => {
             srid
           )
         )
+
 
         -- Optional Filter
         ${query.filter ? ` AND ${query.filter}` : ''}
@@ -80,26 +81,25 @@ const schema = {
 }
 
 const getSimplify = ((type, zoom) => {
-    if (type == "rskm_pt") {
-
-    }
     let jhv2 = 0.000000001;
-    if (Number(zoom) < 7) {
-        jhv2 = 2000;
-    } else if (Number(zoom) < 9) {
-        jhv2 = 1000;
-    }
-    else if (Number(zoom) < 10) {
-        jhv2 =300;
-    }
-    else if (Number(zoom) < 11) {
-        jhv2 = 200;
-    }
-    else if (Number(zoom) < 12) {
-        jhv2 = 100;
-    }
+    if (type == "rskm_pt") {
+        if (Number(zoom) < 8) {
+            jhv2 = 10000;
+        }
+        // } else if (Number(zoom) < 9) {
+        //     jhv2 = 1000;
+        // }
+        // else if (Number(zoom) < 10) {
+        //     jhv2 =300;
+        // }
+        // else if (Number(zoom) < 11) {
+        //     jhv2 = 200;
+        // }
+        else if (Number(zoom) < 10) {
+            jhv2 = 100;
+        }
 
-
+    }
 
     return jhv2;
 })

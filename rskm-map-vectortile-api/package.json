@@ -2,9 +2,9 @@
   "name": "postgis-http-api",
   "version": "4.7.0",
   "description": "The PostGIS HTTP API exposes PostGIS functionality to your applications over HTTP.",
-  "main": "index.js",
+  "main": "rskm-map-vectortile-api.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node rskm-map-vectortile-api.js"
   },
   "author": "Tobin Bradley",
   "license": "MIT",
