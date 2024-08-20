@@ -4,7 +4,7 @@ import { message } from "ant-design-vue";
 import { api } from "@/config/map";
 import * as turf from "@turf/turf";
 import downloadTextFile from "@/utils/downloadFile.js";
-import moment from "moment";
+import dayjs from "dayjs";
 import {
   Headset,
   Info,
@@ -313,8 +313,8 @@ const customRowFun = (record, index) => {
         </template>
 
         <template v-if="column.dataIndex == 'start_date'">
-          {{ moment(record.start_date).format("YYYY/MM/DD") }} <br />
-          {{ moment(record.end_date).format("YYYY/MM/DD") }}
+          {{ dayjs(record.start_date).format("YYYY/MM/DD") }} <br />
+          {{ dayjs(record.end_date).format("YYYY/MM/DD") }}
         </template>
 
         <template v-if="column.dataIndex == 'insured_quantity'">

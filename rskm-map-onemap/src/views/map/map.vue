@@ -6,7 +6,7 @@ import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
 import { layers, waySpec } from "@/config/spec-v2";
 import { message, notification, Button } from "ant-design-vue";
-import moment from "moment";
+import dayjs from "dayjs";
 import bboxx from "@/utils/bbox";
 import * as turf from "@turf/turf";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
@@ -173,8 +173,8 @@ const eventLoad = () => {
     let area_mu = feature.properties.area_mi
       ? (Number(feature.properties.area_mi) / 667).toFixed(2) + "亩"
       : "";
-    let start_date = moment(feature.properties.start_date).format("YYYY年MM月DD日") || "";
-    let end_date = moment(feature.properties.end_date).format("YYYY年MM月DD日");
+    let start_date = dayjs(feature.properties.start_date).format("YYYY年MM月DD日") || "";
+    let end_date = dayjs(feature.properties.end_date).format("YYYY年MM月DD日");
     let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
     let province_city_county_town_village =
       (feature.properties.province || "") +

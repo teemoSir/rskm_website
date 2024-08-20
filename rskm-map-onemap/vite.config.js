@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import path from "path";
 import viteImagemin from 'vite-plugin-imagemin';
 import { visualizer } from 'rollup-plugin-visualizer';
-// import viteCompression from 'vite-plugin-compression'
+ import viteCompression from 'vite-plugin-compression'
 import WindiCSS from 'vite-plugin-windicss';
 
 // const pathResolve = (dir) => resolve(__dirname, dir);
@@ -64,14 +64,14 @@ export default defineConfig(({ command, mode }) => {
                 filename: './dist/stats.html',
                 title: 'Bundle Visualizer'
             }),
-            // viteCompression({
-            //     // gzip静态资源压缩配置
-            //     verbose: true,
-            //     disable: false,
-            //     threshold: 10240,
-            //     algorithm: 'gzip',
-            //     ext: '.gz'
-            // })
+            viteCompression({
+                // gzip静态资源压缩配置
+                verbose: true,
+                disable: false,
+                threshold: 10240,
+                algorithm: 'gzip',
+                ext: '.gz'
+            })
 
         ],
         server: {

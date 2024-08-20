@@ -2,7 +2,7 @@ import { config, mapbox, api } from "@/config/map.js";
 import { waySpec } from "../../config/spec";
 import { fills } from "../../config/fill";
 import StateManager from "@/utils/state_manager"
-import moment from "moment";
+import dayjs from "dayjs";
 /**
  * 旋转事件
  */
@@ -122,8 +122,8 @@ const setPopup = async (data) => {
     let area_mu = feature.area_mi
         ? (Number(feature.area_mi) / 667).toFixed(2)
         : "";
-    let start_date = moment(feature.start_date).format("YYYY/MM/DD") || "";
-    let end_date = moment(feature.end_date).format("YYYY/MM/DD");
+    let start_date = dayjs(feature.start_date).format("YYYY/MM/DD") || "";
+    let end_date = dayjs(feature.end_date).format("YYYY/MM/DD");
     let insured_quantity = Number(feature.insured_quantity).toFixed(2) || "";
     let province_city_county_town_village =
         (feature.province || "") +
@@ -133,10 +133,12 @@ const setPopup = async (data) => {
         (feature.village || "");
     let r_data = feature.r_data || "";
     let t_data = feature.t_data || "";
-    let insurcompany_code = feature.insurcompany_code || "";
-    let insurcompany = window["rskm_pt_insure_com"].filter(
-        (r) => r.insurcompanycode == insurcompany_code
-    );
+    // let insurcompany_code = feature.insurcompany_code || "";
+    // let insurcompany = window["rskm_pt_insure_com"].filter(
+    //     (r) => r.insurcompanycode == insurcompany_code
+    // );
+
+    let insured = feature.insured || "";
 
     let codenum_code = feature.i_com_name || "";
     let codenum_type = feature.i_type_name || "";
@@ -150,11 +152,11 @@ const setPopup = async (data) => {
             <br>基本<br>信息</th>
         </tr>
         <tr style="line-height:1.5;" ><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;  ">保单:</th><td >${insurancenum}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${insurcompany_code}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${codenum_code}</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">承保数量:</th><td >${insured_quantity}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">保期:</th><td >${start_date} 至 ${end_date}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${codenum_code}</td></tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">分类:</th><td > ${codenum_type}</td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${codenum_type}</td></tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">被保人:</th><td >${insured}</td></tr>
 
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">位置:</th><td>${province_city_county_town_village} </td></tr>
         <tr style="   font-size: 14px;"><th rowspan="4" >

@@ -16,7 +16,6 @@
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "lucide-vue-next": "^0.408.0",
-    "moment": "^2.30.1",
     "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-windicss": "^1.9.3",
     "vue": "^3.4.29",
@@ -26,6 +25,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
     "rollup-plugin-visualizer": "^5.12.0",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vite-plugin-compression": "^0.5.1"
   }
 }
