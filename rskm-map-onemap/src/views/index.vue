@@ -466,6 +466,8 @@ const panelChangeRL = (value, mode) => {
         @close="onClose"
         :height="500"
         :mask="false"
+        bodyStyle="padding:0"
+        size="small"
       >
         <Insurance></Insurance>
       </a-drawer>
@@ -480,6 +482,7 @@ const panelChangeRL = (value, mode) => {
 </template>
 
 <style scoped>
+
 .searchshadow {
   cursor: pointer;
 
@@ -536,10 +539,17 @@ const panelChangeRL = (value, mode) => {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
 }
 
-/deep/ .ant-drawer .ant-drawer-body.ant-drawer-body {
-  padding: 0;
+
+/deep/ .ant-drawer .ant-drawer-body{
+    padding: 0;
+}
+/deep/ .ant-drawer-body{
+    padding: 0;
 }
 
+/deep/ .ant-drawer{
+    padding: 0;
+}
 /deep/.ant-page-header-heading-title {
   color: aliceblue;
 }

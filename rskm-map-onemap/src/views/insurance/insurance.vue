@@ -26,7 +26,7 @@ const dataSourceCount = ref(0);
 const dataSource = ref([]);
 const columns = ref([
   {
-    title: "保单",
+    title: "保单号",
     dataIndex: "insurancenum",
     key: "insurancenum",
     fixed: true,
@@ -48,7 +48,7 @@ const columns = ref([
   //     width: 100,
   //   },
   {
-    title: "机构",
+    title: "保险机构",
     dataIndex: "i_com_name",
     key: "i_com_name",
   },
@@ -83,7 +83,7 @@ const columns = ref([
   //   },
 
   {
-    title: "区域",
+    title: "地址",
     dataIndex: "province",
     key: "province",
   },
@@ -251,10 +251,25 @@ const buttonItemLayout = computed(() => {
       }
     : {};
 });
+
+const customRowFun = (record, index) => {
+  return {
+    onClick: (event) => {
+      goGeom(record.geom);
+    },
+    style: {
+      // 字体颜色
+      color: record.remarkDesc ? record.remarkDesc.fontColor : "#262626",
+      // 行背景色
+      "background-color": index % 2 == 0 ? "#FAFAFA" : "#FFFFFF",
+    },
+  };
+};
 </script>
 
 <template>
-  <a-result  v-show="!dataSource.length"
+  <a-result
+    v-show="!dataSource.length"
     status="success"
     title="查询成功!"
     sub-title="本年度没有保单数据, 请尝试其他年份。"
@@ -272,6 +287,7 @@ const buttonItemLayout = computed(() => {
       :sticky="true"
       :pagination="pagination"
       :loading="loading"
+      :customRow="customRowFun"
     >
       <!-- <template #title>2024年山东</template>
      <template #footer>Footer</template>  -->
@@ -285,8 +301,8 @@ const buttonItemLayout = computed(() => {
             <FolderDown />
           </a-popconfirm>
         </template>
-        <template v-if="column.dataIndex === 'insurancenum'" @click="goGeom(record.geom)">
-          <div style="width: 100%">
+        <template v-if="column.dataIndex === 'insurancenum'">
+          <div style="width: 100%;height">
             {{ record.insurancenum }}
           </div>
         </template>
@@ -318,6 +334,7 @@ const buttonItemLayout = computed(() => {
 .insurance-page {
   cursor: pointer;
 }
+
 
 /* /deep/ .ant-table {
   background: transparent;
