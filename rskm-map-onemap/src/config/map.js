@@ -10,7 +10,7 @@ const mapbox = {
 }
 
 
-let year = dayjs(String(StateManager.get("rskm_pt_year"))).format('YYYY');//dayjs(StateManager.get("rskm_pt_year"), "YYYY") || new Date().getFullYear()
+let year = dayjs(String(StateManager.get("rskm_pt_year") || new Date().getFullYear())).format('YYYY');//dayjs(StateManager.get("rskm_pt_year"), "YYYY") || new Date().getFullYear()
 const apiService = new ApiService();
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),

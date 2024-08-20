@@ -30,7 +30,6 @@ const columns = ref([
     dataIndex: "insurancenum",
     key: "insurancenum",
     fixed: true,
-   
   },
   //   {
   //     title: "查看",
@@ -52,13 +51,11 @@ const columns = ref([
     title: "机构",
     dataIndex: "i_com_name",
     key: "i_com_name",
- 
   },
   {
     title: "险种",
     dataIndex: "i_type_name",
     key: "i_type_name",
-  
   },
   {
     title: "承保数量(亩)",
@@ -70,7 +67,6 @@ const columns = ref([
     title: "被保人",
     dataIndex: "insured",
     key: "insured",
- 
   },
 
   {
@@ -90,7 +86,6 @@ const columns = ref([
     title: "区域",
     dataIndex: "province",
     key: "province",
- 
   },
   {
     title: "保期",
@@ -259,6 +254,17 @@ const buttonItemLayout = computed(() => {
 </script>
 
 <template>
+  <a-result  v-show="!dataSource.length"
+    status="success"
+    title="查询成功!"
+    sub-title="本年度没有保单数据, 请尝试其他年份。"
+  >
+    <!-- <template #extra>
+      <a-button key="console" type="primary">Go Console</a-button>
+      <a-button key="buy">Buy Again</a-button>
+    </template> -->
+  </a-result>
+
   <div class="insurance-page" v-show="dataSource.length">
     <a-table
       :dataSource="dataSource"
@@ -300,8 +306,7 @@ const buttonItemLayout = computed(() => {
         </template>
 
         <template v-if="column.dataIndex == 'area_mi'">
-        
-          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩   <br />(
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 <br />(
           {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米)
         </template>
       </template>
