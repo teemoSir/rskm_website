@@ -1,8 +1,6 @@
 <script setup>
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
-// import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.css";
-// import "../../../public/mapboxgl/pulgins/mapbox-gl-draw.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
@@ -56,6 +54,7 @@ import {
   popup,
   addLayers,
   addIcon,
+  setPopup,
 } from "@/views/map/map.js";
 
 window.map = null;
@@ -200,11 +199,12 @@ const eventLoad = () => {
     //   <tr ><th>起保时间:</th><td>${start_date}</td></tr>
     //         <tr ><th>到期时间:</th><td>${end_date}</td></tr>
     //         <tr > <th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
+    //<tr><th style="vertical-align: top;">位置:</th><td style="">${province_city_county_town_village} </td></tr>
     let text = `
-        <table style="line-height:1.5;width:100%;letter-spacing: -1px; font-size: 14px;" >
-        <tr><th style="vertical-align: top;width:80px">机构:</th><td style="">${insurcompany_code} </td></tr>
+        <table style="line-height:1.0;width:100%;letter-spacing: -1px; font-size: 14px;" >
+        <tr><th style="vertical-align: top;width:50px">机构:</th><td style="">${insurcompany_code} </td></tr>
         <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} </td><tr>
-        <tr><th style="vertical-align: top;">位置:</th><td style="">${province_city_county_town_village} </td></tr>
+      
         </table>
     `;
     popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
@@ -224,7 +224,7 @@ const eventLoad = () => {
     map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "none");
   });
 
-  map.on("click", layerDK, (e) => {
+  map.on("click", layerDK, async (e) => {
     if (map.getZoom() < 10) return;
     popup && popup.setHTML("");
     popup && popup.setLngLat([0, 0]);
@@ -232,87 +232,13 @@ const eventLoad = () => {
     map.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
 
-    let insurancenum = feature.properties.insurancenum || "";
-    let area_mi = feature.properties.area_mi
-      ? Number(feature.properties.area_mi).toFixed(2)
-      : "";
-    let area_mu = feature.properties.area_mi
-      ? (Number(feature.properties.area_mi) / 667).toFixed(2)
-      : "";
-    let start_date = moment(feature.properties.start_date).format("YYYY/MM/DD") || "";
-    let end_date = moment(feature.properties.end_date).format("YYYY/MM/DD");
-    let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
-    let province_city_county_town_village =
-      (feature.properties.province || "") +
-      (feature.properties.city || "") +
-      (feature.properties.county || "") +
-      (feature.properties.town || "") +
-      (feature.properties.village || "");
-    let r_data = feature.properties.r_data || "";
-    let t_data = feature.properties.t_data || "";
-    let insurcompany_code = feature.properties.insurcompany_code || "";
-    let insurcompany = window["rskm_pt_insure_com"].filter(
-      (r) => r.insurcompanycode == insurcompany_code
-    );
-    insurcompany_code = insurcompany[0].insurcompanyname;
-
-    let insurancetarget = feature.properties.insurancetarget || "";
-    let codenum_code = feature.properties.codenum || "";
-    let codenum = window["rskm_pt_insure_type"].filter(
-      (r) => r.codenum == insurancetarget
-    );
-    codenum_code = codenum[0].xzname;
-    let codenum_type = codenum[0].insurancetype;
-
-    // map.setFilter("Highlight_DK_Click", ["all", ["in", "gid", feature.properties.gid]]);
-    // map.setLayoutProperty("Highlight_DK_Click", "visibility", "visible");
+    let text = await setPopup(feature);
 
     map.setFilter("Highlight_DK_Line_Click", [
       "all",
       ["in", "gid", feature.properties.gid],
     ]);
     map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
-
-    // let text = `
-    // <table style="line-height:2;width:100%;" >
-    // <tr><th width="100" style="vertical-align: top;">保单编号:</th><td  style="" >${insurancenum}</td><tr>
-    // <tr><th style="vertical-align: top;">投保面积:</th><td style="" >${area_mi} / ${area_mu}</td><tr>
-    // <tr><th style="vertical-align: top;">投保数量:</th><td style="">${insured_quantity}</td></tr>
-    // <tr><th style="vertical-align: top;">行政区划:</th><td style="">${province_city_county_town_village} </td></tr>
-    // <tr><th style="vertical-align: top;">起保时间:</th><td>${start_date}</td></tr>
-    // <tr><th style="vertical-align: top;">到期时间:</th><td>${end_date}</td></tr>
-    // <tr><th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
-    // </table>
-    // `;
-    let text = `
-        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 14px;"  title="${
-          r_data + t_data
-        }" >
-        <tr style="line-height:1.5;border-top:0.5px dotted rgba(255,255,255,0.1);    font-size: 14px;"><th width="60" style="vertical-align: center;" rowspan="12" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-chart-gantt"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 8h7"/><path d="M8 12h6"/><path d="M11 16h5"/></svg>
-            <br>基本<br>信息</th>
-        </tr>
-        <tr style="line-height:1.5;" ><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;  ">保单:</th><td >${insurancenum}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${insurcompany_code}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">承保数量:</th><td >${insured_quantity}亩</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">保期:</th><td >${start_date} 至 ${end_date}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">险种:</th><td > ${codenum_code}</td></tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">分类:</th><td > ${codenum_type}</td></tr>
-
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">位置:</th><td>${province_city_county_town_village} </td></tr>
-        <tr style="   font-size: 14px;"><th rowspan="4" >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
-        <br>分析<br>数据</th> </tr>
-        <tr><th style="text-align: right;width:80px;padding-right:5px;">数据符合:</th><td style="" ><span style=" letter-spacing:0.5px;">${(
-          (area_mu / insured_quantity) *
-          100
-        ).toFixed(2)} %</span></td><td></td></tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">标的面积:</th><td style=""> ${area_mi} ㎡ / ${area_mu} 亩
-        </td></tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">重复地块:</th><td style=""> 0
-        </td></tr>
-        </table>
-    `;
 
     // fitBox(feature);
     map.flyTo({
@@ -325,7 +251,7 @@ const eventLoad = () => {
       },
     });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(map);
-    window["tgid"] = feature.properties.gid;
+    window.tgid = feature.properties.gid;
   });
 
   map.on("draw.create", function (e) {
@@ -518,17 +444,17 @@ watch(spin, () => {
  *
  * 行政边界
  */
-watch(state, () => {
-  [
-    "admin_2022_province",
-    "admin_2022_city",
-    "admin_2024_county",
-    "admin_2024_town",
-    "admin_2024_village",
-  ].forEach((v) => {
-    map.setLayoutProperty(v, "visibility", state.ZJiSHow ? "visible" : "none");
-  });
-});
+// watch(state, () => {
+//   [
+//     "admin_2022_province",
+//     "admin_2022_city",
+//     "admin_2024_county",
+//     "admin_2024_town",
+//     "admin_2024_village",
+//   ].forEach((v) => {
+//     map.setLayoutProperty(v, "visibility", state.ZJiSHow ? "visible" : "none");
+//   });
+// });
 
 /**
  * 地名注记
@@ -871,6 +797,66 @@ const openNotification = (title, container) => {
   });
 };
 
+// 图层控制
+const state_layer = reactive({
+  checked4: true,
+  checked5: true,
+  checked6: true,
+  checked7: true,
+  checked8: true,
+});
+
+message.config({
+  top: `200px`,
+  //   duration: 2,
+  maxCount: 2,
+  rtl: true,
+  prefixCls: "提示",
+});
+
+watch(state_layer, () => {
+  //县级界线
+  let xjjx = ["admin_2024_county"];
+  xjjx.forEach((gd) => {
+    toggleLayerVisibility(gd, state_layer.checked4);
+  });
+
+  //镇级界线
+  let zjjx = ["admin_2024_town"];
+  zjjx.forEach((gd) => {
+    toggleLayerVisibility(gd, state_layer.checked5);
+  });
+
+  //村级界线
+  let cjjx = ["admin_2024_village"];
+  cjjx.forEach((gd) => {
+    toggleLayerVisibility(gd, state_layer.checked6);
+  });
+
+  //省级界线
+  let pjjx = ["admin_2022_province"];
+  pjjx.forEach((gd) => {
+    toggleLayerVisibility(gd, state_layer.checked7);
+  });
+
+  //市级界线
+  let cicyjjx = ["admin_2022_city"];
+  cicyjjx.forEach((gd) => {
+    toggleLayerVisibility(gd, state_layer.checked8);
+  });
+
+  message.success("地图已更新", 1);
+});
+
+// 切换图层可见性函数
+const toggleLayerVisibility = (layerId, isVisible) => {
+  if (isVisible) {
+    map.setLayoutProperty(layerId, "visibility", "visible");
+  } else {
+    map.setLayoutProperty(layerId, "visibility", "none");
+  }
+};
+
 onMounted(() => {
   nextTick(() => {
     initMap();
@@ -879,7 +865,7 @@ onMounted(() => {
 
     loadBaseSource();
 
-    loadDraw()
+    loadDraw();
   });
 });
 
@@ -1074,7 +1060,7 @@ onUnmounted(() => {
     </div>
 
     <!--图层列表 -->
-    <div class="right-layer" v-if="rightLayer">
+    <div class="switch-layer" v-if="rightLayer">
       <a-card title="" v-show="machine != 'mercator'">
         <a-card-grid
           v-for="item in layers"
@@ -1117,7 +1103,7 @@ onUnmounted(() => {
       <!--地名注记-->
       <a-card>
         <!--行政边界-->
-        <a-card-grid
+        <!-- <a-card-grid
           :style="{
             width: '25%',
             textAlign: 'center',
@@ -1130,7 +1116,7 @@ onUnmounted(() => {
             checked-children="显示"
             un-checked-children="隐藏"
           />
-        </a-card-grid>
+        </a-card-grid> -->
         <!--地名注记-->
         <a-card-grid
           :style="{
@@ -1138,13 +1124,100 @@ onUnmounted(() => {
             textAlign: 'center',
           }"
         >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">地名注记</div>
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            地名
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+              v-model:checked="state.DMZJiSHow"
+               size="small"
+            />
+          </div>
+        </a-card-grid>
 
-          <a-switch
-            checked-children="显示"
-            un-checked-children="隐藏"
-            v-model:checked="state.DMZJiSHow"
-          />
+        <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            省界
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+              size="small"
+              v-model:checked="state_layer.checked7"
+            />
+          </div>
+        </a-card-grid>
+
+        <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            市界
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+               size="small"
+              v-model:checked="state_layer.checked8"
+            />
+          </div>
+        </a-card-grid>
+
+        <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            县界
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+              v-model:checked="state_layer.checked4"
+               size="small"
+            />
+          </div>
+        </a-card-grid>
+
+        <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            镇界
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+              v-model:checked="state_layer.checked5"
+               size="small"
+            />
+          </div>
+        </a-card-grid>
+
+        <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+            村界
+            <a-switch
+              checked-children="显示"
+              un-checked-children="隐藏"
+              v-model:checked="state_layer.checked6"
+               size="small"
+            />
+          </div>
         </a-card-grid>
       </a-card>
     </div>
@@ -1172,8 +1245,8 @@ onUnmounted(() => {
   margin-top: 4px;
 }
 /deep/ .ant-card {
-  border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.6);
   border: 0;
 }
 /deep/ .ant-card-grid {
@@ -1193,10 +1266,10 @@ onUnmounted(() => {
   z-index: 1000;
 }
 
-.right-layer {
+.switch-layer {
   position: absolute;
   right: 81px;
-  top: 80px;
+  top: 140px;
   width: 600px;
   z-index: 1000;
   border: 0;

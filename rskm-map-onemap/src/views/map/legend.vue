@@ -21,15 +21,7 @@ import {
  * 图例
  */
 let legends = [
-  {
-    key: 1,
-    title: "耕地",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGBA(255,255,251,1)",
-    fillColor: "RGBA(43,128,251,0.5)",
-    outlineWidth: 1,
-  },
+  
   {
     key: 2,
     title: "承保地块",
@@ -38,6 +30,15 @@ let legends = [
     outlineColor: "RGBA(0,0,0,0.8)",
     fillColor: "RGBA(34,177,76,0.8)",
     outlineWidth: 3,
+  },
+  {
+    key: 1,
+    title: "耕地地块",
+    isShow: ref(false),
+    type: "polygon",
+    outlineColor: "RGBA(255,255,251,1)",
+    fillColor: "RGBA(43,128,251,0.5)",
+    outlineWidth: 1,
   },
   //   {
   //     key: 3,
@@ -93,9 +94,9 @@ let legends = [
 const tuli = ref(false);
 
 const state = reactive({
-  checked1: false,
-  checked2: true,
-  checked3: true,
+//   checked1: false,
+//   checked2: true,
+//   checked3: true,
   checked4: true,
   checked5: true,
   checked6: true,
@@ -106,7 +107,7 @@ const state = reactive({
 const menu = ref(false);
 
 message.config({
-  top: `100px`,
+  top: `200px`,
   //   duration: 2,
   maxCount: 2,
   rtl: true,
@@ -122,51 +123,53 @@ watch(state, () => {
 
   //保单地块
   let hgdks = [
-    "procjet_wxsd_dk_xiaomai_name",
-    "procjet_wxsd_dk_xiaomai",
-    "procjet_wxsd_dk_xiaomai_outline",
+    "rskm_pt_outline",
+    "rskm_pt",
   ];
+  hgdks.forEach((gd) => {
+    toggleLayerVisibility(gd, state.checked2);
+  });
 
   //合格地块不显示 不合格地块显示
-  if (!state.checked2 && state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      ["<", ["get", "bili"], 80], // bili 大于等于 80
-      [">", ["get", "bili"], 0], // bili 小于等于 100
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
-  //合格地块不显示 不合格地块显示
-  else if (state.checked2 && !state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      [">=", ["get", "bili"], 80], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
-  //合格地块he不合格地块同时显示
-  else if (state.checked2 && state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      [">", ["get", "bili"], 0], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  } //合格地块he不合格地块同时显示
-  else if (!state.checked2 && !state.checked3) {
-    let newFilter = [
-      "all", // 使用 "all" 表示必须同时满足以下条件
-      ["<", ["get", "bili"], 0], // bili 大于等于 80
-    ];
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, newFilter);
-    });
-  }
+//   if (!state.checked2 && state.checked3) {
+//     let newFilter = [
+//       "all", // 使用 "all" 表示必须同时满足以下条件
+//       ["<", ["get", "bili"], 80], // bili 大于等于 80
+//       [">", ["get", "bili"], 0], // bili 小于等于 100
+//     ];
+//     hgdks.forEach((gd) => {
+//       map.setFilter(gd, newFilter);
+//     });
+//   }
+//   //合格地块不显示 不合格地块显示
+//   else if (state.checked2 && !state.checked3) {
+//     let newFilter = [
+//       "all", // 使用 "all" 表示必须同时满足以下条件
+//       [">=", ["get", "bili"], 80], // bili 大于等于 80
+//     ];
+//     hgdks.forEach((gd) => {
+//       map.setFilter(gd, newFilter);
+//     });
+//   }
+//   //合格地块he不合格地块同时显示
+//   else if (state.checked2 && state.checked3) {
+//     let newFilter = [
+//       "all", // 使用 "all" 表示必须同时满足以下条件
+//       [">", ["get", "bili"], 0], // bili 大于等于 80
+//     ];
+//     hgdks.forEach((gd) => {
+//       map.setFilter(gd, newFilter);
+//     });
+//   } //合格地块he不合格地块同时显示
+//   else if (!state.checked2 && !state.checked3) {
+//     let newFilter = [
+//       "all", // 使用 "all" 表示必须同时满足以下条件
+//       ["<", ["get", "bili"], 0], // bili 大于等于 80
+//     ];
+//     hgdks.forEach((gd) => {
+//       map.setFilter(gd, newFilter);
+//     });
+//   }
 
   //县级界线
   let xjjx = ["admin_2024_county"];
@@ -284,36 +287,7 @@ const toggleLayerVisibility = (layerId, isVisible) => {
               un-checked-children="隐藏"
               v-model:checked="state.checked3"
             />
-            <a-switch
-              v-if="tar.key == 4"
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.checked4"
-            />
-            <a-switch
-              v-if="tar.key == 5"
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.checked5"
-            />
-            <a-switch
-              v-if="tar.key == 6"
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.checked6"
-            />
-            <a-switch
-              v-if="tar.key == 7"
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.checked7"
-            />
-            <a-switch
-              v-if="tar.key == 8"
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.checked8"
-            />
+          
           </div>
         </a-col>
       </a-row>

@@ -647,7 +647,7 @@ const state = reactive({
 });
 
 message.config({
-  top: `100px`,
+  top: `200px`,
   //   duration: 2,
   maxCount: 2,
   rtl: true,

@@ -12,7 +12,7 @@ const dbConfig = {
     user: 'postgres',
     password: 'root',
     database: 'postgres',
-    port: 1717,
+    port: 5432,
 };
 
 // 定义要请求的URL

@@ -4,6 +4,7 @@ import { message } from "ant-design-vue";
 import { api } from "@/config/map";
 import * as turf from "@turf/turf";
 import downloadTextFile from "@/utils/downloadFile.js";
+import moment from "moment";
 import {
   Headset,
   Info,
@@ -29,13 +30,13 @@ const columns = ref([
     dataIndex: "insurancenum",
     key: "insurancenum",
     fixed: true,
-   width:200
+   
   },
-//   {
-//     title: "查看",
-//     dataIndex: "lock",
-//     width: 80,
-//   },
+  //   {
+  //     title: "查看",
+  //     dataIndex: "lock",
+  //     width: 80,
+  //   },
   //   {
   //     title: "关联地块",
   //     dataIndex: "edit",
@@ -51,66 +52,62 @@ const columns = ref([
     title: "机构",
     dataIndex: "i_com_name",
     key: "i_com_name",
-    width:50
+ 
   },
   {
     title: "险种",
     dataIndex: "i_type_name",
     key: "i_type_name",
-    width:60
+  
   },
   {
     title: "承保数量(亩)",
     dataIndex: "insured_quantity",
     key: "insured_quantity",
-    width:100
+    width: 150,
   },
   {
     title: "被保人",
     dataIndex: "insured",
     key: "insured",
-    width:100
+ 
   },
 
   {
-    title: "地块面积(㎡)",
+    title: "地块面积",
     dataIndex: "area_mi",
     key: "area_mi",
-    width:60
+    width: 200,
   },
-  {
-    title: "地块面积(亩)",
-    dataIndex: "area_mu",
-    key: "area_mu",
-    width:60
-
-  },
-
+  //   {
+  //     title: "地块面积(亩)",
+  //     dataIndex: "area_mu",
+  //     key: "area_mu",
+  //     width: 60,
+  //   },
 
   {
     title: "区域",
     dataIndex: "province",
     key: "province",
-    width:150
-  },
-  {
-    title: "起保时间",
-    dataIndex: "start_date",
-    key: "start_date",
-    width:100
  
   },
   {
-    title: "终保时间",
-    dataIndex: "end_date",
-    key: "end_date",
-    width:100
-
+    title: "保期",
+    dataIndex: "start_date",
+    key: "start_date",
+    width: 150,
   },
+  //   {
+  //     title: "终保时间",
+  //     dataIndex: "end_date",
+  //     key: "end_date",
+  //     width: 100,
+  //   },
   {
     title: "下载",
     dataIndex: "operation",
-    width:40
+    width: 60,
   },
 ]);
 
@@ -263,46 +260,15 @@ const buttonItemLayout = computed(() => {
 
 <template>
   <div class="insurance-page" v-show="dataSource.length">
-    <!-- <a-form layout="inline" :model="formState" v-bind="formItemLayout" style="margin-bottom:5px">
-      <a-form-item label="保单：">
-        <a-input v-model:value="formState.fieldA" placeholder="保单编号" />
-      </a-form-item>
-      <a-form-item label="被保人：">
-        <a-input v-model:value="formState.fieldB" placeholder="被保人" />
-      </a-form-item>
-      <a-form-item label="机构：">
-        <a-input v-model:value="formState.fieldB" placeholder="机构" />
-      </a-form-item>
-      <a-form-item label="险种：">
-        <a-input v-model:value="formState.fieldB" placeholder="险种" />
-      </a-form-item>
-      <a-form-item label="市：">
-        <a-input v-model:value="formState.fieldB" placeholder="市" />
-      </a-form-item>
-      <a-form-item label="县：">
-        <a-input v-model:value="formState.fieldB" placeholder="县" />
-      </a-form-item>
-      <a-form-item label="镇：">
-        <a-input v-model:value="formState.fieldB" placeholder="镇" />
-      </a-form-item>
-      <a-form-item label="村：">
-        <a-input v-model:value="formState.fieldB" placeholder="村" />
-      </a-form-item>
-      <a-form-item :wrapper-col="buttonItemLayout.wrapperCol">
-        <a-button type="primary"><TextSearch /></a-button>
-      </a-form-item>
-    </a-form> -->
     <a-table
       :dataSource="dataSource"
       :columns="columns"
       :sticky="true"
       :pagination="pagination"
       :loading="loading"
-   
-    
     >
-      <!-- <template #title>2024年山东</template> -->
-      <!-- <template #footer>Footer</template>  -->
+      <!-- <template #title>2024年山东</template>
+     <template #footer>Footer</template>  -->
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'operation'">
           <a-popconfirm
@@ -313,17 +279,30 @@ const buttonItemLayout = computed(() => {
             <FolderDown />
           </a-popconfirm>
         </template>
-        <template v-if="column.dataIndex === 'insurancenum'">
-       
-        <div style="width: 100%" @click="goGeom(record.geom)">
-          {{ record.insurancenum }}
+        <template v-if="column.dataIndex === 'insurancenum'" @click="goGeom(record.geom)">
+          <div style="width: 100%">
+            {{ record.insurancenum }}
           </div>
         </template>
- 
 
         <template v-if="column.dataIndex == 'province'">
-          {{ record.province }} {{ record.city }} {{ record.county }} {{ record.town }}
-          {{ record.village }}
+          {{ record.province }}{{ record.city }}{{ record.county }}{{ record.town
+          }}{{ record.village }}
+        </template>
+
+        <template v-if="column.dataIndex == 'start_date'">
+          {{ moment(record.start_date).format("YYYY/MM/DD") }} <br />
+          {{ moment(record.end_date).format("YYYY/MM/DD") }}
+        </template>
+
+        <template v-if="column.dataIndex == 'insured_quantity'">
+          {{ record.insured_quantity && Number(record.insured_quantity).toFixed(2) }}
+        </template>
+
+        <template v-if="column.dataIndex == 'area_mi'">
+        
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩   <br />(
+          {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米)
         </template>
       </template>
     </a-table>
@@ -331,13 +310,8 @@ const buttonItemLayout = computed(() => {
 </template>
 
 <style scoped>
-/deep/ .ant-drawer .ant-drawer-body{
-    padding: 0;
-}
 .insurance-page {
-  /* background-color: rgba(0, 0, 0, 0.5); */
-  /* width: 100%;
-  padding: 10px; */
+  cursor: pointer;
 }
 
 /* /deep/ .ant-table {

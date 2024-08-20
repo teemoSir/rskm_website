@@ -11,6 +11,9 @@ import SDMap from "./map/map.vue";
 import { message } from "ant-design-vue";
 import Legend from "./map/legend.vue";
 import Insurance from "./insurance/insurance.vue";
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale";
+import "dayjs/locale/zh-cn";
 import {
   Headset,
   Info,
@@ -29,6 +32,19 @@ import {
 
 import page from "../../package.json";
 const value = ref("user1");
+import StateManager from "@/utils/state_manager";
+dayjs.extend(updateLocale);
+dayjs.updateLocale("zh-cn", {
+  weekStart: 0,
+});
+
+message.config({
+  top: `200px`,
+  //   duration: 2,
+  maxCount: 2,
+  rtl: true,
+  prefixCls: "提示",
+});
 
 const optionsType = ref([]);
 const optionsComs = ref([]);
@@ -191,6 +207,25 @@ const onClose = () => {
   open.value = false;
 };
 const menu = ref(false);
+
+// 年份
+const value5 = ref(
+  dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString())
+);
+
+const panelChangeRL = (value, mode) => {
+  StateManager.clear("rskm_pt_year");
+  StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
+
+  message.loading(
+    `进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`,
+    2000
+  );
+
+  setTimeout((e) => {
+    location.reload();
+  }, 2000);
+};
 </script>
 
 <template>
@@ -209,7 +244,16 @@ const menu = ref(false);
     </template>
 
     <template #extra>
-      <a-button key="3" type="info" style="color: #ccc">2024年</a-button>
+      <!-- <a-button key="3" type="info" style="color: #ccc">2024年</a-button> -->
+      <a-space direction="vertical" :size="5">
+        <a-date-picker
+          v-model:value="value5"
+          picker="year"
+          format="YYYY 年"
+          :popupStyle="{ top: '150px' }"
+          @panelChange="panelChangeRL"
+        />
+      </a-space>
       <a-button key="2" type="info" style="color: #ccc">山东省</a-button>
     </template>
   </a-page-header>
@@ -492,6 +536,10 @@ const menu = ref(false);
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
 }
 
+/deep/ .ant-drawer .ant-drawer-body.ant-drawer-body {
+  padding: 0;
+}
+
 /deep/.ant-page-header-heading-title {
   color: aliceblue;
 }
@@ -551,6 +599,15 @@ const menu = ref(false);
 
 /deep/ .ant-tabs-tab-active {
   background: rgba(248, 247, 247, 0.096);
+}
+
+/deep/ .ant-picker {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+/deep/ .ant-picker input {
+  color: #ccc;
 }
 
 .search {

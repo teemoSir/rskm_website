@@ -1,23 +1,46 @@
 
 
 import ApiService from "../utils/ajax";
+import StateManager from "@/utils/state_manager";
 const host = import.meta.env.VITE_API_BASE_URL;
-
+import dayjs from "dayjs";
 
 const mapbox = {
     key: "pk.eyJ1IjoibHV3ZW5qdW4iLCJhIjoiY2xpODV0c2s2MWV5YjNrcmJneTJ5OHljcyJ9.STONixPRitDkS9dxJSSbHw"
 }
 
 
-let year = new Date().getFullYear()
+let year = dayjs(String(StateManager.get("rskm_pt_year"))).format('YYYY');//dayjs(StateManager.get("rskm_pt_year"), "YYYY") || new Date().getFullYear()
 const apiService = new ApiService();
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
-    // admin_2022_province: apiService.get(`/v1/bbox/admin_2022_province?geom_column=geom&srid=4326&filter=name='{name}'`),
+    /**
+     * 根据gid获取详细
+     * @param {*} table 
+     * @param {*} filter 
+     * @returns 
+     */
+    get_insure_by_gid: (table, filter) => {
+        return apiService.get(`/v1/list_json/${table}?filter=${filter}`)
+    },
+    /**
+     * 根据查年份分页数据
+     * @param {*} table 
+     * @param {*} page 
+     * @param {*} size 
+     * @returns 
+     */
     get_table_pagesize: (table, page, size) => {
         return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}&year=${year}`)
     },
+    /**
+    * 根据查年份数据总和
+    * @param {*} table 
+    * @param {*} page 
+    * @param {*} size 
+    * @returns 
+    */
     get_table_count: (table) => {
         return apiService.get(`/v1/list_get_count/${table}?filter=and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))='${year}'`)
     }
@@ -33,7 +56,8 @@ const config = {
             type: "vector",
             tiles: [
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
+                // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=gid,area_mi,insurcompany_code&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
             ],
             minzoom: 4,
             maxzoom: 14

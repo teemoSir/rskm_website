@@ -84,18 +84,17 @@ const getSimplify = ((type, zoom) => {
     let jhv2 = 0;
     if (type == "rskm_pt") {
         if (Number(zoom) < 7) {
-            jhv2 = 3000;
+            jhv2 = 3500;
         }
         else if (Number(zoom) < 8) {
-            jhv2 = 2500;
+            jhv2 = 3000;
         }
         else if (Number(zoom) < 10) {
-            jhv2 = 1500;
+            jhv2 = 2000;
         }
         else if (Number(zoom) < 12) {
             jhv2 = 800;
         }
-
         else {
             jhv2 = 0;
         }
