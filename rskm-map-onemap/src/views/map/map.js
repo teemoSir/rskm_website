@@ -111,7 +111,7 @@ const addIcon = () => {
 
 const setPopup = async (data) => {
 
-    let feature = await api.get_insure_by_gid("rskm_pt", `and gid=${data.properties.gid}`)
+    let feature = await api.get_insure_by_filter("rskm_pt", `and gid=${data.properties.gid}`)
     feature = feature[0];
     if (!feature) return false
 

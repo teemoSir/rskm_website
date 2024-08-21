@@ -16,13 +16,13 @@ const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
     /**
-     * 根据gid获取详细
+     * 根据filter获取详细
      * @param {*} table 
      * @param {*} filter 
      * @returns 
      */
-    get_insure_by_gid: (table, filter) => {
-        return apiService.get(`/v1/list_json/${table}?filter=${filter}`)
+    get_insure_by_filter: (table, filter, col = "") => {
+        return apiService.get(`/v1/list_json/${table}?filter=${filter}&col=${col}`)
     },
     /**
      * 根据查年份分页数据
@@ -31,7 +31,7 @@ const api = {
      * @param {*} size 
      * @returns 
      */
-    get_table_pagesize: (table, page, size) => {
+    get_table_pagesize: (table, page, size, filter = "") => {
         return apiService.get(`/v1/list_pagesize/${table}?page=${page}&size=${size}&year=${year}`)
     },
     /**
@@ -41,7 +41,7 @@ const api = {
     * @param {*} size 
     * @returns 
     */
-    get_table_count: (table) => {
+    get_table_count: (table, filter = "") => {
         return apiService.get(`/v1/list_get_count/${table}?filter=and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))='${year}'`)
     }
 }

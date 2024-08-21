@@ -1,11 +1,6 @@
 <script setup>
-// import {
-//   UserOutlined,
-//   ApartmentOutlined,
-//   FileProtectOutlined,
-// } from "@ant-design/icons-vue";
 import { logo } from "./index";
-import { ref, computed, watch, onMounted, nextTick, reactive } from "vue";
+import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "../config/map";
 import SDMap from "./map/map.vue";
 import { message } from "ant-design-vue";
@@ -15,24 +10,28 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/zh-cn";
 import {
-  Headset,
-  Info,
+  //   Headset,
+  // Info,
   Search,
-  RotateCw,
-  X,
-  Sprout,
-  LocateFixed,
+  FileDigit,
+  //   X,
+  //   Sprout,
+  //   LocateFixed,
+  Home,
   Grip,
-  ChevronDown,
-  Component,
-  Logs,
+  //   ChevronDown,
+  Settings,
+  TextSearch,
   PanelBottomOpen,
   PanelTopOpen,
 } from "lucide-vue-next";
 
 import page from "../../package.json";
-const value = ref("user1");
+
 import StateManager from "@/utils/state_manager";
+import * as turf from "@turf/turf";
+
+const value = ref("user1");
 dayjs.extend(updateLocale);
 dayjs.updateLocale("zh-cn", {
   weekStart: 0,
@@ -46,8 +45,138 @@ message.config({
   prefixCls: "提示",
 });
 
+const insuranceRef = ref(null);
+
 const optionsType = ref([]);
 const optionsComs = ref([]);
+
+//菜单
+const current = ref(["mail"]);
+const items = ref([
+  {
+    key: "mail",
+    icon: () => h(Home),
+    label: "首页",
+    title: "首页",
+  },
+  {
+    key: "app",
+    icon: () => h(TextSearch),
+    label: "信息查询",
+    title: "信息查询",
+    children: [
+      {
+        type: "group",
+        label: "保单",
+        children: [
+          {
+            label: "保单详情",
+            key: "app:1",
+          },
+        ],
+      },
+      {
+        type: "group",
+        label: "耕地",
+        children: [
+          {
+            label: "耕地详情",
+            key: "app:2",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: "sub1",
+    icon: () => h(FileDigit),
+    label: "统计分析",
+    title: "统计分析",
+    children: [
+      {
+        type: "group",
+        label: "数据分析",
+        children: [
+          {
+            label: "农险一张图",
+            key: "sub5:1",
+          },
+          {
+            label: "保单统计",
+            key: "sub4:1",
+          },
+          {
+            label: "结构分析",
+            key: "sub1:2",
+            children: [
+              {
+                label: "区域",
+                key: "sub2:3",
+              },
+              {
+                label: "机构",
+                key: "sub2:4",
+              },
+            ],
+          },
+          {
+            label: "成效分析",
+            key: "sub3:2",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: "cloud",
+    icon: () => h(Settings),
+    label: "平台能力",
+    title: "平台能力",
+    children: [
+      {
+        type: "group",
+        label: "基础数据",
+        children: [
+          {
+            label: "区划管理",
+            key: "cloud4:1",
+          },
+          {
+            label: "地块管理",
+            key: "cloud3:1",
+          },
+        ],
+      },
+
+      {
+        type: "group",
+        label: "气象",
+        children: [
+          {
+            label: "卫星云图",
+            key: "cloud2:1",
+          },
+          {
+            label: "实时气象",
+            key: "cloud1:2",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: "alipay",
+    label: h(
+      "a",
+      {
+        href: "",
+        target: "_blank",
+      },
+      ""
+    ),
+    title: "Navigation Four - Link",
+  },
+]);
 
 const loadTreeCom = () => {
   for (let i in window["rskm_pt_insure_com"]) {
@@ -185,13 +314,15 @@ const callback = (val) => {
 };
 
 const searchListName = [
-  { name: "保单", type: 1 },
-  { name: "区域", type: 3 },
+  { name: "单号", type: 1 },
+  { name: "区域", type: 2 },
 ];
 
 const value3 = ref(searchListName[0].name);
-const value4 = ref();
+//搜索框
+const searchValue = ref();
 
+// 检索类型
 const setSearchListName = (d) => {
   value3.value = d.name;
 };
@@ -213,6 +344,7 @@ const value5 = ref(
   dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString())
 );
 
+//跳转年份数据
 const panelChangeRL = (value, mode) => {
   StateManager.clear("rskm_pt_year");
   StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
@@ -226,6 +358,33 @@ const panelChangeRL = (value, mode) => {
     location.reload();
   }, 2000);
 };
+
+// 查询单个保单号
+const searchByfilter = async () => {
+  if (searchValue.value && value3.value == "单号") {
+    let feature = await api.get_insure_by_filter(
+      "rskm_pt",
+      `and insurancenum='${searchValue.value}'`,
+      `ST_AsGeoJSON(geom) as json `
+    );
+    message.success(`单号【${searchValue.value}】查询到${feature.length}条关联数据`, 3);
+    feature = feature[0];
+
+    if (!feature) return false;
+    insuranceRef.value.goGeom(feature.json);
+  } else if (searchValue.value && value3.value == "区域") {
+    let feature = await api.get_insure_by_filter(
+      "rskm_pt",
+      `and (province ILIKE  '%25${searchValue.value}%25' or city ILIKE  '%25${searchValue.value}%25' or county ILIKE  '%25${searchValue.value}%25' or town ILIKE  '%25${searchValue.value}%25' or village ILIKE  '%25${searchValue.value}%25')`,
+      `ST_AsGeoJSON(geom) as json `
+    );
+    message.success(`区域【${searchValue.value}】查询到${feature.length}条关联数据`, 3);
+   // feature = feature[0];
+
+    if (!feature) return false;
+   // insuranceRef.value.goGeom(feature.json);
+  }
+};
 </script>
 
 <template>
@@ -236,15 +395,13 @@ const panelChangeRL = (value, mode) => {
     :avatar="{ src: logo }"
     style="color: #ccc"
   >
-    <template #footer>
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="1" tab="主页" />
-        <a-tab-pane key="2" tab="分析统计" />
-      </a-tabs>
-    </template>
-
+    <a-menu
+      v-model:selectedKeys="current"
+      mode="horizontal"
+      :items="items"
+      style="position: absolute; left: 600px; top: 0px; line-height: 92px"
+    />
     <template #extra>
-      <!-- <a-button key="3" type="info" style="color: #ccc">2024年</a-button> -->
       <a-space direction="vertical" :size="5">
         <a-date-picker
           v-model:value="value5"
@@ -296,14 +453,20 @@ const panelChangeRL = (value, mode) => {
               </a-dropdown>
               <a-input
                 size="large"
-                v-model:value="value4"
+                v-model:value="searchValue"
                 style="width: 200px"
                 class="searchshadow"
-                placeholder="请输入检索关键字"
+                :placeholder="value3 == '区域' ? '请输入地址区域' : '请输入保险单号'"
+                placeholder-style="color:#BFBFBF"
               />
               <a-tooltip placement="bottom">
                 <template #title>查询</template>
-                <a-button type="primary" size="large" class="searchshadow"
+                <a-button
+                  type="primary"
+                  size="large"
+                  class="searchshadow"
+                  @keyup.enter="searchByfilter"
+                  @click="searchByfilter"
                   ><Search />
                 </a-button>
               </a-tooltip>
@@ -460,16 +623,14 @@ const panelChangeRL = (value, mode) => {
       </div> -->
 
       <a-drawer
-        title="保单详情"
+        title=""
         placement="bottom"
         :open="open"
         @close="onClose"
-        :height="500"
-        :mask="false"
+        :mask="true"
         bodyStyle="padding:0"
-        size="small"
       >
-        <Insurance></Insurance>
+        <Insurance ref="insuranceRef"></Insurance>
       </a-drawer>
     </div>
 
@@ -482,17 +643,17 @@ const panelChangeRL = (value, mode) => {
 </template>
 
 <style scoped>
-
 .searchshadow {
   cursor: pointer;
 
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
   border-radius: 2px;
-  font-size: 16px;
-  height: 66px;
+  font-size: 14px;
+
   color: #f7f1f1;
-  border: 0;
-  padding: 0 26px;
+  border: 1px solid #99999948;
+
+  height: 60px;
 }
 
 .boxshadow {
@@ -500,7 +661,7 @@ const panelChangeRL = (value, mode) => {
 
   border-radius: 3px;
 
-  height: 50px;
+  height: 55px;
 
   border: 0;
   display: flex;
@@ -521,34 +682,43 @@ const panelChangeRL = (value, mode) => {
 
 .left-cd {
   position: absolute;
-  left: 20px;
-  top: 200px;
-  width: 450px;
+  left: 15px;
+  top: 180px;
+  width: 425px;
   /* height: calc(80%); */
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
   padding: 15px 15px 0 0;
   height: calc(50%);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
-.left-cd:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-}
 .header {
   z-index: 20000;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
 }
-
-
-/deep/ .ant-drawer .ant-drawer-body{
-    padding: 0;
-}
-/deep/ .ant-drawer-body{
-    padding: 0;
+/deep/ .ant-menu-item svg {
+  width: 15px;
+  height: 15px;
 }
 
-/deep/ .ant-drawer{
-    padding: 0;
+/deep/ .ant-menu-submenu-horizontal svg {
+  width: 15px;
+  height: 15px;
+}
+/deep/ .ant-menu-light {
+  background-color: transparent;
+  color: #ccc;
+}
+
+/deep/ .ant-drawer .ant-drawer-body {
+  padding: 0;
+}
+/deep/ .ant-drawer-body {
+  padding: 0;
+}
+
+/deep/ .ant-drawer {
+  padding: 0;
 }
 /deep/.ant-page-header-heading-title {
   color: aliceblue;
@@ -623,7 +793,7 @@ const panelChangeRL = (value, mode) => {
 .search {
   position: absolute;
   left: 15px;
-  top: 140px;
+  top: 110px;
   width: 50%;
 }
 
@@ -659,5 +829,9 @@ const panelChangeRL = (value, mode) => {
   bottom: 15px;
 
   width: calc(100% - 300px);
+}
+
+.searchshadow::placeholder {
+  color: #cccccc63;
 }
 </style>

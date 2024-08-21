@@ -1,6 +1,6 @@
 // route query
 const sql = (params, query) => {
-    return ` SELECT * FROM ${params.table} where 1=1 ${query.filter ? query.filter : ""}
+    return ` SELECT * ${query.col ? (`,` + query.col) : ""} FROM ${params.table} where 1=1 ${query.filter ? query.filter : ""}
     `
 }
 
@@ -18,7 +18,11 @@ const schema = {
     querystring: {
         filter: {
             type: 'string',
-            description: 'where sql 条件以and 起头'
+            description: 'where sql 条件and 起头'
+        },
+        col: {
+            type: 'string',
+            description: '需要附加的返回值'
         },
     }
 }

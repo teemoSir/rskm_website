@@ -67,6 +67,7 @@ const columns = ref([
     title: "被保人",
     dataIndex: "insured",
     key: "insured",
+    width: 400,
   },
 
   {
@@ -86,12 +87,13 @@ const columns = ref([
     title: "地址",
     dataIndex: "province",
     key: "province",
+    width: 300,
   },
   {
     title: "保期",
     dataIndex: "start_date",
     key: "start_date",
-    width: 150,
+    width: 200,
   },
   //   {
   //     title: "终保时间",
@@ -265,6 +267,10 @@ const customRowFun = (record, index) => {
     },
   };
 };
+
+defineExpose({
+    goGeom
+})
 </script>
 
 <template>
@@ -288,6 +294,7 @@ const customRowFun = (record, index) => {
       :pagination="pagination"
       :loading="loading"
       :customRow="customRowFun"
+       size="small"
     >
       <!-- <template #title>2024年山东</template>
      <template #footer>Footer</template>  -->
@@ -313,7 +320,7 @@ const customRowFun = (record, index) => {
         </template>
 
         <template v-if="column.dataIndex == 'start_date'">
-          {{ dayjs(record.start_date).format("YYYY/MM/DD") }} <br />
+          {{ dayjs(record.start_date).format("YYYY/MM/DD") }}
           {{ dayjs(record.end_date).format("YYYY/MM/DD") }}
         </template>
 
@@ -322,8 +329,8 @@ const customRowFun = (record, index) => {
         </template>
 
         <template v-if="column.dataIndex == 'area_mi'">
-          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 <br />(
-          {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米)
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 / 
+          {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米
         </template>
       </template>
     </a-table>

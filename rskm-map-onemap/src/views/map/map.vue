@@ -35,6 +35,7 @@ import {
   //   Circle,
   //   Slash,
   //   MoveHorizontal,
+  ScanSearch,
   Scale3D,
   House,
   X,
@@ -881,28 +882,30 @@ onUnmounted(() => {
     <a-spin class="spin" v-if="spin" :tip="spintext" size="large"></a-spin>
     <!--地图工具栏-->
     <div class="right-tool">
-      <a-tooltip placement="leftTop">
+      <!-- <a-tooltip placement="leftTop">
         <template #title>
           <span>全球视角</span>
         </template>
         <a-button @click="goGlobal()" size="large" class="boxshadow">
-          <House />
+         <ScanSearch />
         </a-button>
-      </a-tooltip>
+      </a-tooltip> -->
 
-      <a-tooltip title="重置视角 " placement="left">
-        <div @click="Zero()" class="pst">
-          <img id="Zero" :src="c2" @click="Zero()" />
-        </div>
-      </a-tooltip>
       <a-tooltip placement="leftTop">
         <template #title>
           <span>最佳视野</span>
         </template>
         <a-button @click="fitCenter()" size="large" class="boxshadow">
-          <ScanEye />
+          <ScanSearch />
         </a-button>
       </a-tooltip>
+      <br />
+      <a-tooltip title="重置视角 " placement="left">
+        <div @click="Zero()" class="pst">
+          <img id="Zero" :src="c2" @click="Zero()" />
+        </div>
+      </a-tooltip>
+
       <br />
       <a-tooltip title="底图切换" placement="left">
         <a-button @click="switchLayer()" size="large" class="boxshadow">
@@ -1130,7 +1133,7 @@ onUnmounted(() => {
               checked-children="显示"
               un-checked-children="隐藏"
               v-model:checked="state.DMZJiSHow"
-               size="small"
+              size="small"
             />
           </div>
         </a-card-grid>
@@ -1163,7 +1166,7 @@ onUnmounted(() => {
             <a-switch
               checked-children="显示"
               un-checked-children="隐藏"
-               size="small"
+              size="small"
               v-model:checked="state_layer.checked8"
             />
           </div>
@@ -1181,7 +1184,7 @@ onUnmounted(() => {
               checked-children="显示"
               un-checked-children="隐藏"
               v-model:checked="state_layer.checked4"
-               size="small"
+              size="small"
             />
           </div>
         </a-card-grid>
@@ -1198,7 +1201,7 @@ onUnmounted(() => {
               checked-children="显示"
               un-checked-children="隐藏"
               v-model:checked="state_layer.checked5"
-               size="small"
+              size="small"
             />
           </div>
         </a-card-grid>
@@ -1215,7 +1218,7 @@ onUnmounted(() => {
               checked-children="显示"
               un-checked-children="隐藏"
               v-model:checked="state_layer.checked6"
-               size="small"
+              size="small"
             />
           </div>
         </a-card-grid>
@@ -1286,18 +1289,20 @@ onUnmounted(() => {
 .boxshadow {
   cursor: pointer;
 
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  /* background-color: rgba(0, 0, 0, 0.6); */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+  border-radius: 3px;
   width: 55px;
   height: 55px;
-  color: #f7f1f1;
-  border: 0;
+  color: #ccc;
+  border: 1px double #99999986;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .boxshadow:hover {
-  background-color: rgba(0, 0, 0, 1);
+  background-color: #3277fc;
+  color: #fff;
 }
 .spin {
   position: absolute;
@@ -1452,4 +1457,3 @@ onUnmounted(() => {
   bottom: -6px;
 }
 </style>
-../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/mapbox-gl-draw.js../../../public/mapboxgl/pulgins/rasterTileLayer.js../../config/spec-v2.js../../utils/bbox.js../../config/fill.js../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js../../../public/mapboxgl/pulgins/rasterTileLayer.js
