@@ -30,6 +30,7 @@ const columns = ref([
     dataIndex: "insurancenum",
     key: "insurancenum",
     fixed: true,
+    minWidth: 120,
   },
   //   {
   //     title: "查看",
@@ -61,20 +62,20 @@ const columns = ref([
     title: "承保数量(亩)",
     dataIndex: "insured_quantity",
     key: "insured_quantity",
-    width: 150,
+    minWidth: 150,
   },
   {
     title: "被保人",
     dataIndex: "insured",
     key: "insured",
-    width: 400,
+    minWidth: 400,
   },
 
   {
     title: "地块面积",
     dataIndex: "area_mi",
     key: "area_mi",
-    width: 200,
+    minWidth: 200,
   },
   //   {
   //     title: "地块面积(亩)",
@@ -87,13 +88,13 @@ const columns = ref([
     title: "地址",
     dataIndex: "province",
     key: "province",
-    width: 300,
+    minWidth: 300,
   },
   {
     title: "保期",
     dataIndex: "start_date",
     key: "start_date",
-    width: 200,
+    minWidth: 200,
   },
   //   {
   //     title: "终保时间",
@@ -104,7 +105,7 @@ const columns = ref([
   {
     title: "下载",
     dataIndex: "operation",
-    width: 60,
+    minWidth: 60,
   },
 ]);
 
@@ -125,20 +126,32 @@ const pagination = ref({
   },
 });
 
-const loadTabel = (page = 1, size = 10) => {
-  const res = api.get_table_pagesize("rskm_pt", page, size);
-  res.then((data) => {
-    dataSource.value = data;
-    loading.value = false;
-  });
+/**
+ * 分页查询
+ * @param {*} page 页数
+ * @param {*} size 数据量
+ * @param {*} filter 条件
+ */
+const loadTabel = async (page = 1, size = 10, filter = "") => {
+  const data = await api.get_table_pagesize("rskm_pt", page, size, filter);
+  //res.then((data) => {
+  dataSource.value = data;
+  loading.value = false;
+  // });
+  return data;
 };
 
-const loadCount = () => {
-  const res = api.get_table_count("rskm_pt");
-  res.then((data) => {
-    console.log(data);
-    pagination.value.total = Number(data[0].count);
-  });
+/**
+ * 数据总数
+ * @param {*} filter 条件
+ */
+const loadCount = async (filter = "") => {
+  const data = await api.get_table_count("rskm_pt", filter);
+  // res.then((data) => {
+  //  console.log(data);
+  pagination.value.total = Number(data[0].count);
+  // });
+  return data;
 };
 
 const loading = ref(true);
@@ -269,16 +282,20 @@ const customRowFun = (record, index) => {
 };
 
 defineExpose({
-    goGeom
-})
+  goGeom,
+  loadTabel,
+  loadCount,
+  loading,
+  pagination,
+});
 </script>
 
 <template>
   <a-result
     v-show="!dataSource.length"
-    status="success"
-    title="查询成功!"
-    sub-title="本年度没有保单数据, 请尝试其他年份。"
+    status="info"
+    title="没有查询到关联数据!"
+    sub-title="该条件下数据不存在，请尝试其他查询条件。"
   >
     <!-- <template #extra>
       <a-button key="console" type="primary">Go Console</a-button>
@@ -294,7 +311,7 @@ defineExpose({
       :pagination="pagination"
       :loading="loading"
       :customRow="customRowFun"
-       size="small"
+      size="small"
     >
       <!-- <template #title>2024年山东</template>
      <template #footer>Footer</template>  -->
@@ -320,6 +337,7 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'start_date'">
+          {{ record.start_date }}
           {{ dayjs(record.start_date).format("YYYY/MM/DD") }}
           {{ dayjs(record.end_date).format("YYYY/MM/DD") }}
         </template>
@@ -329,7 +347,7 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'area_mi'">
-          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 / 
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 /
           {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米
         </template>
       </template>
@@ -341,7 +359,6 @@ defineExpose({
 .insurance-page {
   cursor: pointer;
 }
-
 
 /* /deep/ .ant-table {
   background: transparent;

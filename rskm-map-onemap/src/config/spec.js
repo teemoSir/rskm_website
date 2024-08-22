@@ -293,7 +293,7 @@ let waySpec = [
             "line-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
-                7,
+                6,
                 1,
                 13,
                 0.3,
@@ -315,7 +315,7 @@ let waySpec = [
         },
         'slot': 'middle',
         'paint': {
-            'line-color': '#faad14',
+            'line-color': '#fff',
             'line-width': ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -326,10 +326,7 @@ let waySpec = [
                 14,
                 4.5,],
             'line-opacity': 0.8,
-            "line-dasharray": [1, 2],
-
-
-
+            "line-dasharray": [2, 2],
         }
         , minzoom: 12,
         maxzoom: 20
@@ -449,7 +446,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 10,
+          // "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -551,7 +548,7 @@ let waySpec = [
         paint: {
             "text-color": "rgba(50,42, 42, 1)",
             "text-halo-color": "RGBA(255,255,255,1)",
-            'text-halo-width': 1.2
+            'text-halo-width': 2.2
         },
         minzoom: 4,
         maxzoom: 5.99,
@@ -615,7 +612,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 10,
+          //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -631,8 +628,8 @@ let waySpec = [
             "text-size": [
                 "match",
                 ["get", "priority"],
-                "117", 16,
-                14,
+                "117", 18,
+                16,
             ],
 
         },
@@ -651,7 +648,8 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-            'text-halo-width': 1.2
+            'text-width': 6.0,
+            'text-halo-width': 2.0
         },
         minzoom: 6,
         maxzoom: 8.99,
@@ -715,7 +713,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 10,
+          //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -731,8 +729,8 @@ let waySpec = [
             "text-size": [
                 "match",
                 ["get", "priority"],
-                "117", 16,
-                15,
+                "117", 20,
+                18,
             ],
 
         },
@@ -751,7 +749,8 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-            'text-halo-width': 1.2
+            'text-width': 6.0,
+            'text-halo-width': 2.0
         },
         minzoom: 9,
         maxzoom: 10.99,
@@ -814,7 +813,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 10,
+          //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -850,7 +849,8 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-            'text-halo-width': 1.2
+      
+            'text-halo-width': 1.0
         },
         minzoom: 10,
         maxzoom: 13,
@@ -913,24 +913,24 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 10,
-            "text-padding": [
-                "interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                5,
-                5,
-                10,
-                16,
-                20,
-            ],
+          //  "text-padding": 10,
+            // "text-padding": [
+            //     "interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     2,
+            //     5,
+            //     5,
+            //     10,
+            //     16,
+            //     20,
+            // ],
             "text-field": "{name_chn}",
             "text-size": [
                 "match",
                 ["get", "priority"],
                 "117", 16,
-                14,
+                16,
             ],
 
         },
@@ -1083,9 +1083,9 @@ let waySpec = [
         },
         "paint": {
             'line-color': 'red',
-            'line-width': 12,
+            'line-width': 8,
             'line-opacity': 0.6,
-            "line-dasharray": [0.8, 0.2]
+         //   "line-dasharray": [0.8, 0.2]
         },
         interactive: true,
     },
@@ -1171,21 +1171,22 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
-            "text-padding": 50,
-            "text-field": "{r}{t}\n{quxian}{cun}",
-            "text-size": 16,
+           // "text-padding": 50,
+            "text-field": "{i_com_name}\n{i_type_name}\n{area_mu}亩",
+            "text-size": 18,
 
         },
         paint: {
-            //   "text-color": "RGBA(255,255, 255, 1)",
-            "text-halo-color": "#fff",
-            'text-color': [
-                'case',
-                ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
-                'green', // 如果大于 80，填充颜色为绿色
-                'red' // 否则填充颜色为红色
-            ],
-            'text-halo-width': 2.0
+           
+            "text-halo-color": "#000",
+            // 'text-color': [
+            //     'case',
+            //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
+            //     'green', // 如果大于 80，填充颜色为绿色
+            //     'red' // 否则填充颜色为红色
+            // ],
+            'text-color':"#fff",
+            'text-halo-width': 1
 
         },
         minzoom: 14,
@@ -1204,20 +1205,20 @@ let waySpec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true,
             "text-padding": 200,
-            "text-field": "{t_xzqmc}\n{name}",
-            "text-size": 16,
+            "text-field": "{name}",
+            "text-size": 15,
             "icon-image": "500", // 引用精灵图中的图标
             "icon-size": 1,// 根据需要调整图标大小
             "icon-anchored": "bottom", // 设置图标的锚点位置
             // "icon-offset": [0, 15], // 设置图标相对于锚点的偏移量，单位为像素
             "text-anchor": "top", // 设置文字的锚点位置
-            "text-offset": [0, -3.0], // 设置文字相对于图标的偏移量
+            "text-offset": [0, -1.8], // 设置文字相对于图标的偏移量
 
         },
         paint: {
-            "text-color": "RGBA(50,42, 42, 1)",
-            "text-halo-color": "RGBA(255,255,255,0.8)",
-            'text-halo-width': 3.0
+            "text-color": "#000",
+            "text-halo-color": "#fff",
+            'text-halo-width': 1.5
         },
         minzoom: 14,
     },

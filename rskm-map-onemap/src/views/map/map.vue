@@ -165,30 +165,34 @@ const eventLoad = () => {
     map.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
 
-    if (window["tgid"] == feature.properties.gid) return;
+    let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "";
+    let i_com_name = feature.properties.i_com_name ? feature.properties.i_com_name : "";
+    let i_type_name = feature.properties.i_type_name ? feature.properties.i_type_name : "";
 
-    let insurancenum = feature.properties.insurancenum || "";
-    let area_mi = feature.properties.area_mi
-      ? Number(feature.properties.area_mi).toFixed(2) + "㎡"
-      : "";
-    let area_mu = feature.properties.area_mi
-      ? (Number(feature.properties.area_mi) / 667).toFixed(2) + "亩"
-      : "";
-    let start_date = dayjs(feature.properties.start_date).format("YYYY年MM月DD日") || "";
-    let end_date = dayjs(feature.properties.end_date).format("YYYY年MM月DD日");
-    let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
-    let province_city_county_town_village =
-      (feature.properties.province || "") +
-      (feature.properties.city || "") +
-      (feature.properties.county || "") +
-      (feature.properties.town || "") +
-      (feature.properties.village || "");
-    let r_data = feature.properties.r_data || "";
-    let insurcompany_code = feature.properties.insurcompany_code || "";
-    let insurcompany = window["rskm_pt_insure_com"].filter(
-      (r) => r.insurcompanycode == insurcompany_code
-    );
-    insurcompany_code = insurcompany[0].insurcompanyname;
+    // if (window["tgid"] == feature.properties.gid) return;
+
+    // let insurancenum = feature.properties.insurancenum || "";
+    // let area_mi = feature.properties.area_mi
+    //   ? Number(feature.properties.area_mi).toFixed(2) + "㎡"
+    //   : "";
+    // let area_mu = feature.properties.area_mi
+    //   ? (Number(feature.properties.area_mi) / 667).toFixed(2) + "亩"
+    //   : "";
+    // let start_date = dayjs(feature.properties.start_date).format("YYYY年MM月DD日") || "";
+    // let end_date = dayjs(feature.properties.end_date).format("YYYY年MM月DD日");
+    // let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
+    // let province_city_county_town_village =
+    //   (feature.properties.province || "") +
+    //   (feature.properties.city || "") +
+    //   (feature.properties.county || "") +
+    //   (feature.properties.town || "") +
+    //   (feature.properties.village || "");
+    // let r_data = feature.properties.r_data || "";
+    // let insurcompany_code = feature.properties.insurcompany_code || "";
+    // let insurcompany = window["rskm_pt_insure_com"].filter(
+    //   (r) => r.insurcompanycode == insurcompany_code
+    // );
+    // insurcompany_code = insurcompany[0].insurcompanyname;
     //rskm_pt_insure_com.filter((com)=>{com.})
 
     //  map.setFilter("Highlight_DK", ["all", ["in", "gid", feature.properties.gid]]);
@@ -203,8 +207,9 @@ const eventLoad = () => {
     //<tr><th style="vertical-align: top;">位置:</th><td style="">${province_city_county_town_village} </td></tr>
     let text = `
         <table style="line-height:1.0;width:100%;letter-spacing: -1px; font-size: 14px;" >
-        <tr><th style="vertical-align: top;width:50px">机构:</th><td style="">${insurcompany_code} </td></tr>
-        <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} </td><tr>
+        <tr><th style="vertical-align: top;width:50px">机构:</th><td style="">${i_com_name} </td></tr>
+        <tr><th style="vertical-align: top;width:50px">险种:</th><td style="">${i_type_name} </td></tr>
+        <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} 亩</td><tr>
       
         </table>
     `;

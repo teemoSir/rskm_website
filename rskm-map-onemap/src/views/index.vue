@@ -16,10 +16,10 @@ import {
   FileDigit,
   //   X,
   //   Sprout,
-  //   LocateFixed,
+  ShieldCheck,
+  MapPinned,
   Home,
   Grip,
-  //   ChevronDown,
   Settings,
   TextSearch,
   PanelBottomOpen,
@@ -45,8 +45,8 @@ message.config({
   prefixCls: "提示",
 });
 
+const inSerchRef = ref();
 const insuranceRef = ref(null);
-
 const optionsType = ref([]);
 const optionsComs = ref([]);
 
@@ -325,6 +325,8 @@ const searchValue = ref();
 // 检索类型
 const setSearchListName = (d) => {
   value3.value = d.name;
+  inSerchRef.value.focus()
+  searchValue.value=""
 };
 
 // 菜单
@@ -334,9 +336,17 @@ const activeKey = ref("1");
 
 // 数据列表
 const open = ref(false);
+
+watch(open, () => {
+  if (open && !searchValue.value) {
+    insuranceRef.value.loadCount();
+    insuranceRef.value.loadTabel();
+  }
+});
 const onClose = () => {
   open.value = false;
 };
+
 const menu = ref(false);
 
 // 年份
@@ -367,22 +377,38 @@ const searchByfilter = async () => {
       `and insurancenum='${searchValue.value}'`,
       `ST_AsGeoJSON(geom) as json `
     );
-    message.success(`单号【${searchValue.value}】查询到${feature.length}条关联数据`, 3);
+
     feature = feature[0];
 
-    if (!feature) return false;
-    insuranceRef.value.goGeom(feature.json);
+    if (!feature) {
+      message.warning(`暂无【${searchValue.value}】单号数据`, 3);
+      return false;
+    } else {
+      message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
+        await insuranceRef.value.goGeom(feature.json);
+      });
+    }
   } else if (searchValue.value && value3.value == "区域") {
-    let feature = await api.get_insure_by_filter(
-      "rskm_pt",
-      `and (province ILIKE  '%25${searchValue.value}%25' or city ILIKE  '%25${searchValue.value}%25' or county ILIKE  '%25${searchValue.value}%25' or town ILIKE  '%25${searchValue.value}%25' or village ILIKE  '%25${searchValue.value}%25')`,
-      `ST_AsGeoJSON(geom) as json `
-    );
-    message.success(`区域【${searchValue.value}】查询到${feature.length}条关联数据`, 3);
-   // feature = feature[0];
+    let filter = `and (province ILIKE  '%25${searchValue.value}%25' or city ILIKE  '%25${searchValue.value}%25' or county ILIKE  '%25${searchValue.value}%25' or town ILIKE  '%25${searchValue.value}%25' or village ILIKE  '%25${searchValue.value}%25')`;
+    open.value = true;
+    const data = await api.get_table_count("rskm_pt", filter);
 
-    if (!feature) return false;
-   // insuranceRef.value.goGeom(feature.json);
+    if (Number(data[0].count)) {
+      insuranceRef.value.loading = true;
+      message.success(
+        `【${searchValue.value}】区域，查询到${data[0].count}条关联数据`,
+        3,
+        () => {
+          insuranceRef.value.loading = false;
+          insuranceRef.value.loadTabel(1, 30, filter);
+          insuranceRef.value.loadCount(filter);
+        }
+      );
+    } else {
+      message.warning(`暂未查询到【${searchValue.value}】区域的数据`, 3);
+      insuranceRef.value.loading = false;
+      open.value = !true;
+    }
   }
 };
 </script>
@@ -419,12 +445,9 @@ const searchByfilter = async () => {
     <SDMap></SDMap>
     <div v-if="activeKey == '1'">
       <!--检索搜索-->
-      <div class="search">
+      <div class="search" style="width: 600px">
         <a-row>
-          <!-- <a-col :span="24"> </a-col>
-          <a-col :span="24"> &nbsp; </a-col> -->
-
-          <a-col :span="2">
+          <a-col :span="3">
             <a-tooltip placement="bottom">
               <template #title>高级筛查</template>
               <a-button size="large" class="searchshadow" @click="menu = !menu">
@@ -432,7 +455,8 @@ const searchByfilter = async () => {
               </a-button>
             </a-tooltip>
           </a-col>
-          <a-col :span="16">
+
+          <a-col :span="21">
             <a-input-group compact>
               <a-dropdown>
                 <template #overlay>
@@ -447,17 +471,25 @@ const searchByfilter = async () => {
                   </a-menu>
                 </template>
                 <a-button class="searchshadow">
-                  {{ value3 }}
-                  <!-- <ChevronDown /> -->
+                  <!-- <ChevronDown  />
+                  <ChevronUp  /> -->
+
+                  <div style="display: flex; align-items: center">
+                    <ShieldCheck v-if="value3 == '单号'" :size="20" />
+                    <MapPinned v-else :size="20" />
+                    &nbsp; {{ value3 }}
+                  </div>
                 </a-button>
               </a-dropdown>
               <a-input
+                ref="inSerchRef"
                 size="large"
                 v-model:value="searchValue"
-                style="width: 200px"
+                style="width: 300px"
                 class="searchshadow"
                 :placeholder="value3 == '区域' ? '请输入地址区域' : '请输入保险单号'"
-                placeholder-style="color:#BFBFBF"
+                :allowClear="true"
+                @keyup.enter="searchByfilter"
               />
               <a-tooltip placement="bottom">
                 <template #title>查询</template>
@@ -465,7 +497,6 @@ const searchByfilter = async () => {
                   type="primary"
                   size="large"
                   class="searchshadow"
-                  @keyup.enter="searchByfilter"
                   @click="searchByfilter"
                   ><Search />
                 </a-button>
@@ -480,8 +511,6 @@ const searchByfilter = async () => {
               </a-tooltip>
             </a-input-group>
           </a-col>
-
-          <a-col :span="4"> </a-col>
         </a-row>
       </div>
       <!--类型控制单元-->
@@ -696,6 +725,14 @@ const searchByfilter = async () => {
   z-index: 20000;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
 }
+
+/deep/ .ant-input {
+  background-color: transparent;
+  color: #fff;
+}
+/deep/ .ant-input-clear-icon {
+  color: #fff;
+}
 /deep/ .ant-menu-item svg {
   width: 15px;
   height: 15px;
@@ -794,7 +831,7 @@ const searchByfilter = async () => {
   position: absolute;
   left: 15px;
   top: 110px;
-  width: 50%;
+  width: 650;
 }
 
 .header-menu {

@@ -8,15 +8,16 @@ const sql = (params, query) => {
         query.size = 50
     }
 
-    //let str = ` SELECT * FROM ___get_paged_data('${params.table}', ${query.page}, ${query.size});`
-
-    let str = ``
+    let filter = ""
     if (query.year) {
-        str = `select * from  ___get_paged_data_v2('${params.table}', $$and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))=' ${query.year}'$$,${query.page} , ${query.size} )`
+        filter += ` and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))=' ${query.year}' `
     }
-    else {
-        str = ` SELECT * FROM ___get_paged_data('${params.table}', ${query.page}, ${query.size});`
+    if (query.filter) {
+        filter += ` ` + query.filter
     }
+
+
+    let str = `select * from  ___get_paged_data('${params.table}',$$${ filter }$$,${query.page},${query.size} )`
 
     return str
 }
@@ -47,6 +48,10 @@ const schema = {
         year: {
             type: 'integer',
             description: '数据年份，加入年份条件',
+        },
+        filter: {
+            type: 'string',
+            description: '筛选条件',
         }
     }
 }
