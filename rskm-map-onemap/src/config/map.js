@@ -9,9 +9,11 @@ const mapbox = {
     key: "pk.eyJ1IjoibHV3ZW5qdW4iLCJhIjoiY2xpODV0c2s2MWV5YjNrcmJneTJ5OHljcyJ9.STONixPRitDkS9dxJSSbHw"
 }
 
-
+// 根据年份获取数据
 let year = dayjs(String(StateManager.get("rskm_pt_year") || new Date().getFullYear())).format('YYYY');//dayjs(StateManager.get("rskm_pt_year"), "YYYY") || new Date().getFullYear()
 const apiService = new ApiService();
+
+// 接口API
 const api = {
     rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com`),
     rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type`),
@@ -46,10 +48,9 @@ const api = {
     }
 }
 
+
+// 服务器取图地址
 const config = {
-
-
-    // 服务器取图地址
     rskm_pt: {
         name: 'rskm_pt',
         tile: {
@@ -57,7 +58,7 @@ const config = {
             tiles: [
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=gid,area_mu,insurcompany_code,i_com_name,i_type_name&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=gid,area_mu,insurcompany_code,i_com_name,i_type_name,insurancenum,county,city,village,town&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
             ],
             minzoom: 4,
             maxzoom: 14

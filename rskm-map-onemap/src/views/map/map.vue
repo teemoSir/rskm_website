@@ -163,12 +163,15 @@ const eventLoad = () => {
     if (map.getZoom() < 8) return;
 
     map.getCanvas().style.cursor = "pointer";
-    const feature = e.features[0];
+    let feature = e.features[0];
 
     let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "";
     let i_com_name = feature.properties.i_com_name ? feature.properties.i_com_name : "";
-    let i_type_name = feature.properties.i_type_name ? feature.properties.i_type_name : "";
+    let i_type_name = feature.properties.i_type_name
+      ? feature.properties.i_type_name
+      : "";
 
+    //  console.log(feature)
     // if (window["tgid"] == feature.properties.gid) return;
 
     // let insurancenum = feature.properties.insurancenum || "";
@@ -201,6 +204,11 @@ const eventLoad = () => {
     map.setFilter("Highlight_DK_Line", ["all", ["in", "gid", feature.properties.gid]]);
     map.setLayoutProperty("Highlight_DK_Line", "visibility", "visible");
 
+    // map.setFeatureState(
+    //   { source: "rskm_pt", sourceLayer: "rskm_pt", id: feature.id },
+    //   { hover: true }
+    // );
+
     //   <tr ><th>起保时间:</th><td>${start_date}</td></tr>
     //         <tr ><th>到期时间:</th><td>${end_date}</td></tr>
     //         <tr > <th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
@@ -225,9 +233,16 @@ const eventLoad = () => {
     map.setLayoutProperty("Highlight_DK_Line", "visibility", "none");
   });
 
+  //清空绘制
+  const goGeomUn = () => {
+    map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+    map.getSource("lockGeom") && map.removeSource("lockGeom");
+  };
+
   map.on("click", () => {
     // map.setLayoutProperty("Highlight_DK_Click", "visibility", "none");
     map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "none");
+    goGeomUn();
   });
 
   map.on("click", layerDK, async (e) => {

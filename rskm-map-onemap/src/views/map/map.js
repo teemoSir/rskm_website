@@ -109,6 +109,7 @@ const addIcon = () => {
     });
 };
 
+// 设置气泡数据
 const setPopup = async (data) => {
 
     let feature = await api.get_insure_by_filter("rskm_pt", `and gid=${data.properties.gid}`)
@@ -177,6 +178,20 @@ const setPopup = async (data) => {
 
 }
 
+// 设置地图条件检索显示
+const filterFeature = (layers, filter = []) => {
+    //   let filter = [
+    //     "all", // 使用 "all" 表示必须同时满足以下条件
+    //     ["<", ["get", "bili"], 80], // bili 大于等于 80
+    //     [">", ["get", "bili"], 0], // bili 小于等于 100
+    //   ];
+
+    //let hgdks = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
+    layers.forEach((gd) => {
+        map.setFilter(gd, filter);
+    });
+};
+
 
 export {
     eventRotate,
@@ -185,5 +200,6 @@ export {
     popupbig,
     addLayers,
     addIcon,
-    setPopup
+    setPopup,
+    filterFeature
 }

@@ -125,6 +125,7 @@ watch(state, () => {
   let hgdks = [
     "rskm_pt_outline",
     "rskm_pt",
+    "rskm_pt_name",
   ];
   hgdks.forEach((gd) => {
     toggleLayerVisibility(gd, state.checked2);

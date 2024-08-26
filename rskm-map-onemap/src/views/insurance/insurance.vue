@@ -185,7 +185,13 @@ const loading = ref(true);
 //   };
 // };
 
-const goGeomUn = (data) => {};
+const goGeomUn = () => {
+
+    map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+    map.getSource("lockGeom") && map.removeSource("lockGeom");
+};
+
+
 /**
  * 查找地块
  * @param {} data
@@ -193,8 +199,7 @@ const goGeomUn = (data) => {};
 const goGeom = (data) => {
   // console.log(data);
 
-  map.getLayer("lockGeom") && map.removeLayer("lockGeom");
-  map.getSource("lockGeom") && map.removeSource("lockGeom");
+  goGeomUn()
 
   map.addSource("lockGeom", {
     type: "geojson",
@@ -206,8 +211,8 @@ const goGeom = (data) => {
     source: "lockGeom",
     paint: {
       "line-color": "red",
-      "line-opacity": 0.8,
-      "line-width": 6,
+      "line-opacity": 0.6,
+      "line-width": 5,
     },
   });
 
@@ -280,6 +285,8 @@ const customRowFun = (record, index) => {
     },
   };
 };
+
+
 
 defineExpose({
   goGeom,

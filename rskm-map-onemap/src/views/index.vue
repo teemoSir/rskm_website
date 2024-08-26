@@ -27,9 +27,10 @@ import {
 } from "lucide-vue-next";
 
 import page from "../../package.json";
-
 import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
+import { filterFeature } from "./map/map";
+import { layers } from "../config/spec";
 
 const value = ref("user1");
 dayjs.extend(updateLocale);
@@ -321,12 +322,16 @@ const searchListName = [
 const value3 = ref(searchListName[0].name);
 //搜索框
 const searchValue = ref();
+watch(searchValue, () => {
+    //点击X清空
+  !searchValue.value && filterRSKMPT();
+});
 
 // 检索类型
 const setSearchListName = (d) => {
   value3.value = d.name;
-  inSerchRef.value.focus()
-  searchValue.value=""
+  inSerchRef.value.focus();
+  searchValue.value = "";
 };
 
 // 菜单
@@ -335,9 +340,10 @@ const activeKey = ref("1");
 // const value_data = ref(data[0]);
 
 // 数据列表
-const open = ref(false);
+const open = ref(true);
 
 watch(open, () => {
+  open && (loadReady.value = 400);
   if (open && !searchValue.value) {
     insuranceRef.value.loadCount();
     insuranceRef.value.loadTabel();
@@ -346,6 +352,9 @@ watch(open, () => {
 const onClose = () => {
   open.value = false;
 };
+
+// 增加数据延时
+const loadReady = ref(0);
 
 const menu = ref(false);
 
@@ -382,10 +391,12 @@ const searchByfilter = async () => {
 
     if (!feature) {
       message.warning(`暂无【${searchValue.value}】单号数据`, 3);
+      filterRSKMPT();
       return false;
     } else {
       message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
         await insuranceRef.value.goGeom(feature.json);
+        filterRSKMPT(1);
       });
     }
   } else if (searchValue.value && value3.value == "区域") {
@@ -404,13 +415,55 @@ const searchByfilter = async () => {
           insuranceRef.value.loadCount(filter);
         }
       );
+
+      filterRSKMPT(2);
     } else {
-      message.warning(`暂未查询到【${searchValue.value}】区域的数据`, 3);
+      message.warning(`暂未查询到【${searchValue.value.trim()}】区域的数据`, 3);
       insuranceRef.value.loading = false;
       open.value = !true;
+      filterRSKMPT();
     }
+  } else {
+    filterRSKMPT();
   }
 };
+
+// 图形筛查
+const filterRSKMPT = (type) => {
+  //console.log(searchValue.value.trim());
+  let layers = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
+  switch (type) {
+    case 1:
+      //单号
+      filterFeature(layers, [
+        "all", //
+        ["==", ["get", "insurancenum"], searchValue.value.trim()],
+      ]);
+      break;
+    case 2:
+      //区域
+      filterFeature(layers, [
+        "any", // county,city,village,town
+        [">", ["index-of", searchValue.value.trim(), ["get", "county"]], -1],
+        [">", ["index-of", searchValue.value.trim(), ["get", "city"]], -1],
+        [">", ["index-of", searchValue.value.trim(), ["get", "village"]], -1],
+        [">", ["index-of", searchValue.value.trim(), ["get", "town"]], -1],
+      ]);
+      break;
+
+    default:
+      filterFeature(layers, [
+        "all", // county,city,village,town
+        ["!=", ["get", "insurancenum"], null],
+      ]);
+      break;
+  }
+};
+
+setTimeout(() => {
+  // loadReady.value = 400;
+  open.value = false;
+}, 0);
 </script>
 
 <template>
@@ -658,6 +711,7 @@ const searchByfilter = async () => {
         @close="onClose"
         :mask="true"
         bodyStyle="padding:0"
+        :height="loadReady"
       >
         <Insurance ref="insuranceRef"></Insurance>
       </a-drawer>

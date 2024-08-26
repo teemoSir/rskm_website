@@ -1011,14 +1011,19 @@ let waySpec = [
 
        // 'slot': 'top',
         "paint": {
-            "fill-color": "#00FF00",
+           "fill-color": "#00FF00",
             // 'fill-color': [
             //     'case',
             //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
             //     '#00FF00', // 如果大于 80，填充颜色为绿色
             //     '#FF0000' // 否则填充颜色为红色
             // ],
-           //  "fill-outline-color": "yellow",
+            //  "fill-color": [
+            //     'case',
+            //     ['boolean',['feature-state','hover'],false],
+            //     "blue",
+            //     "yellow"
+            //  ],
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1077,14 +1082,14 @@ let waySpec = [
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
         minzoom: 10,
-        maxzoom: 18,
+   //     maxzoom: 18,
         layout: {
             visibility: "none",
         },
         "paint": {
             'line-color': 'red',
             'line-width': 8,
-            'line-opacity': 0.6,
+            'line-opacity': 0.5,
          //   "line-dasharray": [0.8, 0.2]
         },
         interactive: true,
