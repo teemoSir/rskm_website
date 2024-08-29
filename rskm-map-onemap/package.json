@@ -1,5 +1,5 @@
 {
-  "name": "RSKM-OneMap",
+  "name": "OneMap",
   "private": true,
   "cnname": "农险一张图解决方案",
   "version": "1.0.1",
@@ -16,6 +16,7 @@
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "lucide-vue-next": "^0.408.0",
+    "pinia": "^2.2.2",
     "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-windicss": "^1.9.3",
     "vue": "^3.4.29",

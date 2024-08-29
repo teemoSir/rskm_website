@@ -1,11 +1,12 @@
 <script setup>
 import { logo } from "./index";
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
-import { api } from "../config/map";
+import { api } from "@/config/map";
 import SDMap from "./map/map.vue";
 import { message } from "ant-design-vue";
 import Legend from "./map/legend.vue";
 import Insurance from "./insurance/insurance.vue";
+import Menu from "./insurance/menu.vue";
 import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/zh-cn";
@@ -30,7 +31,7 @@ import page from "../../package.json";
 import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
 import { filterFeature } from "./map/map";
-import { layers } from "../config/spec";
+import { layers } from "@/config/spec";
 
 const value = ref("user1");
 dayjs.extend(updateLocale);
@@ -48,8 +49,7 @@ message.config({
 
 const inSerchRef = ref();
 const insuranceRef = ref(null);
-const optionsType = ref([]);
-const optionsComs = ref([]);
+
 
 //菜单
 const current = ref(["mail"]);
@@ -179,140 +179,11 @@ const items = ref([
   },
 ]);
 
-const loadTreeCom = () => {
-  for (let i in window["rskm_pt_insure_com"]) {
-    let vvs = window["rskm_pt_insure_com"][i].insurcompanyname;
-    let sa = window["rskm_pt_insure_com"][i].insurcompanycode;
-    optionsComs.value.push({
-      value: sa,
-      label: Number(i) + 1 + " " + vvs,
-      key: Number(i) + 1,
-    });
-  }
-  //   console.log(optionsComs);
-  //   console.log(window["rskm_pt_insure_com"]);
-};
-const loadTreeType = () => {
-  for (let i in window["rskm_pt_insure_type"]) {
-    let vv = window["rskm_pt_insure_type"][i].xzname;
-    optionsType.value.push({
-      value: vv,
-      label: Number(i) + 1 + " " + vv,
-      key: Number(i) + 1,
-    });
-  }
-  //   console.log(optionsType);
-  //   console.log(window["rskm_pt_insure_type"]);
-};
-
-onMounted(() => {
-  loadData();
-});
-
-const loadData = () => {
-  /**
-   * 险种
-   */
-
-  api.rskm_pt_insure_type.then((data) => {
-    window["rskm_pt_insure_type"] = data;
-    loadTreeType();
-  });
-
-  /**
-   * 保险平台
-   */
-
-  api.rskm_pt_insure_com.then((data) => {
-    window["rskm_pt_insure_com"] = data;
-    loadTreeCom();
-  });
-};
-/**
- *保险平台
- * @param {*} path
- * @param {*} level
- */
-function digCom(path = "0") {
-  const list = [
-    {
-      title: "全部",
-      key: "0-0",
-      children: [],
-    },
-  ];
-
-  for (let iu in window["rskm_pt_insure_com"]) {
-    const key = `0-0-${iu}`;
-    const treeNode = {
-      title: window["rskm_pt_insure_com"][iu].insurcompanyname,
-      key,
-    };
-    list[0].children.push(treeNode);
-    // checkedKeysType.value.push(key)
-  }
-  //console.log(checkedKeysType);
-  return list;
-}
-const selectedKeysType = ref([]);
-const checkedKeysType = ref([]);
-watch(selectedKeysType, () => {
-  //console.log("selectedKeys", selectedKeysType);
-});
-watch(checkedKeysType, () => {
-  //console.log("checkedKeys", checkedKeysType);
-});
-
-/**
- *保险类型
- * @param {*} path
- * @param {*} level
- */
-function digType(path = "0") {
-  const list = [
-    {
-      title: "全部",
-      key: "0-0",
-      children: [],
-    },
-  ];
-
-  for (let iu in window["rskm_pt_insure_type"]) {
-    const key = `0-0-${iu}`;
-    const treeNode = {
-      title: window["rskm_pt_insure_type"][iu].xzname,
-      key,
-    };
-    list[0].children.push(treeNode);
-    // checkedKeysType.value.push(key)
-  }
-  //console.log(checkedKeysType);
-  return list;
-}
-const selectedKeysCom = ref([]);
-const checkedKeysCom = ref([]);
-watch(selectedKeysCom, () => {
-  //console.log("selectedKeys", selectedKeysType);
-});
-watch(checkedKeysCom, () => {
-  //console.log("checkedKeys", checkedKeysType);
-});
-
-const values_type = ref([]);
-const values_com = ref([]);
-
-const onRect = () => {
-  values_type.value = [];
-  values_com.value = [];
-};
-
 const onSearch = () => {};
 
-const mode = ref("left");
-const activeKeyLS = ref(1);
-const callback = (val) => {
-  console.log(val);
-};
+// const callback = (val) => {
+//   console.log(val);
+// };
 
 const searchListName = [
   { name: "单号", type: 1 },
@@ -323,7 +194,7 @@ const value3 = ref(searchListName[0].name);
 //搜索框
 const searchValue = ref();
 watch(searchValue, () => {
-    //点击X清空
+  //点击X清空
   !searchValue.value && filterRSKMPT();
 });
 
@@ -354,7 +225,7 @@ const onClose = () => {
 };
 
 // 增加数据延时
-const loadReady = ref(0);
+const loadReady = ref(1);
 
 const menu = ref(false);
 
@@ -378,6 +249,44 @@ const panelChangeRL = (value, mode) => {
   }, 2000);
 };
 
+const goGeomUn = () => {
+  map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+  map.getSource("lockGeom") && map.removeSource("lockGeom");
+};
+
+/**
+ * 查找地块
+ * @param {} data
+ */
+const goGeom = (data) => {
+  // console.log(data);
+
+  goGeomUn();
+
+  map.addSource("lockGeom", {
+    type: "geojson",
+    data: JSON.parse(data),
+  });
+  map.addLayer({
+    id: "lockGeom",
+    type: "line",
+    source: "lockGeom",
+    paint: {
+      "line-color": "red",
+      "line-opacity": 0.6,
+      "line-width": 5,
+    },
+  });
+
+  map.fitBounds(turf.bbox(JSON.parse(data)), {
+    padding: { top: 200, bottom: 600 },
+    linear: true,
+    // easing: (t) => {
+    //   return t * (1 - t);
+    // },
+  });
+};
+
 // 查询单个保单号
 const searchByfilter = async () => {
   if (searchValue.value && value3.value == "单号") {
@@ -395,7 +304,7 @@ const searchByfilter = async () => {
       return false;
     } else {
       message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
-        await insuranceRef.value.goGeom(feature.json);
+        goGeom(feature.json);
         filterRSKMPT(1);
       });
     }
@@ -567,143 +476,11 @@ setTimeout(() => {
         </a-row>
       </div>
       <!--类型控制单元-->
-      <div class="left-cd" v-if="menu">
-        <a-tabs v-model:activeKey="activeKeyLS" :tab-position="mode">
-          <a-tab-pane key="3" tab="区域"></a-tab-pane>
-          <a-tab-pane key="1" tab="机构">
-            <div v-if="!checkedKeysCom.length">
-              <a-select
-                v-model:value="values_com"
-                id="optionsCom"
-                mode="multiple"
-                :allowClear="true"
-                :bordered="false"
-                style="width: 100%"
-                placeholder="请选择 或 输入关键字"
-                :options="optionsComs"
-              />
-              <hr />
-              <a-row v-if="values_com.length">
-                <a-col :span="24">
-                  <a-statistic
-                    title="选中条件项"
-                    :value="values_com.length"
-                    class="demo-class"
-                  >
-                    <template #suffix>
-                      <span>/ {{ optionsComs.length }}</span>
-                    </template>
-                  </a-statistic>
-                </a-col>
-              </a-row>
-            </div>
-            <div v-if="!values_com.length">
-              <a-tree
-                v-model:selectedKeys="selectedKeysCom"
-                v-model:checkedKeys="checkedKeysCom"
-                checkable
-                :autoExpandParent="true"
-                :defaultExpandAll="true"
-                v-if="digCom().length"
-                :height="300"
-                :tree-data="digCom()"
-                blockNode
-                :selectable="false"
-              >
-                <!-- <template #title="{ title, key }">
-                <div v-if="key">{{ title }}</div>
-                <template v-else>{{ title }}</template>
-              </template> -->
-              </a-tree>
-            </div>
-          </a-tab-pane>
-          <a-tab-pane key="2" tab="险种">
-            <div v-if="!checkedKeysType.length">
-              <a-select
-                v-model:value="values_type"
-                :allowClear="true"
-                :bordered="false"
-                id="optionsType"
-                mode="multiple"
-                style="width: 100%"
-                placeholder="请选择 或 输入关键字"
-                :options="optionsType"
-              />
-              <hr />
-              <a-row v-if="values_type.length">
-                <a-col :span="24">
-                  <a-statistic
-                    title="选中条件项"
-                    :value="values_type.length"
-                    class="demo-class"
-                  >
-                    <template #suffix>
-                      <span>/ {{ optionsType.length }}</span>
-                    </template>
-                  </a-statistic>
-                </a-col>
-              </a-row>
-            </div>
-            <div v-if="!values_type.length">
-              <a-tree
-                v-model:selectedKeys="selectedKeysType"
-                v-model:checkedKeys="checkedKeysType"
-                checkable
-                :autoExpandParent="true"
-                :defaultExpandAll="true"
-                v-if="digType().length"
-                :height="300"
-                :tree-data="digType()"
-                blockNode
-                :selectable="false"
-              >
-                <!-- <template #title="{ title, key,id }">
-                <div v-if="key">{{ title }} <sub>{{id}}</sub></div>
-                <template v-else>{{ title }}</template>
-              </template> -->
-              </a-tree>
-            </div>
-          </a-tab-pane>
-        </a-tabs>
-        <div>
-          <a-row v-if="values_type.length || values_com.length">
-            <a-col :span="11">
-              <a-button
-                type="primary"
-                size="large"
-                style="width: 100%"
-                class="boxshadow"
-                @click="onSearch()"
-              >
-                <template #icon>
-                  <Search style="margin-right: 10px" />
-                </template>
-                条件筛查
-              </a-button></a-col
-            >
-            <a-col :span="2"></a-col>
-            <a-col :span="11">
-              <a-button
-                size="large"
-                style="width: 100%"
-                class="boxshadow"
-                @click="onRect()"
-              >
-                <template #icon>
-                  <RotateCw style="margin-right: 10px" />
-                </template>
-                重置
-              </a-button></a-col
-            >
-          </a-row>
-        </div>
+      <div class="leftMenu" v-show="menu">
+        <Menu></Menu>
       </div>
 
       <!--保单信息-->
-      <!-- <div class="insurance" v-if="1 == 2">
-      
-      </div> -->
-
       <a-drawer
         title=""
         placement="bottom"
@@ -763,15 +540,15 @@ setTimeout(() => {
   background-color: rgb(53, 51, 51);
 }
 
-.left-cd {
+.leftMenu {
   position: absolute;
   left: 15px;
-  top: 180px;
-  width: 425px;
+  top: 190px;
+  /* width: 570px; */
   /* height: calc(80%); */
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
-  padding: 15px 15px 0 0;
-  height: calc(50%);
+  /* padding: 15px 15px 0 0; */
+  /* height: calc(50%); */
   border-radius: 4px;
 }
 
@@ -858,18 +635,6 @@ setTimeout(() => {
 
 /deep/ .ant-statistic-title {
   color: #fff;
-}
-/deep/ .ant-tabs-tab {
-  width: 10rem;
-}
-/deep/ .ant-tabs-tab-btn {
-  color: rgb(240, 235, 235);
-  width: 100%;
-  text-align: center;
-}
-
-/deep/ .ant-tabs-tab-active {
-  background: rgba(248, 247, 247, 0.096);
 }
 
 /deep/ .ant-picker {

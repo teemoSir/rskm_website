@@ -217,7 +217,7 @@ const goGeom = (data) => {
   });
 
   map.fitBounds(turf.bbox(JSON.parse(data)), {
-    padding: { top: 200, bottom: 600 },
+    padding: { top: 400, bottom: 600 },
     linear: true,
     // easing: (t) => {
     //   return t * (1 - t);

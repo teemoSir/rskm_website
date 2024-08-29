@@ -27,19 +27,19 @@ let legends = [
     title: "承保地块",
     isShow: ref(true),
     type: "polygon",
-    outlineColor: "RGBA(0,0,0,0.8)",
-    fillColor: "RGBA(34,177,76,0.8)",
-    outlineWidth: 3,
-  },
-  {
-    key: 1,
-    title: "耕地地块",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGBA(255,255,251,1)",
-    fillColor: "RGBA(43,128,251,0.5)",
+    outlineColor: "yellow",
+    fillColor: "yellow",
     outlineWidth: 1,
   },
+//   {
+//     key: 1,
+//     title: "耕地地块",
+//     isShow: ref(false),
+//     type: "polygon",
+//     outlineColor: "RGBA(255,255,251,1)",
+//     fillColor: "RGBA(43,128,251,0.5)",
+//     outlineWidth: 1,
+//   },
   //   {
   //     key: 3,
   //     title: "不合格地块",
@@ -94,14 +94,14 @@ let legends = [
 const tuli = ref(false);
 
 const state = reactive({
-//   checked1: false,
-//   checked2: true,
+  checked1: false,
+  checked2: true,
 //   checked3: true,
-  checked4: true,
-  checked5: true,
-  checked6: true,
-  checked7: true,
-  checked8: true,
+//   checked4: true,
+//   checked5: true,
+//   checked6: true,
+//   checked7: true,
+//   checked8: true,
 });
 
 const menu = ref(false);
@@ -123,7 +123,7 @@ watch(state, () => {
 
   //保单地块
   let hgdks = [
-    "rskm_pt_outline",
+    // "rskm_pt_outline",
     "rskm_pt",
     "rskm_pt_name",
   ];

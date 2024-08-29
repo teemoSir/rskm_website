@@ -245,6 +245,16 @@ let layers = ref([
         param: [["google", "Google.Satellite.Map"]],
         isShow: true,
     },
+    {
+        id: 25,
+        name: "矢量地图",
+        projection: true,
+        st: "",
+        url: ESRI_BZ,
+        zj: true,
+        key: "",
+
+    },
 ])
 
 let waySpec = [
@@ -261,15 +271,16 @@ let waySpec = [
         },
         'slot': 'middle',
         'paint': {
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                0.5,
-                5,
-                1,
-                8,
-                2.5,],
+            'line-width': 0.7,
+            // 'line-width': ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     2,
+            //     0.5,
+            //     5,
+            //     1,
+            //     8,
+            //     2.5,],
             'line-color': '#ccc',
             'line-opacity': 1
         },
@@ -287,18 +298,18 @@ let waySpec = [
         },
 
         'paint': {
-            'line-width': 1,
+            'line-width': 0.5,
             'line-color': '#fff',
 
-            "line-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                6,
-                1,
-                13,
-                0.3,
-                14,
-                0.2,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     6,
+            //     1,
+            //     13,
+            //     0.3,
+            //     14,
+            //     0.2,],
         },
         minzoom: 6,
         maxzoom: 20
@@ -315,17 +326,18 @@ let waySpec = [
         },
         'slot': 'middle',
         'paint': {
-            'line-color': '#fff',
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                0.5,
-                13,
-                3.5,
-                14,
-                4.5,],
-            'line-opacity': 0.8,
+            'line-width': 1,
+            'line-color': 'yellow',
+            // 'line-width': ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     2,
+            //     0.5,
+            //     13,
+            //     3.5,
+            //     14,
+            //     4.5,],
+            'line-opacity': 1,
             "line-dasharray": [2, 2],
         }
         , minzoom: 12,
@@ -342,21 +354,21 @@ let waySpec = [
         },
         'slot': 'middle',
         'paint': {
-            'line-width': 1.8,
-            'line-color': '#faad14',
-            'line-opacity': 1,
-            "line-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                7,
-                1,
-                13,
-                0.3,
-                14,
-                0.2,],
+            'line-width': 1,
+            'line-color': '#fff',
+            // 'line-opacity': 1,
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     1,
+            //     13,
+            //     0.3,
+            //     14,
+            //     0.2,],
 
         }
-        , minzoom: 10,
+        , minzoom: 11.4,
         maxzoom: 20
     },
 
@@ -371,21 +383,68 @@ let waySpec = [
         },
 
         'paint': {
-            'line-width': 1.5,
-            'line-color': 'yellow',
+            'line-width': 1,
+            'line-color': '#ccc',
 
-            "line-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                7,
-                1,
-                13,
-                0.3,
-                14,
-                0.2,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     1,
+            //     13,
+            //     0.3,
+            //     14,
+            //     0.2,],
         },
         minzoom: 9,
         maxzoom: 20
+    },
+
+    {
+        id: "world_china_building",
+        name: "建筑",
+        type: "fill-extrusion",
+        source: config.world_china_polygon.name,
+        "source-layer": config.world_china_polygon.name,
+        minzoom: 15,
+        filter: [
+            "in",
+            "building",
+            "yes"
+        ],
+        paint: {
+            "fill-extrusion-height": 30,
+            "fill-extrusion-color": "#fff",
+            "fill-extrusion-opacity": 0.6
+        },
+        interactive: true,
+    },
+
+    {
+        id: "world_china_polygon",
+        name: "基础地物",
+        type: "fill",
+        source: config.world_china_polygon.name,
+        "source-layer": config.world_china_polygon.name,
+        minzoom: 10,
+        // filter: [
+        //     "in",
+        //     "naturals",
+        //     "water"
+        // ],
+        paint: {
+            "fill-color": [
+                "match",
+                ["get", "naturals"],
+                "water", "#7acfef",
+                "land", "#a2e29c",
+                "#fff",
+            ],
+
+            //"#7acfef",
+            "fill-opacity": 1
+        },
+        interactive: true,
     },
 
     {
@@ -446,7 +505,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-          // "text-padding": 10,
+            // "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -463,7 +522,7 @@ let waySpec = [
 
         },
         paint: {
-            "text-halo-color": "rgba(50,42, 42, 1)",
+            "text-halo-color": "#ccc",
             "text-color": "RGBA(255,255,255,1)",
             'text-halo-width': 1.2
         },
@@ -547,7 +606,7 @@ let waySpec = [
         },
         paint: {
             "text-color": "rgba(50,42, 42, 1)",
-            "text-halo-color": "RGBA(255,255,255,1)",
+            "text-halo-color": "#ccc",
             'text-halo-width': 2.2
         },
         minzoom: 4,
@@ -612,7 +671,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-          //  "text-padding": 10,
+            //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -713,7 +772,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-          //  "text-padding": 10,
+            //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -813,7 +872,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-          //  "text-padding": 10,
+            //  "text-padding": 10,
             "text-padding": [
                 "interpolate",
                 ["exponential", 1.5],
@@ -849,7 +908,7 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-      
+
             'text-halo-width': 1.0
         },
         minzoom: 10,
@@ -913,7 +972,7 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-          //  "text-padding": 10,
+            //  "text-padding": 10,
             // "text-padding": [
             //     "interpolate",
             //     ["exponential", 1.5],
@@ -1009,9 +1068,9 @@ let waySpec = [
         "source-layer": config.rskm_pt.name,
         minzoom: 4.4,
 
-       // 'slot': 'top',
+        // 'slot': 'top',
         "paint": {
-           "fill-color": "#00FF00",
+            "fill-color": "yellow",
             // 'fill-color': [
             //     'case',
             //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
@@ -1024,6 +1083,8 @@ let waySpec = [
             //     "blue",
             //     "yellow"
             //  ],
+            "fill-outline-color": "yellow",
+          //  "fill-opacity":0.4,
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1038,99 +1099,99 @@ let waySpec = [
         },
         interactive: true,
     },
-    {
-        id: "rskm_pt_outline",
-        name: "保单地块外框",
-        type: "line",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
-        minzoom: 12,
+    // {
+    //     id: "rskm_pt_outline",
+    //     name: "保单地块外框",
+    //     type: "line",
+    //     source: config.rskm_pt.name,
+    //     "source-layer": config.rskm_pt.name,
+    //     minzoom: 12,
 
-        "paint": {
-            'line-color': '#000',
-            //  'line-width': 4,
+    //     "paint": {
+    //         'line-color': '#000',
+    //         //  'line-width': 4,
 
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
+    //         'line-width': ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
 
-                9,
-                0,
-                13,
-                1.5,
-                14,
-                2.5,],
-            "line-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                7,
-                1,
-                13,
-                0.3,
-                16,
-                0.8,],
-        },
-        interactive: true,
-    },
+    //             9,
+    //             0,
+    //             13,
+    //             1.5,
+    //             14,
+    //             2.5,],
+    //         "line-opacity": ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             7,
+    //             1,
+    //             13,
+    //             0.3,
+    //             16,
+    //             0.8,],
+    //     },
+    //     interactive: true,
+    // },
 
 
 
     {
         id: "Highlight_DK_Line",
         name: "保单地块高亮",
-        type: "line",
+        type: "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
         minzoom: 10,
-   //     maxzoom: 18,
+        //     maxzoom: 18,
         layout: {
             visibility: "none",
         },
         "paint": {
-            'line-color': 'red',
-            'line-width': 8,
-            'line-opacity': 0.5,
-         //   "line-dasharray": [0.8, 0.2]
+            'fill-color': 'green',
+            // 'line-width': 2,
+             'fill-opacity': 0.5,
+            //    "line-dasharray": [0.8, 0.2]
         },
         interactive: true,
     },
 
-    // {
-    //     id: "Highlight_DK_Click",
-    //     name: "高亮",
-    //     type: "fill",
-    //     source: config.rskm_pt.name,
-    //     "source-layer": config.rskm_pt.name,
-    //     minzoom: 10,
-    //     maxzoom: 18,
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     "paint": {
-    //         "fill-color": "green",
-    //         "fill-opacity": 0.6
-    //     },
-    //     interactive: true,
-    // },
     {
         id: "Highlight_DK_Line_Click",
-        name: "高亮",
-        type: "line",
+        name: "点击高亮",
+        type: "fill",
         source: config.rskm_pt.name,
         "source-layer": config.rskm_pt.name,
         minzoom: 10,
-        maxzoom: 18,
         layout: {
             visibility: "none",
         },
         "paint": {
-            'line-color': '#0000FF',
-            'line-width': 12,
-            'line-opacity': 0.9,
-            // "line-dasharray": [5, 1] 
+            'fill-color': 'green',
+            // 'line-width': 2,
+             'fill-opacity': 0.5,
         },
         interactive: true,
     },
+    // {
+    //     id: "Highlight_DK_Line_Click",
+    //     name: "高亮",
+    //     type: "line",
+    //     source: config.rskm_pt.name,
+    //     "source-layer": config.rskm_pt.name,
+    //     minzoom: 10,
+
+    //     layout: {
+    //         visibility: "none",
+    //     },
+    //     "paint": {
+    //         'line-color': '#fff',
+    //         'line-width': 4,
+    //         'line-opacity': 0.6,
+    //          "line-dasharray": [10, 0.6] 
+    //     },
+    //     interactive: true,
+    // },
 
 
     // {
@@ -1176,13 +1237,13 @@ let waySpec = [
             visibility: "visible",
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
-           // "text-padding": 50,
+            // "text-padding": 50,
             "text-field": "{i_com_name}\n{i_type_name}\n{area_mu}亩",
             "text-size": 18,
 
         },
         paint: {
-           
+
             "text-halo-color": "#000",
             // 'text-color': [
             //     'case',
@@ -1190,7 +1251,7 @@ let waySpec = [
             //     'green', // 如果大于 80，填充颜色为绿色
             //     'red' // 否则填充颜色为红色
             // ],
-            'text-color':"#fff",
+            'text-color': "#fff",
             'text-halo-width': 1
 
         },
@@ -1231,22 +1292,7 @@ let waySpec = [
 
 
 
-    // {
-    //     id: "rskm_pt",
-    //     name: "地块",
-    //     type: "line",
-    //     source: config.rskm_pt.name,
-    //     "source-layer": config.rskm_pt.name,
-    //     minzoom: 13,
-    //     'slot': 'top',
-    //     paint: {
-    //         "line-translate-anchor": "viewport",
-    //         "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 4, 1, 10, 6, 16, 8],
-    //         "line-color": "RGB(50,119,252)",
-    //         "line-opacity": 1
-    //     },
-    //     interactive: true,
-    // },
+
 
     // {
     //     id: "AREA_CHINA_1",

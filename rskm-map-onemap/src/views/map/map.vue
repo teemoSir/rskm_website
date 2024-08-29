@@ -4,7 +4,7 @@ import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
 import { config, mapbox, api } from "@/config/map.js";
-import { layers, waySpec } from "@/config/spec-v2";
+import { layers, waySpec } from "@/config/spec";
 import { message, notification, Button } from "ant-design-vue";
 import dayjs from "dayjs";
 import bboxx from "@/utils/bbox";
@@ -58,13 +58,13 @@ import {
   setPopup,
 } from "@/views/map/map.js";
 
-window.map = null;
 const initMap = () => {
   mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
-  mapboxgl.maxParallelImageRequests = 10;
+  mapboxgl.maxParallelImageRequests = 12;
   mapboxgl.accessToken = mapbox.key;
+  mapboxgl.prewarm();
 
-  map = new mapboxgl.Map({
+  window.map = new mapboxgl.Map({
     container: "map",
     center: [100, 36],
     zoom: 2,
@@ -80,11 +80,11 @@ const initMap = () => {
         intensity: 0.6,
       },
       fog: {
-        color: "rgb(186, 210, 235)", // Lower atmosphere
-        "high-color": "rgb(36, 92, 223)", // Upper atmosphere
-        "horizon-blend": 0.02, // Atmosphere thickness (default 0.2 at low zooms)
-        "space-color": "rgb(11, 11, 25)", // Background color
-        "star-intensity": 0.3, // Background star brightness (default 0.35 at low zoooms )
+        color: "rgba(186, 210, 235,0.3)", //低层大气 rgb(186, 210, 235)
+        "high-color": "rgba(36, 92, 223,0.3)", // 高层大气
+        "horizon-blend": 0.02, // 大气厚度（低缩放时默认为0.2）
+        "space-color": "rgb(11, 11, 25)", //背景颜色 rgb(11, 11, 25)
+        "star-intensity": 0.4, // 背景恒星亮度（低zoom时默认为0.35）
       },
       sources: {},
       layers: [
@@ -93,28 +93,30 @@ const initMap = () => {
           type: "background",
           layout: {},
           paint: {
-            "background-color": "#f5f5f5",
+            "background-color": "#f0f3fa",
           },
           interactive: true,
         },
       ],
       _ssl: true,
     },
-    projection: "globe",
+    projection: machine.value,
   });
-
   map.addControl(
     new mapboxgl.AttributionControl({
       customAttribution: "<div id='xyz'></div>",
     })
   );
 
-  map.addControl(
-    new mapboxgl.ScaleControl({
-      maxWidth: 150,
-      unit: "metric",
-    })
-  );
+  const cc = new mapboxgl.ScaleControl({
+    maxWidth: 150,
+    unit: "metric",
+  });
+  !map.hasControl(cc) && map.addControl(cc);
+
+  map.on("load", () => {
+    addTiles();
+  });
 };
 
 /**
@@ -141,16 +143,17 @@ const eventLoad = () => {
   });
 
   map.on("mousemove", (e) => {
-    window["lnglatrender"] = {
+    window.lnglatrender = {
       lng: e.lngLat.lng,
       lat: e.lngLat.lat,
     };
+    eventRender();
   });
 
   /**
    * 渲染运行时
    */
-  map.on("render", (e) => {
+  map.on("move", (e) => {
     eventRender();
   });
 
@@ -327,7 +330,7 @@ const fitBox = (f) => {
 // 基础图层
 const loadBaseSource = () => {
   map.on("load", () => {
-    addTiles();
+    // addTiles();
 
     addLayers();
 
@@ -341,12 +344,35 @@ const loadBaseSource = () => {
   });
 };
 
+const loadBase = () => {
+  //   map.setFog({
+  //     color: "rgba(186, 210, 235,0.3)", //低层大气 rgb(186, 210, 235)
+  //     "high-color": "rgba(36, 92, 223,0.3)", // 高层大气
+  //     "horizon-blend": 0.02, // 大气厚度（低缩放时默认为0.2）
+  //     "space-color": "rgb(11, 11, 25)", //背景颜色 rgb(11, 11, 25)
+  //     "star-intensity": 0.4, // 背景恒星亮度（低zoom时默认为0.35）
+  //   });
+  //   map.setLight({
+  //     "anchor": "viewport",
+  //     "color": "#fff",
+  //     "intensity": 0.5
+  // });
+  //   light: {
+  //     anchor: "map",
+  //     color: "#F5F5F5",
+  //     intensity: 0.6,
+  //   },
+};
+
 /**
  * 添加图层
  */
 const addTiles = () => {
-  //  历史缓存 重置底图
-  addRasterTileLayer(layers.value[17].param, layers.value[17].key);
+  //  历史缓存 重置底图  StateManager.get("MAP_LAYERS") || "{}"
+  console.log(StateManager.get("MAP_LAYERS"));
+  let ts = StateManager.get("MAP_LAYERS") || layers.value[17];
+  console.log(ts.param, ts.key);
+  addRasterTileLayer(ts.param, ts.key);
 };
 
 let loadLayer = [];
@@ -362,16 +388,17 @@ const addRasterTileLayer = (layerList, key) => {
     map.getSource(layerId) && map.removeSource(layerId);
   });
   loadLayer = [];
-  layerList.forEach((layer) => {
-    loadLayer.push(layer[0]);
-    //调用接口，添加图层
-    var param = key ? { key: key } : null;
-    !map.getLayer(layer[0]) && map.addLayer(rasterTileLayer(layer[0], layer[1], param));
-  });
+  layerList &&
+    layerList.forEach((layer) => {
+      loadLayer.push(layer[0]);
+      //调用接口，添加图层
+      var param = key ? { key: key } : null;
+      !map.getLayer(layer[0]) && map.addLayer(rasterTileLayer(layer[0], layer[1], param));
+    });
 };
 
 // 地图类型
-let machine = ref("mercator");
+let machine = ref("globe");
 watch(machine, () => {
   //spin.value = true;
 });
@@ -881,7 +908,10 @@ const toggleLayerVisibility = (layerId, isVisible) => {
 onMounted(() => {
   nextTick(() => {
     initMap();
-
+    //console.log(1111111111111);
+  });
+  setTimeout(() => {
+    // console.log(2222222222222);
     eventLoad();
 
     loadBaseSource();
@@ -891,8 +921,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  window.map = undefined;
-  window.gl_draw = undefined;
+  delete window.map;
+  delete window.gl_draw;
 });
 </script>
 

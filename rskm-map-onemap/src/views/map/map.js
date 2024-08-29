@@ -3,6 +3,7 @@ import { waySpec } from "../../config/spec";
 import { fills } from "../../config/fill";
 import StateManager from "@/utils/state_manager"
 import dayjs from "dayjs";
+import page from "../../../package.json";
 /**
  * 旋转事件
  */
@@ -25,29 +26,19 @@ const eventRender = () => {
 
     let MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
     let ll = {
-        lng: (window["lnglatrender"] || { lng: 0, lat: 0 }).lng.toFixed(6),
-        lat: (window["lnglatrender"] || { lng: 0, lat: 0 }).lat.toFixed(6),
+        lng: (window.lnglatrender || { lng: 0, lat: 0 }).lng.toFixed(6),
+        lat: (window.lnglatrender || { lng: 0, lat: 0 }).lat.toFixed(6),
     } || { lng: 0, lat: 0 };
-    let sth = MAP_LAYERS.st ? "审图号：" + MAP_LAYERS.st : "";
-    let mc = "RSKM";
-    let zoom = map.getZoom().toFixed(2); //
-    let ty = MAP_LAYERS.name || "";
-    let pro = map.getProjection().name || "default";
-
-
     document.getElementById("xyz").innerHTML = `
-    <span style='padding-right: 10px;'>${sth}</span>
-    <span style='padding-right: 10px;' >© ${mc}</span>
+    <span style='padding-right: 10px;'>${MAP_LAYERS.st ? "审图号：" + MAP_LAYERS.st : ""}</span>
+    <span style='padding-right: 10px;' >© ${page.name}</span>
     <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
-    <span style='padding-right: 10px;'>等级：${zoom} </span>
-     <span style='padding-right: 10px;'>模式：${(pro == "globe") ? "三维" : "二维"} </span>
-    <span style='padding-right: 10px;'>${ty}</span>`;
+    <span style='padding-right: 10px;'>等级：${map && map.getZoom().toFixed(2)} </span>
+     <span style='padding-right: 10px;'>模式：${((map && map.getProjection().name || "default") == "globe") ? "三维" : "二维"} </span>
+    <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`;
 
     MAP_LAYERS = undefined;
     ll = undefined;
-    sth = undefined;
-    zoom = undefined;
-    ty = undefined;
 }
 
 /**
@@ -64,7 +55,7 @@ const popup = new mapboxgl.Popup({
  */
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
-    closeButton: true,
+    closeButton: false,
     maxWidth: "380px",
 });
 
@@ -150,7 +141,7 @@ const setPopup = async (data) => {
         }" >
         <tr style="line-height:1.5;border-top:0.5px dotted rgba(255,255,255,0.1);    font-size: 14px;"><th width="60" style="vertical-align: center;" rowspan="12" >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-chart-gantt"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 8h7"/><path d="M8 12h6"/><path d="M11 16h5"/></svg>
-            <br>基本<br>信息</th>
+            <br></th>
         </tr>
         <tr style="line-height:1.5;" ><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;  ">保单:</th><td >${insurancenum}</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px">机构:</th><td >${codenum_code}</td><tr>
@@ -162,8 +153,8 @@ const setPopup = async (data) => {
         <tr style="line-height:1.5;"><th style="text-align: right;width:80px;padding-right:5px;vertical-align: top;">位置:</th><td>${province_city_county_town_village} </td></tr>
         <tr style="   font-size: 14px;"><th rowspan="4" >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
-        <br>分析<br>数据</th> </tr>
-        <tr><th style="text-align: right;width:80px;padding-right:5px;">数据符合:</th><td style="" ><span style=" letter-spacing:0.5px;">${(
+        <br></th> </tr>
+        <tr><th style="text-align: right;width:80px;padding-right:5px;">面积匹配:</th><td style="" ><span style=" letter-spacing:0.5px;">${(
             (area_mu / insured_quantity) *
             100
         ).toFixed(2)} %</span></td><td></td></tr>

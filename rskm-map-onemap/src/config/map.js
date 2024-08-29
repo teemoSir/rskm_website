@@ -58,7 +58,7 @@ const config = {
             tiles: [
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,city,county,province,area_mi,village,town,insurance_id,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget`,
                 // `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=insurancenum,county,area_mi,village,town,insurcompany_code,gid,insured_quantity,end_date,start_date,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
-                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=gid,area_mu,insurcompany_code,i_com_name,i_type_name,insurancenum,county,city,village,town&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
+                `${host}/v1/mvt/rskm_pt/{z}/{x}/{y}?geom_column=geom&columns=gid,area_mu,insurcompany_code,i_com_name,i_type_name,insurancenum,county,city,village,town,insurancetarget&filter=SUBSTRING(start_date FROM 1 FOR 4)='${year}'`,
             ],
             minzoom: 4,
             maxzoom: 14
@@ -132,11 +132,24 @@ const config = {
             tiles: [
                 `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`,
             ]
-            , minzoom: 12.5,
-            maxzoom: 14
+            , minzoom: 14,
+            maxzoom: 15
 
         }
     },
+    world_china_polygon: {
+        name: "world_china_polygon",
+        tile: {
+            type: "vector",
+            tiles: [
+                `${host}/v1/mvt/world_china_polygon/{z}/{x}/{y}?geom_column=geom&columns=building,naturals`,
+            ]
+            , minzoom: 30
+           
+
+        }
+    },
+
 
 
     // world_china_province: {
