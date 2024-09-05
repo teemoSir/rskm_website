@@ -1,6 +1,6 @@
 // route query
 const sql = (params, query) => {
-    return ` SELECT * ${query.col ? (`,` + query.col) : ""} FROM ${params.table} where 1=1 ${query.filter ? query.filter : ""}
+    return ` SELECT  ${query.col ? query.col : " gid "} FROM ${params.table} where 1=1 ${query.filter ? query.filter : ""}
     `
 }
 
@@ -22,7 +22,7 @@ const schema = {
         },
         col: {
             type: 'string',
-            description: '需要附加的返回值'
+            description: '需要返回值列，必填'
         },
     }
 }

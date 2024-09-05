@@ -3,7 +3,8 @@ import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
-import { config, mapbox, api } from "@/config/map.js";
+import { config, mapbox } from "@/config/tileserver.js";
+import { api } from "@/config/api.js";
 import { layers, waySpec } from "@/config/spec";
 import { message, notification, Button } from "ant-design-vue";
 import dayjs from "dayjs";
@@ -24,16 +25,16 @@ import {
   //   MapPinned,
   LandPlot,
   PencilRuler,
-  //   Pencil,
-  //   Dot,
+  Pencil,
+  Dot,
   //   Waypoints,
-  //   Pentagon,
+  Pentagon,
   //   Square,
-  //   RectangleHorizontal,
+  RectangleHorizontal,
   //   Route,
   //   Brush,
-  //   Circle,
-  //   Slash,
+  Circle,
+  Slash,
   //   MoveHorizontal,
   ScanSearch,
   Scale3D,
@@ -58,6 +59,10 @@ import {
   setPopup,
 } from "@/views/map/map.js";
 
+/**
+ * 初始化地图
+ * @function
+ */
 const initMap = () => {
   mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
   mapboxgl.maxParallelImageRequests = 12;
@@ -369,9 +374,9 @@ const loadBase = () => {
  */
 const addTiles = () => {
   //  历史缓存 重置底图  StateManager.get("MAP_LAYERS") || "{}"
-  console.log(StateManager.get("MAP_LAYERS"));
+  //console.log(StateManager.get("MAP_LAYERS"));
   let ts = StateManager.get("MAP_LAYERS") || layers.value[17];
-  console.log(ts.param, ts.key);
+  //console.log(ts.param, ts.key);
   addRasterTileLayer(ts.param, ts.key);
 };
 
@@ -400,7 +405,7 @@ const addRasterTileLayer = (layerList, key) => {
 // 地图类型
 let machine = ref("globe");
 watch(machine, () => {
-  //spin.value = true;
+  spin.value = true;
 });
 
 let terrainSP = ref(false);
@@ -454,7 +459,7 @@ const switchTile = (layer) => {
 
   // 历史缓存
   StateManager.set("MAP_LAYERS", layer);
-  console.log(StateManager.get("MAP_LAYERS"));
+  //console.log(StateManager.get("MAP_LAYERS"));
 
   // 叠加
   addLayers();
@@ -906,17 +911,16 @@ const toggleLayerVisibility = (layerId, isVisible) => {
 };
 
 onMounted(() => {
+  initMap();
+  loadBaseSource();
+  eventLoad();
+
+  loadDraw();
   nextTick(() => {
-    initMap();
     //console.log(1111111111111);
   });
   setTimeout(() => {
     // console.log(2222222222222);
-    eventLoad();
-
-    loadBaseSource();
-
-    loadDraw();
   });
 });
 

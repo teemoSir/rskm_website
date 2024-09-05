@@ -15,7 +15,7 @@ import TDT_BZ_WZJ from "@/assets/images/map/TDT_BZ_WZJ.jpg";
 import TDT_BZ from "@/assets/images/map/TDT_BZ.jpg";
 import TDT_WX_WZJ from "@/assets/images/map/TDT_WX_WZJ.jpg";
 import TDT_WX from "@/assets/images/map/TDT_WX.jpg";
-import { config } from "@/config/map.js";
+import { config } from "@/config/tileserver.js";
 import { ref } from "vue";
 
 let layers = ref([
@@ -269,7 +269,7 @@ let waySpec = [
         layout: {
             visibility: "visible",
         },
-        'slot': 'middle',
+        'slot': 'bottom',
         'paint': {
             'line-width': 0.7,
             // 'line-width': ["interpolate",
@@ -295,8 +295,9 @@ let waySpec = [
         "source-layer": config.admin_2022_city.name,
         layout: {
             visibility: "visible",
+            "text-optional": true,
         },
-
+        'slot': 'bottom',
         'paint': {
             'line-width': 0.5,
             'line-color': '#fff',
@@ -312,7 +313,7 @@ let waySpec = [
             //     0.2,],
         },
         minzoom: 6,
-        maxzoom: 20
+        maxzoom: 8.99
 
     },
 
@@ -323,11 +324,12 @@ let waySpec = [
         "source-layer": config.admin_2024_village.name,
         layout: {
             visibility: "visible",
+            "text-optional": true,
         },
-        'slot': 'middle',
+        'slot': 'bottom',
         'paint': {
-            'line-width': 1,
-            'line-color': 'yellow',
+            'line-width': 1.5,
+            'line-color': 'RGB(255,127,39)',
             // 'line-width': ["interpolate",
             //     ["exponential", 1.5],
             //     ["zoom"],
@@ -338,7 +340,7 @@ let waySpec = [
             //     14,
             //     4.5,],
             'line-opacity': 1,
-            "line-dasharray": [2, 2],
+            "line-dasharray": [1.5, 1.5],
         }
         , minzoom: 12,
         maxzoom: 20
@@ -351,8 +353,9 @@ let waySpec = [
         "source-layer": config.admin_2024_town.name,
         layout: {
             visibility: "visible",
+            "text-optional": true,
         },
-        'slot': 'middle',
+        'slot': 'bottom',
         'paint': {
             'line-width': 1,
             'line-color': '#fff',
@@ -380,8 +383,9 @@ let waySpec = [
         "source-layer": config.admin_2024_county.name,
         layout: {
             //  visibility: "visible",
+            "text-optional": true,
         },
-
+        'slot': 'bottom',
         'paint': {
             'line-width': 1,
             'line-color': '#ccc',
@@ -521,6 +525,7 @@ let waySpec = [
             "text-size": 16,
 
         },
+        'slot': 'middle',
         paint: {
             "text-halo-color": "#ccc",
             "text-color": "RGBA(255,255,255,1)",
@@ -609,6 +614,7 @@ let waySpec = [
             "text-halo-color": "#ccc",
             'text-halo-width': 2.2
         },
+        'slot': 'middle',
         minzoom: 4,
         maxzoom: 5.99,
 
@@ -707,9 +713,10 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-            'text-width': 6.0,
+            //  'text-width': 6.0,
             'text-halo-width': 2.0
         },
+        'slot': 'middle',
         minzoom: 6,
         maxzoom: 8.99,
 
@@ -808,9 +815,10 @@ let waySpec = [
                 "117", "RGBA(50,42, 42, 1)",
                 "RGBA(255,255,255,1)"
             ],
-            'text-width': 6.0,
+            //  'text-width': 6.0,
             'text-halo-width': 2.0
         },
+        'slot': 'middle',
         minzoom: 9,
         maxzoom: 10.99,
 
@@ -893,6 +901,7 @@ let waySpec = [
             ],
 
         },
+        'slot': 'middle',
         paint: {
             "text-color": [
                 "match",
@@ -1010,6 +1019,7 @@ let waySpec = [
             ],
             'text-halo-width': 1.2
         },
+        'slot': 'middle',
         minzoom: 13,
 
     },
@@ -1068,7 +1078,7 @@ let waySpec = [
         "source-layer": config.rskm_pt.name,
         minzoom: 4.4,
 
-        // 'slot': 'top',
+        'slot': 'top',
         "paint": {
             "fill-color": "yellow",
             // 'fill-color': [
@@ -1083,8 +1093,8 @@ let waySpec = [
             //     "blue",
             //     "yellow"
             //  ],
-            "fill-outline-color": "yellow",
-          //  "fill-opacity":0.4,
+            "fill-outline-color": "#000",
+            //  "fill-opacity":0.4,
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1095,44 +1105,47 @@ let waySpec = [
                 13,
                 0.3,
                 14,
-                0.2,],
+                0.2, 15,
+                0.1,],
         },
         interactive: true,
     },
-    // {
-    //     id: "rskm_pt_outline",
-    //     name: "保单地块外框",
-    //     type: "line",
-    //     source: config.rskm_pt.name,
-    //     "source-layer": config.rskm_pt.name,
-    //     minzoom: 12,
-
-    //     "paint": {
-    //         'line-color': '#000',
-    //         //  'line-width': 4,
-
-    //         'line-width': ["interpolate",
-    //             ["exponential", 1.5],
-    //             ["zoom"],
-
-    //             9,
-    //             0,
-    //             13,
-    //             1.5,
-    //             14,
-    //             2.5,],
-    //         "line-opacity": ["interpolate",
-    //             ["exponential", 1.5],
-    //             ["zoom"],
-    //             7,
-    //             1,
-    //             13,
-    //             0.3,
-    //             16,
-    //             0.8,],
-    //     },
-    //     interactive: true,
-    // },
+    {
+        id: "rskm_pt_outline",
+        name: "保单地块外框",
+        type: "line",
+        source: config.rskm_pt.name,
+        "source-layer": config.rskm_pt.name,
+        layout: {
+            "line-join": "round",
+            "line-cap": "round",
+        },
+        'slot': 'top',
+        "paint": {
+            // 'line-blur':0.5,
+            'line-color': 'RGBA(213,217,41,0.7)',
+            //  'line-width': 4,
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                11,
+                1,
+                13,
+                3.5,
+                14,
+                4.5,],
+            "line-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                0.5,
+                14,
+                0.7,
+                15,
+                1,],
+        },
+        interactive: true,
+    },
 
 
 
@@ -1150,9 +1163,10 @@ let waySpec = [
         "paint": {
             'fill-color': 'green',
             // 'line-width': 2,
-             'fill-opacity': 0.5,
+            'fill-opacity': 0.4,
             //    "line-dasharray": [0.8, 0.2]
         },
+        'slot': 'top',
         interactive: true,
     },
 
@@ -1169,8 +1183,9 @@ let waySpec = [
         "paint": {
             'fill-color': 'green',
             // 'line-width': 2,
-             'fill-opacity': 0.5,
+            'fill-opacity': 0.4,
         },
+        'slot': 'top',
         interactive: true,
     },
     // {
@@ -1185,10 +1200,13 @@ let waySpec = [
     //         visibility: "none",
     //     },
     //     "paint": {
-    //         'line-color': '#fff',
-    //         'line-width': 4,
-    //         'line-opacity': 0.6,
-    //          "line-dasharray": [10, 0.6] 
+    //         // 'line-color': '#fff',
+    //         // 'line-width': 4,
+    //         // 'line-opacity': 0.6,
+    //         //  "line-dasharray": [10, 0.6] 
+    //         "line-color": "RGB(50,119,252)",
+    //         "line-width": 6,
+    //         "line-opacity": 0.8,
     //     },
     //     interactive: true,
     // },
@@ -1238,25 +1256,45 @@ let waySpec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name}\n{i_type_name}\n{area_mu}亩",
-            "text-size": 18,
+            "text-field": "{i_com_name} {area_mu}",
+            "text-size": 13,
 
         },
+        'slot': 'top',
         paint: {
-
-            "text-halo-color": "#000",
-            // 'text-color': [
-            //     'case',
-            //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
-            //     'green', // 如果大于 80，填充颜色为绿色
-            //     'red' // 否则填充颜色为红色
-            // ],
-            'text-color': "#fff",
-            'text-halo-width': 1
+            "text-color": "#000", // 文字颜色
+            "text-halo-color": "yellow", // 文字轮廓颜色
+            "text-halo-width": 1.4, // 文字轮廓宽度
+          //  "text-halo-blur": 0.1, // 文字轮廓模糊度
+        },
+        minzoom: 13,
+        maxzoom: 14.55,
+    },
+    {
+        id: "rskm_pt_name_1",
+        type: "symbol",
+        source: config.rskm_pt.name,
+        "source-layer": config.rskm_pt.name,
+        layout: {
+            "symbol-avoid-edges": true,
+            "icon-rotation-alignment": "viewport",
+            "text-pitch-alignment": "viewport",
+            visibility: "visible",
+            "text-font": ["Microsoft YaHei"],
+            // "text-optional": true, \n{r}{t}\n{quxian}{cun}
+            // "text-padding": 50,
+            "text-field": "{i_com_name} {area_mu}\n{i_type_name}\n{region_code}",
+            "text-size": 14,
 
         },
-        minzoom: 14,
-
+        'slot': 'top',
+        paint: {
+            "text-color": "#000", // 文字颜色
+            "text-halo-color": "yellow", // 文字轮廓颜色
+            "text-halo-width": 2, // 文字轮廓宽度
+            "text-halo-blur": 0.5, // 文字轮廓模糊度
+        },
+        minzoom: 14.56,
     },
     {
         id: "admin_2024_village_name",
@@ -1264,18 +1302,18 @@ let waySpec = [
         source: config.admin_2024_village.name,
         "source-layer": config.admin_2024_village.name,
         layout: {
-            "symbol-avoid-edges": true,
-            "icon-rotation-alignment": "viewport",
-            "text-pitch-alignment": "viewport",
-            visibility: "visible",
+            //    "symbol-avoid-edges": true,
+            //    "icon-rotation-alignment": "viewport",
+            //   "text-pitch-alignment": "viewport",
+            //   visibility: "visible",
             "text-font": ["Microsoft YaHei"],
-            // "text-optional": true,
-            "text-padding": 200,
+            "text-optional": true,
+            //  "text-padding": 200,
             "text-field": "{name}",
-            "text-size": 15,
+            "text-size": 14,
             "icon-image": "500", // 引用精灵图中的图标
             "icon-size": 1,// 根据需要调整图标大小
-            "icon-anchored": "bottom", // 设置图标的锚点位置
+            //  "icon-anchored": "bottom", // 设置图标的锚点位置
             // "icon-offset": [0, 15], // 设置图标相对于锚点的偏移量，单位为像素
             "text-anchor": "top", // 设置文字的锚点位置
             "text-offset": [0, -1.8], // 设置文字相对于图标的偏移量
@@ -1286,8 +1324,15 @@ let waySpec = [
             "text-halo-color": "#fff",
             'text-halo-width': 1.5
         },
+        'slot': 'bottom',
         minzoom: 14,
     },
+
+    // {
+    //     'id': 'dem_hillshading',
+    //     'source': 'mapbox-dem',
+    //     'type': 'hillshade'
+    // },
 
 
 

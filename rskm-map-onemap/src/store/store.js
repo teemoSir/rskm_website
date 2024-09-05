@@ -9,7 +9,9 @@ const treeStore = defineStore({
         return {
             treeXz: [],
             treeJg: [],
-            treeQy: []
+            treeQy: [],
+            searchTypeStore: undefined,
+            searchNameStore: undefined
         }
     },
     getters: {

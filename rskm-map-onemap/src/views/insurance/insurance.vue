@@ -1,15 +1,15 @@
 <script setup>
 import { ref, computed, watch, onMounted, nextTick, reactive } from "vue";
 import { message } from "ant-design-vue";
-import { api } from "@/config/map";
+import { api } from "@/config/api.js";
 import * as turf from "@turf/turf";
 import downloadTextFile from "@/utils/downloadFile.js";
 import dayjs from "dayjs";
 import {
   Headset,
   Info,
-  Search,
-  RotateCw,
+//   Search,
+//   RotateCw
   X,
   Sprout,
   FilePenLine,
@@ -102,11 +102,11 @@ const columns = ref([
   //     key: "end_date",
   //     width: 100,
   //   },
-  {
-    title: "下载",
-    dataIndex: "operation",
-    minWidth: 60,
-  },
+//   {
+//     title: "下载",
+//     dataIndex: "operation",
+//     minWidth: 60,
+//   },
 ]);
 
 /**
@@ -116,7 +116,7 @@ const pagination = ref({
   pageSize: 10, // 每页显示10条数据
   total: 1, // 总数据条数
   responsive: true,
-  pageSizeOptions: false,
+  //pageSizeOptions: false,
   showLessItems: true,
   showTotal: (total, range) => {
     return `${total} 条`;
@@ -323,7 +323,7 @@ defineExpose({
       <!-- <template #title>2024年山东</template>
      <template #footer>Footer</template>  -->
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'operation'">
+        <!-- <template v-if="column.dataIndex === 'operation'">
           <a-popconfirm
             v-if="dataSource.length"
             title="确定下载该地块?"
@@ -331,7 +331,7 @@ defineExpose({
           >
             <FolderDown />
           </a-popconfirm>
-        </template>
+        </template> -->
         <template v-if="column.dataIndex === 'insurancenum'">
           <div style="width: 100%;height">
             {{ record.insurancenum }}
@@ -344,7 +344,7 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'start_date'">
-          {{ record.start_date }}
+     
           {{ dayjs(record.start_date).format("YYYY/MM/DD") }}
           {{ dayjs(record.end_date).format("YYYY/MM/DD") }}
         </template>
@@ -354,8 +354,8 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'area_mi'">
-          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 /
-          {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 
+          <!-- {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米 -->
         </template>
       </template>
     </a-table>

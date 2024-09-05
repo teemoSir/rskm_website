@@ -1,45 +1,51 @@
 <script setup>
-import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
-import { api } from "@/config/map";
-import { message } from "ant-design-vue";
-import { ShieldCheck, Warehouse, MapPinned } from "lucide-vue-next";
+import { ref, watch, onMounted } from "vue";
+import { api } from "@/config/api.js";
+import { ShieldCheck, Warehouse, MapPinned, RotateCw, Search } from "lucide-vue-next";
 import { filterFeature } from "@/views/map/map.js";
 import { storeToRefs } from "pinia";
 import { treeStore } from "@/store/store.js";
+import { filterRskm } from "@/views/map/map.js";
+import Admin from "@/views/standard/admin.vue";
 
 // 解构状态
 const storeTree = treeStore();
 let { treeXz, treeJg, treeQy } = storeToRefs(storeTree);
 
+// 定义响应式变量
 const values_type = ref([]);
 const values_com = ref([]);
 const selectedKeysCom = ref([]);
 const checkedKeysCom = ref(["0-0"]);
-// watch(selectedKeysCom, () => {
-//   //console.log("selectedKeys", selectedKeysType);
-// });
+const activeKeyLS = ref("2");
+const optionsComs = ref([]);
+const optionsType = ref([]);
+const defaultComVals = ref(["0-0"]);
+const defaultTypeVals = ref(["0-0"]);
+const comTableData = ref();
+const selectedKeysType = ref([]);
+const checkedKeysType = ref(["0-0"]);
+const insTableData = ref([]);
+
+const filterGeometryAndPage = (checkedKeys) => {
+ // console.log(checkedKeys)
+  treeQy.value = checkedKeys.value;
+  filterRskm();
+}
+
+// 监听checkedKeysCom变化
 watch(checkedKeysCom, () => {
- // console.log("checkedKeysCom", checkedKeysCom);
-
-  let sql = [];
-  checkedKeysCom.value.forEach((ckt) => {
-    ckt.split("|").length > 1 && sql.push(ckt.split("|")[1]);
-  });
-
-  treeJg.value = sql;
-  //console.log(treeJg.value);
-  sql.length && filterRSKMPT();
-  !sql.length && filterRSKMPT(false);
+  treeJg.value = checkedKeysCom.value;
+  filterRskm();
 });
 
-const activeKeyLS = ref("2");
-const onRect = () => {
-  values_type.value = [];
-  values_com.value = [];
-};
+// 监听checkedKeysType变化
+watch(checkedKeysType, () => {
+  treeXz.value = checkedKeysType.value;
+  filterRskm();
+});
 
-// 机构名称downlist
-const optionsComs = ref([]);
+// 加载机构名称下拉列表
 const loadTreeCom = () => {
   for (let i in window["rskm_pt_insure_com"]) {
     optionsComs.value.push({
@@ -48,17 +54,13 @@ const loadTreeCom = () => {
       key: Number(i) + 1,
     });
   }
-  //   console.log(optionsComs);
-  //   console.log(window["rskm_pt_insure_com"]);
 };
 
-// 保险类型downlist
-const optionsType = ref([]);
+// 加载保险类型下拉列表
 const loadTreeType = () => {
   let its = window["rskm_pt_insure_type"] || [];
   its.map((it, i) => {
     if (getFilterDataTree(it.xzname)) {
-      // console.log(it.xzname, i);
       optionsType.value.push({
         value: it.xzname,
         label: it.xzname + ` ${it.insurancetype}`,
@@ -66,98 +68,55 @@ const loadTreeType = () => {
       });
     }
   });
-  //   for (let i in its) {
-  //     optionsType.value.push({
-  //       value: its[i].xzname,
-  //       label: Number(i) + 1 + " " + its[i].xzname,
-  //       key: Number(i) + 1,
-  //     });
-  //   }
-  //   console.log(optionsType);
-  // console.log(window["rskm_pt_insure_type"]);
 };
 
-// 默认加载
-const defaultComVals = ref(["0-0"]);
-const defaultTypeVals = ref(["0-0"]);
-
-const comTableData = ref();
-/**
- *保险平台tree
- */
+// 保险平台tree
 const watchInsCom = () => {
   const list = [
     {
-      title: "全部",
+      title: "全部机构",
       key: "0-0",
       children: [],
     },
   ];
 
   let ics = window.rskm_pt_insure_com || [];
-
   ics.map((ins) => {
-    //console.log(ins)
     list[0].children.push({
       title: ins.insurcompanyname,
-      key: `0-0-|${ins.insurcompanycode}`,
+      key: `0-0-${ins.insurcompanycode}`,
     });
   });
 
-  //console.log(checkedKeysType);
   comTableData.value = list;
 };
 
-const selectedKeysType = ref([]);
-
-// watch(selectedKeysType, () => {
-//   //console.log("selectedKeys", selectedKeysType);
-// });
-
-const checkedKeysType = ref(["0-0"]);
-// 保险险种筛选
-watch(checkedKeysType, () => {
- // console.log("checkedKeys", checkedKeysType.value);
-  let sql = [];
-  checkedKeysType.value.forEach((ckt) => {
-    ckt.split("|").length > 1 && sql.push(ckt.split("|")[1]);
-  });
-  //console.log(sql.join(","));
-  treeXz.value = sql;
-  sql.length && filterRSKMPT();
-  !sql.length && filterRSKMPT(false);
-});
-
-const insTableData = ref();
-//保险类型 tree
+// 保险类型 tree
 const watchInsType = () => {
   const list = [
     {
-      title: "全部",
+      title: "全部险种",
       key: "0-0",
       children: [],
     },
   ];
   let its = window.rskm_pt_insure_type || [];
-
   let itsType = [];
   its.filter((is) => {
     itsType.push(is.insurancetype);
   });
 
   [...new Set(itsType)].forEach((t, id) => {
-    // 第二级
     let listk = [];
     its.forEach((r) => {
       if (r.insurancetype == t && getFilterDataTree(r.xzname)) {
         listk.push({
           title: r.xzname,
-          key: `0-0-${id}-|${r.codenum}`,
+          key: `0-0-${id}-${r.codenum}`,
         });
       }
     });
 
-    // 第一级
     if (listk.length > 0) {
       list[0].children.push({
         title: t,
@@ -172,114 +131,71 @@ const watchInsType = () => {
 
 // 获取统一类型
 const getFilterDataTree = (name) => {
-  let bool = false;
   let arrType = ["小麦", "玉米", "大豆"];
-  arrType.forEach((a) => {
-    if (name.indexOf(a) > -1) {
-      bool = true;
-    }
-  });
-
-  return bool;
+  return arrType.some(a => name.includes(a));
 };
 
-//初始化
-onMounted(() => {
-  loadData();
-});
-// const mode = ref("left");
-const loadData = () => {
-  /**
-   * 险种
-   */
-
-  api.rskm_pt_insure_type.then((data) => {
-    window.rskm_pt_insure_type = data;
+// 加载数据
+const loadData = async () => {
+  let rskm_pt_insure_type = await api.get_table_by_filter(
+    "rskm_pt_insure_type",
+    "",
+    "codenum,xzname,id,insurancetype,insurancetypeid"
+  );
+  if (rskm_pt_insure_type.length > 0) {
+    window.rskm_pt_insure_type = rskm_pt_insure_type;
     loadTreeType();
     watchInsType();
-  });
+  }
 
-  /**
-   * 保险平台
-   */
+  let rskm_pt_insure_com = await api.get_table_by_filter(
+    "rskm_pt_insure_com",
+    "",
+    "insurcompanycode,insurcompanyname,id"
+  );
 
-  api.rskm_pt_insure_com.then((data) => {
-    window.rskm_pt_insure_com = data;
+  if (rskm_pt_insure_com) {
+    window.rskm_pt_insure_com = rskm_pt_insure_com;
     loadTreeCom();
     watchInsCom();
-  });
-};
-
-// 条件筛查图形
-const filterRSKMPT = (bool = true) => {
-  // console.log(treeJg.value.length);
-  let layers = ["rskm_pt", "rskm_pt_name"];
-  if (bool) {
-    let tree = ["all"];
-    treeXz.value.length > 0 && tree.push(["in", "insurancetarget", ...treeXz.value]);
-    treeJg.value.length > 0 && tree.push(["in", "insurcompany_code", ...treeJg.value]); //...treeJg.value
-    //  console.log(tree);
-    //区域
-    tree.length > 0 && filterFeature(layers, tree);
-  } else {
-    filterFeature(layers, [
-      "all", // county,city,village,town
-      ["==", ["get", "insurancenum"], ""],
-    ]);
   }
 };
+
+// 初始化
+onMounted(() => {
+  treeXz.value = checkedKeysCom.value;
+  treeJg.value = checkedKeysCom.value;
+  treeQy.value = checkedKeysCom.value;
+  loadData();
+});
+
+// 重置筛选条件
+const onRect = () => {
+  values_type.value = [];
+  values_com.value = [];
+};
 </script>
+
 <template>
-  <a-tabs v-model:activeKey="activeKeyLS" :tab-position="mode">
+  <a-tabs v-model:activeKey="activeKeyLS">
     <a-tab-pane key="2">
       <template #tab>
         <ShieldCheck />
         <div>险种险类</div>
       </template>
       <div style="padding: 15px">
-        <!--    <div v-if="!checkedKeysType.length">
-      <a-select
-            v-model:value="values_type"
-            :allowClear="true"
-            :bordered="false"
-            id="optionsType"
-            mode="multiple"
-            style="width: 100%"
-            placeholder="请选择 或 输入关键字"
-            :options="optionsType"
-          />
-          <hr /> 
-          <a-row v-if="values_type.length">
-            <a-col :span="24">
-              <a-statistic
-                title="选中条件项"
-                :value="values_type.length"
-                class="demo-class"
-              >
-                <template #suffix>
-                  <span>/ {{ optionsType.length }}</span>
-                </template>
-              </a-statistic>
-            </a-col>
-          </a-row>
-        </div>-->
-        <div v-if="!values_type.length">
+        <div>
           <a-tree
             v-model:checkedKeys="checkedKeysType"
             v-model:expandedKeys="defaultTypeVals"
             checkable
             :autoExpandParent="true"
-            v-if="insTableData"
-            :height="300"
+            v-show="insTableData.length"
+            :height="500"
             :tree-data="insTableData"
             blockNode
             :selectable="false"
-          >
-            <!-- <template #title="{ title, key,id }">
-          <div v-if="key">{{ title }} <sub>{{id}}</sub></div>
-          <template v-else>{{ title }}</template>
-        </template> -->
-          </a-tree>
+          />
         </div>
       </div>
     </a-tab-pane>
@@ -290,61 +206,31 @@ const filterRSKMPT = (bool = true) => {
         <div>保险机构</div>
       </template>
       <div style="padding: 15px">
-        <!--  <div v-if="!checkedKeysCom.length">
-         <a-select
-            v-model:value="values_com"
-            id="optionsCom"
-            mode="multiple"
-            :allowClear="true"
-            :bordered="false"
-            style="width: 100%"
-            placeholder="请选择 或 输入关键字"
-            :options="optionsComs"
-          />
-          <hr /> 
-          <a-row v-if="values_com.length">
-            <a-col :span="24">
-              <a-statistic
-                title="选中条件项"
-                :value="values_com.length"
-                class="demo-class"
-              >
-                <template #suffix>
-                  <span>/ {{ optionsComs.length }}</span>
-                </template>
-              </a-statistic>
-            </a-col>
-          </a-row>
-        </div>-->
         <div>
           <a-tree
             v-model:checkedKeys="checkedKeysCom"
             v-model:expandedKeys="defaultComVals"
             checkable
             :autoExpandParent="true"
-            :expandedKeys="defaultComVals"
-            v-if="comTableData"
-            :height="300"
+            v-show="comTableData.length"
+            :height="500"
             :tree-data="comTableData"
             blockNode
             :selectable="false"
-          >
-            <!-- <template #title="{ title, key }">
-          <div v-if="key">{{ title }}</div>
-          <template v-else>{{ title }}</template>
-        </template> -->
-          </a-tree>
+          />
         </div>
       </div>
     </a-tab-pane>
 
-    <!-- <a-tab-pane key="3">
+    <a-tab-pane key="3">
       <template #tab>
         <MapPinned />
         <div>行政区划</div>
       </template>
-      <div style="padding: 15px"></div>
-    </a-tab-pane> -->
+      <div style="padding: 15px">
+        <Admin :filterGeometryAndPage="filterGeometryAndPage"></Admin>
+      </div>
+    </a-tab-pane>
   </a-tabs>
   <div>
     <a-row v-if="values_type.length || values_com.length">
@@ -360,8 +246,8 @@ const filterRSKMPT = (bool = true) => {
             <Search style="margin-right: 10px" />
           </template>
           条件筛查
-        </a-button></a-col
-      >
+        </a-button>
+      </a-col>
       <a-col :span="2"></a-col>
       <a-col :span="11">
         <a-button size="large" style="width: 100%" class="boxshadow" @click="onRect()">
@@ -369,8 +255,8 @@ const filterRSKMPT = (bool = true) => {
             <RotateCw style="margin-right: 10px" />
           </template>
           重置
-        </a-button></a-col
-      >
+        </a-button>
+      </a-col>
     </a-row>
   </div>
 </template>
@@ -381,10 +267,10 @@ const filterRSKMPT = (bool = true) => {
 }
 
 /deep/ .ant-tabs-tab {
- 
-  width: 200px;
+  width: 155px;
   text-align: center;
 }
+
 /deep/ .ant-tabs-tab-btn {
   color: rgb(240, 235, 235);
   width: 100%;

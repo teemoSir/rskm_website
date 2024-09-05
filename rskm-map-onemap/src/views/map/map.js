@@ -1,48 +1,58 @@
-import { config, mapbox, api } from "@/config/map.js";
+/**
+ * @file 地图组件和相关工具函数
+ * @module 地图组件
+ */
+
+import { config, mapbox } from "@/config/tileserver.js";
+import { api } from "@/config/api.js";
 import { waySpec } from "../../config/spec";
 import { fills } from "../../config/fill";
 import StateManager from "@/utils/state_manager"
 import dayjs from "dayjs";
 import page from "../../../package.json";
+import { storeToRefs } from "pinia";
+import { treeStore } from "@/store/store.js";
+
+const storeTree = treeStore();
+const { treeXz, treeJg, treeQy, searchTypeStore, searchNameStore } = storeToRefs(storeTree);
+
 /**
- * 旋转事件
+ * 处理地图旋转事件
+ * @function
+ * @returns {void}
  */
 const eventRotate = () => {
-    let bear = map.getBearing();
-    let pitch = map.getPitch();
-    let rad = -(bear * (Math.PI / 180));
-    let r = document.getElementById("Zero");
-    r && (r.style.transform = `rotateZ(${rad}rad)`);
-
-    bear = undefined;
-    rad = undefined;
-    r = undefined;
+    const bear = map.getBearing();
+    const pitch = map.getPitch();
+    const rad = -(bear * (Math.PI / 180));
+    const r = document.getElementById("Zero");
+    if (r) r.style.transform = `rotateZ(${rad}rad)`;
 }
 
 /**
- * 渲染事件
+ * 处理地图渲染事件
+ * @function
+ * @returns {void}
  */
 const eventRender = () => {
+    const MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
+    const ll = {
+        lng: window.lnglatrender?.lng.toFixed(6) ?? "0",
+        lat: window.lnglatrender?.lat.toFixed(6) ?? "0"
+    };
 
-    let MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
-    let ll = {
-        lng: (window.lnglatrender || { lng: 0, lat: 0 }).lng.toFixed(6),
-        lat: (window.lnglatrender || { lng: 0, lat: 0 }).lat.toFixed(6),
-    } || { lng: 0, lat: 0 };
     document.getElementById("xyz").innerHTML = `
-    <span style='padding-right: 10px;'>${MAP_LAYERS.st ? "审图号：" + MAP_LAYERS.st : ""}</span>
-    <span style='padding-right: 10px;' >© ${page.name}</span>
-    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
-    <span style='padding-right: 10px;'>等级：${map && map.getZoom().toFixed(2)} </span>
-     <span style='padding-right: 10px;'>模式：${((map && map.getProjection().name || "default") == "globe") ? "三维" : "二维"} </span>
-    <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`;
-
-    MAP_LAYERS = undefined;
-    ll = undefined;
+        <span style='padding-right: 10px;'>${MAP_LAYERS.st ? `审图号：${MAP_LAYERS.st}` : ""}</span>
+        <span style='padding-right: 10px;'>© ${page.name}</span>
+        <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
+        <span style='padding-right: 10px;'>等级：${map?.getZoom().toFixed(2) ?? ""} </span>
+        <span style='padding-right: 10px;'>模式：${(map?.getProjection().name ?? "default") === "globe" ? "三维" : "二维"} </span>
+        <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`;
 }
 
 /**
- * 鼠标浮动
+ * Mapbox 小型弹出窗口实例
+ * @type {mapboxgl.Popup}
  */
 const popup = new mapboxgl.Popup({
     closeOnClick: false,
@@ -51,7 +61,8 @@ const popup = new mapboxgl.Popup({
 });
 
 /**
- * 鼠标浮动
+ * Mapbox 大型弹出窗口实例
+ * @type {mapboxgl.Popup}
  */
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
@@ -59,37 +70,37 @@ const popupbig = new mapboxgl.Popup({
     maxWidth: "380px",
 });
 
-
-
-// 添加
+/**
+ * 向地图添加图层
+ * @function
+ * @returns {void}
+ */
 const addLayers = () => {
-    // 配图
     waySpec.forEach((layer) => {
         map.getLayer(layer.id) && map.removeLayer(layer.id);
     });
 
-    // 源数据
-    let sources = config;
+    const sources = config;
 
-    for (let source in sources) {
-        //console.log(source);
+    for (const source in sources) {
         map.getSource(sources[source].name) && map.removeSource(sources[source].name);
     }
 
-    // 重载数据
-
-    for (let source in sources) {
+    for (const source in sources) {
         !map.getSource(sources[source].name) &&
             map.addSource(sources[source].name, sources[source].tile);
     }
 
-    // 重载配图
     waySpec.forEach((spec) => {
-        //console.log(spec);
         !map.getLayer(spec.id) && map.addLayer(spec);
     });
 };
 
+/**
+ * 向地图添加图标
+ * @function
+ * @returns {void}
+ */
 const addIcon = () => {
     fills.forEach((f) => {
         map.loadImage(f.icon, (err, image) => {
@@ -100,43 +111,40 @@ const addIcon = () => {
     });
 };
 
-// 设置气泡数据
+/**
+ * 设置弹出窗口内容
+ * @async
+ * @function
+ * @param {Object} data - 要素数据
+ * @returns {Promise<string|boolean>} 弹出窗口内容或如果未找到要素则返回 false
+ */
 const setPopup = async (data) => {
+    const feature = await api.get_table_by_filter("rskm_pt", `and gid=${data.properties.gid}`, ` gid, insurancenum, insurcompany_code, insured, start_date, end_date, region_code, insurance_id, create_date, city, county, province, village, town, insurancetarget, insured_quantity, area_mi, area_mu, i_com_name, i_type_name `);
+    if (!feature[0]) return false;
 
-    let feature = await api.get_insure_by_filter("rskm_pt", `and gid=${data.properties.gid}`)
-    feature = feature[0];
-    if (!feature) return false
-
-    let insurancenum = feature.insurancenum || "";
-    let area_mi = feature.area_mi
-        ? Number(feature.area_mi).toFixed(2)
+    const insurancenum = feature[0].insurancenum || "";
+    const area_mi = feature[0].area_mi
+        ? Number(feature[0].area_mi).toFixed(2)
         : "";
-    let area_mu = feature.area_mi
-        ? (Number(feature.area_mi) / 667).toFixed(2)
+    const area_mu = feature[0].area_mi
+        ? (Number(feature[0].area_mi) / 667).toFixed(2)
         : "";
-    let start_date = dayjs(feature.start_date).format("YYYY/MM/DD") || "";
-    let end_date = dayjs(feature.end_date).format("YYYY/MM/DD");
-    let insured_quantity = Number(feature.insured_quantity).toFixed(2) || "";
-    let province_city_county_town_village =
-        (feature.province || "") +
-        (feature.city || "") +
-        (feature.county || "") +
-        (feature.town || "") +
-        (feature.village || "");
-    let r_data = feature.r_data || "";
-    let t_data = feature.t_data || "";
-    // let insurcompany_code = feature.insurcompany_code || "";
-    // let insurcompany = window["rskm_pt_insure_com"].filter(
-    //     (r) => r.insurcompanycode == insurcompany_code
-    // );
+    const start_date = dayjs(feature[0].start_date).format("YYYY/MM/DD") || "";
+    const end_date = dayjs(feature[0].end_date).format("YYYY/MM/DD");
+    const insured_quantity = Number(feature[0].insured_quantity).toFixed(2) || "";
+    const province_city_county_town_village =
+        (feature[0].province || "") +
+        (feature[0].city || "") +
+        (feature[0].county || "") +
+        (feature[0].town || "") +
+        (feature[0].village || "");
+    const r_data = feature[0].r_data || "";
+    const t_data = feature[0].t_data || "";
+    const insured = feature[0].insured || "";
+    const codenum_code = feature[0].i_com_name || "";
+    const codenum_type = feature[0].i_type_name || "";
 
-    let insured = feature.insured || "";
-
-    let codenum_code = feature.i_com_name || "";
-    let codenum_type = feature.i_type_name || "";
-
-
-    let text = `
+    const text = `
         <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 14px;"  title="${r_data + t_data
         }" >
         <tr style="line-height:1.5;border-top:0.5px dotted rgba(255,255,255,0.1);    font-size: 14px;"><th width="60" style="vertical-align: center;" rowspan="12" >
@@ -166,23 +174,116 @@ const setPopup = async (data) => {
     `;
 
     return text
-
 }
 
-// 设置地图条件检索显示
+/**
+ * 过滤地图上的要素
+ * @function
+ * @param {string[]} layers - 要过滤的图层名称
+ * @param {any[]} filter - 过滤表达式
+ * @returns {void}
+ */
 const filterFeature = (layers, filter = []) => {
-    //   let filter = [
-    //     "all", // 使用 "all" 表示必须同时满足以下条件
-    //     ["<", ["get", "bili"], 80], // bili 大于等于 80
-    //     [">", ["get", "bili"], 0], // bili 小于等于 100
-    //   ];
-
-    //let hgdks = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
     layers.forEach((gd) => {
         map.setFilter(gd, filter);
     });
 };
 
+/**
+ * 应用过滤器到 RSKM 图层
+ * @function
+ * @returns {void}
+ */
+const filterRskm = () => {
+    // console.log(treeXz.value?.length);
+    // console.log(treeXz.value);
+    // console.log(treeJg.value?.length);
+    // console.log(treeJg.value);
+    // console.log(treeQy.value?.length);
+    // console.log(treeQy.value);
+
+    const layers = ["rskm_pt", "rskm_pt_name", "rskm_pt_name_1", "rskm_pt_outline"];
+
+    if (treeXz.value?.length === 0 || treeJg.value?.length === 0 || treeQy.value?.length === 0) {
+        filterFeature(layers, ["in", "insurancenum", ""]);
+    } else if (treeXz.value?.length > 0 || treeJg.value?.length > 0 || treeQy.value?.length > 0) {
+        const tree = ["all"];
+
+        if (treeXz.value[0] !== "0-0") {
+            const arrs = treeXz.value.filter(e => e.split("-").length > 3).map(e => e.split("-")[3]);
+            tree.push(["in", "insurancetarget", ...arrs]);
+        }
+
+        if (treeJg.value[0] !== "0-0") {
+            const arrs = treeJg.value.filter(e => e.split("-").length > 2).map(e => e.split("0-0-")[1]);
+            tree.push(["in", "insurcompany_code", ...arrs]);
+        }
+
+        if (searchNameStore.value && searchTypeStore.value === "区域") {
+            tree.push(
+                [
+                    "any",
+                    [">", ["index-of", searchNameStore.value.trim(), 'county'], -1],
+                    [">", ["index-of", searchNameStore.value.trim(), 'city'], -1],
+                    [">", ["index-of", searchNameStore.value.trim(), 'village'], -1],
+                    [">", ["index-of", searchNameStore.value.trim(), 'town'], -1],
+                ]
+            )
+        }
+
+        if (searchNameStore.value && searchTypeStore.value === "单号") {
+            tree.push(
+                ["in", "insurancenum", searchNameStore.value.trim()]
+            )
+        }
+
+        //  console.log(treeQy.value[0])
+        if (treeQy.value[0] !== "0-0") {
+
+
+            const townCodes = [];
+            const countryCodes = [];
+            const cityCodes = [];
+
+            for (const e of treeQy.value) {
+                const code = e.split("-")[e.split("-").length - 1];
+                const dashCount = (e.match(/-/g) || []).length;
+                dashCount === 4 && townCodes.push(code);
+                dashCount === 3 && countryCodes.push(code);
+                dashCount === 2 && cityCodes.push(code.slice(0, 4));
+            }
+            // console.log(townCodes)
+            // console.log(countryCodes)
+            // console.log(cityCodes)
+            const isCity = ["any"];
+            if (townCodes.length > 0) {
+                townCodes.forEach(code => isCity.push(["==", ["slice", ["get", "region_code"], 0, 9], code]));
+            }
+
+            if (countryCodes.length > 0) {
+                countryCodes.forEach(code => isCity.push(["==", ["slice", ["get", "region_code"], 0, 6], code]));
+            }
+
+            if (cityCodes.length > 0) {
+                cityCodes.forEach(code => isCity.push(["==", ["slice", ["get", "region_code"], 0, 4], code]));
+            }
+
+            tree.push(isCity);
+        }
+
+        filterFeature(layers, tree);
+    } else {
+        filterFeature(layers, null);
+    }
+};
+
+/**
+ * 计算字符串中破折号的出现次数
+ * @function
+ * @param {string} str - 输入字符串
+ * @returns {number} 破折号出现的次数
+ */
+const countDashOccurrences = (str) => (str.match(/-/g) || []).length;
 
 export {
     eventRotate,
@@ -192,5 +293,6 @@ export {
     addLayers,
     addIcon,
     setPopup,
-    filterFeature
+    filterFeature,
+    filterRskm
 }

@@ -1,7 +1,7 @@
 <script setup>
 import { logo } from "./index";
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
-import { api } from "@/config/map";
+import { api } from "@/config/api.js";
 import SDMap from "./map/map.vue";
 import { message } from "ant-design-vue";
 import Legend from "./map/legend.vue";
@@ -32,6 +32,20 @@ import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
 import { filterFeature } from "./map/map";
 import { layers } from "@/config/spec";
+import { storeToRefs } from "pinia";
+import { treeStore } from "@/store/store.js";
+import { filterRskm } from "@/views/map/map.js";
+
+const storeTree = treeStore();
+let { searchTypeStore, searchNameStore } = storeToRefs(storeTree);
+
+//  初始化区域
+const defaultAdmin = () => {
+  if (!StateManager.get("defaultAdmin")) {
+    StateManager.set("defaultAdmin", "山东省");
+  }
+  return StateManager.get("defaultAdmin");
+};
 
 const value = ref("user1");
 dayjs.extend(updateLocale);
@@ -50,7 +64,6 @@ message.config({
 const inSerchRef = ref();
 const insuranceRef = ref(null);
 
-
 //菜单
 const current = ref(["mail"]);
 const items = ref([
@@ -63,26 +76,34 @@ const items = ref([
   {
     key: "app",
     icon: () => h(TextSearch),
-    label: "信息查询",
-    title: "信息查询",
+    label: "遥感核验",
+    title: "遥感核验",
     children: [
       {
         type: "group",
-        label: "保单",
+        label: "区域核验",
         children: [
           {
-            label: "保单详情",
+            label: "区县级核验",
             key: "app:1",
+          },
+          {
+            label: "乡镇级核验",
+            key: "app:2",
+          },
+          {
+            label: "村级核验",
+            key: "app:3",
           },
         ],
       },
       {
         type: "group",
-        label: "耕地",
+        label: "地块核验",
         children: [
           {
-            label: "耕地详情",
-            key: "app:2",
+            label: "乡镇级核验",
+            key: "app:11",
           },
         ],
       },
@@ -99,7 +120,7 @@ const items = ref([
         label: "数据分析",
         children: [
           {
-            label: "农险一张图",
+            label: "农险大数据一张图",
             key: "sub5:1",
           },
           {
@@ -131,35 +152,20 @@ const items = ref([
   {
     key: "cloud",
     icon: () => h(Settings),
-    label: "平台能力",
-    title: "平台能力",
+    label: "遥感监测",
+    title: "遥感监测",
     children: [
       {
         type: "group",
-        label: "基础数据",
+        label: "基础监测",
         children: [
           {
-            label: "区划管理",
+            label: "灾损遥感监测",
             key: "cloud4:1",
           },
           {
-            label: "地块管理",
+            label: "长势遥感监测",
             key: "cloud3:1",
-          },
-        ],
-      },
-
-      {
-        type: "group",
-        label: "气象",
-        children: [
-          {
-            label: "卫星云图",
-            key: "cloud2:1",
-          },
-          {
-            label: "实时气象",
-            key: "cloud1:2",
           },
         ],
       },
@@ -190,17 +196,19 @@ const searchListName = [
   { name: "区域", type: 2 },
 ];
 
-const value3 = ref(searchListName[0].name);
+const searchType = ref(searchListName[0].name);
 //搜索框
 const searchValue = ref();
 watch(searchValue, () => {
-  //点击X清空
-  !searchValue.value && filterRSKMPT();
+  //状态管理中加入查询条件
+  searchTypeStore.value = searchType.value;
+  searchNameStore.value = searchValue.value;
+  filterRskm();
 });
 
 // 检索类型
 const setSearchListName = (d) => {
-  value3.value = d.name;
+  searchType.value = d.name;
   inSerchRef.value.focus();
   searchValue.value = "";
 };
@@ -289,26 +297,26 @@ const goGeom = (data) => {
 
 // 查询单个保单号
 const searchByfilter = async () => {
-  if (searchValue.value && value3.value == "单号") {
-    let feature = await api.get_insure_by_filter(
+  if (searchValue.value && searchType.value == "单号") {
+    let feature = await api.get_table_by_filter(
       "rskm_pt",
       `and insurancenum='${searchValue.value}'`,
-      `ST_AsGeoJSON(geom) as json `
+      `ST_AsGeoJSON(geom) as json,gid, insurancenum, insurcompany_code, insured, start_date, end_date, region_code, insurance_id, create_date, city, county, province, village, town, insurancetarget, insured_quantity, area_mi, area_mu, i_com_name, i_type_name  `
     );
 
     feature = feature[0];
 
     if (!feature) {
       message.warning(`暂无【${searchValue.value}】单号数据`, 3);
-      filterRSKMPT();
+      filterRskm();
       return false;
     } else {
       message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
         goGeom(feature.json);
-        filterRSKMPT(1);
+        filterRskm(1);
       });
     }
-  } else if (searchValue.value && value3.value == "区域") {
+  } else if (searchValue.value && searchType.value == "区域") {
     let filter = `and (province ILIKE  '%25${searchValue.value}%25' or city ILIKE  '%25${searchValue.value}%25' or county ILIKE  '%25${searchValue.value}%25' or town ILIKE  '%25${searchValue.value}%25' or village ILIKE  '%25${searchValue.value}%25')`;
     open.value = true;
     const data = await api.get_table_count("rskm_pt", filter);
@@ -325,48 +333,48 @@ const searchByfilter = async () => {
         }
       );
 
-      filterRSKMPT(2);
+      filterRskm(2);
     } else {
       message.warning(`暂未查询到【${searchValue.value.trim()}】区域的数据`, 3);
       insuranceRef.value.loading = false;
       open.value = !true;
-      filterRSKMPT();
+      filterRskm();
     }
   } else {
-    filterRSKMPT();
+    filterRskm();
   }
 };
 
 // 图形筛查
 const filterRSKMPT = (type) => {
+  //  filterRskm();
   //console.log(searchValue.value.trim());
-  let layers = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
-  switch (type) {
-    case 1:
-      //单号
-      filterFeature(layers, [
-        "all", //
-        ["==", ["get", "insurancenum"], searchValue.value.trim()],
-      ]);
-      break;
-    case 2:
-      //区域
-      filterFeature(layers, [
-        "any", // county,city,village,town
-        [">", ["index-of", searchValue.value.trim(), ["get", "county"]], -1],
-        [">", ["index-of", searchValue.value.trim(), ["get", "city"]], -1],
-        [">", ["index-of", searchValue.value.trim(), ["get", "village"]], -1],
-        [">", ["index-of", searchValue.value.trim(), ["get", "town"]], -1],
-      ]);
-      break;
-
-    default:
-      filterFeature(layers, [
-        "all", // county,city,village,town
-        ["!=", ["get", "insurancenum"], null],
-      ]);
-      break;
-  }
+  //   let layers = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
+  //   switch (type) {
+  //     case 1:
+  //       //单号
+  //       filterFeature(layers, [
+  //         "all", //
+  //         ["==", ["get", "insurancenum"], searchValue.value.trim()],
+  //       ]);
+  //       break;
+  //     case 2:
+  //       //区域
+  //       filterFeature(layers, [
+  //         "any", // county,city,village,town
+  //         [">", ["index-of", searchValue.value.trim(), ["get", "county"]], -1],
+  //         [">", ["index-of", searchValue.value.trim(), ["get", "city"]], -1],
+  //         [">", ["index-of", searchValue.value.trim(), ["get", "village"]], -1],
+  //         [">", ["index-of", searchValue.value.trim(), ["get", "town"]], -1],
+  //       ]);
+  //       break;
+  //     default:
+  //       filterFeature(layers, [
+  //         "all", // county,city,village,town
+  //         ["!=", ["get", "insurancenum"], null],
+  //       ]);
+  //       break;
+  //   }
 };
 
 setTimeout(() => {
@@ -399,7 +407,7 @@ setTimeout(() => {
           @panelChange="panelChangeRL"
         />
       </a-space>
-      <a-button key="2" type="info" style="color: #ccc">山东省</a-button>
+      <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
     </template>
   </a-page-header>
   <div class="page">
@@ -437,9 +445,9 @@ setTimeout(() => {
                   <ChevronUp  /> -->
 
                   <div style="display: flex; align-items: center">
-                    <ShieldCheck v-if="value3 == '单号'" :size="20" />
+                    <ShieldCheck v-if="searchType == '单号'" :size="20" />
                     <MapPinned v-else :size="20" />
-                    &nbsp; {{ value3 }}
+                    &nbsp; {{ searchType }}
                   </div>
                 </a-button>
               </a-dropdown>
@@ -449,7 +457,7 @@ setTimeout(() => {
                 v-model:value="searchValue"
                 style="width: 300px"
                 class="searchshadow"
-                :placeholder="value3 == '区域' ? '请输入地址区域' : '请输入保险单号'"
+                :placeholder="searchType == '区域' ? '请输入地址区域' : '请输入保险单号'"
                 :allowClear="true"
                 @keyup.enter="searchByfilter"
               />

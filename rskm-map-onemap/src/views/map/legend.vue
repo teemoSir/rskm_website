@@ -123,7 +123,7 @@ watch(state, () => {
 
   //保单地块
   let hgdks = [
-    // "rskm_pt_outline",
+     "rskm_pt_outline",
     "rskm_pt",
     "rskm_pt_name",
   ];
