@@ -204,9 +204,9 @@ const filterRskm = () => {
 
     const layers = ["rskm_pt", "rskm_pt_name", "rskm_pt_name_1", "rskm_pt_outline"];
 
-    if ((treeXz.value?.length === 0 || treeJg.value?.length === 0 || treeQy.value?.length === 0) && !searchNameStore.value.trim()) {
+    if ((treeXz.value?.length === 0 || treeJg.value?.length === 0 || treeQy.value?.length === 0) && !searchNameStore.value) {
         filterFeature(layers, ["in", "insurancenum", ""]);
-    } else if (treeXz.value?.length > 0 || treeJg.value?.length > 0 || treeQy.value?.length > 0 || searchNameStore.value.trim()) {
+    } else if (treeXz.value?.length > 0 || treeJg.value?.length > 0 || treeQy.value?.length > 0 || searchNameStore.value) {
         const tree = ["all"];
 
         if (treeXz.value[0] !== "0-0") {
