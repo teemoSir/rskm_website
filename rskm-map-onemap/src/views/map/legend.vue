@@ -116,7 +116,7 @@ message.config({
 
 watch(state, () => {
   //耕地 StateManager
-  let gds = ["procjet_2024_wxsd_name", "procjet_2024_wxsd", "procjet_2024_wxsd_outine"];
+  let gds = ["procjet_2024_wxsd_name", "procjet_2024_wxsd", "procjet_2024_wxsd_outine","rskm_pt_name_1"];
   gds.forEach((gd) => {
     toggleLayerVisibility(gd, state.checked1);
   });
