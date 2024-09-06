@@ -15,7 +15,7 @@ let { treeXz, treeJg, treeQy } = storeToRefs(storeTree);
 // 定义响应式变量
 const values_type = ref([]);
 const values_com = ref([]);
-const selectedKeysCom = ref([]);
+// const selectedKeysCom = ref([]);
 const checkedKeysCom = ref(["0-0"]);
 const activeKeyLS = ref("2");
 const optionsComs = ref([]);
@@ -23,7 +23,7 @@ const optionsType = ref([]);
 const defaultComVals = ref(["0-0"]);
 const defaultTypeVals = ref(["0-0"]);
 const comTableData = ref();
-const selectedKeysType = ref([]);
+// const selectedKeysType = ref([]);
 const checkedKeysType = ref(["0-0"]);
 const insTableData = ref([]);
 

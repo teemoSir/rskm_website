@@ -204,9 +204,9 @@ const filterRskm = () => {
 
     const layers = ["rskm_pt", "rskm_pt_name", "rskm_pt_name_1", "rskm_pt_outline"];
 
-    if (treeXz.value?.length === 0 || treeJg.value?.length === 0 || treeQy.value?.length === 0) {
+    if ((treeXz.value?.length === 0 || treeJg.value?.length === 0 || treeQy.value?.length === 0) && !searchNameStore.value.trim()) {
         filterFeature(layers, ["in", "insurancenum", ""]);
-    } else if (treeXz.value?.length > 0 || treeJg.value?.length > 0 || treeQy.value?.length > 0) {
+    } else if (treeXz.value?.length > 0 || treeJg.value?.length > 0 || treeQy.value?.length > 0 || searchNameStore.value.trim()) {
         const tree = ["all"];
 
         if (treeXz.value[0] !== "0-0") {
@@ -219,25 +219,29 @@ const filterRskm = () => {
             tree.push(["in", "insurcompany_code", ...arrs]);
         }
 
-        if (searchNameStore.value && searchTypeStore.value === "区域") {
+        if (searchNameStore.value && searchTypeStore.value == "区域") {
             tree.push(
-                [
-                    "any",
-                    [">", ["index-of", searchNameStore.value.trim(), 'county'], -1],
-                    [">", ["index-of", searchNameStore.value.trim(), 'city'], -1],
-                    [">", ["index-of", searchNameStore.value.trim(), 'village'], -1],
-                    [">", ["index-of", searchNameStore.value.trim(), 'town'], -1],
-                ]
+                // [
+                //     "any",
+                //     [">", ["index-of", ["get", "province"], searchNameStore.value.trim()], -1],
+                //     [">", ["index-of", ["get", "city"], searchNameStore.value.trim()], -1],
+                //     [">", ["index-of", ["get", "county"], searchNameStore.value.trim()], -1],
+                //     [">", ["index-of", ["get", "town"], searchNameStore.value.trim()], -1],
+                //     [">", ["index-of", ["get", "village"], searchNameStore.value.trim()], -1],
+                // ]
+
+
+                [">", ["index-of",  searchNameStore.value.trim(),["concat", ['to-string', ['get', "province"]], ['to-string', ['get', "city"]], ['to-string', ['get', "county"]], ['to-string', ['get', "town"]], ['to-string', ['get', "village"]]]], -1],
             )
         }
 
-        if (searchNameStore.value && searchTypeStore.value === "单号") {
+        if (searchNameStore.value && searchTypeStore.value == "单号") {
             tree.push(
                 ["in", "insurancenum", searchNameStore.value.trim()]
             )
         }
 
-        //  console.log(treeQy.value[0])
+
         if (treeQy.value[0] !== "0-0") {
 
 
@@ -252,9 +256,7 @@ const filterRskm = () => {
                 dashCount === 3 && countryCodes.push(code);
                 dashCount === 2 && cityCodes.push(code.slice(0, 4));
             }
-            // console.log(townCodes)
-            // console.log(countryCodes)
-            // console.log(cityCodes)
+
             const isCity = ["any"];
             if (townCodes.length > 0) {
                 townCodes.forEach(code => isCity.push(["==", ["slice", ["get", "region_code"], 0, 9], code]));
@@ -270,12 +272,19 @@ const filterRskm = () => {
 
             tree.push(isCity);
         }
-
+        console.log(tree);
         filterFeature(layers, tree);
     } else {
         filterFeature(layers, null);
     }
+
+    // 数据筛选分页
+    pageSizeUpdate();
 };
+
+const pageSizeUpdate = () => {
+
+}
 
 /**
  * 计算字符串中破折号的出现次数

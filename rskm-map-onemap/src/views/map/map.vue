@@ -2,7 +2,7 @@
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
-import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted } from "vue";
+import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted,defineExpose } from "vue";
 import { config, mapbox } from "@/config/tileserver.js";
 import { api } from "@/config/api.js";
 import { layers, waySpec } from "@/config/spec";
@@ -927,6 +927,12 @@ onMounted(() => {
 onUnmounted(() => {
   delete window.map;
   delete window.gl_draw;
+});
+
+
+defineExpose({
+  fitCenter
+  
 });
 </script>
 

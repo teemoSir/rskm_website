@@ -11,12 +11,8 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/zh-cn";
 import {
-  //   Headset,
-  // Info,
   Search,
   FileDigit,
-  //   X,
-  //   Sprout,
   ShieldCheck,
   MapPinned,
   Home,
@@ -30,11 +26,11 @@ import {
 import page from "../../package.json";
 import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
-import { filterFeature } from "./map/map";
-import { layers } from "@/config/spec";
 import { storeToRefs } from "pinia";
 import { treeStore } from "@/store/store.js";
 import { filterRskm } from "@/views/map/map.js";
+
+const mapRef = ref(null);
 
 const storeTree = treeStore();
 let { searchTypeStore, searchNameStore } = storeToRefs(storeTree);
@@ -185,11 +181,6 @@ const items = ref([
   },
 ]);
 
-const onSearch = () => {};
-
-// const callback = (val) => {
-//   console.log(val);
-// };
 
 const searchListName = [
   { name: "单号", type: 1 },
@@ -203,42 +194,43 @@ watch(searchValue, () => {
   //状态管理中加入查询条件
   searchTypeStore.value = searchType.value;
   searchNameStore.value = searchValue.value;
-  filterRskm();
+  
+  !searchNameStore.value && filterRskm();
+
+  // 如果搜索框为空，则自动调整地图到最佳视野
+  !searchNameStore.value && mapRef.value.fitCenter();
 });
 
 // 检索类型
 const setSearchListName = (d) => {
   searchType.value = d.name;
   inSerchRef.value.focus();
-  searchValue.value = "";
+  // searchValue.value = "";
 };
 
 // 菜单
-// const data = reactive(["主页", "数据分析"]);
 const activeKey = ref("1");
-// const value_data = ref(data[0]);
 
 // 数据列表
-const open = ref(true);
+const open = ref(false);
 
-watch(open, () => {
-  open && (loadReady.value = 400);
-  if (open && !searchValue.value) {
-    insuranceRef.value.loadCount();
-    insuranceRef.value.loadTabel();
-  }
-});
+// watch(open, () => {
+//   // if (open.value) {
+//   //   insuranceRef.value.loadCount();
+//   //   insuranceRef.value.loadTabel();
+//   // }
+// });
 const onClose = () => {
   open.value = false;
 };
 
 // 增加数据延时
-const loadReady = ref(1);
+//const loadReady = ref(1);
 
 const menu = ref(false);
 
 // 年份
-const value5 = ref(
+const pageDateYear = ref(
   dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString())
 );
 
@@ -252,9 +244,10 @@ const panelChangeRL = (value, mode) => {
     2000
   );
 
-  setTimeout((e) => {
+  let ts = setTimeout((e) => {
     location.reload();
-  }, 2000);
+    clearTimeout(ts);
+  }, 1000);
 };
 
 const goGeomUn = () => {
@@ -297,122 +290,84 @@ const goGeom = (data) => {
 
 // 查询单个保单号
 const searchByfilter = async () => {
-  if (searchValue.value && searchType.value == "单号") {
-    let feature = await api.get_table_by_filter(
+  if (!searchValue.value) {
+    searchTypeStore.value = searchType.value;
+    searchNameStore.value = searchValue.value;
+
+  }
+  filterRskm();
+
+  return
+  const searchByInsuranceNumber = async () => {
+    const feature = await api.get_table_by_filter(
       "rskm_pt",
       `and insurancenum='${searchValue.value}'`,
       `ST_AsGeoJSON(geom) as json,gid, insurancenum, insurcompany_code, insured, start_date, end_date, region_code, insurance_id, create_date, city, county, province, village, town, insurancetarget, insured_quantity, area_mi, area_mu, i_com_name, i_type_name  `
     );
 
-    feature = feature[0];
-
-    if (!feature) {
+    if (!feature[0]) {
       message.warning(`暂无【${searchValue.value}】单号数据`, 3);
-      filterRskm();
-      return false;
     } else {
       message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
-        goGeom(feature.json);
-        filterRskm(1);
+        goGeom(feature[0].json);
       });
     }
-  } else if (searchValue.value && searchType.value == "区域") {
-    let filter = `and (province ILIKE  '%25${searchValue.value}%25' or city ILIKE  '%25${searchValue.value}%25' or county ILIKE  '%25${searchValue.value}%25' or town ILIKE  '%25${searchValue.value}%25' or village ILIKE  '%25${searchValue.value}%25')`;
-    open.value = true;
+  };
+
+  const searchByRegion = async () => {
+    const filter = `and (province ILIKE '%25${searchValue.value}%25' or city ILIKE '%25${searchValue.value}%25' or county ILIKE '%25${searchValue.value}%25' or town ILIKE '%25${searchValue.value}%25' or village ILIKE '%25${searchValue.value}%25')`;
     const data = await api.get_table_count("rskm_pt", filter);
 
     if (Number(data[0].count)) {
-      insuranceRef.value.loading = true;
-      message.success(
-        `【${searchValue.value}】区域，查询到${data[0].count}条关联数据`,
-        3,
-        () => {
-          insuranceRef.value.loading = false;
-          insuranceRef.value.loadTabel(1, 30, filter);
-          insuranceRef.value.loadCount(filter);
-        }
-      );
 
-      filterRskm(2);
+      message.success(
+        `【${searchValue.value}】区域，查询到${data[0].count}条关联数据.`,
+        3
+      );
     } else {
-      message.warning(`暂未查询到【${searchValue.value.trim()}】区域的数据`, 3);
-      insuranceRef.value.loading = false;
-      open.value = !true;
-      filterRskm();
+      message.warning(`暂未查询到【${searchValue.value.trim()}】区域的数据.`, 3);
+
     }
-  } else {
+  };
+
+  try {
+    if (searchType.value === "单号") {
+      await searchByInsuranceNumber();
+    } else if (searchType.value === "区域") {
+      await searchByRegion();
+    }
+  } catch (error) {
+    console.error("搜索出错:", error);
+    message.error("搜索过程中出现错误，请稍后重试");
+  } finally {
     filterRskm();
   }
 };
 
-// 图形筛查
-const filterRSKMPT = (type) => {
-  //  filterRskm();
-  //console.log(searchValue.value.trim());
-  //   let layers = ["rskm_pt_outline", "rskm_pt", "rskm_pt_name"];
-  //   switch (type) {
-  //     case 1:
-  //       //单号
-  //       filterFeature(layers, [
-  //         "all", //
-  //         ["==", ["get", "insurancenum"], searchValue.value.trim()],
-  //       ]);
-  //       break;
-  //     case 2:
-  //       //区域
-  //       filterFeature(layers, [
-  //         "any", // county,city,village,town
-  //         [">", ["index-of", searchValue.value.trim(), ["get", "county"]], -1],
-  //         [">", ["index-of", searchValue.value.trim(), ["get", "city"]], -1],
-  //         [">", ["index-of", searchValue.value.trim(), ["get", "village"]], -1],
-  //         [">", ["index-of", searchValue.value.trim(), ["get", "town"]], -1],
-  //       ]);
-  //       break;
-  //     default:
-  //       filterFeature(layers, [
-  //         "all", // county,city,village,town
-  //         ["!=", ["get", "insurancenum"], null],
-  //       ]);
-  //       break;
-  //   }
-};
-
-setTimeout(() => {
-  // loadReady.value = 400;
-  open.value = false;
-}, 0);
+// setTimeout(() => {
+//   // loadReady.value = 400;
+//   open.value = false;
+// }, 0);
 </script>
 
 <template>
-  <a-page-header
-    class="header"
-    :title="page.name"
-    :sub-title="page.cnname + ' V' + page.version"
-    :avatar="{ src: logo }"
-    style="color: #ccc"
-  >
-    <a-menu
-      v-model:selectedKeys="current"
-      mode="horizontal"
-      :items="items"
-      style="position: absolute; left: 600px; top: 0px; line-height: 92px"
-    />
+  <a-page-header class="header" :title="page.name" :sub-title="page.cnname + ' V' + page.version"
+    :avatar="{ src: logo }" style="color: #ccc">
+    <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
+      style="position: absolute; left: 600px; top: 0px; line-height: 92px" />
+
+    <!--年份-->
     <template #extra>
       <a-space direction="vertical" :size="5">
-        <a-date-picker
-          v-model:value="value5"
-          picker="year"
-          format="YYYY 年"
-          :popupStyle="{ top: '150px' }"
-          @panelChange="panelChangeRL"
-        />
+        <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
+          @panelChange="panelChangeRL" />
       </a-space>
       <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
     </template>
   </a-page-header>
   <div class="page">
     <!--一张图平台-->
-    <SDMap></SDMap>
+    <SDMap ref="mapRef"></SDMap>
     <div v-if="activeKey == '1'">
       <!--检索搜索-->
       <div class="search" style="width: 600px">
@@ -431,11 +386,7 @@ setTimeout(() => {
               <a-dropdown>
                 <template #overlay>
                   <a-menu @click="handleMenuClick">
-                    <a-menu-item
-                      v-for="s in searchListName"
-                      :key="s.type"
-                      @click="setSearchListName(s)"
-                    >
+                    <a-menu-item v-for="s in searchListName" :key="s.type" @click="setSearchListName(s)">
                       {{ s.name }}
                     </a-menu-item>
                   </a-menu>
@@ -451,24 +402,13 @@ setTimeout(() => {
                   </div>
                 </a-button>
               </a-dropdown>
-              <a-input
-                ref="inSerchRef"
-                size="large"
-                v-model:value="searchValue"
-                style="width: 300px"
-                class="searchshadow"
-                :placeholder="searchType == '区域' ? '请输入地址区域' : '请输入保险单号'"
-                :allowClear="true"
-                @keyup.enter="searchByfilter"
-              />
+              <a-input ref="inSerchRef" size="large" v-model:value="searchValue" style="width: 300px"
+                class="searchshadow" :placeholder="searchType == '区域' ? '请输入查询区域' : '请输入保险单号'" :allowClear="true"
+                @keyup.enter="searchByfilter" />
               <a-tooltip placement="bottom">
                 <template #title>查询</template>
-                <a-button
-                  type="primary"
-                  size="large"
-                  class="searchshadow"
-                  @click="searchByfilter"
-                  ><Search />
+                <a-button type="primary" size="large" class="searchshadow" @click="searchByfilter">
+                  <Search />
                 </a-button>
               </a-tooltip>
 
@@ -489,15 +429,8 @@ setTimeout(() => {
       </div>
 
       <!--保单信息-->
-      <a-drawer
-        title=""
-        placement="bottom"
-        :open="open"
-        @close="onClose"
-        :mask="true"
-        bodyStyle="padding:0"
-        :height="loadReady"
-      >
+      <a-drawer title="" placement="bottom" :open="open" @close="onClose" :mask="true" bodyStyle="padding:0"
+        :height="500">
         <Insurance ref="insuranceRef"></Insurance>
       </a-drawer>
     </div>
@@ -536,9 +469,11 @@ setTimeout(() => {
   justify-content: center;
   align-items: center;
 }
+
 .boxshadow:hover {
   background-color: rgba(0, 0, 0, 1);
 }
+
 .page {
   position: absolute;
   left: 0;
@@ -569,9 +504,11 @@ setTimeout(() => {
   background-color: transparent;
   color: #fff;
 }
+
 /deep/ .ant-input-clear-icon {
   color: #fff;
 }
+
 /deep/ .ant-menu-item svg {
   width: 15px;
   height: 15px;
@@ -581,6 +518,7 @@ setTimeout(() => {
   width: 15px;
   height: 15px;
 }
+
 /deep/ .ant-menu-light {
   background-color: transparent;
   color: #ccc;
@@ -589,6 +527,7 @@ setTimeout(() => {
 /deep/ .ant-drawer .ant-drawer-body {
   padding: 0;
 }
+
 /deep/ .ant-drawer-body {
   padding: 0;
 }
@@ -596,17 +535,21 @@ setTimeout(() => {
 /deep/ .ant-drawer {
   padding: 0;
 }
+
 /deep/.ant-page-header-heading-title {
   color: aliceblue;
 }
+
 /deep/ .ant-page-header-heading-sub-title {
   color: #ccc;
 }
+
 /deep/ .ant-tabs-tab-btn {
   font-size: 16px;
 
   color: #fff;
 }
+
 /deep/ .ant-tabs-tab-active {
   background-color: #ffffff18;
   color: #fff;
@@ -650,6 +593,7 @@ setTimeout(() => {
   border: 0;
   padding: 0;
 }
+
 /deep/ .ant-picker input {
   color: #ccc;
 }
