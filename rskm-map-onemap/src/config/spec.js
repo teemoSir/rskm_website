@@ -1128,7 +1128,9 @@ let waySpec = [
             'line-width': ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
-                11,
+                9,
+                0,
+                10,
                 1,
                 13,
                 3.5,
@@ -1283,7 +1285,7 @@ let waySpec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name} {area_mu}\n{i_type_name}\n{region_code}",
+            "text-field": "{i_com_name} {area_mu}\n{i_type_name}",
             "text-size": 14,
 
         },

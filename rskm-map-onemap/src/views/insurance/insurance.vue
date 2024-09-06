@@ -8,8 +8,8 @@ import dayjs from "dayjs";
 import {
   Headset,
   Info,
-//   Search,
-//   RotateCw
+  //   Search,
+  //   RotateCw
   X,
   Sprout,
   FilePenLine,
@@ -30,7 +30,7 @@ const columns = ref([
     dataIndex: "insurancenum",
     key: "insurancenum",
     fixed: true,
-    minWidth: 120,
+    width: 230,
   },
   //   {
   //     title: "查看",
@@ -52,17 +52,19 @@ const columns = ref([
     title: "保险机构",
     dataIndex: "i_com_name",
     key: "i_com_name",
+    width: 100,
   },
   {
     title: "险种",
     dataIndex: "i_type_name",
     key: "i_type_name",
+
   },
   {
     title: "承保数量(亩)",
     dataIndex: "insured_quantity",
     key: "insured_quantity",
-    minWidth: 150,
+    width: 100,
   },
   {
     title: "被保人",
@@ -75,7 +77,7 @@ const columns = ref([
     title: "地块面积",
     dataIndex: "area_mi",
     key: "area_mi",
-    minWidth: 200,
+    width: 100,
   },
   //   {
   //     title: "地块面积(亩)",
@@ -85,7 +87,7 @@ const columns = ref([
   //   },
 
   {
-    title: "地址",
+    title: "位置",
     dataIndex: "province",
     key: "province",
     minWidth: 300,
@@ -94,7 +96,7 @@ const columns = ref([
     title: "保期",
     dataIndex: "start_date",
     key: "start_date",
-    minWidth: 200,
+    width: 180,
   },
   //   {
   //     title: "终保时间",
@@ -102,11 +104,11 @@ const columns = ref([
   //     key: "end_date",
   //     width: 100,
   //   },
-//   {
-//     title: "下载",
-//     dataIndex: "operation",
-//     minWidth: 60,
-//   },
+  //   {
+  //     title: "下载",
+  //     dataIndex: "operation",
+  //     minWidth: 60,
+  //   },
 ]);
 
 /**
@@ -187,8 +189,8 @@ const loading = ref(true);
 
 const goGeomUn = () => {
 
-    map.getLayer("lockGeom") && map.removeLayer("lockGeom");
-    map.getSource("lockGeom") && map.removeSource("lockGeom");
+  map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+  map.getSource("lockGeom") && map.removeSource("lockGeom");
 };
 
 
@@ -251,24 +253,24 @@ const formItemLayout = computed(() => {
   const { layout } = formState;
   return layout === "horizontal"
     ? {
-        labelCol: {
-          span: 8,
-        },
-        wrapperCol: {
-          span: 14,
-        },
-      }
+      labelCol: {
+        span: 8,
+      },
+      wrapperCol: {
+        span: 14,
+      },
+    }
     : {};
 });
 const buttonItemLayout = computed(() => {
   const { layout } = formState;
   return layout === "horizontal"
     ? {
-        wrapperCol: {
-          span: 14,
-          offset: 4,
-        },
-      }
+      wrapperCol: {
+        span: 14,
+        offset: 4,
+      },
+    }
     : {};
 });
 
@@ -298,12 +300,7 @@ defineExpose({
 </script>
 
 <template>
-  <a-result
-    v-show="!dataSource.length"
-    status="info"
-    title="没有查询到关联数据!"
-    sub-title="该条件下数据不存在，请尝试其他查询条件。"
-  >
+  <a-result v-show="!dataSource.length" status="info" title="没有查询到关联数据!" sub-title="该条件下数据不存在，请尝试其他查询条件。">
     <!-- <template #extra>
       <a-button key="console" type="primary">Go Console</a-button>
       <a-button key="buy">Buy Again</a-button>
@@ -311,15 +308,8 @@ defineExpose({
   </a-result>
 
   <div class="insurance-page" v-show="dataSource.length">
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :sticky="true"
-      :pagination="pagination"
-      :loading="loading"
-      :customRow="customRowFun"
-      size="small"
-    >
+    <a-table :dataSource="dataSource" :columns="columns" :sticky="true" :pagination="pagination" :loading="loading"
+      :customRow="customRowFun" size="small">
       <!-- <template #title>2024年山东</template>
      <template #footer>Footer</template>  -->
       <template #bodyCell="{ column, text, record }">
@@ -339,13 +329,25 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'province'">
-          {{ record.province }}{{ record.city }}{{ record.county }}{{ record.town
-          }}{{ record.village }}
+          <a-tooltip placement="top">
+            <template #title>{{ ((record.province || '') + (record.city || '') + (record.county || '') +
+              (record.town || '') + (record.village ||
+                '')) }}</template>
+
+            {{ ((record.province || '') + (record.city || '') + (record.county || '') + (record.town || '') +
+              (record.village ||
+                '')).length > 15 ? ((record.province || '') + (record.city || '') + (record.county || '') + (record.town ||
+                  '') + (record.village ||
+                    '')).substring(0, 15) + "..." : ((record.province || '') + (record.city || '') + (record.county || '') +
+                      (record.town || '') + (record.village ||
+                        '')) }}
+          </a-tooltip>
+
         </template>
 
         <template v-if="column.dataIndex == 'start_date'">
-     
-          {{ dayjs(record.start_date).format("YYYY/MM/DD") }}
+
+          {{ dayjs(record.start_date).format("YYYY/MM/DD") }}-
           {{ dayjs(record.end_date).format("YYYY/MM/DD") }}
         </template>
 
@@ -354,7 +356,7 @@ defineExpose({
         </template>
 
         <template v-if="column.dataIndex == 'area_mi'">
-          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩 
+          {{ record.area_mu && Number(record.area_mu).toFixed(2) }}亩
           <!-- {{ record.area_mi && Number(record.area_mi).toFixed(2) }}平米 -->
         </template>
       </template>

@@ -1,6 +1,6 @@
 {
   "name": "postgis-http-api",
-  "version": "4.7.0",
+  "version": "1.0.2",
   "description": "The PostGIS HTTP API exposes PostGIS functionality to your applications over HTTP.",
   "main": "rskm-map-vectortile-api.js",
   "scripts": {
