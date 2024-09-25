@@ -2,19 +2,7 @@
 import { ref, computed, watch, onMounted, nextTick, reactive } from "vue";
 import { message } from "ant-design-vue";
 import {
-  Headset,
-  Info,
-  Search,
-  RotateCw,
-  X,
-  Sprout,
-  LocateFixed,
-  Grip,
-  ChevronDown,
-  Component,
   Logs,
-  CalendarHeart,
-  NotepadText,
 } from "lucide-vue-next";
 
 /**
@@ -24,11 +12,20 @@ let legends = [
   
   {
     key: 2,
-    title: "承保地块",
+    title: "玉米",
     isShow: ref(true),
     type: "polygon",
     outlineColor: "yellow",
     fillColor: "yellow",
+    outlineWidth: 1,
+  },
+  {
+    key: 2,
+    title: "小麦",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "orange",
+    fillColor: "orange",
     outlineWidth: 1,
   },
 //   {

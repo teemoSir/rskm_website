@@ -41,13 +41,13 @@ const eventRender = () => {
         lat: window.lnglatrender?.lat.toFixed(6) ?? "0"
     };
 
-    document.getElementById("xyz").innerHTML = `
-        <span style='padding-right: 10px;'>${MAP_LAYERS.st ? `审图号：${MAP_LAYERS.st}` : ""}</span>
-        <span style='padding-right: 10px;'>© ${page.name}</span>
-        <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
-        <span style='padding-right: 10px;'>等级：${map?.getZoom().toFixed(2) ?? ""} </span>
-        <span style='padding-right: 10px;'>模式：${(map?.getProjection().name ?? "default") === "globe" ? "三维" : "二维"} </span>
-        <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`;
+    map && (document.getElementById("xyz").innerHTML = `
+    <span style='padding-right: 10px;'>${MAP_LAYERS.st ? `审图号：${MAP_LAYERS.st}` : ""}</span>
+    <span style='padding-right: 10px;'>© ${page.name}</span>
+    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
+    <span style='padding-right: 10px;'>等级：${map.getZoom().toFixed(2) || ""} </span>
+    <span style='padding-right: 10px;'>模式：${(map.getProjection().name || "default") === "globe" ? "三维" : "二维"} </span>
+    <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`);
 }
 
 /**
@@ -231,7 +231,7 @@ const filterRskm = () => {
                 // ]
 
 
-                [">", ["index-of",  searchNameStore.value.trim(),["concat", ['to-string', ['get', "province"]], ['to-string', ['get', "city"]], ['to-string', ['get', "county"]], ['to-string', ['get', "town"]], ['to-string', ['get', "village"]]]], -1],
+                [">", ["index-of", searchNameStore.value.trim(), ["concat", ['to-string', ['get', "province"]], ['to-string', ['get', "city"]], ['to-string', ['get', "county"]], ['to-string', ['get', "town"]], ['to-string', ['get', "village"]]]], -1],
             )
         }
 

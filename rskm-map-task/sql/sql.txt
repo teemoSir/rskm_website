@@ -59,3 +59,13 @@ LIMIT 10;  -- 每页显示10条记录
 
 
 
+
+--兼容获取市区
+	UPDATE rskm_pt AS d 
+		SET city = a.name
+		FROM admin_2022_city AS a
+		WHERE (ST_Within(d.geom, a.geom) or (ST_Area(ST_Intersection(d.geom::geography, a.geom::geography)) / ST_Area(d.geom::geography)) > 0.8) and d.gid =215158
+
+
+
+

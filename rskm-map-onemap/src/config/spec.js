@@ -1080,13 +1080,14 @@ let waySpec = [
 
         'slot': 'top',
         "paint": {
-            "fill-color": "yellow",
-            // 'fill-color': [
-            //     'case',
-            //     ['>', ['get', 'bili'], 79.99], // 检查属性值是否大于 80
-            //     '#00FF00', // 如果大于 80，填充颜色为绿色
-            //     '#FF0000' // 否则填充颜色为红色
-            // ],
+          //  "fill-color":
+           //     [">", ["index-of", "小麦","i_type_name" ], -1],
+            'fill-color': [
+                'case',
+                [">", ["index-of", "小麦","i_type_name" ], -1], // 检查属性值是否大于 80
+                'orange', // 如果大于 80，填充颜色为绿色
+                'yellow' // 否则填充颜色为红色
+            ],
             //  "fill-color": [
             //     'case',
             //     ['boolean',['feature-state','hover'],false],
@@ -1123,7 +1124,13 @@ let waySpec = [
         'slot': 'top',
         "paint": {
             // 'line-blur':0.5,
-            'line-color': 'RGBA(213,217,41,0.7)',
+           // 'line-color': 'RGBA(213,217,41,0.7)',
+            'line-color': [
+                'case',
+                [">", ["index-of", "小麦","i_type_name" ], -1], // 检查属性值是否大于 80
+                'orange', // 如果大于 80，填充颜色为绿色
+                'yellow' // 否则填充颜色为红色
+            ],
             //  'line-width': 4,
             'line-width': ["interpolate",
                 ["exponential", 1.5],
@@ -1267,7 +1274,7 @@ let waySpec = [
             "text-color": "#000", // 文字颜色
             "text-halo-color": "yellow", // 文字轮廓颜色
             "text-halo-width": 1.4, // 文字轮廓宽度
-          //  "text-halo-blur": 0.1, // 文字轮廓模糊度
+            //  "text-halo-blur": 0.1, // 文字轮廓模糊度
         },
         minzoom: 13,
         maxzoom: 14.55,

@@ -1,47 +1,41 @@
 <script setup>
-import { logo } from "./index";
+
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
-import SDMap from "./map/map.vue";
+import SDMap from "@/views/map/index.vue";
 import { message } from "ant-design-vue";
-import Legend from "./map/legend.vue";
-import Insurance from "./insurance/insurance.vue";
-import Menu from "./insurance/menu.vue";
+import Legend from "@/views/map/legend.vue";
+import Insurance from "@/views/insurance/insurance.vue";
+import Menu from "@/views/insurance/menu.vue";
 import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/zh-cn";
 import {
   Search,
-  FileDigit,
   ShieldCheck,
   MapPinned,
-  Home,
   Grip,
-  Settings,
-  TextSearch,
   PanelBottomOpen,
   PanelTopOpen,
 } from "lucide-vue-next";
 
-import page from "../../package.json";
-import StateManager from "@/utils/state_manager";
+
+// import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
 import { storeToRefs } from "pinia";
 import { treeStore } from "@/store/store.js";
 import { filterRskm } from "@/views/map/map.js";
+import { useRouter } from "vue-router";
+import Header from "@/components/header/index.vue";
+
+const router = useRouter();
 
 const mapRef = ref(null);
 
 const storeTree = treeStore();
 let { searchTypeStore, searchNameStore } = storeToRefs(storeTree);
 
-//  初始化区域
-const defaultAdmin = () => {
-  if (!StateManager.get("defaultAdmin")) {
-    StateManager.set("defaultAdmin", "山东省");
-  }
-  return StateManager.get("defaultAdmin");
-};
+
 
 const value = ref("user1");
 dayjs.extend(updateLocale);
@@ -60,126 +54,6 @@ message.config({
 const inSerchRef = ref();
 const insuranceRef = ref(null);
 
-//菜单
-const current = ref(["mail"]);
-const items = ref([
-  {
-    key: "mail",
-    icon: () => h(Home),
-    label: "首页",
-    title: "首页",
-  },
-  {
-    key: "app",
-    icon: () => h(TextSearch),
-    label: "遥感核验",
-    title: "遥感核验",
-    children: [
-      {
-        type: "group",
-        label: "区域核验",
-        children: [
-          {
-            label: "区县级核验",
-            key: "app:1",
-          },
-          {
-            label: "乡镇级核验",
-            key: "app:2",
-          },
-          {
-            label: "村级核验",
-            key: "app:3",
-          },
-        ],
-      },
-      {
-        type: "group",
-        label: "地块核验",
-        children: [
-          {
-            label: "乡镇级核验",
-            key: "app:11",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: "sub1",
-    icon: () => h(FileDigit),
-    label: "统计分析",
-    title: "统计分析",
-    children: [
-      {
-        type: "group",
-        label: "数据分析",
-        children: [
-          {
-            label: "农险大数据一张图",
-            key: "sub5:1",
-          },
-          {
-            label: "保单统计",
-            key: "sub4:1",
-          },
-          {
-            label: "结构分析",
-            key: "sub1:2",
-            children: [
-              {
-                label: "区域",
-                key: "sub2:3",
-              },
-              {
-                label: "机构",
-                key: "sub2:4",
-              },
-            ],
-          },
-          {
-            label: "成效分析",
-            key: "sub3:2",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: "cloud",
-    icon: () => h(Settings),
-    label: "遥感监测",
-    title: "遥感监测",
-    children: [
-      {
-        type: "group",
-        label: "基础监测",
-        children: [
-          {
-            label: "灾损遥感监测",
-            key: "cloud4:1",
-          },
-          {
-            label: "长势遥感监测",
-            key: "cloud3:1",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: "alipay",
-    label: h(
-      "a",
-      {
-        href: "",
-        target: "_blank",
-      },
-      ""
-    ),
-    title: "Navigation Four - Link",
-  },
-]);
 
 
 const searchListName = [
@@ -194,7 +68,7 @@ watch(searchValue, () => {
   //状态管理中加入查询条件
   searchTypeStore.value = searchType.value;
   searchNameStore.value = searchValue.value;
-  
+
   !searchNameStore.value && filterRskm();
 
   // 如果搜索框为空，则自动调整地图到最佳视野
@@ -229,26 +103,7 @@ const onClose = () => {
 
 const menu = ref(false);
 
-// 年份
-const pageDateYear = ref(
-  dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString())
-);
 
-//跳转年份数据
-const panelChangeRL = (value, mode) => {
-  StateManager.clear("rskm_pt_year");
-  StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
-
-  message.loading(
-    `进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`,
-    2000
-  );
-
-  let ts = setTimeout((e) => {
-    location.reload();
-    clearTimeout(ts);
-  }, 1000);
-};
 
 const goGeomUn = () => {
   map.getLayer("lockGeom") && map.removeLayer("lockGeom");
@@ -344,19 +199,17 @@ const searchByfilter = async () => {
   }
 };
 
-// setTimeout(() => {
-//   // loadReady.value = 400;
-//   open.value = false;
-// }, 0);
+
+
 </script>
 
 <template>
-  <a-page-header class="header" :title="page.name" :sub-title="page.cnname + ' V' + page.version"
+  <!-- <a-page-header class="header" :title="page.name" :sub-title="page.cnname + ' V' + page.version"
     :avatar="{ src: logo }" style="color: #ccc">
-    <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
+    <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="handleMenuClick"
       style="position: absolute; left: 600px; top: 0px; line-height: 92px" />
 
-    <!--年份-->
+
     <template #extra>
       <a-space direction="vertical" :size="5">
         <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
@@ -364,10 +217,16 @@ const searchByfilter = async () => {
       </a-space>
       <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
     </template>
-  </a-page-header>
+</a-page-header> -->
+
+  <div class="header">
+
+    <Header></Header>
+  </div>
+
   <div class="page">
     <!--一张图平台-->
-    <SDMap ref="mapRef"></SDMap>
+    <SDMap ref="mapRef" :MapToolPosition="{ top: '140px', right: ' 15px' }"></SDMap>
     <div v-if="activeKey == '1'">
       <!--检索搜索-->
       <div class="search" style="width: 600px">
@@ -495,44 +354,41 @@ const searchByfilter = async () => {
   border-radius: 4px;
 }
 
-.header {
-  z-index: 20000;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
-}
 
-/deep/ .ant-input {
+
+::v-deep .ant-input {
   background-color: transparent;
   color: #fff;
 }
 
-/deep/ .ant-input-clear-icon {
+::v-deep .ant-input-clear-icon {
   color: #fff;
 }
 
-/deep/ .ant-menu-item svg {
+::v-deep .ant-menu-item svg {
   width: 15px;
   height: 15px;
 }
 
-/deep/ .ant-menu-submenu-horizontal svg {
+::v-deep .ant-menu-submenu-horizontal svg {
   width: 15px;
   height: 15px;
 }
 
-/deep/ .ant-menu-light {
+::v-deep .ant-menu-light {
   background-color: transparent;
   color: #ccc;
 }
 
-/deep/ .ant-drawer .ant-drawer-body {
+::v-deep .ant-drawer .ant-drawer-body {
   padding: 0;
 }
 
-/deep/ .ant-drawer-body {
+::v-deep .ant-drawer-body {
   padding: 0;
 }
 
-/deep/ .ant-drawer {
+::v-deep .ant-drawer {
   padding: 0;
 }
 
@@ -540,61 +396,61 @@ const searchByfilter = async () => {
   color: aliceblue;
 }
 
-/deep/ .ant-page-header-heading-sub-title {
+::v-deep .ant-page-header-heading-sub-title {
   color: #ccc;
 }
 
-/deep/ .ant-tabs-tab-btn {
+::v-deep .ant-tabs-tab-btn {
   font-size: 16px;
 
   color: #fff;
 }
 
-/deep/ .ant-tabs-tab-active {
+::v-deep .ant-tabs-tab-active {
   background-color: #ffffff18;
   color: #fff;
 }
 
-/deep/ .ant-tree {
+::v-deep .ant-tree {
   background-color: transparent;
   color: #ccc;
 }
 
-/deep/ .ant-select-selection-item {
+::v-deep .ant-select-selection-item {
   background-color: rgba(50, 119, 252, 1);
   color: #fff;
 }
 
-/deep/ .ant-select-selection-placeholder {
+::v-deep .ant-select-selection-placeholder {
   color: #807d7dc0;
 
   font-size: 14px;
 }
 
-/deep/ .ant-select-clear {
+::v-deep .ant-select-clear {
   color: #ccc;
   background-color: transparent;
 }
 
-/deep/ .ant-select-clear:hover {
+::v-deep .ant-select-clear:hover {
   color: rgba(50, 119, 252, 1);
 }
 
-/deep/ .ant-statistic-content {
+::v-deep .ant-statistic-content {
   color: #fff;
 }
 
-/deep/ .ant-statistic-title {
+::v-deep .ant-statistic-title {
   color: #fff;
 }
 
-/deep/ .ant-picker {
+::v-deep .ant-picker {
   background: transparent;
   border: 0;
   padding: 0;
 }
 
-/deep/ .ant-picker input {
+::v-deep .ant-picker input {
   color: #ccc;
 }
 
@@ -641,5 +497,14 @@ const searchByfilter = async () => {
 
 .searchshadow::placeholder {
   color: #cccccc63;
+}
+
+.header {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.4));
+  z-index: 100000;
 }
 </style>

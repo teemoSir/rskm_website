@@ -262,22 +262,22 @@ const onRect = () => {
 </template>
 
 <style scoped>
-/deep/ .ant-tabs-nav-list > .ant-tabs-tab {
+::v-deep .ant-tabs-nav-list > .ant-tabs-tab {
   margin: 0;
 }
 
-/deep/ .ant-tabs-tab {
+::v-deep .ant-tabs-tab {
   width: 155px;
   text-align: center;
 }
 
-/deep/ .ant-tabs-tab-btn {
+::v-deep .ant-tabs-tab-btn {
   color: rgb(240, 235, 235);
   width: 100%;
   text-align: center;
 }
 
-/deep/ .ant-tabs-tab-active {
+::v-deep .ant-tabs-tab-active {
   background: rgba(248, 247, 247, 0.096);
   margin: 0;
 }

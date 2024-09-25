@@ -2,13 +2,13 @@
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
-import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted,defineExpose } from "vue";
+import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted, defineExpose } from "vue";
 import { config, mapbox } from "@/config/tileserver.js";
 import { api } from "@/config/api.js";
 import { layers, waySpec } from "@/config/spec";
 import { message, notification, Button } from "ant-design-vue";
-import dayjs from "dayjs";
-import bboxx from "@/utils/bbox";
+// import dayjs from "dayjs";
+// import bboxx from "@/utils/bbox";
 import * as turf from "@turf/turf";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -42,12 +42,12 @@ import {
   X,
 } from "lucide-vue-next";
 
-import c7 from "@/assets/images/map/c7.svg";
+// import c7 from "@/assets/images/map/c7.svg";
 import c2 from "@/assets/images/map/c2.svg";
 // import compass from "@/assets/images/map/compass.png";
 // import compassPointer from "@/assets/images/map/compassPointer.png";
 // import north from "@/assets/images/map/north-b.png";
-import { fills } from "@/config/fill";
+// import { fills } from "@/config/fill";
 import getCeliang from "@/utils/celiang";
 import {
   eventRotate,
@@ -802,7 +802,7 @@ const celiang_point = () => {
   window.gl_draw && window.gl_draw.changeMode("draw_point");
 };
 
-const closeNotification = () => {};
+const closeNotification = () => { };
 // 复制
 const copyToClipboard = (text) => {
   navigator.clipboard
@@ -932,8 +932,12 @@ onUnmounted(() => {
 
 defineExpose({
   fitCenter
-  
+
 });
+
+defineProps({
+  MapToolPosition: Object
+})
 </script>
 
 <template>
@@ -941,15 +945,15 @@ defineExpose({
     <div class="map" id="map"></div>
     <a-spin class="spin" v-if="spin" :tip="spintext" size="large"></a-spin>
     <!--地图工具栏-->
-    <div class="right-tool">
+    <div class="right-tool" :style="MapToolPosition">
       <!-- <a-tooltip placement="leftTop">
         <template #title>
           <span>全球视角</span>
         </template>
-        <a-button @click="goGlobal()" size="large" class="boxshadow">
-         <ScanSearch />
-        </a-button>
-      </a-tooltip> -->
+<a-button @click="goGlobal()" size="large" class="boxshadow">
+  <ScanSearch />
+</a-button>
+</a-tooltip> -->
 
       <a-tooltip placement="leftTop">
         <template #title>
@@ -967,13 +971,129 @@ defineExpose({
       </a-tooltip>
 
       <br />
-      <a-tooltip title="底图切换" placement="left">
-        <a-button @click="switchLayer()" size="large" class="boxshadow">
-          <Layers v-if="!rightLayer" />
-          <X color="#3277fc" v-else />
-          <span class="arrow">◣</span>
-        </a-button>
-      </a-tooltip>
+      <div>
+
+        <a-tooltip title="底图切换" placement="left">
+          <a-button @click="switchLayer()" size="large" class="boxshadow">
+            <Layers v-if="!rightLayer" />
+            <X color="#3277fc" v-else />
+            <span class="arrow">◣</span>
+          </a-button>
+        </a-tooltip>
+        <!--图层列表 -->
+        <div class="switch-layer" v-if="rightLayer">
+          <a-card title="" v-show="machine != 'mercator'">
+            <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
+              width: '25%',
+              textAlign: 'center',
+              display: item.projection ? 'block' : 'none',
+            }">
+              <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" @click="switchTile(item)" />
+              <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
+                {{ item.name }}
+              </div>
+            </a-card-grid>
+          </a-card>
+          <a-card title="" v-show="machine == 'mercator'">
+            <a-card-grid v-for="item in layers" :key="item.id" :style="{
+              width: '25%',
+              textAlign: 'center',
+            }" @click="switchTile(item)">
+              <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
+              <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
+                {{ item.name }}
+              </div>
+            </a-card-grid>
+          </a-card>
+          <br />
+
+          <!--地名注记-->
+          <a-card>
+            <!--行政边界-->
+            <!-- <a-card-grid
+          :style="{
+            width: '25%',
+            textAlign: 'center',
+          }"
+        >
+          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">行政边界</div>
+
+          <a-switch
+            v-model:checked="state.ZJiSHow"
+            checked-children="显示"
+            un-checked-children="隐藏"
+          />
+        </a-card-grid> -->
+            <!--地名注记-->
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                地名
+                <a-switch checked-children="显示" un-checked-children="隐藏" v-model:checked="state.DMZJiSHow"
+                  size="small" />
+              </div>
+            </a-card-grid>
+
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                省界
+                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
+                  v-model:checked="state_layer.checked7" />
+              </div>
+            </a-card-grid>
+
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                市界
+                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
+                  v-model:checked="state_layer.checked8" />
+              </div>
+            </a-card-grid>
+
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                县界
+                <a-switch checked-children="显示" un-checked-children="隐藏" v-model:checked="state_layer.checked4"
+                  size="small" />
+              </div>
+            </a-card-grid>
+
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                镇界
+                <a-switch checked-children="显示" un-checked-children="隐藏" v-model:checked="state_layer.checked5"
+                  size="small" />
+              </div>
+            </a-card-grid>
+
+            <a-card-grid :style="{
+              width: '25%',
+              textAlign: 'center',
+            }">
+              <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                村界
+                <a-switch checked-children="显示" un-checked-children="隐藏" v-model:checked="state_layer.checked6"
+                  size="small" />
+              </div>
+            </a-card-grid>
+          </a-card>
+        </div>
+      </div>
+
 
       <a-tooltip placement="leftTop">
         <template #title>
@@ -1037,9 +1157,9 @@ defineExpose({
         <template #title>
           <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
         </template>
-        <a-button @click="onTerrain()" size="large" class="boxshadow"
-          ><MountainSnow :color="!terrainSP ? '#fff' : '#3277fc'"
-        /></a-button>
+        <a-button @click="onTerrain()" size="large" class="boxshadow">
+          <MountainSnow :color="!terrainSP ? '#fff' : '#3277fc'" />
+        </a-button>
       </a-tooltip>
       <a-tooltip placement="leftTop" v-if="1 == 2">
         <template #title>
@@ -1054,8 +1174,8 @@ defineExpose({
             <Pentagon :size="40" />
            </div> -->
 
-            <span class="arrow">◣</span></a-button
-          >
+            <span class="arrow">◣</span>
+          </a-button>
           <!--绘制列表 -->
           <div class="right-draw" v-if="draw">
             <a-tooltip placement="leftTop">
@@ -1122,168 +1242,7 @@ defineExpose({
       </a-tooltip>
     </div>
 
-    <!--图层列表 -->
-    <div class="switch-layer" v-if="rightLayer">
-      <a-card title="" v-show="machine != 'mercator'">
-        <a-card-grid
-          v-for="item in layers"
-          class=""
-          :key="item.id"
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-            display: item.projection ? 'block' : 'none',
-          }"
-        >
-          <img
-            :src="item.url"
-            style="width: 100%; height: 100px; border-radius: 2px"
-            @click="switchTile(item)"
-          />
-          <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-            {{ item.name }}
-          </div>
-        </a-card-grid>
-      </a-card>
-      <a-card title="" v-show="machine == 'mercator'">
-        <a-card-grid
-          v-for="item in layers"
-          :key="item.id"
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-          @click="switchTile(item)"
-        >
-          <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
-          <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-            {{ item.name }}
-          </div>
-        </a-card-grid>
-      </a-card>
-      <br />
 
-      <!--地名注记-->
-      <a-card>
-        <!--行政边界-->
-        <!-- <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">行政边界</div>
-
-          <a-switch
-            v-model:checked="state.ZJiSHow"
-            checked-children="显示"
-            un-checked-children="隐藏"
-          />
-        </a-card-grid> -->
-        <!--地名注记-->
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            地名
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state.DMZJiSHow"
-              size="small"
-            />
-          </div>
-        </a-card-grid>
-
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            省界
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              size="small"
-              v-model:checked="state_layer.checked7"
-            />
-          </div>
-        </a-card-grid>
-
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            市界
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              size="small"
-              v-model:checked="state_layer.checked8"
-            />
-          </div>
-        </a-card-grid>
-
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            县界
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state_layer.checked4"
-              size="small"
-            />
-          </div>
-        </a-card-grid>
-
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            镇界
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state_layer.checked5"
-              size="small"
-            />
-          </div>
-        </a-card-grid>
-
-        <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-            村界
-            <a-switch
-              checked-children="显示"
-              un-checked-children="隐藏"
-              v-model:checked="state_layer.checked6"
-              size="small"
-            />
-          </div>
-        </a-card-grid>
-      </a-card>
-    </div>
   </div>
 </template>
 
@@ -1295,6 +1254,7 @@ defineExpose({
   width: 100%;
   height: 100%;
 }
+
 /deep/.mapboxgl-ctrl-scale {
   color: #fff;
 
@@ -1304,27 +1264,30 @@ defineExpose({
   text-align: center;
   border: 0;
 }
-/deep/ .ant-btn {
+
+::v-deep .ant-btn {
   margin-top: 4px;
 }
-/deep/ .ant-card {
+
+::v-deep .ant-card {
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0.6);
   border: 0;
 }
-/deep/ .ant-card-grid {
+
+::v-deep .ant-card-grid {
   padding: 5px 5px;
   box-shadow: none;
 }
 
-/deep/ .mapboxgl-ctrl-top-right {
+::v-deep .mapboxgl-ctrl-top-right {
   display: none;
 }
 
 .right-tool {
   position: absolute;
-  right: 20px;
-  top: 140px;
+  /* right: 20px; */
+  /* top: 140px; */
   /* width: 2rem; */
   z-index: 1000;
 }
@@ -1337,6 +1300,7 @@ defineExpose({
   z-index: 1000;
   border: 0;
 }
+
 .right-ruler,
 .right-draw {
   position: absolute;
@@ -1360,10 +1324,12 @@ defineExpose({
   justify-content: center;
   align-items: center;
 }
+
 .boxshadow:hover {
   background-color: #3277fc;
   color: #fff;
 }
+
 .spin {
   position: absolute;
   left: 0;
@@ -1397,18 +1363,21 @@ defineExpose({
   color: #f2f2f8ec;
   font-size: 14px;
 }
-/deep/ .mapboxgl-ctrl-attrib {
+
+::v-deep .mapboxgl-ctrl-attrib {
   background-color: rgba(0, 0, 0, 0.5);
   color: #eee9e9e7;
   padding: 3px;
 }
-.pst {
-}
-.pst > img {
+
+.pst {}
+
+.pst>img {
   height: 64px;
   width: 54px;
   cursor: pointer;
 }
+
 .pst:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -1421,72 +1390,86 @@ defineExpose({
   top: 0;
   will-change: transform;
 }
+
 .mapboxgl-popup-anchor-top,
 .mapboxgl-popup-anchor-top-left,
 .mapboxgl-popup-anchor-top-right {
   flex-direction: column;
 }
+
 .mapboxgl-popup-anchor-bottom,
 .mapboxgl-popup-anchor-bottom-left,
 .mapboxgl-popup-anchor-bottom-right {
   flex-direction: column-reverse;
 }
+
 .mapboxgl-popup-anchor-left {
   flex-direction: row;
 }
+
 .mapboxgl-popup-anchor-right {
   flex-direction: row-reverse;
 }
+
 .mapboxgl-popup-tip {
   border: 10px solid transparent;
   height: 0;
   width: 0;
   z-index: 1;
 }
-/deep/ .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
   align-self: center;
   border-bottom-color: #161616c9;
   border-top: none;
 }
-/deep/ .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
   align-self: flex-start;
   border-bottom-color: #161616c9;
   border-left: none;
   border-top: none;
 }
-/deep/ .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
   align-self: flex-end;
   border-bottom-color: #161616c9;
   border-right: none;
   border-top: none;
 }
-/deep/ .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
   align-self: center;
   border-bottom: none;
   border-top-color: #161616c9;
 }
-/deep/ .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
   align-self: flex-start;
   border-bottom: none;
   border-left: none;
   border-top-color: #161616c9;
 }
-/deep/ .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
   align-self: flex-end;
   border-bottom: none;
   border-right: none;
   border-top-color: #161616c9;
 }
-/deep/ .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
   align-self: center;
   border-left: none;
   border-right-color: #161616c9;
 }
-/deep/ .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+
+::v-deep .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
   align-self: center;
   border-left-color: #161616c9;
   border-right: none;
 }
+
 .mapboxgl-popup-close-button {
   background-color: transparent;
   border: 0;
@@ -1496,10 +1479,12 @@ defineExpose({
   right: 0;
   top: 0;
 }
+
 .mapboxgl-popup-close-button:hover {
   background-color: #161616c9;
 }
-/deep/ .mapboxgl-popup-content {
+
+::v-deep .mapboxgl-popup-content {
   background: #161616c9;
   border-radius: 3px;
   box-shadow: 0 10px 2px rgba(0, 0, 0, 0.1);
