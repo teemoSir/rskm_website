@@ -46,8 +46,37 @@ const api = {
     get_table_count: (table, filter = "") => {
         return apiService.get(`/v1/list_get_count/${table}?filter=and EXTRACT(YEAR FROM TO_DATE(start_date, 'YYYY-MM-DD'))='${year}' ${filter}`)
     },
-    
- 
+
+    /**
+     * 统计数据
+     * @param {*} where 
+     * @param {*} key 
+     * @returns 
+     */
+    get_table_tj: (key, where) => {
+        return apiService.get(`/v1/list_any/${key}?where=${where}`)
+    },
+    /**
+        * 根据查年份分页数据
+        * @param {*} table 
+        * @param {*} page 
+        * @param {*} size 
+        * @returns 
+        */
+    get_page: (table, page, size, filter = "and 1=1") => {
+        return apiService.get(`/v1/list_page/${table}?page=${page}&size=${size}&filter=${filter}`)
+    },
+
+      /**
+    * 数据总和
+    * @param {*} table 
+    * @param {*} page 
+    * @param {*} size 
+    * @returns 
+    */
+      get_count: (table, filter = "") => {
+        return apiService.get(`/v1/list_get_count/${table}?filter=${filter}`)
+    },
 }
 
 export {

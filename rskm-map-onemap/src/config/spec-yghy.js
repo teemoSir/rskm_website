@@ -258,11 +258,10 @@ let layers = ref([
 ])
 
 
-
 /**
- * 地图
+ * 遥感核验
  */
-let spec = [
+let specYghy = [
 
 
     {
@@ -407,6 +406,29 @@ let spec = [
         },
         minzoom: 9,
         maxzoom: 20
+    },
+
+    {
+        id: "admin_2024_county_yghy",
+        'type': 'line',
+        source: config.admin_2022_province.name,
+        "source-layer": config.admin_2022_province.name,
+        filter: [
+            "in",
+            "first_gid",
+            370000,
+        ],
+        layout: {
+            //  visibility: "visible",
+            //   "text-optional": true,
+        },
+        'slot': 'bottom',
+        'paint': {
+            'line-width': 10,
+            'line-color': '#ccc',
+
+            "line-opacity": 0.5,
+        },
     },
 
     {
@@ -1028,138 +1050,113 @@ let spec = [
         minzoom: 13,
 
     },
+
     // {
-    //     id: "procjet_2024_wxsd",
-    //     name: "耕地地块",
+    //     id: "rskm_pt",
+    //     name: "保单地块",
     //     "type": "fill",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 8,
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     // 'slot': 'top',
+    //     source: config.procjet_2024_yghy_shandon.name,
+    //     "source-layer": config.procjet_2024_yghy_shandon.name,
+    //     minzoom: 4.4,
+
+    //     'slot': 'top',
     //     "paint": {
-    //         "fill-color": "#bae1ff",
-    //         "fill-opacity": 0.2
-    //         // ["interpolate",
-    //         //     ["exponential", 1.5],
-    //         //     ["zoom"],
-    //         //     2,
-    //         //     0.6,
-    //         //     13,
-    //         //     0.35,
-    //         //     14,
-    //         //     0.25,],
+    //         //  "fill-color":
+    //         //     [">", ["index-of", "小麦","i_type_name" ], -1],
+    //         'fill-color': [
+    //             'case',
+    //             [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+    //             'RGB(76,127,217)',
+    //             [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+    //             'RGB(159,212,108)',
+    //             [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+    //             'RGB(253,204,92)',
+    //             [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+    //             'RGB(249,111,83)',
+    //             [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+    //             'RGB(126,72,225)',
+    //             [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+    //             'RGB(215,52,76)',
+    //             'yellow'
+    //         ],
+    //         //  "fill-color": [
+    //         //     'case',
+    //         //     ['boolean',['feature-state','hover'],false],
+    //         //     "blue",
+    //         //     "yellow"
+    //         //  ],
+    //         //   "fill-outline-color": "#000",
+    //         //  "fill-opacity":0.4,
+    //         //  'fill-pattern': 'a11', // 使用添加的图像纹理
+    //         "fill-opacity": ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             3,
+    //             1,
+    //             7,
+    //             0.5,
+    //             13,
+    //             0.3,
+    //             14,
+    //             0.2, 15,
+    //             0.1,],
     //     },
     //     interactive: true,
     // },
-
     // {
-    //     id: "procjet_2024_wxsd_outine",
-    //     name: "耕地地块边框",
+    //     id: "rskm_pt_outline",
+    //     name: "保单地块外框",
     //     type: "line",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 13,
+    //     source: config.procjet_2024_yghy_shandon.name,
+    //     "source-layer": config.procjet_2024_yghy_shandon.name,
     //     layout: {
-    //         "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-    //         "line-join": ["step", ["zoom"], "miter", 1, "round"],
-    //         visibility: "none",
+    //         "line-join": "round",
+    //         "line-cap": "round",
     //     },
+    //     'slot': 'top',
     //     "paint": {
-    //         'line-color': '#bae1ff',
-    //         'line-width': 1.8,
-    //         'line-opacity': 0.7,
-
+    //         // 'line-blur':0.5,
+    //         // 'line-color': 'RGBA(213,217,41,0.7)',
+    //         'line-color': [
+    //             'case',
+    //             [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+    //             'RGB(76,127,217)',
+    //             [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+    //             'RGB(159,212,108)',
+    //             [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+    //             'RGB(253,204,92)',
+    //             [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+    //             'RGB(249,111,83)',
+    //             [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+    //             'RGB(126,72,225)',
+    //             [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+    //             'RGB(215,52,76)',
+    //             'yellow'
+    //         ],
+    //         //  'line-width': 4,
+    //         'line-width': ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             9,
+    //             0,
+    //             10,
+    //             1,
+    //             13,
+    //             2.5,
+    //             14,
+    //             3.5,],
+    //         "line-opacity": ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             7,
+    //             0.5,
+    //             14,
+    //             0.7,
+    //             15,
+    //             1,],
     //     },
     //     interactive: true,
     // },
-    {
-        id: "rskm_pt",
-        name: "保单地块",
-        "type": "fill",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
-        minzoom: 4.4,
-
-        'slot': 'top',
-        "paint": {
-            //  "fill-color":
-            //     [">", ["index-of", "小麦","i_type_name" ], -1],
-            'fill-color': [
-                'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
-            ],
-            //  "fill-color": [
-            //     'case',
-            //     ['boolean',['feature-state','hover'],false],
-            //     "blue",
-            //     "yellow"
-            //  ],
-           // "fill-outline-color": "#000",
-            //  "fill-opacity":0.4,
-            "fill-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                3,
-                1,
-                7,
-                0.5,
-                13,
-                0.3,
-                14,
-                0.2, 15,
-                0.1,],
-        },
-        interactive: true,
-    },
-    {
-        id: "rskm_pt_outline",
-        name: "保单地块外框",
-        type: "line",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
-        layout: {
-            "line-join": "round",
-            "line-cap": "round",
-        },
-        'slot': 'top',
-        "paint": {
-            // 'line-blur':0.5,
-            // 'line-color': 'RGBA(213,217,41,0.7)',
-            'line-color': [
-                'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
-            ],
-            //  'line-width': 4,
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                9,
-                0,
-                10,
-                1,
-                13,
-                3.5,
-                14,
-                4.5,],
-            "line-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                7,
-                0.5,
-                14,
-                0.7,
-                15,
-                1,],
-        },
-        interactive: true,
-    },
 
 
 
@@ -1167,15 +1164,15 @@ let spec = [
         id: "Highlight_DK_Line",
         name: "保单地块高亮",
         type: "fill",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
+        source: config.procjet_2024_yghy_shandon.name,
+        "source-layer": config.procjet_2024_yghy_shandon.name,
         minzoom: 10,
         //     maxzoom: 18,
         layout: {
             visibility: "none",
         },
         "paint": {
-            'fill-color': 'green',
+            'fill-color': '#fff',
             // 'line-width': 2,
             'fill-opacity': 0.4,
             //    "line-dasharray": [0.8, 0.2]
@@ -1188,80 +1185,26 @@ let spec = [
         id: "Highlight_DK_Line_Click",
         name: "点击高亮",
         type: "fill",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
+        source: config.procjet_2024_yghy_shandon.name,
+        "source-layer": config.procjet_2024_yghy_shandon.name,
         minzoom: 10,
         layout: {
             visibility: "none",
         },
         "paint": {
-            'fill-color': 'green',
+            'fill-color': '#fff',
             // 'line-width': 2,
             'fill-opacity': 0.4,
         },
         'slot': 'top',
         interactive: true,
     },
-    // {
-    //     id: "Highlight_DK_Line_Click",
-    //     name: "高亮",
-    //     type: "line",
-    //     source: config.rskm_pt.name,
-    //     "source-layer": config.rskm_pt.name,
-    //     minzoom: 10,
 
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     "paint": {
-    //         // 'line-color': '#fff',
-    //         // 'line-width': 4,
-    //         // 'line-opacity': 0.6,
-    //         //  "line-dasharray": [10, 0.6] 
-    //         "line-color": "RGB(50,119,252)",
-    //         "line-width": 6,
-    //         "line-opacity": 0.8,
-    //     },
-    //     interactive: true,
-    // },
-
-
-    // {
-    //     id: "procjet_2024_wxsd_name",
-    //     name: "耕地地块注记",
-    //     type: "symbol",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 16,
-
-    //     // 'slot': 'top',
-    //     layout: {
-
-    //         "symbol-avoid-edges": true,
-    //         "icon-rotation-alignment": "viewport",
-    //         "text-pitch-alignment": "viewport",
-    //         visibility: "none",
-    //         "text-font": ["Microsoft YaHei"],
-    //          "text-optional": true,
-    //         "text-padding": 10,
-    //         // "text-field": "{province}{city}{county}{town}{village}\n{area_mu}亩",
-    //         "text-field": "{village}\n{area_mu}亩",
-    //         "text-size": 14,
-
-    //     },
-    //     paint: {
-    //         "text-halo-color": "RGBA(0,0,0,0.8)",
-    //         "text-color": "RGBA(255,255, 255, 1)",
-    //         'text-halo-width': 1
-
-    //     },
-    //     interactive: true,
-    // },
     {
         id: "rskm_pt_name",
         type: "symbol",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
+        source: config.procjet_2024_yghy_shandon.name,
+        "source-layer": config.procjet_2024_yghy_shandon.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1270,31 +1213,41 @@ let spec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name} {area_mu}",
-            "text-size": 13,
+            "text-field": "{bbxrmc}",
+            "text-size": 16,
 
         },
         'slot': 'top',
         paint: {
-            "text-color": "#000", // 文字颜色
+            "text-color": "#fff", // 文字颜色
             //   "text-halo-color": "yellow", // 文字轮廓颜色
             'text-halo-color': [
                 'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+                [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+                'RGB(76,127,217)',
+                [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+                'RGB(159,212,108)',
+                [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+                'RGB(253,204,92)',
+                [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+                'RGB(249,111,83)',
+                [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+                'RGB(126,72,225)',
+                [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+                'RGB(215,52,76)',
+                'yellow'
             ],
-            "text-halo-width": 1.4, // 文字轮廓宽度
-            //  "text-halo-blur": 0.1, // 文字轮廓模糊度
+            "text-halo-width": 1, // 文字轮廓宽度
+            "text-halo-blur": 0.8, // 文字轮廓模糊度
         },
         minzoom: 13,
-        maxzoom: 14.55,
+        maxzoom: 14.99,
     },
     {
         id: "rskm_pt_name_1",
         type: "symbol",
-        source: config.rskm_pt.name,
-        "source-layer": config.rskm_pt.name,
+        source: config.procjet_2024_yghy_shandon.name,
+        "source-layer": config.procjet_2024_yghy_shandon.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1303,24 +1256,34 @@ let spec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name} {area_mu}\n{i_type_name}",
-            "text-size": 14,
+            "text-field": "{bxjg} , {area_mu}亩\n{bbxrmc}",
+            "text-size": 17,
 
         },
         'slot': 'top',
         paint: {
-            "text-color": "#000", // 文字颜色
+            "text-color": "#fff", // 文字颜色
             //  "text-halo-color": "yellow", // 文字轮廓颜色
             'text-halo-color': [
                 'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+                [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+                'RGB(76,127,217)',
+                [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+                'RGB(159,212,108)',
+                [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+                'RGB(253,204,92)',
+                [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+                'RGB(249,111,83)',
+                [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+                'RGB(126,72,225)',
+                [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+                'RGB(215,52,76)',
+                'yellow'
             ],
-            "text-halo-width": 2, // 文字轮廓宽度
-            "text-halo-blur": 0.5, // 文字轮廓模糊度
+            "text-halo-width": 1, // 文字轮廓宽度
+            "text-halo-blur": 0.8, // 文字轮廓模糊度
         },
-        minzoom: 14.56,
+        minzoom: 15,
     },
     {
         id: "admin_2024_village_name",
@@ -1737,4 +1700,4 @@ let spec = [
 
 
 
-export { layers, spec }
+export { layers, specYghy }

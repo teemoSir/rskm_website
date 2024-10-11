@@ -193,12 +193,12 @@ const loadCity = async () => {
 const loadCounty = async (code) => {
   //console.log(String(code).substring(0, 4));
   let features = await api.get_table_by_filter(
-    "admin_2024_county",
-    `and p_xzqmc='${defaultName}' and c_xzqdm='${String(code.split("-")[2]).substring(
+    "admin_2022_county",
+    `and province_name='${defaultName}' and city_code='${String(code.split("-")[2]).substring(
       0,
       4
-    )}' order by c_xzqdm`,
-    `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,c_xzqdm,c_xzqmc,f_xzqhdm,gid,name,p_xzqmc`
+    )}00' order by county_code`,
+    `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,city_code,city_name,county_code,gid,name,province_name`
   );
 
   if (features.length > 0) {
@@ -209,7 +209,7 @@ const loadCounty = async (code) => {
         for (const feature of features) {
           re.children.push({
             title: feature.name,
-            key: re.key + "-" + feature.f_xzqhdm,
+            key: re.key + "-" + feature.county_code,
             feature: feature,
             children: [
               {

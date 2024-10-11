@@ -20,7 +20,7 @@ const url = 'http://124.128.248.214:85/api/transfer';
 const action2 = "/api/syncinsurance/syncinsdataresult";
 const apiKey = 'nxptyzt';
 const privateKey = '46AA1572-L767-5783-F2A8-2A28F7240702';
-const size = 30;
+const size = 10;
 let tryBool = true;
 let lkdata = undefined;
 
@@ -268,8 +268,7 @@ async function connPgInstall () {
         try {
             const client = await pool.connect();
             const sql = `INSERT INTO public.rskm_pt(geom, insurancenum, insurcompany_code, insured, start_date, end_date, region_code,
-        insurance_id, create_date, update_data, insurancetarget, insured_quantity,srid_data,jsonb_data)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-         $10, $11, $12, $13, $14);`;
+        insurance_id, create_date, update_data, insurancetarget, insured_quantity,srid_data,jsonb_data)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10, $11, $12, $13, $14);`;
             //  console.log(sql)
             for (const item of listgeojson) {
                 //  console.log('入库内容');

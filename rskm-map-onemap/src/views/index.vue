@@ -24,7 +24,8 @@ import {
 import * as turf from "@turf/turf";
 import { storeToRefs } from "pinia";
 import { treeStore } from "@/store/store.js";
-import { filterRskm } from "@/views/map/map.js";
+import { filterRskm, addLayers, setPopup, popup, popupbig } from "@/views/map/map.js";
+
 import { useRouter } from "vue-router";
 import Header from "@/components/header/index.vue";
 
@@ -105,10 +106,10 @@ const menu = ref(false);
 
 
 
-const goGeomUn = () => {
-  map.getLayer("lockGeom") && map.removeLayer("lockGeom");
-  map.getSource("lockGeom") && map.removeSource("lockGeom");
-};
+// const goGeomUn = () => {
+//   map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+//   map.getSource("lockGeom") && map.removeSource("lockGeom");
+// };
 
 /**
  * 查找地块
@@ -151,53 +152,104 @@ const searchByfilter = async () => {
 
   }
   filterRskm();
-
-  return
-  const searchByInsuranceNumber = async () => {
-    const feature = await api.get_table_by_filter(
-      "rskm_pt",
-      `and insurancenum='${searchValue.value}'`,
-      `ST_AsGeoJSON(geom) as json,gid, insurancenum, insurcompany_code, insured, start_date, end_date, region_code, insurance_id, create_date, city, county, province, village, town, insurancetarget, insured_quantity, area_mi, area_mu, i_com_name, i_type_name  `
-    );
-
-    if (!feature[0]) {
-      message.warning(`暂无【${searchValue.value}】单号数据`, 3);
-    } else {
-      message.success(`【${searchValue.value}】单号，查询到1条数据`, 3, async () => {
-        goGeom(feature[0].json);
-      });
-    }
-  };
-
-  const searchByRegion = async () => {
-    const filter = `and (province ILIKE '%25${searchValue.value}%25' or city ILIKE '%25${searchValue.value}%25' or county ILIKE '%25${searchValue.value}%25' or town ILIKE '%25${searchValue.value}%25' or village ILIKE '%25${searchValue.value}%25')`;
-    const data = await api.get_table_count("rskm_pt", filter);
-
-    if (Number(data[0].count)) {
-
-      message.success(
-        `【${searchValue.value}】区域，查询到${data[0].count}条关联数据.`,
-        3
-      );
-    } else {
-      message.warning(`暂未查询到【${searchValue.value.trim()}】区域的数据.`, 3);
-
-    }
-  };
-
-  try {
-    if (searchType.value === "单号") {
-      await searchByInsuranceNumber();
-    } else if (searchType.value === "区域") {
-      await searchByRegion();
-    }
-  } catch (error) {
-    console.error("搜索出错:", error);
-    message.error("搜索过程中出现错误，请稍后重试");
-  } finally {
-    filterRskm();
-  }
 };
+
+const loadEvent = (() => {
+
+  let layerDK = "rskm_pt";
+
+  /**
+   * 鼠标移入监听地块
+   */
+  map.on("mousemove", layerDK, (e) => {
+    if (map.getZoom() < 8) return;
+
+    map.getCanvas().style.cursor = "pointer";
+    let feature = e.features[0];
+
+    let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "";
+    let i_com_name = feature.properties.i_com_name ? feature.properties.i_com_name : "";
+    let i_type_name = feature.properties.i_type_name
+      ? feature.properties.i_type_name
+      : "";
+
+
+    map.setFilter("Highlight_DK_Line", ["all", ["in", "gid", feature.properties.gid]]);
+    map.setLayoutProperty("Highlight_DK_Line", "visibility", "visible");
+
+    let text = `
+      <table style="line-height:1.0;width:100%;letter-spacing: -1px; font-size: 14px;" >
+      <tr><th style="vertical-align: top;width:50px">机构:</th><td style="">${i_com_name} </td></tr>
+      <tr><th style="vertical-align: top;width:50px">险种:</th><td style="">${i_type_name} </td></tr>
+      <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} 亩</td><tr>
+    
+      </table>
+  `;
+    popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
+  });
+
+  map.on("mouseleave", layerDK, () => {
+    map.getCanvas().style.cursor = "";
+    popup.setLngLat([0, 0]);
+    popup.setHTML("");
+
+    // map.setLayoutProperty("Highlight_DK", "visibility", "none");
+    map.setLayoutProperty("Highlight_DK_Line", "visibility", "none");
+  });
+
+  //清空绘制
+  const goGeomUn = () => {
+    map.getLayer("lockGeom") && map.removeLayer("lockGeom");
+    map.getSource("lockGeom") && map.removeSource("lockGeom");
+  };
+
+  map.on("click", () => {
+    // map.setLayoutProperty("Highlight_DK_Click", "visibility", "none");
+    map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "none");
+    goGeomUn();
+  });
+
+  map.on("click", layerDK, async (e) => {
+    if (map.getZoom() < 10) return;
+    popup && popup.setHTML("");
+    popup && popup.setLngLat([0, 0]);
+
+    map.getCanvas().style.cursor = "pointer";
+    const feature = e.features[0];
+
+    let text = await setPopup(feature);
+
+    map.setFilter("Highlight_DK_Line_Click", [
+      "all",
+      ["in", "gid", feature.properties.gid],
+    ]);
+    map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
+
+    // fitBox(feature);
+    map.flyTo({
+      center: e.lngLat,
+      // zoom: 7.5,
+      speed: 1,
+      curve: 1,
+      easing(t) {
+        return t;
+      },
+    });
+    popupbig.setLngLat(e.lngLat).setHTML(text).addTo(map);
+    window.tgid = feature.properties.gid;
+  });
+})
+
+
+
+onMounted(() => {
+  map && map.on("load", () => {
+    addLayers();
+
+    loadEvent();
+  })
+})
+
 
 
 
@@ -392,7 +444,7 @@ const searchByfilter = async () => {
   padding: 0;
 }
 
-/deep/.ant-page-header-heading-title {
+::v-deep .ant-page-header-heading-title {
   color: aliceblue;
 }
 
@@ -506,5 +558,122 @@ const searchByfilter = async () => {
   width: 100%;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.4));
   z-index: 100000;
+}
+
+
+
+
+.mapboxgl-popup {
+  display: flex;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  will-change: transform;
+}
+
+.mapboxgl-popup-anchor-top,
+.mapboxgl-popup-anchor-top-left,
+.mapboxgl-popup-anchor-top-right {
+  flex-direction: column;
+}
+
+.mapboxgl-popup-anchor-bottom,
+.mapboxgl-popup-anchor-bottom-left,
+.mapboxgl-popup-anchor-bottom-right {
+  flex-direction: column-reverse;
+}
+
+.mapboxgl-popup-anchor-left {
+  flex-direction: row;
+}
+
+.mapboxgl-popup-anchor-right {
+  flex-direction: row-reverse;
+}
+
+.mapboxgl-popup-tip {
+  border: 10px solid transparent;
+  height: 0;
+  width: 0;
+  z-index: 1;
+}
+
+::v-deep .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  align-self: center;
+  border-bottom-color: #161616c9;
+  border-top: none;
+}
+
+::v-deep .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+  align-self: flex-start;
+  border-bottom-color: #161616c9;
+  border-left: none;
+  border-top: none;
+}
+
+::v-deep .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+  align-self: flex-end;
+  border-bottom-color: #161616c9;
+  border-right: none;
+  border-top: none;
+}
+
+::v-deep .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  align-self: center;
+  border-bottom: none;
+  border-top-color: #161616c9;
+}
+
+::v-deep .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
+  align-self: flex-start;
+  border-bottom: none;
+  border-left: none;
+  border-top-color: #161616c9;
+}
+
+::v-deep .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  align-self: flex-end;
+  border-bottom: none;
+  border-right: none;
+  border-top-color: #161616c9;
+}
+
+::v-deep .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  align-self: center;
+  border-left: none;
+  border-right-color: #161616c9;
+}
+
+::v-deep .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  align-self: center;
+  border-left-color: #161616c9;
+  border-right: none;
+}
+
+.mapboxgl-popup-close-button {
+  background-color: transparent;
+  border: 0;
+  border-radius: 0 3px 0 0;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.mapboxgl-popup-close-button:hover {
+  background-color: #161616c9;
+}
+
+::v-deep .mapboxgl-popup-content {
+  background: #161616c9;
+  border-radius: 3px;
+  box-shadow: 0 10px 2px rgba(0, 0, 0, 0.1);
+  /* padding: 10px 10px 15px; */
+  padding: 20px 10px 10px 10px;
+  pointer-events: auto;
+  position: relative;
+  color: #eee9e9e7;
+  font-size: 18px;
 }
 </style>

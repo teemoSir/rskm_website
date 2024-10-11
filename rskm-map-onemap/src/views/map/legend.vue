@@ -11,7 +11,7 @@ import {
 let legends = [
   
   {
-    key: 2,
+    key: 1,
     title: "玉米",
     isShow: ref(true),
     type: "polygon",
@@ -123,6 +123,7 @@ watch(state, () => {
      "rskm_pt_outline",
     "rskm_pt",
     "rskm_pt_name",
+    "rskm_pt_name_1",
   ];
   hgdks.forEach((gd) => {
     toggleLayerVisibility(gd, state.checked2);

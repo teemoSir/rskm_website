@@ -5,7 +5,8 @@
 
 import { config, mapbox } from "@/config/tileserver.js";
 import { api } from "@/config/api.js";
-import { waySpec } from "../../config/spec";
+import { specYghy } from "../../config/spec-yghy";
+import { spec } from "../../config/spec";
 import { fills } from "../../config/fill";
 import StateManager from "@/utils/state_manager"
 import dayjs from "dayjs";
@@ -76,7 +77,7 @@ const popupbig = new mapboxgl.Popup({
  * @returns {void}1
  */
 const addLayers = () => {
-    waySpec.forEach((layer) => {
+    spec.forEach((layer) => {
         map.getLayer(layer.id) && map.removeLayer(layer.id);
     });
 
@@ -91,7 +92,33 @@ const addLayers = () => {
             map.addSource(sources[source].name, sources[source].tile);
     }
 
-    waySpec.forEach((spec) => {
+    spec.forEach((s) => {
+        !map.getLayer(s.id) && map.addLayer(s);
+    });
+};
+
+/**
+ * 向地图添加图层-遥感核验
+ * @function
+ * @returns {void}1
+ */
+const addLayersYghy = () => {
+    specYghy.forEach((layer) => {
+        map.getLayer(layer.id) && map.removeLayer(layer.id);
+    });
+
+    const sources = config;
+
+    for (const source in sources) {
+        map.getSource(sources[source].name) && map.removeSource(sources[source].name);
+    }
+
+    for (const source in sources) {
+        !map.getSource(sources[source].name) &&
+            map.addSource(sources[source].name, sources[source].tile);
+    }
+
+    specYghy.forEach((spec) => {
         !map.getLayer(spec.id) && map.addLayer(spec);
     });
 };
@@ -300,6 +327,7 @@ export {
     popup,
     popupbig,
     addLayers,
+    addLayersYghy,
     addIcon,
     setPopup,
     filterFeature,

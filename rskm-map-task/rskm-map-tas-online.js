@@ -25,6 +25,7 @@ console.log = function (message) {
 };
 
 
+const table = " public.rskm_pt "
 
 // PostGIS数据库连接参数
 const dbConfig = {
@@ -40,14 +41,14 @@ const url = 'http://124.128.248.214:85/api/transfer';
 const action2 = "/api/syncinsurance/syncinsdataresult";
 const apiKey = 'nxptyzt';
 const privateKey = '46AA1572-L767-5783-F2A8-2A28F7240702';
-const size = 1;
+const size = 10;
 let tryBool = true;
 let lkdata = undefined;
 
 
 
 // 批量获取数据
-async function getInsData222 () {
+async function getInsData222() {
 
 
     lkdata = undefined;
@@ -313,7 +314,7 @@ function geojsonToWKT(geojson) {
  * @param {*} data 
  * @param {*} wkt 
  */
-function installPgGeom (data, wkt, geojsons) {
+function installPgGeom(data, wkt, geojsons) {
     let T = JSON.stringify(geojsons);
     let R = "";
     let A12 = "";
@@ -368,11 +369,11 @@ function installPgGeom (data, wkt, geojsons) {
 /**
  * 更新到数据库
  */
-async function connPgInstall () {
+async function connPgInstall() {
 
 
     let listgeojson = lkdata.pgGeom;
-    //  console.log(lkdata.pgGeom)
+      console.log(lkdata.pgGeom)
 
     if (listgeojson) {
 
@@ -384,9 +385,8 @@ async function connPgInstall () {
 
         try {
             const client = await pool.connect();
-            const sql = `INSERT INTO public.rskm_pt(geom, insurancenum, insurcompany_code, insured, start_date, end_date, region_code,
-        insurance_id, create_date, update_data, insurancetarget, insured_quantity,srid_data,jsonb_data)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-         $10, $11, $12, $13, $14);`;
+            const sql = `INSERT INTO ${table} (geom, insurancenum, insurcompany_code, insured, start_date, end_date, region_code,
+        insurance_id, create_date, update_data, insurancetarget, insured_quantity,srid_data,jsonb_data)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10, $11, $12, $13, $14);`;
             //  console.log(sql)
             for (const item of listgeojson) {
                 //  console.log('入库内容');
@@ -426,19 +426,19 @@ async function connPgInstall () {
 
 
 // MD5加密函数
-function getMd5Sum (str) {
+function getMd5Sum(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 }
 
 
 // 获取当前时间减去5秒
-function getCurrentTimeMinusFiveSeconds () {
+function getCurrentTimeMinusFiveSeconds() {
     return new Date(new Date().getTime() - 5000).toISOString();
 }
 
 
 // 提交结果
-async function submitResult () {
+async function submitResult() {
     const timet = getCurrentTimeMinusFiveSeconds();
 
 
@@ -483,7 +483,7 @@ async function submitResult () {
 
 }
 
-function randomDelay (min, max) {
+function randomDelay(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -493,26 +493,24 @@ function randomDelay (min, max) {
 
 
 
-function getRandomInt (min, max) {
+function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
-// async function task () {
-//     await getInsData()
-//         .then(() => {
-//             // 数据处理完成后执行更新操作
-//             tryBool && connPgInstall();
-//         })
-//         .then(() => {
-//             //提交结果
-//             tryBool && submitResult();
-//         })
+async function task() {
+    await getInsData()
+        .then(() => {
+            // 数据处理完成后执行更新操作
+            tryBool && connPgInstall();
+        })
+        .then(() => {
+            //提交结果
+            tryBool && submitResult();
+        })
+}
 
-
-// }
-
-// // 每隔 1 秒执行一次任务
-// setInterval(task, getRandomInt(3000, 6000));
+// 每隔 1 秒执行一次任务
+setInterval(task, getRandomInt(3000, 6000));

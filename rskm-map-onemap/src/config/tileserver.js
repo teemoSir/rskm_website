@@ -23,6 +23,17 @@ const config = {
             maxzoom: 14
         }
     },
+    procjet_2024_yghy_shandon: {
+        name: 'procjet_2024_yghy_shandon',
+        tile: {
+            type: "vector",
+            tiles: [
+                `${host}/v1/mvt/procjet_2024_yghy_shandon/{z}/{x}/{y}?geom_column=geom&columns=gid,geom,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,area_mi,area_mu`,
+            ],
+            minzoom: 4,
+            maxzoom: 14
+        }
+    },
     wpoi: {
         name: "world_poi",
         tile: {
@@ -39,7 +50,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name`,
+                `${host}/v1/mvt/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name,first_gid`,
             ],
             minzoom: 2,
             maxzoom: 12.99
@@ -52,16 +63,16 @@ const config = {
             tiles: [
                 `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`,
             ],
-            minzoom: 7.5,
+            minzoom: 6,
             maxzoom: 12.99
         }
     },
-    admin_2024_county: {
-        name: "admin_2024_county",
+    admin_2022_county: {
+        name: "admin_2022_county",
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/admin_2024_county/{z}/{x}/{y}?geom_column=geom&columns=name`,
+                `${host}/v1/mvt/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code`,
             ],
             minzoom: 9,
             maxzoom: 14

@@ -5,7 +5,7 @@ import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted, defineExpose } from "vue";
 import { config, mapbox } from "@/config/tileserver.js";
 import { api } from "@/config/api.js";
-import { layers, waySpec } from "@/config/spec";
+import { layers, spec } from "@/config/spec";
 import { message, notification, Button } from "ant-design-vue";
 // import dayjs from "dayjs";
 // import bboxx from "@/utils/bbox";
@@ -54,7 +54,6 @@ import {
   eventRender,
   popupbig,
   popup,
-  addLayers,
   addIcon,
   setPopup,
 } from "@/views/map/map.js";
@@ -99,6 +98,15 @@ const initMap = () => {
           layout: {},
           paint: {
             "background-color": "#f0f3fa",
+          },
+          interactive: true,
+        },
+        {
+          id: "level",
+          type: "background",
+          layout: {},
+          paint: {
+            "background-color": "rgba(0,0,0,0)",
           },
           interactive: true,
         },
@@ -162,126 +170,7 @@ const eventLoad = () => {
     eventRender();
   });
 
-  let layerDK = "rskm_pt";
 
-  /**
-   * 鼠标移入监听地块
-   */
-  map.on("mousemove", layerDK, (e) => {
-    if (map.getZoom() < 8) return;
-
-    map.getCanvas().style.cursor = "pointer";
-    let feature = e.features[0];
-
-    let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "";
-    let i_com_name = feature.properties.i_com_name ? feature.properties.i_com_name : "";
-    let i_type_name = feature.properties.i_type_name
-      ? feature.properties.i_type_name
-      : "";
-
-    //  console.log(feature)
-    // if (window["tgid"] == feature.properties.gid) return;
-
-    // let insurancenum = feature.properties.insurancenum || "";
-    // let area_mi = feature.properties.area_mi
-    //   ? Number(feature.properties.area_mi).toFixed(2) + "㎡"
-    //   : "";
-    // let area_mu = feature.properties.area_mi
-    //   ? (Number(feature.properties.area_mi) / 667).toFixed(2) + "亩"
-    //   : "";
-    // let start_date = dayjs(feature.properties.start_date).format("YYYY年MM月DD日") || "";
-    // let end_date = dayjs(feature.properties.end_date).format("YYYY年MM月DD日");
-    // let insured_quantity = Number(feature.properties.insured_quantity).toFixed(2) || "";
-    // let province_city_county_town_village =
-    //   (feature.properties.province || "") +
-    //   (feature.properties.city || "") +
-    //   (feature.properties.county || "") +
-    //   (feature.properties.town || "") +
-    //   (feature.properties.village || "");
-    // let r_data = feature.properties.r_data || "";
-    // let insurcompany_code = feature.properties.insurcompany_code || "";
-    // let insurcompany = window["rskm_pt_insure_com"].filter(
-    //   (r) => r.insurcompanycode == insurcompany_code
-    // );
-    // insurcompany_code = insurcompany[0].insurcompanyname;
-    //rskm_pt_insure_com.filter((com)=>{com.})
-
-    //  map.setFilter("Highlight_DK", ["all", ["in", "gid", feature.properties.gid]]);
-    // map.setLayoutProperty("Highlight_DK", "visibility", "visible");
-
-    map.setFilter("Highlight_DK_Line", ["all", ["in", "gid", feature.properties.gid]]);
-    map.setLayoutProperty("Highlight_DK_Line", "visibility", "visible");
-
-    // map.setFeatureState(
-    //   { source: "rskm_pt", sourceLayer: "rskm_pt", id: feature.id },
-    //   { hover: true }
-    // );
-
-    //   <tr ><th>起保时间:</th><td>${start_date}</td></tr>
-    //         <tr ><th>到期时间:</th><td>${end_date}</td></tr>
-    //         <tr > <th style="vertical-align: top;">备注说明:</th><td>${r_data}</td></tr>
-    //<tr><th style="vertical-align: top;">位置:</th><td style="">${province_city_county_town_village} </td></tr>
-    let text = `
-        <table style="line-height:1.0;width:100%;letter-spacing: -1px; font-size: 14px;" >
-        <tr><th style="vertical-align: top;width:50px">机构:</th><td style="">${i_com_name} </td></tr>
-        <tr><th style="vertical-align: top;width:50px">险种:</th><td style="">${i_type_name} </td></tr>
-        <tr><th style="vertical-align: top;">面积:</th><td style="" >${area_mu} 亩</td><tr>
-      
-        </table>
-    `;
-    popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
-  });
-
-  map.on("mouseleave", layerDK, () => {
-    map.getCanvas().style.cursor = "";
-    popup.setLngLat([0, 0]);
-    popup.setHTML("");
-
-    // map.setLayoutProperty("Highlight_DK", "visibility", "none");
-    map.setLayoutProperty("Highlight_DK_Line", "visibility", "none");
-  });
-
-  //清空绘制
-  const goGeomUn = () => {
-    map.getLayer("lockGeom") && map.removeLayer("lockGeom");
-    map.getSource("lockGeom") && map.removeSource("lockGeom");
-  };
-
-  map.on("click", () => {
-    // map.setLayoutProperty("Highlight_DK_Click", "visibility", "none");
-    map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "none");
-    goGeomUn();
-  });
-
-  map.on("click", layerDK, async (e) => {
-    if (map.getZoom() < 10) return;
-    popup && popup.setHTML("");
-    popup && popup.setLngLat([0, 0]);
-
-    map.getCanvas().style.cursor = "pointer";
-    const feature = e.features[0];
-
-    let text = await setPopup(feature);
-
-    map.setFilter("Highlight_DK_Line_Click", [
-      "all",
-      ["in", "gid", feature.properties.gid],
-    ]);
-    map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
-
-    // fitBox(feature);
-    map.flyTo({
-      center: e.lngLat,
-      // zoom: 7.5,
-      speed: 1,
-      curve: 1,
-      easing(t) {
-        return t;
-      },
-    });
-    popupbig.setLngLat(e.lngLat).setHTML(text).addTo(map);
-    window.tgid = feature.properties.gid;
-  });
 
   map.on("draw.create", function (e) {
     updateGeom(e);
@@ -313,7 +202,7 @@ const loadTerrain = () => {
 const fitCenter = () => {
   map.flyTo({
     center: [118.223855, 36.315451],
-    zoom: 7.5,
+    zoom: 7,
     speed: 1,
     curve: 2,
     easing(t) {
@@ -337,7 +226,7 @@ const loadBaseSource = () => {
   map.on("load", () => {
     // addTiles();
 
-    addLayers();
+    //addLayers();
 
     fitCenter();
 
@@ -400,6 +289,13 @@ const addRasterTileLayer = (layerList, key) => {
       var param = key ? { key: key } : null;
       !map.getLayer(layer[0]) && map.addLayer(rasterTileLayer(layer[0], layer[1], param));
     });
+
+
+  /**
+   * 定位一致
+   */
+  let style = map.getStyle()
+  map.moveLayer(style.layers[style.layers.length - 1].id, 'level');
 };
 
 // 地图类型
@@ -459,10 +355,7 @@ const switchTile = (layer) => {
 
   // 历史缓存
   StateManager.set("MAP_LAYERS", layer);
-  //console.log(StateManager.get("MAP_LAYERS"));
 
-  // 叠加
-  addLayers();
 };
 
 const goGlobal = () => {
@@ -916,12 +809,7 @@ onMounted(() => {
   eventLoad();
 
   loadDraw();
-  nextTick(() => {
-    //console.log(1111111111111);
-  });
-  setTimeout(() => {
-    // console.log(2222222222222);
-  });
+
 });
 
 onUnmounted(() => {
@@ -1382,119 +1270,6 @@ defineProps({
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.mapboxgl-popup {
-  display: flex;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  will-change: transform;
-}
-
-.mapboxgl-popup-anchor-top,
-.mapboxgl-popup-anchor-top-left,
-.mapboxgl-popup-anchor-top-right {
-  flex-direction: column;
-}
-
-.mapboxgl-popup-anchor-bottom,
-.mapboxgl-popup-anchor-bottom-left,
-.mapboxgl-popup-anchor-bottom-right {
-  flex-direction: column-reverse;
-}
-
-.mapboxgl-popup-anchor-left {
-  flex-direction: row;
-}
-
-.mapboxgl-popup-anchor-right {
-  flex-direction: row-reverse;
-}
-
-.mapboxgl-popup-tip {
-  border: 10px solid transparent;
-  height: 0;
-  width: 0;
-  z-index: 1;
-}
-
-::v-deep .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-  align-self: center;
-  border-bottom-color: #161616c9;
-  border-top: none;
-}
-
-::v-deep .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
-  align-self: flex-start;
-  border-bottom-color: #161616c9;
-  border-left: none;
-  border-top: none;
-}
-
-::v-deep .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
-  align-self: flex-end;
-  border-bottom-color: #161616c9;
-  border-right: none;
-  border-top: none;
-}
-
-::v-deep .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-  align-self: center;
-  border-bottom: none;
-  border-top-color: #161616c9;
-}
-
-::v-deep .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
-  align-self: flex-start;
-  border-bottom: none;
-  border-left: none;
-  border-top-color: #161616c9;
-}
-
-::v-deep .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
-  align-self: flex-end;
-  border-bottom: none;
-  border-right: none;
-  border-top-color: #161616c9;
-}
-
-::v-deep .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-  align-self: center;
-  border-left: none;
-  border-right-color: #161616c9;
-}
-
-::v-deep .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-  align-self: center;
-  border-left-color: #161616c9;
-  border-right: none;
-}
-
-.mapboxgl-popup-close-button {
-  background-color: transparent;
-  border: 0;
-  border-radius: 0 3px 0 0;
-  cursor: pointer;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.mapboxgl-popup-close-button:hover {
-  background-color: #161616c9;
-}
-
-::v-deep .mapboxgl-popup-content {
-  background: #161616c9;
-  border-radius: 3px;
-  box-shadow: 0 10px 2px rgba(0, 0, 0, 0.1);
-  /* padding: 10px 10px 15px; */
-  padding: 20px 10px 10px 10px;
-  pointer-events: auto;
-  position: relative;
-  color: #eee9e9e7;
-  font-size: 18px;
-}
 
 .arrow {
   position: absolute;
