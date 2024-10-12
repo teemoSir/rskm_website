@@ -1912,13 +1912,13 @@ const loadLocalData = (filter) => {
 
   loadDataRight(filter)
 
-  
 
 
+  goGeomUn()
   if (activeKey.value == 1) {
     loadLayers(filter)
   } else {
-
+    loadLayerDk()
   }
 
   header.value = filter;
@@ -2215,6 +2215,15 @@ onMounted(() => {
   })
 
 })
+
+/**
+ * 地块图形
+ */
+const loadLayerDk =()=>{
+
+
+
+}
 
 /**
  * 区域状态
