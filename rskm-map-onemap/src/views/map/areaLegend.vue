@@ -2,8 +2,10 @@
 import { ref, computed, watch, onMounted, nextTick, reactive } from "vue";
 import { message } from "ant-design-vue";
 import {
+  ChevronDownIcon,
   ChevronUp,
-  ChevronDownIcon
+  Logs,
+  X
 } from "lucide-vue-next";
 
 /**
@@ -11,91 +13,49 @@ import {
  */
 let legends = [
 
-
   {
     key: 1,
     title: "合格",
     isShow: ref(true),
     type: "polygon",
-    outlineColor: "yellow",
-    fillColor: "RGB(144,204,120)",
-    outlineWidth: 0,
-    order: "状态"
+    outlineColor: "RGB(158,224,132)",
+    fillColor: "RGBA(158,224,132,0.8)",
+    outlineWidth: 3,
+    order: "已核验"
   },
   {
     key: 2,
-    title: "不合格",
+    title: "不足",
     isShow: ref(true),
     type: "polygon",
-    outlineColor: "orange",
-    fillColor: "RGB(236,102,103)",
-    outlineWidth: 0,
-    order: "状态"
+    outlineColor: "RGB(253,220,103)",
+    fillColor: "RGBA(253,220,103,0.8)",
+    outlineWidth: 3,
+    order: "已核验"
   },
-
-
   {
     key: 3,
-    title: "国寿财",
-    isShow: ref(false),
+    title: "超保",
+    isShow: ref(true),
     type: "polygon",
-    outlineColor: "RGB(76,127,217)",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
+    outlineColor: "RGB(236,102,103)",
+    fillColor: "RGBA(236,102,103,0.8)",
+    outlineWidth: 3,
+    order: "已核验"
   },
 
-  {
-    key: 4,
-    title: "太平",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGB(253,204,92)",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
-  },
 
-  {
-    key: 5,
-    title: "人保",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "#000",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
-  },
-  {
-    key: 6,
-    title: "太保",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGB(126,72,225)",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
-  },
-  {
-    key: 7,
-    title: "中华",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGB(215,52,76)",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
-  },
-  {
-    key: 8,
-    title: "安华",
-    isShow: ref(false),
-    type: "polygon",
-    outlineColor: "RGB(159,212,108)",
-    fillColor: "RGBA(43,128,251,0.0)",
-    outlineWidth: 5,
-    order: "机构"
-  },
+  // {
+  //   key: 4,
+  //   title: "未核验",
+  //   isShow: ref(false),
+  //   type: "polygon",
+  //   outlineColor: "RGB(165,165,165)",
+  //   fillColor: "RGBA(165,165,165,0.8)",
+  //   outlineWidth: 3,
+  //   order: "未核验"
+  // },
+
   //   {
   //     key: 1,
   //     title: "耕地地块",
@@ -317,12 +277,51 @@ const toggleLayerVisibility = (layerId, isVisible) => {
     <template #extra>
       <ChevronDownIcon v-if="tuli" style="cursor: pointer;" @click="tuli = !tuli"></ChevronDownIcon>
       <ChevronUp v-else style="cursor: pointer;" @click="tuli = !tuli"></ChevronUp>
-    
     </template>
-
     <div v-if="tuli" style="width: 150px;">
-      <label style="line-height: 40px;font-size: 16px; ">核验结果</label>
-      <a-row v-for="tar in legends.filter(le => le.order == '状态')" :key="tar.key"
+     
+      <a-row v-for="tar in legends.filter(le => le.order == '已核验')" :key="tar.key"
+        style="display: flex; align-items: center; line-height: 30px">
+        <a-col :span="1"></a-col>
+        <a-col :span="6">
+          <div v-if="tar.type == 'polygon'" :style="{
+            background: tar.fillColor,
+            border: `${tar.outlineWidth}px solid ${tar.outlineColor}`,
+            width: '35px',
+            height: '20px',
+          }"></div>
+          <div v-if="tar.type == 'line-dotted'" :style="{
+            borderBottom: `${tar.outlineWidth}px dashed ${tar.fillColor}`,
+            width: '35px',
+            height: '0px',
+            paddingTop: '3.5px',
+          }"></div>
+
+          <div v-if="tar.type == 'line'" :style="{
+            borderBottom: `${tar.outlineWidth}px solid ${tar.fillColor}`,
+            width: '35px',
+            height: '0px',
+            paddingTop: '3.5px',
+          }"></div>
+        </a-col>
+        <a-col :span="17" style="font-size: 15px;">
+          {{ tar.title }}
+
+          <!-- <div style="position: absolute; right: 5px; bottom: 0">
+            <a-switch v-if="tar.key == 1" checked-children="显示" un-checked-children="隐藏"
+              v-model:checked="state.checked1" />
+            <a-switch v-if="tar.key == 2" checked-children="显示" un-checked-children="隐藏"
+              v-model:checked="state.checked2" />
+            <a-switch v-if="tar.key == 3" checked-children="显示" un-checked-children="隐藏"
+              v-model:checked="state.checked3" />
+
+          </div> -->
+        </a-col>
+      </a-row>
+
+
+      <!-- <label style="line-height: 40px;font-size: 16px; ">未核验</label>
+      <a-row v-for="tar in legends.filter(le => le.order == '未核验')" :key="tar.key"
         style="display: flex; align-items: center; line-height: 30px">
         <a-col :span="1"></a-col>
         <a-col :span="6">
@@ -350,61 +349,12 @@ const toggleLayerVisibility = (layerId, isVisible) => {
         <a-col :span="17" style="font-size: 15px;">
           {{ tar.title }}
 
-          <!-- <div style="position: absolute; right: 5px; bottom: 0">
-            <a-switch v-if="tar.key == 1" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked1" />
-            <a-switch v-if="tar.key == 2" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked2" />
-            <a-switch v-if="tar.key == 3" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked3" />
-
-          </div> -->
+  
         </a-col>
-      </a-row>
-
-
-      <label style="line-height: 40px;font-size: 16px; ">保险机构</label>
-      <a-row v-for="tar in legends.filter(le => le.order == '机构')" :key="tar.key"
-        style="display: flex; align-items: center; line-height: 30px">
-        <a-col :span="1"></a-col>
-        <a-col :span="6">
-          <div v-if="tar.type == 'polygon'" :style="{
-            background: tar.fillColor,
-            border: `${tar.outlineWidth}px solid ${tar.outlineColor}`,
-            width: '35px',
-            height: '20px',
-          }"></div>
-          <div v-if="tar.type == 'line-dotted'" :style="{
-            borderBottom: `${tar.outlineWidth}px dashed ${tar.fillColor}`,
-            width: '35px',
-            height: '0px',
-            paddingTop: '3.5px',
-          }"></div>
-
-          <div v-if="tar.type == 'line'" :style="{
-            borderBottom: `${tar.outlineWidth}px solid ${tar.fillColor}`,
-            width: '35px',
-            height: '0px',
-            paddingTop: '3.5px',
-          }"></div>
-        </a-col>
-
-        <a-col :span="17" style="font-size: 15px;">
-          {{ tar.title }}
-
-          <!-- <div style="position: absolute; right: 5px; bottom: 0">
-            <a-switch v-if="tar.key == 1" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked1" />
-            <a-switch v-if="tar.key == 2" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked2" />
-            <a-switch v-if="tar.key == 3" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state.checked3" />
-
-          </div> -->
-        </a-col>
-      </a-row>
+      </a-row> -->
 
     </div>
   </a-card>
 </template>
 
+<style scoped></style>

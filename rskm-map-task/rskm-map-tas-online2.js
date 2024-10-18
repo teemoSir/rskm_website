@@ -311,12 +311,14 @@ async function submitResult() {
         "Action": action2,
     };
 
-    const params = {
-        "BillList": lkdata.listBill,
-        "ResultList": lkdata.resultList,
-    };
+
 
     try {
+
+        const params = {
+            "BillList": lkdata.listBill,
+            "ResultList": lkdata.resultList,
+        };
         const response = await axios.post(url, params, { headers });
 
         if (response.status === 200) {

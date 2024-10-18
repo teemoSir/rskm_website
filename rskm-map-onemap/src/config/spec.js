@@ -1089,9 +1089,9 @@ let spec = [
             //     [">", ["index-of", "小麦","i_type_name" ], -1],
             'fill-color': [
                 'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], 
+                'RGB(248,200,94)',
+                'RGB(158,224,132)'
             ],
             //  "fill-color": [
             //     'case',
@@ -1133,8 +1133,9 @@ let spec = [
             'line-color': [
                 'case',
                 [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+            
+                'RGB(248,200,94)',
+                'RGB(158,224,132)'
             ],
             //  'line-width': 4,
             'line-width': ["interpolate",
@@ -1143,11 +1144,11 @@ let spec = [
                 9,
                 0,
                 10,
-                1,
+                0,
                 13,
-                3.5,
+                2.0,
                 14,
-                4.5,],
+                2.5,],
             "line-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],

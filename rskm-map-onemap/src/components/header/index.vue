@@ -7,9 +7,13 @@ import { FileDigit, Home, Settings, TextSearch } from "lucide-vue-next";
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import dayjs from "dayjs";
 import { message } from "ant-design-vue";
+import { storeToRefs } from "pinia";
+import { hedaerStore } from "@/store/store.js";
 
 const router = useRouter();
 
+const hctive = hedaerStore();
+let { headerActive } = storeToRefs(hctive);
 
 
 //  初始化区域
@@ -43,7 +47,8 @@ const panelChangeRL = (value, mode) => {
 
 
 //菜单
-const current = ref(["home"]);
+const current = ref([headerActive.value || "home"]);
+
 const items = ref([
     {
         key: "home",
@@ -51,6 +56,7 @@ const items = ref([
         label: "首页",
         title: "首页",
         onClick: () => {
+            headerActive.value = 'home';
             router.push("/");
             // router.replace({ path: '/home' })
         },
@@ -58,61 +64,12 @@ const items = ref([
     {
         key: "app",
         icon: () => h(TextSearch),
-        label: "遥感核验",
-        title: "遥感核验",
-        children: [
-            {
-                label: "区域核验",
-                key: "app:area",
-                onClick: () => {
-                    router.push("/verification/index");
-                },
-            },
-            {
-                label: "地块核验",
-                key: "app:land",
-                onClick: () => {
-                    router.push("/verification/land");
-                },
-            },
-            // {
-            //     type: "group",
-            //     label: "区域核验",
-            //     children: [
-            //         {
-            //             label: "区县级核验",
-            //             key: "app:county",
-            //             onClick: () => {
-            //                 router.push("/verification/county");
-            //             },
-            //         },
-            //         {
-            //             label: "乡镇级核验",
-            //             key: "app:town",
-            //             onClick: () => {
-            //                 router.push("/verification/town");
-            //             },
-            //         },
-            //         {
-            //             label: "村级核验",
-            //             key: "app:village",
-            //             onClick: () => {
-            //                 router.push("/verification/village");
-            //             },
-            //         },
-            //     ],
-            // },
-            // {
-            //     type: "group",
-            //     label: "地块核验",
-            //     children: [
-            //         {
-            //             label: "乡镇级核验",
-            //             key: "app:11",
-            //         },
-            //     ],
-            // },
-        ],
+        label: "区域核验",
+        onClick: () => {
+            headerActive.value = 'app';
+            router.push("/verification/index");
+        },
+
     },
     {
         key: "sub1",

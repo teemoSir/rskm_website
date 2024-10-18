@@ -11,17 +11,18 @@ const treeStore = defineStore({
             treeJg: [],
             treeQy: [],
             searchTypeStore: undefined,
-            searchNameStore: undefined
+            searchNameStore: undefined,
+            headerActive: undefined,
         }
     },
     getters: {
-        getX () {
+        getX() {
             return this.treeXz
         },
-        getJ () {
+        getJ() {
             return this.treeJg
         },
-        getQ () {
+        getQ() {
             return this.treeQy
         }
     },
@@ -30,4 +31,24 @@ const treeStore = defineStore({
     }
 })
 
-export { treeStore };
+/**
+ * 树结构缓存
+ */
+const hedaerStore = defineStore({
+    id: "hedaerStore",
+    state: () => {
+        return {
+            headerActive: undefined,
+        }
+    },
+    getters: {
+        getHeaderActive() {
+            return this.headerActive
+        }
+    },
+    actions: {
+
+    }
+})
+
+export { treeStore, hedaerStore };

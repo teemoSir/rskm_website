@@ -23,17 +23,32 @@ const config = {
             maxzoom: 14
         }
     },
-    procjet_2024_yghy_shandon: {
-        name: 'procjet_2024_yghy_shandon',
+    procjet_2024_yghy_hz4country: {
+        name: 'procjet_2024_yghy_hz4country',
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/procjet_2024_yghy_shandon/{z}/{x}/{y}?geom_column=geom&columns=gid,geom,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,area_mi,area_mu`,
+                //gid, geom, objectid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianlei, xianzhong, bxjg, shi, shidm, quxian, quxiandm, zhen, zhendm, cun, cundm, youxiao, dkmj, dkcdl, bdmj, dkbcd, shape_leng, shape_area
+                `${host}/v1/mvt/procjet_2024_yghy_hz4country/{z}/{x}/{y}?geom_column=geom&columns=gid,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkmj,dkcdl,bdmj,dkbcd,cbsl,bxqj,v1,v2,v3,v4,v5,v6,v7,v8`,
             ],
             minzoom: 4,
             maxzoom: 14
         }
     },
+    procjet_2024_yghy_sense: {
+        name: 'procjet_2024_yghy_sense',
+        tile: {
+            type: "vector",
+            tiles: [
+                //gid, geom, objectid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianlei, xianzhong, bxjg, shi, shidm, quxian, quxiandm, zhen, zhendm, cun, cundm, youxiao, dkmj, dkcdl, bdmj, dkbcd, shape_leng, shape_area
+                `${host}/v1/mvt/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
+            ],
+            minzoom: 4,
+            maxzoom: 14
+        }
+    },
+
+    
     wpoi: {
         name: "world_poi",
         tile: {

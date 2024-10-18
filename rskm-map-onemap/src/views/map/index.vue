@@ -1276,4 +1276,8 @@ defineProps({
   left: 1px;
   bottom: -6px;
 }
+
+::v-deep .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
+  margin: 0;
+}
 </style>

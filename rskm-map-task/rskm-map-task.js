@@ -15,12 +15,19 @@ const dbConfig = {
     port: 5432,
 };
 
+// 每次获取数据量
+const size = 10;
 // 定义要请求的URL
 const url = 'http://124.128.248.214:85/api/transfer';
+
+// 获取数据后返回给API服务器的接口
 const action2 = "/api/syncinsurance/syncinsdataresult";
+
+// 获取数据接口
+const getDataAPI="/api/syncinsurance/getinsdata/"+ size
 const apiKey = 'nxptyzt';
 const privateKey = '46AA1572-L767-5783-F2A8-2A28F7240702';
-const size = 10;
+
 let tryBool = true;
 let lkdata = undefined;
 
@@ -37,15 +44,15 @@ async function getInsData () {
     let pgGeom = [];
     const now = new Date();
     const fourSecondsAgo = new Date(now.getTime() - 4 * 1000);
-    const timet = fourSecondsAgo.toLocaleString();
+
 
     console.log('-----------------------------------发起数据请求----------------------------------');
     // POST请求
     const headers = {
         'Content-Type': 'application/json',
         'ApiKey': apiKey,
-        'Sign': getMd5Sum(`apikey=${apiKey}&time=${timet}&key=${privateKey}`),
-        'Time': timet,
+        'Sign': getMd5Sum(`apikey=${apiKey}&time=${fourSecondsAgo.toLocaleString()}&key=${privateKey}`),
+        'Time': fourSecondsAgo.toLocaleString(),
         'Action': '/api/syncinsurance/getinsdata/' + size,
         'User-Agent': 'Mozilla/5.0 (Linux, Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.109 Safari/537.36',
         timeout: 5000 // 设置超时时间为 5 秒

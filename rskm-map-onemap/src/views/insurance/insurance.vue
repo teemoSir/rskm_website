@@ -158,35 +158,6 @@ const loadCount = async (filter = "") => {
 
 const loading = ref(true);
 
-/**
- * 查询
- * @param {*} data
- */
-// const onSearchHeader = (data) => {
-//   const features2 = map.getSource("rskm_pt");
-//   console.log(features2);
-
-//   let ff = features2.filter((feature) => {
-//     return feature.properties.insurancenum == data;
-//   });
-
-//   map.setFilter("Highlight_DK_Line_Click", [
-//     "all",
-//     ["in", "insurancenum", ff[0].properties.insurancenum],
-//   ]);
-//   map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
-//   fitBox(ff[0]);
-// };
-
-// const customRow = (record) => {
-//   return {
-//     onClick: (e) => {
-//       // console.log(record.geom);
-//       goGeom(record.geom);
-//     },
-//   };
-// };
-
 const goGeomUn = () => {
 
   map.getLayer("lockGeom") && map.removeLayer("lockGeom");
