@@ -1188,8 +1188,8 @@ let specYghy = [
         id: "rskm_pt",
         name: "保单地块",
         "type": "fill",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         minzoom: 4.4,
         layout: {
             visibility: 'none'
@@ -1198,9 +1198,9 @@ let specYghy = [
         "paint": {
             'fill-color': [
                 'case',
-                ["==", ['get', "v8"], '1'],
+                ["==", ['get', "v9"], '1'],
                 'RGB(158,224,132)',
-                ["==", ['get', "v8"], '0'],
+                ["==", ['get', "v9"], '0'],
                 'RGB(253,112,113)',
                 'RGB(248,200,94)'
             ],
@@ -1225,8 +1225,8 @@ let specYghy = [
         id: "rskm_pt_outline",
         name: "保单地块外框",
         type: "line",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         layout: {
             "line-join": "round",
             "line-cap": "round",
@@ -1241,15 +1241,15 @@ let specYghy = [
                 [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
                 'RGB(76,127,217)',
                 [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-                'RGB(159,212,108)',
+                'RGB(233,124,203)',
                 [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-                'RGB(253,204,92)',
+                'RGB(147,138,87)',
                 [">", ["index-of", "人保", ['get', "bxjg"]], -1],
                 '#000',
                 [">", ["index-of", "太保", ['get', "bxjg"]], -1],
                 'RGB(126,72,225)',
                 [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-                'RGB(215,52,76)',
+                'RGB(250,131,86)',
                 '#ccc'
             ],
             // 'line-color': [
@@ -1290,8 +1290,8 @@ let specYghy = [
         id: "Highlight_DK_Line",
         name: "保单地块高亮",
         type: "fill",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         minzoom: 10,
         //     maxzoom: 18,
         layout: {
@@ -1311,8 +1311,8 @@ let specYghy = [
         id: "Highlight_DK_Line_Click",
         name: "点击高亮",
         type: "fill",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         minzoom: 10,
         layout: {
             visibility: "none",
@@ -1329,8 +1329,8 @@ let specYghy = [
     {
         id: "rskm_pt_name",
         type: "symbol",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1347,30 +1347,30 @@ let specYghy = [
         paint: {
             "text-color": "#fff", // 文字颜色
             //   "text-halo-color": "yellow", // 文字轮廓颜色
-            'text-halo-color': [
-                'case',
-                [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-                'RGB(76,127,217)',
-                [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-                'RGB(159,212,108)',
-                [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-                'RGB(253,204,92)',
-                [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-                '#000',
-                [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-                'RGB(126,72,225)',
-                [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-                'RGB(215,52,76)',
-                'yellow'
-            ],
             // 'text-halo-color': [
             //     'case',
-            //     ["==", ['get', "v8"], '1'],
-            //     'RGB(158,224,132)',
-            //     ["==", ['get', "v8"], '0'],
-            //     'RGB(253,112,113)',
-            //     'yellow'
+            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+            //     'RGB(76,127,217)',
+            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+            //     'RGB(233,124,203)',
+            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+            //     'RGB(147,138,87)',
+            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+            //     '#000',
+            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+            //     'RGB(126,72,225)',
+            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+            //     'RGB(250,131,86)',
+            //     '#ccc'
             // ],
+            'text-halo-color': [
+                'case',
+                ["==", ['get', "v9"], '1'],
+                'RGB(158,224,132)',
+                ["==", ['get', "v9"], '0'],
+                'RGB(253,112,113)',
+                'yellow'
+            ],
 
             "text-halo-width": 1, // 文字轮廓宽度
             "text-halo-blur": 0.8, // 文字轮廓模糊度
@@ -1381,8 +1381,8 @@ let specYghy = [
     {
         id: "rskm_pt_name_1",
         type: "symbol",
-        source: config.procjet_2024_yghy_hz4country.name,
-        "source-layer": config.procjet_2024_yghy_hz4country.name,
+        source: config.procjet_2024_yghy_hz10_county.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1391,7 +1391,7 @@ let specYghy = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{bxjg},{dkmj}亩\n{bbxrmc}",
+            "text-field": "{bxjg}\n{bbxrmc}",
             "text-size": 18,
 
         },
@@ -1399,30 +1399,30 @@ let specYghy = [
         paint: {
             "text-color": "#fff", // 文字颜色
             //  "text-halo-color": "yellow", // 文字轮廓颜色
-            'text-halo-color': [
-                'case',
-                [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-                'RGB(76,127,217)',
-                [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-                'RGB(159,212,108)',
-                [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-                'RGB(253,204,92)',
-                [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-                '#000',
-                [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-                'RGB(126,72,225)',
-                [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-                'RGB(215,52,76)',
-                'yellow'
-            ],
             // 'text-halo-color': [
             //     'case',
-            //     ["==", ['get', "v8"], '1'],
-            //     'RGB(158,224,132)',
-            //     ["==", ['get', "v8"], '0'],
-            //     'RGB(253,112,113)',
+            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+            //     'RGB(76,127,217)',
+            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+            //     'RGB(159,212,108)',
+            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+            //     'RGB(147,138,87)',
+            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+            //     '#000',
+            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+            //     'RGB(126,72,225)',
+            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+            //     'RGB(250,131,86)',
             //     'yellow'
             // ],
+            'text-halo-color': [
+                'case',
+                ["==", ['get', "v9"], '1'],
+                'RGB(158,224,132)',
+                ["==", ['get', "v9"], '0'],
+                'RGB(253,112,113)',
+                'yellow'
+            ],
             "text-halo-width": 1, // 文字轮廓宽度
             "text-halo-blur": 0.8, // 文字轮廓模糊度
         },

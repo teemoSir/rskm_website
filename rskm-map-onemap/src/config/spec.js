@@ -1089,7 +1089,7 @@ let spec = [
             //     [">", ["index-of", "小麦","i_type_name" ], -1],
             'fill-color': [
                 'case',
-                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], 
+                [">", ["index-of", "小麦", ['get', "i_type_name"]], -1],
                 'RGB(248,200,94)',
                 'RGB(158,224,132)'
             ],
@@ -1099,7 +1099,7 @@ let spec = [
             //     "blue",
             //     "yellow"
             //  ],
-           // "fill-outline-color": "#000",
+            // "fill-outline-color": "#000",
             //  "fill-opacity":0.4,
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
@@ -1107,12 +1107,12 @@ let spec = [
                 3,
                 1,
                 7,
-                0.5,
+                0.7,
                 13,
-                0.3,
+                0.6,
                 14,
-                0.2, 15,
-                0.1,],
+                0.4, 17,
+                0.2,],
         },
         interactive: true,
     },
@@ -1133,7 +1133,7 @@ let spec = [
             'line-color': [
                 'case',
                 [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-            
+
                 'RGB(248,200,94)',
                 'RGB(158,224,132)'
             ],
@@ -1203,61 +1203,7 @@ let spec = [
         'slot': 'top',
         interactive: true,
     },
-    // {
-    //     id: "Highlight_DK_Line_Click",
-    //     name: "高亮",
-    //     type: "line",
-    //     source: config.rskm_pt.name,
-    //     "source-layer": config.rskm_pt.name,
-    //     minzoom: 10,
 
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     "paint": {
-    //         // 'line-color': '#fff',
-    //         // 'line-width': 4,
-    //         // 'line-opacity': 0.6,
-    //         //  "line-dasharray": [10, 0.6] 
-    //         "line-color": "RGB(50,119,252)",
-    //         "line-width": 6,
-    //         "line-opacity": 0.8,
-    //     },
-    //     interactive: true,
-    // },
-
-
-    // {
-    //     id: "procjet_2024_wxsd_name",
-    //     name: "耕地地块注记",
-    //     type: "symbol",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 16,
-
-    //     // 'slot': 'top',
-    //     layout: {
-
-    //         "symbol-avoid-edges": true,
-    //         "icon-rotation-alignment": "viewport",
-    //         "text-pitch-alignment": "viewport",
-    //         visibility: "none",
-    //         "text-font": ["Microsoft YaHei"],
-    //          "text-optional": true,
-    //         "text-padding": 10,
-    //         // "text-field": "{province}{city}{county}{town}{village}\n{area_mu}亩",
-    //         "text-field": "{village}\n{area_mu}亩",
-    //         "text-size": 14,
-
-    //     },
-    //     paint: {
-    //         "text-halo-color": "RGBA(0,0,0,0.8)",
-    //         "text-color": "RGBA(255,255, 255, 1)",
-    //         'text-halo-width': 1
-
-    //     },
-    //     interactive: true,
-    // },
     {
         id: "rskm_pt_name",
         type: "symbol",
@@ -1271,7 +1217,7 @@ let spec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name} {area_mu}",
+            "text-field": "{insured}",
             "text-size": 13,
 
         },
@@ -1282,13 +1228,13 @@ let spec = [
             'text-halo-color': [
                 'case',
                 [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+                'RGB(248,200,94)',
+                'RGB(158,224,132)'
             ],
             "text-halo-width": 1.4, // 文字轮廓宽度
-            //  "text-halo-blur": 0.1, // 文字轮廓模糊度
+           "text-halo-blur": 0.5, // 文字轮廓模糊度
         },
-        minzoom: 13,
+        minzoom: 12,
         maxzoom: 14.55,
     },
     {
@@ -1304,7 +1250,7 @@ let spec = [
             "text-font": ["Microsoft YaHei"],
             // "text-optional": true, \n{r}{t}\n{quxian}{cun}
             // "text-padding": 50,
-            "text-field": "{i_com_name} {area_mu}\n{i_type_name}",
+            "text-field": "{insured}\n{area_mu}\n{i_com_name}",
             "text-size": 14,
 
         },
@@ -1315,10 +1261,10 @@ let spec = [
             'text-halo-color': [
                 'case',
                 [">", ["index-of", "小麦", ['get', "i_type_name"]], -1], // 检查属性值是否大于 80
-                'orange', // 如果大于 80，填充颜色为绿色
-                'yellow' // 否则填充颜色为红色
+                'RGB(248,200,94)',
+                'RGB(158,224,132)'
             ],
-            "text-halo-width": 2, // 文字轮廓宽度
+            "text-halo-width": 1.5, // 文字轮廓宽度
             "text-halo-blur": 0.5, // 文字轮廓模糊度
         },
         minzoom: 14.56,

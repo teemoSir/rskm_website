@@ -64,7 +64,7 @@ const items = ref([
     {
         key: "app",
         icon: () => h(TextSearch),
-        label: "区域核验",
+        label: "遥感核验",
         onClick: () => {
             headerActive.value = 'app';
             router.push("/verification/index");

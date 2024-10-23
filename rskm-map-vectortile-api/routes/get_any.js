@@ -120,12 +120,7 @@ const sql = (params, query) => {
             (select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='太保' and (v2::numeric)>80  and (v2::numeric)<105  and v2 !='') as zc,
             ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='太保' and (v2::numeric)<=80  and v2 !='') as bz,
             ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='太保' and (v2::numeric)>=105  and v2 !='') as cb
-            UNION ALL
-            select
-            '平安' as name ,
-            (select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='平安' and (v2::numeric)>80  and (v2::numeric)<105  and v2 !='') as zc,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='平安' and (v2::numeric)<=80  and v2 !='') as bz,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='平安' and (v2::numeric)>=105  and v2 !='') as cb
+         
 
             UNION ALL
             select
@@ -155,21 +150,6 @@ const sql = (params, query) => {
             ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='安华' and (v2::numeric)<=80  and v2 !='') as bz,
             ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='安华' and (v2::numeric)>=105  and v2 !='') as cb
 
-
-            UNION ALL
-            select
-            '泰山' as name ,
-            (select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='泰山' and (v2::numeric)>80  and (v2::numeric)<105  and v2 !='') as zc,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='泰山' and (v2::numeric)<=80  and v2 !='') as bz,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='泰山' and (v2::numeric)>=105  and v2 !='') as cb
-
-
-            UNION ALL
-            select
-            '阳光' as name ,
-            (select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='阳光' and (v2::numeric)>80  and (v2::numeric)<105  and v2 !='') as zc,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='阳光' and (v2::numeric)<=80  and v2 !='') as bz,
-            ( select count(distinct bdh) from public.procjet_2024_yghy_hz10_excel where bxjg='阳光' and (v2::numeric)>=105  and v2 !='') as cb
 
             UNION ALL
             select

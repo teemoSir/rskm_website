@@ -26,11 +26,7 @@ const router = createRouter({
       name: "area",
       component: () => import("@/views/verification/index.vue"),
     },
-    {
-      path: "/verification/land",
-      name: "land",
-      component: () => import("@/views/verification/land.vue"),
-    }
+  
     //   {
     //     path: "/room/:id", // 动态传递参数
     //     name: "room",

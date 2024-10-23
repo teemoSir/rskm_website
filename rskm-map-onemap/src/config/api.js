@@ -67,14 +67,14 @@ const api = {
         return apiService.get(`/v1/list_page/${table}?page=${page}&size=${size}&filter=${filter}`)
     },
 
-      /**
-    * 数据总和
-    * @param {*} table 
-    * @param {*} page 
-    * @param {*} size 
-    * @returns 
-    */
-      get_count: (table, filter = "") => {
+    /**
+  * 数据总和
+  * @param {*} table 
+  * @param {*} page 
+  * @param {*} size 
+  * @returns 
+  */
+    get_count: (table, filter = "") => {
         return apiService.get(`/v1/list_get_count/${table}?filter=${filter}`)
     },
 }

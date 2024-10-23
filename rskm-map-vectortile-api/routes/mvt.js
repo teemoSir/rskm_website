@@ -3,11 +3,17 @@ const sql = (params, query) => {
 
 
     let simplify = getSimplify(params.table, params.z)
+    let lyz = 0.00000001;
+    if (params.z < 6.99) {
+        lyz = 30;
+    } else if (params.z > 6.99 && params.z < 9.99) {
+        lyz = 10;
+    }
     return `
     WITH mvtgeom as (
       SELECT
         ST_AsMVTGeom (
-        ST_Simplify(ST_Transform(${query.geom_column}, 3857),${params.z <10 ? 10 : 0.00000001}) ,
+        ST_Simplify(ST_Transform(${query.geom_column}, 3857),${lyz}) ,
           ST_TileEnvelope(${params.z}, ${params.x}, ${params.y})
         ) as geom
         ${query.columns ? `, ${query.columns}` : ''}
@@ -84,16 +90,16 @@ const getSimplify = ((type, zoom) => {
     let jhv2 = 0;
     if (type == "rskm_pt") {
         if (Number(zoom) < 7) {
-            jhv2 = 3500;
+            jhv2 = 5500;
         }
         else if (Number(zoom) < 8) {
-            jhv2 = 3000;
+            jhv2 = 4500;
         }
         else if (Number(zoom) < 10) {
-            jhv2 = 2000;
+            jhv2 = 3500;
         }
         else if (Number(zoom) < 12) {
-            jhv2 = 800;
+            jhv2 = 1000;
         }
         else {
             jhv2 = 0;
@@ -114,13 +120,13 @@ module.exports = function (fastify, opts, next) {
         handler: function (request, reply) {
             fastify.pg.connect(onConnect)
 
-            function onConnect (err, client, release) {
+            function onConnect(err, client, release) {
                 if (err) {
                     request.log.error(err)
                     return reply.code(500).send({ error: "Database connection error." })
                 }
 
-                client.query(sql(request.params, request.query), function onResult (
+                client.query(sql(request.params, request.query), function onResult(
                     err,
                     result
                 ) {
