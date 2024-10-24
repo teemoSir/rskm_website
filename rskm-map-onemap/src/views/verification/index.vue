@@ -2350,7 +2350,7 @@ const reloadEChats = () => {
   // 地块统计二柱状图
   echartsDK02(...rightEcData.value);
   // 地块统计三柱状图
-  //echartsDK03(...rightEcDataJG.value);
+  echartsDK03(...rightEcDataJG.value);
 }
 
 
