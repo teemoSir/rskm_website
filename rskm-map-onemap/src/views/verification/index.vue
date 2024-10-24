@@ -1,4 +1,5 @@
 <script setup>
+import * as echarts from "echarts"
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
 import { message } from "ant-design-vue";
@@ -75,9 +76,9 @@ const loadEcharts = (data) => {
   option = {
 
     aria: {
-      enabled: true,
+      enabled: false,
       decal: {
-        show: true
+        show: false
       }
     },
     color: [
@@ -104,9 +105,9 @@ const loadEcharts = (data) => {
         radius: ['50%', '95%'],
 
         avoidLabelOverlap: false,
-        padAngle: 5,
+        padAngle: 2,
         itemStyle: {
-          borderRadius: 10
+          borderRadius: 3
         },
         label: {
           show: false,
@@ -1640,7 +1641,7 @@ const setPopup = async (info) => {
 
 
   if (!info) return false;
- let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and name in ('${info.bbxrmc}') `,
+  let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and name in ('${info.bbxrmc}') `,
     ` bdh, name, sfz, telphone, type, type_xl, bxjg, city, city_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8 `);
 
 

@@ -7,8 +7,6 @@ import { config, mapbox } from "@/config/tileserver.js";
 import { api } from "@/config/api.js";
 import { layers, spec } from "@/config/spec";
 import { message, notification, Button } from "ant-design-vue";
-// import dayjs from "dayjs";
-// import bboxx from "@/utils/bbox";
 import * as turf from "@turf/turf";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -41,13 +39,7 @@ import {
   House,
   X,
 } from "lucide-vue-next";
-
-// import c7 from "@/assets/images/map/c7.svg";
 import c2 from "@/assets/images/map/c2.svg";
-// import compass from "@/assets/images/map/compass.png";
-// import compassPointer from "@/assets/images/map/compassPointer.png";
-// import north from "@/assets/images/map/north-b.png";
-// import { fills } from "@/config/fill";
 import getCeliang from "@/utils/celiang";
 import {
   eventRotate,
