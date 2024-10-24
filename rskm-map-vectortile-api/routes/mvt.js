@@ -4,16 +4,18 @@ const sql = (params, query) => {
 
     let simplify = getSimplify(params.table, params.z)
     let lyz = 0.00000001;
-    if (params.z < 6.99) {
-        lyz = 30;
-    } else if (params.z > 6.99 && params.z < 9.99) {
-        lyz = 10;
+    if (params.z <= 7) {
+        lyz = 100;
+    } else if (params.z > 7 && params.z < 9.99) {
+        lyz = 50;
+    } else if (params.z > 9.99 && params.z < 12.99) {
+        lyz = 50;
     }
     return `
     WITH mvtgeom as (
       SELECT
         ST_AsMVTGeom (
-        ST_Simplify(ST_Transform(${query.geom_column}, 3857),100) ,
+        ST_Simplify(ST_Transform(${query.geom_column}, 3857),${lyz}) ,
           ST_TileEnvelope(${params.z}, ${params.x}, ${params.y})
         ) as geom
         ${query.columns ? `, ${query.columns}` : ''}

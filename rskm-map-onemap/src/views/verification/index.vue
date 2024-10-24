@@ -2069,7 +2069,6 @@ const loadLocalData = (filter) => {
   goGeomUn()
 
   if (activeKey.value == 1) {
-
     loadLayers(filter)
   } else {
     loadLayerDk()
@@ -2175,21 +2174,6 @@ const loadLocalData = (filter) => {
     let cb = [];
     let bxjg = [];
 
-    // bxjgBaseData.forEach((ca) => {
-    //   if (ca.zc && ca.bz && ca.cb) {
-    //     zc.push((ca.zc / (ca.zc + ca.bz + ca.cb)));
-    //     bz.push((ca.bz / (ca.zc + ca.bz + ca.cb)));
-    //     cb.push((ca.cb / (ca.zc + ca.bz + ca.cb)));
-    //   } else {
-    //     zc.push();
-    //     bz.push();
-    //     cb.push();
-    //   }
-
-    //   //  console.log(ca)
-
-    //   bxjg.push(ca.name)
-    // });
 
     let promise = api.get_table_tj("yghy_sql_7");
     promise.then((data) => {
@@ -2421,7 +2405,7 @@ onMounted(() => {
  */
 const loadTabel = async (page, size, filter = "") => {
   let dkList = await api.get_page("procjet_2024_yghy_hz10_excel", page, size, filter);
-  console.log(dkList)
+  //console.log(dkList)
   let arr = []
   dkList.map((dk) => {
     arr.push(dk)
