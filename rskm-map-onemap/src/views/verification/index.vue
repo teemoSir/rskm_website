@@ -82,7 +82,6 @@ const loadEcharts = (data) => {
       }
     },
     color: [
-
       "#ee6666",
       "#91cc75",
       "#fac858",
@@ -91,7 +90,7 @@ const loadEcharts = (data) => {
       trigger: 'item'
     },
     legend: {
-      bottom: '-1%',
+      bottom: '-3.5%',
       left: 'center',
       textStyle: {
         fontSize: 16 // 图例文字大小
@@ -99,10 +98,9 @@ const loadEcharts = (data) => {
     },
     series: [
       {
-
         name: '',
         type: 'pie',
-        radius: ['50%', '95%'],
+        radius: ['40%', '80%'],
 
         avoidLabelOverlap: false,
         padAngle: 2,
@@ -110,20 +108,18 @@ const loadEcharts = (data) => {
           borderRadius: 3
         },
         label: {
-          show: false,
-          position: 'center',
+          show: true,
+          //position: 'center',
 
         },
         emphasis: {
           label: {
             show: true,
             fontSize: 30,
-            fontWeight: 'bold'
+            // /  fontWeight: 'bold'
           }
         },
-        labelLine: {
-          show: false
-        },
+
         data: data
       }
     ]
@@ -1214,7 +1210,7 @@ const goGeomOne = (data, property) => {
   if (property.coverage) {
     if (property.coverage > 105) {
       color = "RGB(236,102,103)"
-    } else if (property.coverage <= 80) {
+    } else if (property.coverage <= 60) {
       color = "RGB(248,200,94)"
     } else {
       color = "RGB(144,204,120)"
@@ -1348,11 +1344,11 @@ const goGeom = (data) => {
       "fill-opacity": 0.6,
       'fill-color': [
         'case',
-        ['all', ['<', ['get', 'coverage'], 80], ['>', ['get', 'coverage'], 0]],
+        ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
         'rgba(248,200,94,1)',
         ['>', ['get', 'coverage'], 105],
         'RGB(236,102,103)',
-        ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 80]],
+        ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
         'RGB(144,204,120)',
         '#ccc',
       ],
@@ -1373,11 +1369,11 @@ const goGeom = (data) => {
       paint: {
         'line-color': [
           'case',
-          ['all', ['<', ['get', 'coverage'], 80], ['>', ['get', 'coverage'], 0]],
+          ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
           'rgba(248,200,94,1)',
           ['>', ['get', 'coverage'], 105],
           'RGB(236,102,103)',
-          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 80]],
+          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
           'RGB(144,204,120)',
           '#ccc',
         ],
@@ -1397,11 +1393,11 @@ const goGeom = (data) => {
         "text-halo-blur": 1,
         'text-color': [
           'case',
-          ['all', ['<', ['get', 'coverage'], 80], ['>', ['get', 'coverage'], 0]],
+          ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
           'rgba(248,200,94,1)',
           ['>', ['get', 'coverage'], 105],
           'RGB(236,102,103)',
-          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 80]],
+          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
           'RGB(144,204,120)',
           '#ccc',
         ],
@@ -1422,11 +1418,11 @@ const goGeom = (data) => {
       paint: {
         'line-color': [
           'case',
-          ['all', ['<', ['get', 'coverage'], 80], ['>', ['get', 'coverage'], 0]],
+          ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
           'rgba(248,200,94,1)',
           ['>', ['get', 'coverage'], 105],
           'RGB(236,102,103)',
-          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 80]],
+          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
           'RGB(144,204,120)',
           '#ccc',
         ],
@@ -1446,11 +1442,11 @@ const goGeom = (data) => {
         "text-halo-blur": 1,
         'text-color': [
           'case',
-          ['all', ['<', ['get', 'coverage'], 80], ['>', ['get', 'coverage'], 0]],
+          ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
           'rgba(248,200,94,1)',
           ['>', ['get', 'coverage'], 105],
           'RGB(236,102,103)',
-          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 80]],
+          ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
           'RGB(144,204,120)',
           '#ccc',
         ],
@@ -1495,8 +1491,8 @@ const goGeomLine = (data) => {
       },
       paint: {
         'line-color': '#fff',
-        "line-width": 2.5,
-        "line-opacity": 0.6,
+        "line-width": 5.5,
+        "line-opacity": 0.4,
       },
     });
 
@@ -2105,8 +2101,8 @@ const loadLocalData = (filter) => {
     ygmj.value += Number(hzBaseDataClone[hz].rs_area || 0);
     i_coverage += Number(hzBaseDataClone[hz].i_coverage || 0);
     cbxz.value += Number(hzBaseDataClone[hz].i_coverage || 0) > 105 ? 1 : 0;
-    zcxz.value += (Number(hzBaseDataClone[hz].i_coverage || 0) <= 105 && Number(hzBaseDataClone[hz].i_coverage || 0) > 80) ? 1 : 0;
-    bzxz.value += Number(hzBaseDataClone[hz].i_coverage || 0) <= 80 ? 1 : 0;
+    zcxz.value += (Number(hzBaseDataClone[hz].i_coverage || 0) <= 105 && Number(hzBaseDataClone[hz].i_coverage || 0) > 60) ? 1 : 0;
+    bzxz.value += Number(hzBaseDataClone[hz].i_coverage || 0) <= 60 ? 1 : 0;
   }
   // 覆盖率
   bxfgl.value = Number(i_coverage / hzBaseDataClone.length).toFixed(2);
@@ -2392,10 +2388,15 @@ onMounted(() => {
   loadTabel(1, 10);
 
   LoadHzBaseData();
+
+
+  setTimeout(() => {
+    messageInfo.value = false
+  }, 5000)
 })
 
 
-
+const messageInfo = ref(true)
 
 /**
  * 地块浮动框
@@ -2797,8 +2798,8 @@ const loadCount = async (filter = "") => {
 
             </a-directory-tree>
 
-            <br>
-            <a-alert message="提示：本期核验数据截止2024年9月30日" type="success" show-icon />
+            <!-- <br>
+            <a-alert message="提示：本期核验数据截止2024年9月30日" type="success" show-icon /> -->
           </a-card>
         </a-col>
 
@@ -2832,6 +2833,7 @@ const loadCount = async (filter = "") => {
 
       </a-typography-title> -->
 
+      <a-alert v-if="messageInfo" message="提示：本期核验数据截止2024年9月30日" type="success" show-icon />
 
     </div>
 
@@ -2850,22 +2852,22 @@ const loadCount = async (filter = "") => {
     </div>
     <div class="right-card" v-show="xRightSquareShow">
 
-      <a-card size="small" title="" style="height: 97%;">
+      <a-card size="small" title="" style="height: 99%;">
 
         <a-tabs v-model:activeKey="activeKey" type="card" style="position: absolute;top: 0;left: 0; ">
           <a-tab-pane key="1">
             <template #tab>
-              <div style="line-height: 35px;font-size: 17px;display: flex;align-items: center;justify-content: center;">
-                <LandPlotIcon :size="25"></LandPlotIcon>
-                &nbsp;区域核验
+              <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                <LandPlotIcon :size="20"></LandPlotIcon>
+                &nbsp;区域
               </div>
             </template>
           </a-tab-pane>
           <a-tab-pane key="2">
             <template #tab>
-              <div style="line-height: 35px;font-size: 17px;display: flex;align-items: center;justify-content: center;">
-                <LucideSquareMousePointer :size="25"></LucideSquareMousePointer>
-                &nbsp;地块核验
+              <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                <LucideSquareMousePointer :size="20"></LucideSquareMousePointer>
+                &nbsp;地块
               </div>
             </template>
           </a-tab-pane>
@@ -2876,121 +2878,106 @@ const loadCount = async (filter = "") => {
           <template #title>
             <span>隐藏统计栏</span>
           </template>
-
-
           <X style="float: right;cursor: pointer;" color="#999" @click="xRightSquareShow = false"></X>
         </a-tooltip>
-
-
         <!--区域核验-->
         <div v-show="activeKey == '1'"
-          style="position: absolute;top: 50px;left: 0; height: calc(100% - 70px);width: 100%;padding: 10px;">
+          style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
 
-          <div style="width: 100%;height: 300px;">
-            <div class="headerbg">
+          <div style="width: 100%; height: 100%;overflow-y: hidden;overflow-x: hidden;">
+            <div style="width: 100%;height: 250px;">
+              <div class="headerbg">
+                <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> {{ header ? header : '试点区县' }}
+                <table style="position: absolute;right: 10px;margin-top: -30px">
+                  <tr>
+                    <td> <a-button type="link" primary>
+                        <div style="display: flex;align-items: center;">
+                          <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;<a
+                            :href="'/data/20241021区域汇总统计.csv'" download>区域核验报表</a>
+                        </div>
+                      </a-button></td>
+                  </tr>
+                </table>
+              </div>
+              <a-row :gutter="16">
+                <a-col :span="10">
 
-              <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> {{ header ? header : '试点区县' }}
+                  <table class="tjfx">
+                    <tr>
+                      <th>承保面积：</th>
+                      <td>{{ Number(cbmj).toFixed(0) }}亩</td>
+                    </tr>
+                    <tr>
+                      <th>遥感面积：</th>
+                      <td>{{ Number(ygmj).toFixed(0) }}亩</td>
+                    </tr>
+                    <tr>
+                      <th>保险覆盖率：</th>
+                      <td>{{ bxfgl }}%</td>
+                    </tr>
+                    <tr>
+                      <th>超保乡镇：</th>
+                      <td>{{ cbxz }} <a-tag color="error">{{ cbxz_val }}%</a-tag></td>
+                    </tr>
+                    <tr>
+                      <th>正常乡镇：</th>
+                      <td> {{ zcxz }} <a-tag color="green">{{ zcxz_val }}%</a-tag></td>
+                    </tr>
+                    <tr>
+                      <th>不足乡镇：</th>
+                      <td> {{ bzxz }} <a-tag color="warning">{{ bzxz_val }}%</a-tag></td>
+                    </tr>
 
+                  </table>
 
-              <table style="position: absolute;right: 10px;margin-top: -30px">
-                <tr>
-                  <!-- <td> <a-button type="link" primary>
-                      <div style="display: flex;align-items: center;">
-                        <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;获取核验报告
-                      </div>
-                    </a-button>
-                  </td> -->
-                  <td> <a-button type="link" primary>
-                      <div style="display: flex;align-items: center;">
-                        <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;<a
-                          :href="'/data/20241021区域汇总统计.csv'" download>区域核验报表</a>
-                      </div>
-                    </a-button></td>
-                </tr>
-              </table>
-
+                </a-col>
+                <a-col :span="14">
+                  <div id="main" style="height:100%;"></div>
+                </a-col>
+              </a-row>
 
             </div>
-            <a-row :gutter="16">
-              <a-col :span="10">
+            <div style="width: 100%; height: calc(100% - 250px);">
+              <div style="width: 100%;height: 70%;">
+                <div class="headerbg">
 
-                <table class="tjfx">
-                  <tr style="  line-height: 36px;">
-                    <th>承保面积：</th>
-                    <td>{{ Number(cbmj).toFixed(0) }}亩</td>
-                  </tr>
-                  <tr style="  line-height: 36px;">
-                    <th>遥感面积：</th>
-                    <td>{{ Number(ygmj).toFixed(0) }}亩</td>
-                  </tr>
-                  <tr style="  line-height: 36px;">
-                    <th>保险覆盖率：</th>
-                    <td>{{ bxfgl }}%</td>
-                  </tr>
-                  <tr style="  line-height: 36px;">
-                    <th>超保乡镇：</th>
-                    <td>{{ cbxz }} <a-tag color="error">{{ cbxz_val }}%</a-tag></td>
-                  </tr>
-                  <tr style="  line-height: 36px;">
-                    <th>正常乡镇：</th>
-                    <td> {{ zcxz }} <a-tag color="green">{{ zcxz_val }}%</a-tag></td>
-                  </tr>
-                  <tr style="  line-height: 36px;">
-                    <th>不足乡镇：</th>
-                    <td> {{ bzxz }} <a-tag color="warning">{{ bzxz_val }}%</a-tag></td>
-                  </tr>
-
-                </table>
-
-              </a-col>
-              <a-col :span="14">
-                <div id="main" style="height:100%;"></div>
-              </a-col>
-            </a-row>
-
-          </div>
-
-          <div style="width: 100%; height: calc(100% - 300px);">
-
-            <div style="width: 100%;height: 59%;">
-              <div class="headerbg">
-
-                <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> 区域统计<small>&nbsp;
-                  <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
-                    <Info :size="16" color="#ccc"></Info>
-                  </a-tooltip>
-                </small>
+                  <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> 区域统计<small>&nbsp;
+                    <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
+                      <Info :size="16" color="#ccc"></Info>
+                    </a-tooltip>
+                  </small>
 
 
-                <a-button type="link" primary style="position: absolute;right: 10px;" @click="open = true">
-                  <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;试点区域详情
-                  </div>
-                </a-button>
+                  <a-button type="link" primary style="position: absolute;right: 10px;" @click="open = true">
+                    <div style="display: flex;align-items: center;">
+                      <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;试点区域详情
+                    </div>
+                  </a-button>
+
+                </div>
+
+                <div id="loadEcharts02" style="height:95%;"></div>
 
               </div>
+              <div style="width: 100%;height: 30%;">
+                <div class="headerbg">
 
-              <div id="loadEcharts02" style="height:95%;"></div>
+                  <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon> 机构统计<small>&nbsp;
+                    <a-tooltip title="合格(大于80%且小于105%)，超保(大于105%)，不足(小于80%)" :color="orange">
+                      <Info :size="16" color="#ccc"></Info>
+                    </a-tooltip>
+                  </small>
 
-            </div>
-            <div style="width: 100%;height: 40%;">
-              <div class="headerbg">
-
-                <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon> 机构统计<small>&nbsp;
-                  <a-tooltip title="合格(大于80%且小于105%)，超保(大于105%)，不足(小于80%)" :color="orange">
-                    <Info :size="16" color="#ccc"></Info>
-                  </a-tooltip>
-                </small>
-
-                <a-button type="link" primary style="position: absolute;right: 10px;">
-                  <!-- <div style="display: flex;align-items: center;">
+                  <a-button type="link" primary style="position: absolute;right: 10px;">
+                    <!-- <div style="display: flex;align-items: center;">
                     <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;更多
                   </div> -->
-                </a-button>
+                  </a-button>
 
+                </div>
+
+                <div id="main03" style="height:95%"></div>
               </div>
-
-              <div id="main03" style="height:95%"></div>
             </div>
           </div>
         </div>
@@ -2998,27 +2985,16 @@ const loadCount = async (filter = "") => {
 
         <!--地块核验-->
         <div v-if="activeKey == '2'"
-          style="position: absolute;top: 50px;left: 0; height: calc(100% - 70px);width: 100%;padding: 10px;">
-
-
-
-          <div style="width: 100%;height: 300px;">
+          style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
+          <div style="width: 100%;height: 250px;">
             <div class="headerbg">
               <MapPinned :size="25" style="margin-bottom: -5px;"></MapPinned> {{ header ? header : '试点区县' }}
               <a-tag color="red"> 重点乡镇 </a-tag>
-              <!-- <a-button type="link" primary style="position: absolute;right: 10px;">
-                <div style="display: flex;align-items: center;">
-                  <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;获取遥感核验报告
-                </div>
-              </a-button> -->
+
               <table style="position: absolute;right: 10px;margin-top: -30px">
                 <tr>
                   <td>
-                    <!-- <a-button type="link" primary>
-                      <div style="display: flex;align-items: center;">
-                        <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;获取核验报告
-                      </div>
-                    </a-button> -->
+
                   </td>
                   <td> <a-button type="link" primary>
                       <div style="display: flex;align-items: center;">
@@ -3036,35 +3012,35 @@ const loadCount = async (filter = "") => {
               <a-col :span="11">
                 <table class="tjfx">
 
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>投保面积</th>
                     <td>{{ tb_area ? Number(tb_area).toFixed(0) : '-' }}亩</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>地块面积</th>
                     <td>{{ dk_area ? Number(dk_area).toFixed(0) : '-' }}亩</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>大户数量</th>
                     <td>{{ dhsl }}</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>有地块大户数</th>
                     <td>{{ ydkdhsl }}</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>地块合格户数</th>
                     <td>{{ dkhghs }}</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>地块面积不符户数</th>
                     <td>{{ dkmjbfs }}</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>地块重叠户数</th>
                     <td>{{ dkcd }}</td>
                   </tr>
-                  <tr style="  line-height: 28px;">
+                  <tr>
                     <th>标的面积不符户数</th>
                     <td>{{ bdmjbfhs }}</td>
                   </tr>
@@ -3077,10 +3053,10 @@ const loadCount = async (filter = "") => {
             </a-row>
 
           </div>
-          <div style="width: 100%; height: calc(100% - 300px);">
-            <div style="width: 100%;height: 59%;">
+          <div style="width: 100%; height: calc(100% - 250px);">
+            <div style="width: 100%;height: 60%;">
               <div class="headerbg">
-                <LucideAreaChart :size="25" style="margin-bottom: -5px;"></LucideAreaChart> 地块统计
+                <LucideAreaChart :size="20" style="margin-bottom: -5px;"></LucideAreaChart> 地块统计
                 <small>&nbsp;
                   <a-tooltip title="大户数量(大于50亩被保险人)，合格大户(地块重叠，标的占比均符合)" :color="orange">
                     <Info :size="16" color="#ccc"></Info>
@@ -3089,13 +3065,13 @@ const loadCount = async (filter = "") => {
 
                 <a-button type="link" primary style="position: absolute;right: 10px;" @click="open = true">
                   <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;地块详情
+                    <MoreHorizontal :size="15"></MoreHorizontal>&nbsp;地块详情
                   </div>
                 </a-button>
 
               </div>
 
-              <div id="echartsDK02" style="height:95%;"></div>
+              <div id="echartsDK02" style="height:99%;"></div>
 
             </div>
             <div style="width: 100%;height: 40%;">
@@ -3115,7 +3091,7 @@ const loadCount = async (filter = "") => {
 
               </div>
 
-              <div id="echartsDK03" style="height:95%"></div>
+              <div id="echartsDK03" style="height:99%"></div>
             </div>
 
 
@@ -3240,8 +3216,9 @@ const loadCount = async (filter = "") => {
   width: 100%;
   z-index: 100;
   position: absolute;
-  top: 90px;
-  background: linear-gradient(to bottom, rgba(19, 18, 18, 0.39), rgba(3, 11, 85, 0));
+  top: 120px;
+  /* background: linear-gradient(to bottom, rgba(19, 18, 18, 0.39), rgba(3, 11, 85, 0)); */
+
 }
 
 .center-card-title {
@@ -3277,11 +3254,16 @@ p {
   text-align: center;
 }
 
+.tjfx {
+  height: 200px
+}
+
 
 .tjfx th {
   font-size: 15px;
   color: #5a5959;
   text-align: right;
+
 
 }
 

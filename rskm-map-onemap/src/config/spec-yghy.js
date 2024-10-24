@@ -436,7 +436,7 @@ let specYghy = [
         source: config.admin_2022_province.name,
         "source-layer": config.admin_2022_province.name,
         filter: [
-            "in",
+            "!in",
             "first_gid",
             370000,
         ],
@@ -447,15 +447,15 @@ let specYghy = [
         'slot': 'bottom',
         'paint': {
 
-            'fill-color': 'RGB(89,112,196)',
+            'fill-color': '#999',//RGB(89,112,196)
 
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
                 7,
-                0.3,
+                0.4,
                 13,
-                0.1,
+                0.2,
                 14,
                 0.0,],
         },
