@@ -2955,7 +2955,7 @@ const loadCount = async (filter = "") => {
             <div style="width: 100%;height: 59%;">
               <div class="headerbg">
 
-                <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> 区域覆盖率与合格率<small>&nbsp;
+                <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> 区域统计<small>&nbsp;
                   <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
                     <Info :size="16" color="#ccc"></Info>
                   </a-tooltip>
@@ -2976,7 +2976,7 @@ const loadCount = async (filter = "") => {
             <div style="width: 100%;height: 40%;">
               <div class="headerbg">
 
-                <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon> 机构核验占比<small>&nbsp;
+                <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon> 机构统计<small>&nbsp;
                   <a-tooltip title="合格(大于80%且小于105%)，超保(大于105%)，不足(小于80%)" :color="orange">
                     <Info :size="16" color="#ccc"></Info>
                   </a-tooltip>
