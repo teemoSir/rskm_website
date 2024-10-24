@@ -1341,7 +1341,7 @@ const goGeom = (data) => {
     type: "fill",
     source: "adminGeom",
     paint: {
-      "fill-opacity": 0.6,
+      "fill-opacity": 0.4,
       'fill-color': [
         'case',
         ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
@@ -1439,7 +1439,7 @@ const goGeom = (data) => {
         "text-size": 18,
       },
       paint: {
-        "text-halo-blur": 1,
+      
         'text-color': [
           'case',
           ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],

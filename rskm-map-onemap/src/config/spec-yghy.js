@@ -415,8 +415,8 @@ let specYghy = [
         "source-layer": config.admin_2022_province.name,
         filter: [
             "in",
-            "first_gid",
-            370000,
+            ["to-string", ["get","first_gid"]],
+            '370000',
         ],
         layout: {
             //  visibility: "visible",
@@ -436,9 +436,9 @@ let specYghy = [
         source: config.admin_2022_province.name,
         "source-layer": config.admin_2022_province.name,
         filter: [
-            "!in",
-            "first_gid",
-            370000,
+            "!=",
+            ["to-string", ["get","first_gid"]],
+            '370000',
         ],
         layout: {
             //  visibility: "visible",
@@ -1081,7 +1081,7 @@ let specYghy = [
 
     },
 
-    
+
     {
         id: "procjet_2024_yghy_sense",
         name: "遥感成果",
