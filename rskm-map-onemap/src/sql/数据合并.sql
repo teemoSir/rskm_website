@@ -84,3 +84,17 @@ UPDATE public.procjet_2024_yghy_hz10_county AS a
 SET v7 = b.v7  -- 替换为你想要更新的值
 FROM public.procjet_2024_yghy_hz10_excel AS b
 WHERE a.bdh = b.bdh AND a.bbxrmc = b.name;  -- 连接条件
+
+
+-- 查询坐标不规范图形
+  SELECT count(gid)
+FROM public.rskm_pt
+WHERE ST_SRID(geom) = 4326 
+  AND EXISTS (
+      SELECT 1
+      FROM ST_DumpPoints(geom) AS point
+      WHERE ST_X(point.geom) < -180 
+         OR ST_X(point.geom) > 180 
+         OR ST_Y(point.geom) < -90 
+         OR ST_Y(point.geom) > 90
+  )  

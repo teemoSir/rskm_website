@@ -2,14 +2,14 @@
 const sql = (params, query) => {
 
 
-    // let simplify = getSimplify(params.table, params.z)
+    let simplifys = simplify(params.table, params.z);
     let lyz = 0.00000001;
     if (params.z <= 7) {
-        lyz = 100;
+        lyz = 1500;
     } else if (params.z > 7 && params.z < 9.99) {
-        lyz = 50;
+        lyz = 800;
     } else if (params.z > 9.99 && params.z < 12.99) {
-        lyz = 10;
+        lyz = 100;
     }
     return `
     WITH mvtgeom as (
@@ -32,25 +32,27 @@ const sql = (params, query) => {
           )
         )
 
-        -- 移除坐标异常
-        AND EXISTS (
-            SELECT 1
-            FROM ST_DumpPoints(geom) AS point
-            WHERE ST_X(point.geom) < -180 
-                OR ST_X(point.geom) > 180 
-                OR ST_Y(point.geom) < -90 
-                OR ST_Y(point.geom) > 90
-        )
+      
 
         -- Optional Filter
-        ${query.filter ? ` AND ${query.filter}` : ''}
+        ${query.filter > 0 ? ` AND ${query.filter}` : ''}
     )
     SELECT ST_AsMVT(mvtgeom.*, '${params.table}', 4096, 'geom' ${query.id_column ? `, '${query.id_column}'` : ''
         }) AS mvt from mvtgeom;
   `
 }
 
-// route schema
+// -- 移除坐标异常
+// AND EXISTS (
+//     SELECT 1
+//     FROM ST_DumpPoints(geom) AS point
+//     WHERE ST_X(point.geom) < -180 
+//         OR ST_X(point.geom) > 180 
+//         OR ST_Y(point.geom) < -90 
+//         OR ST_Y(point.geom) > 90
+// )
+
+// route schema  ${simplifys ? (' and area_mu > ' + simplifys) : ''}
 const schema = {
     description:
         '将表作为Mapbox Vector Tile（MVT）返回。返回的图层名称是表的名称。',
@@ -97,30 +99,15 @@ const schema = {
     }
 }
 
-// const getSimplify = ((type, zoom) => {
-//     let jhv2 = 0;
-//     // if (type == "rskm_pt") {
-//     //     if (Number(zoom) < 7) {
-//     //         jhv2 = 5500;
-//     //     }
-//     //     else if (Number(zoom) < 8) {
-//     //         jhv2 = 4500;
-//     //     }
-//     //     else if (Number(zoom) < 10) {
-//     //         jhv2 = 3500;
-//     //     }
-//     //     else if (Number(zoom) < 12) {
-//     //         jhv2 = 1000;
-//     //     }
-//     //     else {
-//     //         jhv2 = 0;
-//     //     }
-//     // }
-
-
-
-//     return jhv2;
-// })
+const simplify = ((type, zoom) => {
+    // if (type !== "rskm_pt") return 0;
+    // const zoomNumber = Number(zoom);
+    // if (zoomNumber < 7) return 5500;
+    // if (zoomNumber < 8) return 4500;
+    // if (zoomNumber < 10) return 3500;
+    // if (zoomNumber < 12) return 1000;
+    return 0;
+})
 
 // create route
 module.exports = function (fastify, opts, next) {
