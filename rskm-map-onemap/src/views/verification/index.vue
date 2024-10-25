@@ -1439,7 +1439,7 @@ const goGeom = (data) => {
         "text-size": 18,
       },
       paint: {
-      
+
         'text-color': [
           'case',
           ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
@@ -2798,8 +2798,9 @@ const loadCount = async (filter = "") => {
 
             </a-directory-tree>
 
-            <!-- <br>
-            <a-alert message="提示：本期核验数据截止2024年9月30日" type="success" show-icon /> -->
+            <br>
+
+            <a-alert v-if="messageInfo" message="提示：本期核验数据截止2024年9月30日" type="success" show-icon />
           </a-card>
         </a-col>
 
@@ -2833,7 +2834,6 @@ const loadCount = async (filter = "") => {
 
       </a-typography-title> -->
 
-      <a-alert v-if="messageInfo" message="提示：本期核验数据截止2024年9月30日" type="success" show-icon />
 
     </div>
 
