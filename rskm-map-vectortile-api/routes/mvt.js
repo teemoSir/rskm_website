@@ -2,14 +2,14 @@
 const sql = (params, query) => {
 
 
-    let simplify = getSimplify(params.table, params.z)
+    // let simplify = getSimplify(params.table, params.z)
     let lyz = 0.00000001;
     if (params.z <= 7) {
         lyz = 100;
     } else if (params.z > 7 && params.z < 9.99) {
         lyz = 50;
     } else if (params.z > 9.99 && params.z < 12.99) {
-        lyz = 50;
+        lyz = 10;
     }
     return `
     WITH mvtgeom as (
@@ -31,7 +31,16 @@ const sql = (params, query) => {
             srid
           )
         )
-	    ${simplify > 0 ? ` and area_mu>` + simplify : ``}
+
+        -- 移除坐标异常
+        AND EXISTS (
+            SELECT 1
+            FROM ST_DumpPoints(geom) AS point
+            WHERE ST_X(point.geom) < -180 
+                OR ST_X(point.geom) > 180 
+                OR ST_Y(point.geom) < -90 
+                OR ST_Y(point.geom) > 90
+        )
 
         -- Optional Filter
         ${query.filter ? ` AND ${query.filter}` : ''}
@@ -88,30 +97,30 @@ const schema = {
     }
 }
 
-const getSimplify = ((type, zoom) => {
-    let jhv2 = 0;
-    // if (type == "rskm_pt") {
-    //     if (Number(zoom) < 7) {
-    //         jhv2 = 5500;
-    //     }
-    //     else if (Number(zoom) < 8) {
-    //         jhv2 = 4500;
-    //     }
-    //     else if (Number(zoom) < 10) {
-    //         jhv2 = 3500;
-    //     }
-    //     else if (Number(zoom) < 12) {
-    //         jhv2 = 1000;
-    //     }
-    //     else {
-    //         jhv2 = 0;
-    //     }
-    // }
+// const getSimplify = ((type, zoom) => {
+//     let jhv2 = 0;
+//     // if (type == "rskm_pt") {
+//     //     if (Number(zoom) < 7) {
+//     //         jhv2 = 5500;
+//     //     }
+//     //     else if (Number(zoom) < 8) {
+//     //         jhv2 = 4500;
+//     //     }
+//     //     else if (Number(zoom) < 10) {
+//     //         jhv2 = 3500;
+//     //     }
+//     //     else if (Number(zoom) < 12) {
+//     //         jhv2 = 1000;
+//     //     }
+//     //     else {
+//     //         jhv2 = 0;
+//     //     }
+//     // }
 
 
 
-    return jhv2;
-})
+//     return jhv2;
+// })
 
 // create route
 module.exports = function (fastify, opts, next) {
