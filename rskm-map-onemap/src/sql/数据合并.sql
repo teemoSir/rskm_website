@@ -78,3 +78,9 @@ SELECT
 (select count(name) from public.procjet_2024_yghy_chj where  v4 not in ('1')) as dkcd,
 (select count(name) from public.procjet_2024_yghy_chj where  v7 not in ('1')) as bdmjbfhs
 ;
+
+
+UPDATE public.procjet_2024_yghy_hz10_county AS a
+SET v7 = b.v7  -- 替换为你想要更新的值
+FROM public.procjet_2024_yghy_hz10_excel AS b
+WHERE a.bdh = b.bdh AND a.bbxrmc = b.name;  -- 连接条件

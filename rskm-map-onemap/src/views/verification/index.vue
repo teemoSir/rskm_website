@@ -1634,11 +1634,11 @@ const addEventDk = async (e) => {
  * @returns {Promise<string|boolean>} 弹出窗口内容或如果未找到要素则返回 false
  */
 const setPopup = async (info) => {
-
+console.log(info)
 
   if (!info) return false;
   let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and name in ('${info.bbxrmc}') `,
-    ` bdh, name, sfz, telphone, type, type_xl, bxjg, city, city_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8 `);
+    ` bdh, name, sfz, telphone, type, type_xl, bxjg, city, city_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
 
 
   if (data.length == 0) {
@@ -1660,7 +1660,7 @@ const setPopup = async (info) => {
     const dkcdl = info.dkcdl ? Number(info.dkcdl) * 100 : 0;
 
     const text = `
-        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 18px;"  title="地块信息" >
+        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 17px;color:#5a5959"  title="地块信息" >
         <tr style="line-height:1.5;"><th style="text-align: right;width:100px;padding-right:5px;vertical-align: top;">核验状态:</th><td><div  style='background-color:RGB(236,102,103);color:#fff'>暂未核验</div></td></tr>
         <tr style="line-height:1.5;"><th style="text-align: right;width:100px;padding-right:5px;vertical-align: top;">被保险人:</th><td >${bbxrmc}</td></tr>
         <tr style="line-height:1.5;" ><th style="text-align: right;width:100px;padding-right:5px;vertical-align: top;  ">保单号:</th><td >${bdh}</td><tr>
@@ -1711,7 +1711,7 @@ const setPopup = async (info) => {
     // ⑧该大户的地块是否合格？
 
     const text = `
-        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 18px;"  title="地块信息" >
+        <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 17px;color:#5a5959"  title="地块信息" >
         <tr style="line-height:1.2;"><th style="text-align: right;width:130px;padding-right:5px;vertical-align: top;">被保险人:</th><td >${bbxrmc}</td></tr>
         <tr style="line-height:1.2;" ><th style="text-align: right;padding-right:5px;vertical-align: top; ">保单号:</th><td >${bdh}</td><tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">投保地点:</th><td>${province_city_county_town_village} </td></tr>
@@ -1721,7 +1721,7 @@ const setPopup = async (info) => {
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">保险期间:</th><td >${bxqj}</td><tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">联系电话:</th><td>${bbxrdh} </td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;"><hr></th><td><hr> </td></tr>
-        <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">地块是否合格:</th><td><div style='color:${v8 == '1' ? 'RGB(158,224,132)' : 'RGB(236,102,103)'};'>${v8 == '1' ? '合格' : '不合格'}</div></td></tr>
+        <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">地块是否合格:</th><td><div style='color:#000;background-color:${v8 == '1' ? 'RGB(158,224,132)' : 'RGB(236,102,103)'};'>${v8 == '1' ? '合格' : '不合格'}</div></td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">地块面积:</th><td>${v1}亩 </td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">标的种植面积:</th><td>${v5}亩 </td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">保险覆盖率:</th><td>${v2}% </td></tr>
@@ -1729,6 +1729,7 @@ const setPopup = async (info) => {
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">地块无重叠:</th><td>${v4 ? '无重叠地块' : '有重叠地块'} </td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">标的差异率:</th><td>${v6}% </td></tr>
         <tr style="line-height:1.2;"><th style="text-align: right;padding-right:5px;vertical-align: top;">标的差异率是否达标:</th><td>${v7 ? '达标' : '未达标'} </td></tr>
+
         </table>
     `;
 
@@ -1753,12 +1754,12 @@ const setCountyPopup = async (data) => {
 
   let text = ``;
   text = `
-    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 20px;"  title="区域核验" >
-        <tr style="line-height:1.5;"><th style="text-align: right;width:140px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
+    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 17px;color:#5a5959"  title="区域核验" >
+        <tr style="line-height:1.5;"><th style="text-align: right;width:100px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">承保面积:</th><td >${data.properties.area ? Number(data.properties.area).toFixed(0) : 0}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">遥感面积:</th><td >${data.properties.rs ? Number(data.properties.rs).toFixed(0) : 0}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">保险覆盖率:</th><td >${parseInt(data.properties.coverage)}%</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "超保" : "未超保"}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:4px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
         </table>`
 
 
@@ -2999,7 +3000,7 @@ const loadCount = async (filter = "") => {
                   <td> <a-button type="link" primary>
                       <div style="display: flex;align-items: center;">
                         <ArrowDownSquareIcon :size="18"></ArrowDownSquareIcon>&nbsp;<a
-                          :href="'/data/20241021区域汇总统计.csv'" download>地块核验报表</a>
+                          :href="'/data/20241021大户地块比对结果_汇总.csv'" download>地块核验报表</a>
                       </div>
                     </a-button></td>
                 </tr>

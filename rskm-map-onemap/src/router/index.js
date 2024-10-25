@@ -22,8 +22,8 @@ const router = createRouter({
       component: () => import("@/views/map/index.vue"),
     },
     {
-      path: "/verification/index",
-      name: "area",
+      path: "/verification",
+      name: "verification",
       component: () => import("@/views/verification/index.vue"),
     },
   

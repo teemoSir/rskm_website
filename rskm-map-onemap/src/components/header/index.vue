@@ -12,6 +12,10 @@ import { hedaerStore } from "@/store/store.js";
 
 const router = useRouter();
 
+// Tab 栏选中菜单项
+//const selectedKeys = ref(["/"]);
+
+
 const hctive = hedaerStore();
 let { headerActive } = storeToRefs(hctive);
 
@@ -36,7 +40,7 @@ const panelChangeRL = (value, mode) => {
 
     message.loading(
         `进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`,
-        2000
+        1000
     );
 
     let ts = setTimeout((e) => {
@@ -47,7 +51,10 @@ const panelChangeRL = (value, mode) => {
 
 
 //菜单
-const current = ref([headerActive.value || "home"]);
+//const current = ref([headerActive.value || "home"]);
+const current = ref(["home"]);
+
+
 
 const items = ref([
     {
@@ -56,18 +63,19 @@ const items = ref([
         label: "首页",
         title: "首页",
         onClick: () => {
-            headerActive.value = 'home';
+            // headerActive.value = 'home';
             router.push("/");
             // router.replace({ path: '/home' })
         },
     },
     {
-        key: "app",
+        key: "verification",
         icon: () => h(TextSearch),
         label: "遥感核验",
         onClick: () => {
-            headerActive.value = 'app';
-            router.push("/verification/index");
+            // headerActive.value = 'verification';
+            // console.log( headerActive.value )
+            router.push("/verification");
         },
 
     },
@@ -154,6 +162,13 @@ defineProps({
     }
 })
 
+onMounted(() => {
+    const path = window.location.pathname;
+    const keyword = path.split('/').pop();
+    current.value = keyword ? [keyword] : ['home'];
+
+})
+
 </script>
 
 
@@ -169,7 +184,7 @@ defineProps({
             <a-space direction="vertical" :size="5">
                 <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
                     @panelChange="panelChangeRL" />
-            </a-space>
+            </a-space>{{ current }}
             <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
         </template>
     </a-page-header>
