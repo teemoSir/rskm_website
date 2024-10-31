@@ -25,88 +25,88 @@ let legends = [
 
   {
     key: 1,
-    title: "地块合格",
+    title: "合格",
     isShow: ref(true),
     type: "polygon",
     outlineColor: "yellow",
     fillColor: "RGB(144,204,120)",
     outlineWidth: 0,
-    order: "核验结果"
+    order: "地块核验"
   },
   {
     key: 2,
-    title: "地块不合格",
+    title: "不合格",
     isShow: ref(true),
     type: "polygon",
     outlineColor: "orange",
     fillColor: "RGB(236,102,103)",
     outlineWidth: 0,
-    order: "核验结果"
+    order: "地块核验"
   },
 
-  // {
-  //   key: 9,
-  //   title: "标的与承保面积一致",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
-  // {
-  //   key: 10,
-  //   title: "标的与承保面积不一致",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
+  {
+    key: 9,
+    title: "一致",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "RGB(255,242,0)",
+    outlineWidth: 0,
+    order: "地块面积核验"
+  },
+  {
+    key: 10,
+    title: "不一致",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "blue",
+    outlineWidth: 0,
+    order: "地块面积核验"
+  },
 
 
-  // {
-  //   key: 11,
-  //   title: "地块无重叠",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
-  // {
-  //   key: 12,
-  //   title: "地块有重叠",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
+  {
+    key: 11,
+    title: "无重叠",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "RGB(255,242,0)",
+    outlineWidth: 0,
+    order: "地块重叠核验"
+  },
+  {
+    key: 12,
+    title: "有重叠",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "blue",
+    outlineWidth: 0,
+    order: "地块重叠核验"
+  },
 
-  // {
-  //   key: 13,
-  //   title: "标的面积差异率达标",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
-  // {
-  //   key: 14,
-  //   title: "标的面积差异率不达标",
-  //   isShow: ref(true),
-  //   type: "polygon",
-  //   outlineColor: "RGBA(236,102,103,0)",
-  //   fillColor: "RGBA(236,102,103,0)",
-  //   outlineWidth: 0,
-  //   order: "核验结果"
-  // },
+  {
+    key: 13,
+    title: "达标",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "RGB(255,242,0)",
+    outlineWidth: 0,
+    order: "标的差异率核验"
+  },
+  {
+    key: 14,
+    title: "不达标",
+    isShow: ref(true),
+    type: "polygon",
+    outlineColor: "RGBA(236,102,103,0)",
+    fillColor: "blue",
+    outlineWidth: 0,
+    order: "标的差异率核验"
+  },
 
 
   {
@@ -190,7 +190,6 @@ const state = reactive({
  * 图例
  */
 const state2 = reactive({
-
   radioValuev9: false,
   radioValuev10: false,
   radioValuev11: false,
@@ -198,10 +197,6 @@ const state2 = reactive({
   radioValuev13: false,
   radioValuev14: false,
 });
-
-
-
-
 
 
 
@@ -240,7 +235,7 @@ watch(state, () => {
   else if (state.checked1 && !state.checked2) {
     let newFilter = [
       "all",
-      ["==", ['get', "v9"], '1'],
+      ["==", ['get', "v8"], '1'],
     ];
     hgdks.forEach((gd) => {
       map.setFilter(gd, newFilter);
@@ -248,37 +243,55 @@ watch(state, () => {
   } else if (!state.checked1 && state.checked2) {
     let newFilter = [
       "all",
-      ["!=", ['get', "v9"], '1'],
+      ["!=", ['get', "v8"], '1'],
     ];
     hgdks.forEach((gd) => {
       map.setFilter(gd, newFilter);
     });
   }
 
-
-  // if (state.checked2) {
-  //   radioOffState.value = false;
-  //   state2.radioValuev1 = false;
-  //   state2.radioValuev2 = false;
-  //   state2.radioValuev3 = false;
-  //   // state2.radioValuev4 = false;
-  // } else {
-  //   radioOffState.value = true;
+  // if (!state.checked2) {
+  //   state2.radioValuev9
   // }
+
+
+
+  if (state.checked2 || state.checked1) {
+    state2.radioValuev9 = false;
+    state2.radioValuev10 = false;
+    state2.radioValuev11 = false;
+    state2.radioValuev12 = false;
+    state2.radioValuev13 = false;
+    state2.radioValuev14 = false;
+  }
+
+
 
   message.success("图层已更新", 1);
 });
 
 
 watch(state2, () => {
-  //保单地块
-  let hgdks = [
-    "rskm_pt_outline",
-    "rskm_pt",
-    "rskm_pt_name",
-    "rskm_pt_name_1",
-  ];
-  // 多图层选择
+  if (state2.radioValuev9 || state2.radioValuev10) {
+    state2.radioValuev11 = false;
+    state2.radioValuev12 = false;
+    state2.radioValuev13 = false;
+    state2.radioValuev14 = false;
+  }
+
+  if (state2.radioValuev11 || state2.radioValuev12) {
+    state2.radioValuev9 = false;
+    state2.radioValuev10 = false;
+    state2.radioValuev13 = false;
+    state2.radioValuev14 = false;
+  }
+
+  if (state2.radioValuev13 || state2.radioValuev14) {
+    state2.radioValuev11 = false;
+    state2.radioValuev12 = false;
+    state2.radioValuev9 = false;
+    state2.radioValuev10 = false;
+  }
 
   if (!state2.radioValuev9 &&
     !state2.radioValuev10 &&
@@ -286,47 +299,203 @@ watch(state2, () => {
     !state2.radioValuev12 &&
     !state2.radioValuev13 &&
     !state2.radioValuev14) {
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, [
-        "all",
-        ["==", "1", "2"],
-      ]);
-    });
-  } else if (state2.radioValuev9 &&
-    state2.radioValuev10 &&
-    state2.radioValuev11 &&
-    state2.radioValuev12 &&
-    state2.radioValuev13 &&
+    state.checked2 = true;
+    state.checked1 = true;
+  } else if (state2.radioValuev9 ||
+    state2.radioValuev10 ||
+    state2.radioValuev11 ||
+    state2.radioValuev12 ||
+    state2.radioValuev13 ||
     state2.radioValuev14) {
-    hgdks.forEach((gd) => map.setFilter(gd, null));
-  } else {
-    let sql = [];
-    if (state2.radioValuev9) {
-      sql.push(["==", ['get', "v3"], '0'])
-    } if (state2.radioValuev10) {
-      sql.push(["==", ['get', "v3"], '1'])
-    }
-    if (state2.radioValuev11) {
-      sql.push(["==", ['get', "v4"], '1'])
-    } if (state2.radioValuev12) {
-      sql.push(["==", ['get', "v4"], '0'])
-    }
-    if (state2.radioValuev13) {
-      sql.push(["==", ['get', "v7"], '0'])
-    } if (state2.radioValuev14) {
-      sql.push(["==", ['get', "v7"], '1'])
-    }
+    state.checked2 = false;
+    state.checked1 = false;
 
-
-    hgdks.forEach((gd) => {
-      map.setFilter(gd, [
-        "any",
-        ...sql
-      ]);
-    });
   }
 
+
+
+
+
+
+  // let sql = [];
+  // if (state2.radioValuev9) {
+  //   sql.push(["==", ['get', "v3"], '0'])
+  // } if (state2.radioValuev10) {
+  //   sql.push(["==", ['get', "v3"], '1'])
+  // }
+  // if (state2.radioValuev11) {
+  //   sql.push(["==", ['get', "v4"], '1'])
+  // } if (state2.radioValuev12) {
+  //   sql.push(["==", ['get', "v4"], '0'])
+  // }
+  // if (state2.radioValuev13) {
+  //   sql.push(["==", ['get', "v7"], '0'])
+  // } if (state2.radioValuev14) {
+  //   sql.push(["==", ['get', "v7"], '1'])
+  // }
+
+  // hgdks.forEach((gd) => {
+  //   map.setFilter(gd, [
+  //     "any",
+  //     ...sql
+  //   ]);
+  // });
+
+  /**
+   * 地块面积核验
+   */
+  let v3 = [
+    'case',
+    ["==", ['get', "v3"], '1'],
+    'yellow',
+    ["!=", ['get', "v3"], '1'],
+    'blue',
+    '#ccc'
+  ]
+
+  if (state2.radioValuev9 && state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v3);
+      map.setFilter("rskm_pt", null);
+
+    }, 200)
+  } else if (!state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color',
+        [
+          'case',
+          ["==", ['get', "v8"], '1'],
+          'RGB(158,224,132)',
+          ["==", ['get', "v8"], '0'],
+          'RGB(253,112,113)',
+          'RGB(248,200,94)'
+        ]
+      );
+      map.setFilter("rskm_pt", null);
+    }, 200)
+  } else if (state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v3);
+      map.setFilter("rskm_pt", [
+        "all",
+        ["==", ['get', "v3"], '1'],
+      ]);
+    }, 200)
+  } else if (!state2.radioValuev9 && state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setFilter("rskm_pt", [
+        "all",
+        ["!=", ['get', "v3"], '1'],
+      ]);
+      map.setPaintProperty('rskm_pt', 'fill-color', v3);
+    }, 200)
+  }
+
+
+  /**
+   * 地块重叠核验
+   */
+
+  let v4 = [
+    'case',
+    ["==", ['get', "v4"], '1'],
+    'yellow',
+    ["!=", ['get', "v4"], '1'],
+    'blue',
+    '#ccc'
+  ]
+  if (state2.radioValuev11 && state2.radioValuev12 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v4);
+      map.setFilter("rskm_pt", null);
+    }, 200)
+  } else if (!state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color',
+        [
+          'case',
+          ["==", ['get', "v8"], '1'],
+          'RGB(158,224,132)',
+          ["==", ['get', "v8"], '0'],
+          'RGB(253,112,113)',
+          'RGB(248,200,94)'
+        ]
+      );
+      map.setFilter("rskm_pt", null);
+    }, 200)
+  } else if (state2.radioValuev11 && !state2.radioValuev12 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v4);
+      map.setFilter("rskm_pt", [
+        "all",
+        ["==", ['get', "v4"], '1'],
+      ]);
+    }, 200)
+  } else if (!state2.radioValuev11 && state2.radioValuev12 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev13 && !state2.radioValuev14) {
+    setTimeout(() => {
+      map.setFilter("rskm_pt", [
+        "all",
+        ["!=", ['get', "v4"], '1'],
+      ]);
+      map.setPaintProperty('rskm_pt', 'fill-color', v4);
+    }, 200)
+  }
+
+
+
+  /**
+ * 地块差异率核验
+ */
+  let v7 = [
+    'case',
+    ["==", ['get', "v7"], '1'],
+    'yellow',
+    ["!=", ['get', "v7"], '1'],
+    'blue',
+    '#ccc'
+  ]
+
+  if (state2.radioValuev13 && state2.radioValuev14 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v7);
+      map.setFilter("rskm_pt", null);
+    }, 200)
+  } else if (!state2.radioValuev13 && !state2.radioValuev14 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color',
+        [
+          'case',
+          ["==", ['get', "v8"], '1'],
+          'RGB(158,224,132)',
+          ["==", ['get', "v8"], '0'],
+          'RGB(253,112,113)',
+          'RGB(248,200,94)'
+        ]
+      );
+      map.setFilter("rskm_pt", null);
+    }, 200)
+  } else if (state2.radioValuev13 && !state2.radioValuev14 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12) {
+    setTimeout(() => {
+      map.setPaintProperty('rskm_pt', 'fill-color', v7);
+      map.setFilter("rskm_pt", [
+        "all",
+        ["==", ['get', "v7"], '1'],
+      ]);
+    }, 200)
+  } else if (!state2.radioValuev13 && state2.radioValuev14 && !state2.radioValuev9 && !state2.radioValuev10 && !state2.radioValuev11 && !state2.radioValuev12) {
+    setTimeout(() => {
+      map.setFilter("rskm_pt", [
+        "all",
+        ["!=", ['get', "v7"], '1'],
+      ]);
+      map.setPaintProperty('rskm_pt', 'fill-color', v7);
+    }, 200)
+  }
+
+
 })
+
+
 
 // 切换图层可见性函数
 const toggleLayerVisibility = (layerId, isVisible) => {
@@ -356,20 +525,10 @@ watch(radioValue, (newr) => {
 })
 
 
-
 /**
  * 控制是否显示
  */
-const dkRadioDisabled = ref(false);
-
-
-
-/**
- * 是否显示
- */
-const radioOffState = ref(false);
-
-
+const dkRadioDisabled = ref(true);
 
 </script>
 
@@ -463,10 +622,10 @@ const radioOffState = ref(false);
       </a-row>
 
       <!--地块是否合格-->
-      <a-row v-for="tar in legends.filter(le => le.order == '核验结果')" :key="tar.key"
+      <a-row v-for="tar in legends.filter(le => le.order == '地块核验')" :key="tar.key"
         style="display: flex; align-items: center; line-height: 30px">
 
-        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '核验结果')[0].key">
+        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '地块核验')[0].key">
           <div class="legendTitle">{{
             tar.order }}</div>
         </a-col>
@@ -502,7 +661,7 @@ const radioOffState = ref(false);
             <a-switch v-if="tar.key == 2" checked-children="显示" un-checked-children="隐藏"
               v-model:checked="state.checked2" />
 
-            <a-switch v-if="tar.key == 9" checked-children="显示" un-checked-children="隐藏"
+            <!--  <a-switch v-if="tar.key == 9" checked-children="显示" un-checked-children="隐藏"
               v-model:checked="state2.radioValuev9" />
             <a-switch v-if="tar.key == 10" checked-children="显示" un-checked-children="隐藏"
               v-model:checked="state2.radioValuev10" />
@@ -514,7 +673,7 @@ const radioOffState = ref(false);
             <a-switch v-if="tar.key == 13" checked-children="显示" un-checked-children="隐藏"
               v-model:checked="state2.radioValuev13" />
             <a-switch v-if="tar.key == 14" checked-children="显示" un-checked-children="隐藏"
-              v-model:checked="state2.radioValuev14" />
+              v-model:checked="state2.radioValuev14" /> -->
           </div>
 
 
@@ -558,11 +717,11 @@ const radioOffState = ref(false);
       </a-row>
 
       <!--地块与承保面积不一致-->
-      <a-row v-for="tar in legends.filter(le => le.order == '地块与承保面积一致')" :key="tar.key"
+      <a-row v-for="tar in legends.filter(le => le.order == '地块面积核验')" :key="tar.key"
         style="display: flex; align-items: center; line-height: 30px">
 
-        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '地块与承保面积一致')[0].key">
-          <div style="padding-left: 10px;">{{ tar.order }}</div>
+        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '地块面积核验')[0].key">
+          <div class="legendTitle">{{ tar.order }}</div>
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="6">
@@ -590,6 +749,7 @@ const radioOffState = ref(false);
         <a-col :span="17" style="font-size: 15px;">
           {{ tar.title }}
           <div style="position: absolute; right: 10px; bottom: 0">
+
             <a-switch v-if="tar.key == 9" checked-children="显示" un-checked-children="隐藏"
               v-model:checked="state2.radioValuev9" />
             <a-switch v-if="tar.key == 10" checked-children="显示" un-checked-children="隐藏"
@@ -599,10 +759,10 @@ const radioOffState = ref(false);
       </a-row>
 
       <!--地块重叠-->
-      <a-row v-for="tar in legends.filter(le => le.order == '地块重叠')" :key="tar.key"
+      <a-row v-for="tar in legends.filter(le => le.order == '地块重叠核验')" :key="tar.key"
         style="display: flex; align-items: center; line-height: 30px">
 
-        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '地块重叠')[0].key">
+        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '地块重叠核验')[0].key">
           <div class="legendTitle">{{
             tar.order }}</div>
         </a-col>
@@ -641,9 +801,9 @@ const radioOffState = ref(false);
       </a-row>
 
       <!--标的面积差异率不达标-->
-      <a-row v-for="tar in legends.filter(le => le.order == '标的面积差异率')" :key="tar.key"
+      <a-row v-for="tar in legends.filter(le => le.order == '标的差异率核验')" :key="tar.key"
         style="display: flex; align-items: center; line-height: 30px">
-        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '标的面积差异率')[0].key">
+        <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '标的差异率核验')[0].key">
           <div class="legendTitle">{{ tar.order }}</div>
         </a-col>
         <a-col :span="1"></a-col>

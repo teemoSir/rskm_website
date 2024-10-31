@@ -2,12 +2,12 @@
 const sql = (params, query) => {
 
 
-    let simplifys = simplify(params.table, params.z);
+ 
     let lyz = 0.00000001;
     if (params.z <= 7) {
-        lyz = 1500;
+        lyz = 1000;
     } else if (params.z > 7 && params.z < 9.99) {
-        lyz = 800;
+        lyz = 400;
     } else if (params.z > 9.99 && params.z < 12.99) {
         lyz = 100;
     }

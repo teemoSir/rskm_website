@@ -415,7 +415,7 @@ let specYghy = [
         "source-layer": config.admin_2022_province.name,
         filter: [
             "in",
-            ["to-string", ["get","first_gid"]],
+            ["to-string", ["get", "first_gid"]],
             '370000',
         ],
         layout: {
@@ -437,7 +437,7 @@ let specYghy = [
         "source-layer": config.admin_2022_province.name,
         filter: [
             "!=",
-            ["to-string", ["get","first_gid"]],
+            ["to-string", ["get", "first_gid"]],
             '370000',
         ],
         layout: {
@@ -447,7 +447,7 @@ let specYghy = [
         'slot': 'bottom',
         'paint': {
 
-            'fill-color': '#999',//RGB(89,112,196)
+            'fill-color': '#000',//RGB(89,112,196)
 
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
@@ -1134,31 +1134,6 @@ let specYghy = [
         "paint": {
             // 'line-blur':0.5,
             'line-color': 'RGBA(0,0,0,0.7)',
-            // 'line-color': [
-            //     'case',
-            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-            //     'RGB(76,127,217)',
-            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-            //     'RGB(159,212,108)',
-            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-            //     'RGB(253,204,92)',
-            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-            //     '#000',
-            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-            //     'RGB(126,72,225)',
-            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-            //     'RGB(215,52,76)',
-            //     '#ccc'
-            // ],
-            // 'line-color': [
-            //     'case',
-            //     ["==", ['get', "v8"], '1'],
-            //     'RGB(158,224,132)',
-            //     ["==", ['get', "v8"], '0'],
-            //     'RGB(253,112,113)',
-            //     'yellow'
-            // ],
-            //  'line-width': 4,
             'line-width': ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1183,7 +1158,7 @@ let specYghy = [
         interactive: true,
     },
 
-
+    // 是否合格
     {
         id: "rskm_pt",
         name: "保单地块",
@@ -1198,9 +1173,9 @@ let specYghy = [
         "paint": {
             'fill-color': [
                 'case',
-                ["==", ['get', "v9"], '1'],
+                ["==", ['get', "v8"], '1'],
                 'RGB(158,224,132)',
-                ["==", ['get', "v9"], '0'],
+                ["==", ['get', "v8"], '0'],
                 'RGB(253,112,113)',
                 'RGB(248,200,94)'
             ],
@@ -1210,9 +1185,9 @@ let specYghy = [
                 3,
                 1,
                 7,
-                0.5,
+                0.9,
                 13,
-                0.4,
+                0.8,
                 14,
                 0.3, 16,
                 0.2,],
@@ -1365,9 +1340,9 @@ let specYghy = [
             // ],
             'text-halo-color': [
                 'case',
-                ["==", ['get', "v9"], '1'],
+                ["==", ['get', "v8"], '1'],
                 'RGB(158,224,132)',
-                ["==", ['get', "v9"], '0'],
+                ["==", ['get', "v8"], '0'],
                 'RGB(253,112,113)',
                 'yellow'
             ],
@@ -1417,11 +1392,11 @@ let specYghy = [
             // ],
             'text-halo-color': [
                 'case',
-                ["==", ['get', "v9"], '1'],
+                ["==", ['get', "v8"], '1'],
                 'RGB(158,224,132)',
-                ["==", ['get', "v9"], '0'],
+                ["==", ['get', "v8"], '0'],
                 'RGB(253,112,113)',
-                'yellow'
+                '#ccc'
             ],
             "text-halo-width": 1, // 文字轮廓宽度
             "text-halo-blur": 0.8, // 文字轮廓模糊度
