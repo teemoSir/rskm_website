@@ -184,7 +184,7 @@ onMounted(() => {
             <a-space direction="vertical" :size="5">
                 <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
                     @panelChange="panelChangeRL" />
-            </a-space>{{ current }}
+            </a-space>
             <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
         </template>
     </a-page-header>

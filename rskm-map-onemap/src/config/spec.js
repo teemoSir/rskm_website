@@ -410,6 +410,59 @@ let spec = [
     },
 
     {
+        id: "admin_2024_county_yghy_outline",
+        'type': 'line',
+        source: config.admin_2022_province.name,
+        "source-layer": config.admin_2022_province.name,
+        filter: [
+            "in",
+            ["to-string", ["get", "first_gid"]],
+            '370000',
+        ],
+        layout: {
+            //  visibility: "visible",
+            //   "text-optional": true,
+        },
+        'slot': 'bottom',
+        'paint': {
+            'line-width': 6,
+            'line-color': '#cccccc',
+
+            "line-opacity": 1,
+        },
+    },
+    {
+        id: "admin_2024_county_yghy",
+        'type': 'fill',
+        source: config.admin_2022_province.name,
+        "source-layer": config.admin_2022_province.name,
+        filter: [
+            "!=",
+            ["to-string", ["get", "first_gid"]],
+            '370000',
+        ],
+        layout: {
+            //  visibility: "visible",
+            //   "text-optional": true,
+        },
+        'slot': 'bottom',
+        'paint': {
+
+            'fill-color': '#000',//RGB(89,112,196)
+
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                0.4,
+                13,
+                0.2,
+                14,
+                0.0,],
+        },
+    },
+
+    {
         id: "world_china_building",
         name: "建筑",
         type: "fill-extrusion",

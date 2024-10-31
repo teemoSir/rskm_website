@@ -241,12 +241,28 @@ const loadEvent = (() => {
 })
 
 
+// 初始化视野
+const fitCenter = () => {
+  map.flyTo({
+    center: [118.223855, 36.315451],
+    zoom: 7,
+    speed: 1,
+    curve: 2,
+    easing(t) {
+      return t;
+    },
+  });
+};
 
 onMounted(() => {
   map && map.on("load", () => {
     addLayers();
 
     loadEvent();
+
+    setTimeout(()=>{
+      fitCenter()
+    },500)
   })
 })
 

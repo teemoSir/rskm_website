@@ -220,7 +220,7 @@ const loadBaseSource = () => {
 
     //addLayers();
 
-    fitCenter();
+   // fitCenter();
 
     addIcon();
 
@@ -228,26 +228,6 @@ const loadBaseSource = () => {
     // 最后
     loadTerrain();
   });
-};
-
-const loadBase = () => {
-  //   map.setFog({
-  //     color: "rgba(186, 210, 235,0.3)", //低层大气 rgb(186, 210, 235)
-  //     "high-color": "rgba(36, 92, 223,0.3)", // 高层大气
-  //     "horizon-blend": 0.02, // 大气厚度（低缩放时默认为0.2）
-  //     "space-color": "rgb(11, 11, 25)", //背景颜色 rgb(11, 11, 25)
-  //     "star-intensity": 0.4, // 背景恒星亮度（低zoom时默认为0.35）
-  //   });
-  //   map.setLight({
-  //     "anchor": "viewport",
-  //     "color": "#fff",
-  //     "intensity": 0.5
-  // });
-  //   light: {
-  //     anchor: "map",
-  //     color: "#F5F5F5",
-  //     intensity: 0.6,
-  //   },
 };
 
 /**
@@ -378,21 +358,7 @@ watch(spin, () => {
   }
 });
 
-/**
- *
- * 行政边界
- */
-// watch(state, () => {
-//   [
-//     "admin_2022_province",
-//     "admin_2022_city",
-//     "admin_2024_county",
-//     "admin_2024_town",
-//     "admin_2024_village",
-//   ].forEach((v) => {
-//     map.setLayoutProperty(v, "visibility", state.ZJiSHow ? "visible" : "none");
-//   });
-// });
+
 
 /**
  * 地名注记

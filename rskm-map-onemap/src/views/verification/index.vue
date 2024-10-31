@@ -1185,13 +1185,9 @@ const goGeomUnOne = () => {
       map.getLayer("adminGeomOut" + cl.gid) && map.removeLayer("adminGeomOut" + cl.gid);
       map.getLayer("textLayer" + cl.gid) && map.removeLayer("textLayer" + cl.gid);
       map.getSource("adminGeom" + cl.gid) && map.removeSource("adminGeom" + cl.gid);
-
     })
     countylayer = []
   }
-
-
-
 };
 
 
@@ -1204,8 +1200,6 @@ const goGeomUn = () => {
   map.getLayer("textLayer") && map.removeLayer("textLayer");
   map.getLayer("adminGeomOutLabel") && map.removeLayer("adminGeomOutLabel");
   map.getSource("adminGeom") && map.removeSource("adminGeom");
-
-
 };
 
 /**
@@ -1665,12 +1659,12 @@ const setPopup = async (info) => {
   meginfo.tbsl = successData.cbsl || 0;
   meginfo.v1 = successData.v1 || 0;
   meginfo.v2 = Number(successData.v2).toFixed(2) || 0;
-  meginfo.v3 = successData.v3=='1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
-  meginfo.v4 = successData.v4=='1' ? "<div style=' color: #fff;background-color: #91cc75;'>通过</div>" : "<div style=' color: #fff;background-color: #ee6666;'>未通过</div>";
+  meginfo.v3 = successData.v3 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
+  meginfo.v4 = successData.v4 == '1' ? "<div style=' color: #fff;background-color: #91cc75;'>通过</div>" : "<div style=' color: #fff;background-color: #ee6666;'>未通过</div>";
   meginfo.v5 = successData.v5 || 0;
   meginfo.v6 = Number(successData.v6).toFixed(2) || 0;
   meginfo.v7 = successData.v7 || 0;
-  meginfo.v8 = successData.v8=='1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
+  meginfo.v8 = successData.v8 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
   meginfo.dkmj = info.dkmj ? Number(info.dkmj).toFixed(1) : 0;
 
   console.log(meginfo)
@@ -1716,12 +1710,12 @@ const setCountyPopup = async (data) => {
 
   let text = ``;
   text = `
-    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 17px;color:#5a5959"  title="区域核验" >
-        <tr style="line-height:1.5;"><th style="text-align: right;width:100px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
+    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 18px;color:#5a5959"  title="区域核验" >
+        <tr style="line-height:1.5;"><th style="text-align: right;width:180px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">投保面积:</th><td >${data.properties.area ? Number(data.properties.area).toFixed(0) : 0}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">遥感面积:</th><td >${data.properties.rs ? Number(data.properties.rs).toFixed(0) : 0}亩</td><tr>
         <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">地块与投保面积之比:</th><td >${parseInt(data.properties.coverage)}%</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:4px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:2px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
         </table>`
 
 
@@ -1738,11 +1732,11 @@ const loadCountyFit = async (name) => {
   let features = await api.get_table_by_filter(
     "admin_2022_county",
     `and name in (${name})  order by county_code`,
-    `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,city_code,city_name,county_code,gid,name,province_name`
+    `ST_AsGeoJSON(ST_Simplify(geom,0.1)) as json,city_code,city_name,county_code,gid,name,province_name`
   );
 
   map.fitBounds(turf.bbox(JSON.parse(features[0].json)), {
-    padding: { top: 100, left: 600, right: 600 },
+    padding: { top: 100, left: 600, right: 600, bottom: 100 },
     linear: true,
     // easing: (t) => {
     //   return t * (1 - t);
@@ -1766,12 +1760,25 @@ const loadCounty = async (name) => {
 
   if (features.length == 1) {
     map.fitBounds(turf.bbox(JSON.parse(features[0].json)), {
-      padding: { top: 100, left: 600, right: 600 },
+      padding: { top: 100, left: 600, right: 600, bottom: 100 },
       linear: true,
       // easing: (t) => {
       //   return t * (1 - t);
       // },
     });
+
+    // map.setFilter("admin_2024_county", [
+    //     "all",
+    //     ["==", ['get', "name"], '济阳区'],
+    //   ]);
+    // map.setPaintProperty('admin_2024_county', 'fill-color',
+    //   [
+    //     'case',
+    //     ["==", ['get', "name"], '高青县'],
+    //     'red',
+    //     'blue'
+    //   ]
+    // );
   } else {
     goGeomUn();
 
@@ -1806,9 +1813,11 @@ const loadCounty = async (name) => {
       })
     })
     goGeom(ps)
-
-
     fitCenter()
+
+
+
+
   }
 
 };
@@ -1817,13 +1826,13 @@ const loadCounty = async (name) => {
 // 初始化视野
 const fitCenter = () => {
   map.flyTo({
-    center: [119, 36],
-    zoom: 7,
+    center: [119.207, 36.79],
+    zoom: 7.3,
     speed: 1,
     curve: 2,
-    // easing(t) {
-    //   return t;
-    // },
+    easing(t) {
+      return t;
+    },
   });
 };
 
@@ -1985,10 +1994,7 @@ const loadDataRight = async (filter) => {
 
   }
 
-  reloadEChats()
-
-
-
+  // reloadEChats()
 }
 
 
@@ -2016,7 +2022,7 @@ const loadLayers = (filter) => {
  */
 const loadLocalData = (filter) => {
   header.value = filter;
-  console.log(filter)
+  //console.log(filter)
   loadDataRight(filter)
 
   goGeomUn()
@@ -2188,8 +2194,6 @@ const getAnalysisDK = async (key, where = "") => {
   //console.log(data[0])
 
   if (data[0]) {
-
-
     bdmjbfhs.value = data[0].bdmjbfhs;
     dhsl.value = data[0].dhsl;
     dk_area.value = data[0].dk_area;
@@ -2218,7 +2222,7 @@ const getAnalysisEchars2 = async (key, where = "") => {
     key,
     where,
   );
-  console.log(data)
+  //console.log(data)
 
   if (data) {
 
@@ -2331,38 +2335,38 @@ const LoadHzBaseData = async () => {
 // 挂载
 onMounted(() => {
 
-  /**
-   * 基础数据加载
-   */
-  map && map.on("load", () => {
-
-    loadLocalData()
-
-    addLayersYghy()
-
-    loadEvent();
-
-    loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
-
-
-  })
-
   // 装载检索数据
-
-
   loadCount();
   loadTabel(1, 10);
-
   LoadHzBaseData();
+  getAnalysisEchars2("yghy_sql_4")
+  getAnalysisEchars4('yghy_sql_6')
+  getAnalysisDK("yghy_sql_3")
 
 
-  setTimeout(() => {
-    messageInfo.value = false
-  }, 5000)
+
+
+  nextTick(() => {
+
+    // setTimeout(() => {
+    //   fitCenter()
+    // }, 1000)
+    map && loadEvent();
+    /**
+     * 基础数据加载
+     */
+    map && map.on("load", () => {
+      loadLocalData()
+      addLayersYghy()
+      loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
+    })
+
+  })
 })
 
 
-const messageInfo = ref(true)
+
+
 
 /**
  * 地块浮动框
@@ -2538,7 +2542,7 @@ const xRightSquareShow = ref(true)
  */
 const radioValue = ref(false);
 
-const layer = ref(true)
+
 
 
 watch(radioValue, (newr) => {
