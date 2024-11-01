@@ -831,7 +831,7 @@ const echartsDK03 = (names, data1, data2) => {
       }
     },
     legend: {
-      data: ['大户数量', '合格数量'],
+      data: ['合格数量', '大户数量'],
       textStyle: {
         fontSize: 16 // 图例文字大小
       }
@@ -869,7 +869,7 @@ const echartsDK03 = (names, data1, data2) => {
     ],
     series: [
       {
-        name: '大户数量',
+        name: '合格数量',
         type: 'bar',
         barGap: 0,
         label: labelOption,
@@ -879,7 +879,7 @@ const echartsDK03 = (names, data1, data2) => {
         data: data1
       },
       {
-        name: '合格数量',
+        name: '大户数量',
         type: 'bar',
         label: labelOption,
         emphasis: {
@@ -1663,13 +1663,13 @@ const setPopup = async (info) => {
   meginfo.v4 = successData.v4 == '1' ? "<div style=' color: #fff;background-color: #91cc75;'>通过</div>" : "<div style=' color: #fff;background-color: #ee6666;'>未通过</div>";
   meginfo.v5 = successData.v5 || 0;
   meginfo.v6 = Number(successData.v6).toFixed(2) || 0;
-  meginfo.v7 = successData.v7 || 0;
+  meginfo.v7 = successData.v7 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
   meginfo.v8 = successData.v8 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
   meginfo.dkmj = info.dkmj ? Number(info.dkmj).toFixed(1) : 0;
 
   console.log(meginfo)
   meginfo.bdmj = info.bdmj ? Number(info.bdmj).toFixed(1) : "";
-  meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj)).toFixed(2);
+  meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) *100).toFixed(2);
   meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
   meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
 
@@ -3266,6 +3266,10 @@ const lockDownOpen = ref(false)
       </tr>
       <tr>
 
+        <th>标的面积核验：</th>
+        <td> {v7}</td>
+      </tr>
+      <tr>
         <th>地块总面积及占比：</th>
         <td>{v1}亩,{v2}%</td>
       </tr>
