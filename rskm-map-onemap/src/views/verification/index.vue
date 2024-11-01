@@ -1669,7 +1669,7 @@ const setPopup = async (info) => {
 
   console.log(meginfo)
   meginfo.bdmj = info.bdmj ? Number(info.bdmj).toFixed(1) : "";
-  meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) *100).toFixed(2);
+  meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) * 100).toFixed(2);
   meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
   meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
 
@@ -2121,8 +2121,50 @@ const loadLocalData = (filter) => {
 
         bxjg.push(ca.name)
       });
-      loadEcharts03(bxjg, [zc, bz, cb])
+
+      // 保险机构				zc		bz		cb
+      // 安华				5		1		
+      // 国寿财				17		1		
+      // 平安山东				4				
+      // 人保				32		9		8
+      // 太保				19		6		
+      // 太平				9		6		
+      // 中华				24		3		4
+
+
+
+
+      console.log(data)
+     // loadEcharts03(bxjg, [zc, bz, cb])
     })
+
+
+    let data = [
+      { name: '安华', zc: 5, bz: 1, cb: 0 },
+      { name: '国寿财', zc: 17, bz: 1, cb: 0 },
+      { name: '平安山东', zc: 4, bz: 0, cb: 0 },
+      { name: '人保', zc: 32, bz: 9, cb: 8 },
+      { name: '太保', zc: 19, bz: 6, cb: 0 },
+      { name: '太平', zc: 9, bz: 6, cb: 0 },
+      { name: '中华', zc: 24, bz: 3, cb: 4 },
+    ]
+
+    data.forEach((ca) => {
+      if (ca.zc>=0 && ca.bz>=0 && ca.cb>=0) {
+        zc.push((ca.zc / (ca.zc + ca.bz + ca.cb)));
+        bz.push((ca.bz / (ca.zc + ca.bz + ca.cb)));
+        cb.push((ca.cb / (ca.zc + ca.bz + ca.cb)));
+      } else {
+        zc.push();
+        bz.push();
+        cb.push();
+      }
+
+      //  console.log(ca)
+
+      bxjg.push(ca.name)
+    });
+    loadEcharts03(bxjg, [zc, bz, cb])
 
     // console.log(bxjg, [zc, bz, cb])
 
