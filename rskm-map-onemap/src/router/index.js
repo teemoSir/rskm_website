@@ -26,6 +26,11 @@ const router = createRouter({
       name: "verification",
       component: () => import("@/views/verification/index.vue"),
     },
+    {
+      path: "/echars",
+      name: "echars",
+      component: () => import("@/views/echars/index.vue"),
+    },
   
     //   {
     //     path: "/room/:id", // 动态传递参数

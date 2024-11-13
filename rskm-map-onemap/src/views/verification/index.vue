@@ -250,7 +250,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
     legend: {
       // data: [],
       textStyle: {
-        fontSize: 18 // 图例文字大小
+        fontSize: 16 // 图例文字大小
       }
     },
 
@@ -271,7 +271,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
       {
         type: 'value',
         axisLabel: {
-          fontSize: 18 // 文字大小
+          fontSize: 16 // 文字大小
         },
       }
 
@@ -288,7 +288,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
           inside: false, // 刻度标签是否朝内，默认朝外
           margin: 6, // 刻度标签与轴线之间的距离
           //  formatter: '{value} Day', // 刻度标签的内容格式器
-          fontSize: 18 // 文字大小
+          fontSize: 16 // 文字大小
         },
         data: yAxis
       }
@@ -598,8 +598,8 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
     //  align: app.config.align,
     // verticalAlign: app.config.verticalAlign,
     // rotate: app.config.rotate,
-    // formatter: '{c}  {name|{a}}',
-    formatter: '{c}',
+    //  formatter: '{c}%',
+   // formatter: '{c}',
     fontSize: 16,
     rich: {
       name: {}
@@ -617,21 +617,24 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
     color: [
 
       // "#ea7ccc",
-      // "#5470c6",
-      // "#73c0de",
-      "#3ba272",
+    
+      //  "#73c0de",
+
       // "#fc8452",
       // "#9a60b4",
-      "#ee6666",
+      "#3ba272",
+      "#5470c6",
+      // "#ee6666",
     ],
     tooltip: {
       trigger: 'axis',
+      
       axisPointer: {
         type: 'shadow'
       }
     },
     legend: {
-      data: ['大户数量', '合格大户'],
+      data: ['合格大户', '大户数量'],
       textStyle: {
         fontSize: 16 // 图例文字大小
       }
@@ -669,6 +672,16 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
     ],
 
     series: [
+
+      {
+        name: '合格大户',
+        type: 'bar',
+        label: labelOption,
+        emphasis: {
+          focus: 'series'
+        },
+        data: hgdhValues
+      },
       {
 
         name: '大户数量',
@@ -679,17 +692,7 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
           focus: 'series'
         },
         data: dhValues
-      },
-      {
-        name: '合格大户',
-        type: 'bar',
-        label: labelOption,
-        emphasis: {
-          focus: 'series'
-        },
-        data: hgdhValues
-      },
-
+      }
     ]
   };
 
@@ -820,9 +823,9 @@ const echartsDK03 = (names, data1, data2) => {
       // "#5470c6",
       // "#73c0de",
       // "#3ba272",
-      "#fc8452",
-      "#9a60b4",
-      // "#ee6666",
+      "#3ba272",
+      //"#5470c6",
+       "#73c0de",
     ],
     tooltip: {
       trigger: 'axis',
@@ -2135,7 +2138,7 @@ const loadLocalData = (filter) => {
 
 
       console.log(data)
-     // loadEcharts03(bxjg, [zc, bz, cb])
+      // loadEcharts03(bxjg, [zc, bz, cb])
     })
 
 
@@ -2150,7 +2153,7 @@ const loadLocalData = (filter) => {
     ]
 
     data.forEach((ca) => {
-      if (ca.zc>=0 && ca.bz>=0 && ca.cb>=0) {
+      if (ca.zc >= 0 && ca.bz >= 0 && ca.cb >= 0) {
         zc.push((ca.zc / (ca.zc + ca.bz + ca.cb)));
         bz.push((ca.bz / (ca.zc + ca.bz + ca.cb)));
         cb.push((ca.cb / (ca.zc + ca.bz + ca.cb)));
@@ -2697,7 +2700,7 @@ const lockDownOpen = ref(false)
               {{ record.v1 ? record.v1 + ' 亩' : '' }}
             </template>
             <template v-if="column.key === 'v2'">
-              {{ record.v1 ? record.v1 + ' %' : '' }}
+              {{ record.v2 ? record.v2 + ' %' : '' }}
             </template>
             <template v-if="column.key === 'v6'">
               {{ record.v6 ? record.v6 + ' %' : '' }}

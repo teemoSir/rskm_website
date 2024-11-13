@@ -75,7 +75,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name`,
+                `${host}/v1/mvt/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name,province_code,gid`,
             ],
             minzoom: 6,
             maxzoom: 12.99

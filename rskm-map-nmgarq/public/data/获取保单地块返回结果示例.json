@@ -1,0 +1,21 @@
+[
+    {
+        "insurancenum": "P89020223704N000000201",
+        "areacode": "370406000000",
+        "insurancetarget": "101",
+        "insuredquantity": "243.2500",
+        "starttime": "2022/01/22",
+        "endtime": "2022/06/30",
+        "geojsonstr": "{\"UId\":\"013704060518220310141033468\",\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":4326},\"fields\":[{\"name\":\"R\",\"alias\":\"recognizees\",\"type\":\"esriFieldTypeString\"},{\"name\":\"T\",\"alias\":\"type Of Insurancee\",\"type\":\"esriFieldTypeString\"},{\"name\":\"A11\",\"alias\":\"project area In Sqm\",\"type\":\"esriFieldTypeString\"},{\"name\":\"A12\",\"alias\":\"project area In Mu\",\"type\":\"esriFieldTypeString\"},{\"name\":\"A21\",\"alias\":\"surface area In Sqm\",\"type\":\"esriFieldTypeString\"},{\"name\":\"A22\",\"alias\":\"surface area In Mu\",\"type\":\"esriFieldTypeString\"},{\"name\":\"GD\",\"alias\":\"degree\",\"type\":\"esriFieldTypeString\"},{\"name\":\"GLI\",\"alias\":\"graph land id\",\"type\":\"esriFieldTypeString\"},{\"name\":\"GLN\",\"alias\":\"graph land NO\",\"type\":\"esriFieldTypeString\"},{\"name\":\"GLA\",\"alias\":\"graph land alias\",\"type\":\"esriFieldTypeString\"},{\"name\":\"GA\",\"alias\":\"graph alias\",\"type\":\"esriFieldTypeString\"},{\"name\":\"RGN\",\"alias\":\"graph right dkbm\",\"type\":\"esriFieldTypeString\"}],\"features\":[{\"UId\":\"2022-3-10_14:44:48:841_01370406_518\",\"attributes\":{\"R\":\"小麦\",\"T\":\"\",\"A12\":\"243.81\",\"A11\":\"0.1634\",\"A21\":\"0.1634\",\"A22\":\"243.81\",\"GD\":\"\",\"CN\":[],\"LN\":null,\"TC\":\"101\",\"GLI\":\"\",\"GLN\":\"\",\"GLA\":\"\",\"GA\":\"\",\"RGN\":\"\",\"RGC\":0},\"geometry\":{\"rings\":[[[117.35682695257718,35.156898732434804],[117.35175165595383,35.156582405109674],[117.35187115749503,35.15421346470474],[117.35922760243456,35.15455408356033],[117.35853396507783,35.15595864351401],[117.35819759644028,35.156311070270746],[117.35682695257718,35.156898732434804],[117.35682695257718,35.156898732434804]]],\"points\":null,\"spatialReference\":{\"wkid\":4326}}}]}",
+        "updateornot": 1,
+        "insurcompanycode": "d735bb38-b135-45f9-bc40-71b81841eed3",
+        "insured": null,
+        "insureid": "202301010003372269201GFDB",
+        "CreatedDate": "2023-01-01T00:03:37.227",
+        "InsuranceId": "202301010003372269201GFDB",
+        "LogStatus": null,
+        "EffectStartDate": "2022-01-22T00:00:00",
+        "EffectEndDate": "2022-06-30T00:00:00",
+        "RegionCode": "370406105218"
+    }
+]
