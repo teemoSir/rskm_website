@@ -57,17 +57,17 @@ const current = ref(["home"]);
 
 
 const items = ref([
-    {
-        key: "home",
-        icon: () => h(Home),
-        label: "首页",
-        title: "首页",
-        onClick: () => {
-            // headerActive.value = 'home';
-            router.push("/");
-            // router.replace({ path: '/home' })
-        },
-    },
+    // {
+    //     key: "home",
+    //     icon: () => h(Home),
+    //     label: "首页",
+    //     title: "首页",
+    //     onClick: () => {
+    //         // headerActive.value = 'home';
+    //         router.push("/");
+    //         // router.replace({ path: '/home' })
+    //     },
+    // },
     {
         key: "verification",
         icon: () => h(TextSearch),

@@ -341,7 +341,7 @@ watch(state2, () => {
     'case',
     ["==", ['get', "cd"], 0],
     'yellow',
-    ["!=", ['get', "cd"], 1],
+    ["!=", ['get', "cd"], 0],
     'blue',
     '#ccc'
   ];
