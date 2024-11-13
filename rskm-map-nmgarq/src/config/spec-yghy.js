@@ -1204,19 +1204,19 @@ let specYghy = [
         "paint": {
             'fill-color': [
                 'case',
-                ["<", ['get', "bdzb"], 5],
-                'RGB(144,204,123)',
+                ["<=", ['get', "bdzb"], 0],
+                'RGB(125,39,41)',
                 ["all",
-                    [">=", ['get', "bdzb"], 5],
-                    ["<", ['get', "bdzb"], 20]
-                ],
-                'RGB(246,200,100)',
-                ["all",
-                    [">=", ['get', "bdzb"], 20],
-                    ["<", ['get', "bdzb"], 50]
+                    [">", ['get', "bdzb"], 0],
+                    ["<", ['get', "bdzb"], 60]
                 ],
                 'RGB(234,102,104)',
-                'RGB(125,39,41)'
+                ["all",
+                    [">=", ['get', "bdzb"], 60],
+                    ["<", ['get', "bdzb"], 90]
+                ],
+                'RGB(244,200,105)',
+                'RGB(RGB(144,204,123)'
             ],
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
