@@ -1216,7 +1216,7 @@ let specYghy = [
                     ["<", ['get', "bdzb"], 90]
                 ],
                 'RGB(244,200,105)',
-                'RGB(RGB(144,204,123)'
+                'RGB(144,204,120)'
             ],
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
@@ -1370,7 +1370,7 @@ let specYghy = [
             //     'RGB(250,131,86)',
             //     '#ccc'
             // ],
-         
+
             'text-halo-color': [
                 'case',
                 ["<", ['get', "bdzb"], 5],

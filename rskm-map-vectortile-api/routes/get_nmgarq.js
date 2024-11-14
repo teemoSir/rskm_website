@@ -6,9 +6,9 @@ const sql = (params, query) => {
         case "nmgarq_sql_1":
             // 定义乡镇名称数组
             let town = [
-                '那吉镇', '阿荣旗农牧业局', '向阳峪镇', '兴安镇', 
-                '三岔河镇', '得力其尔鄂温克民族乡', '音河达斡尔鄂温克民族乡', 
-                '阿荣旗林业局', '查巴奇鄂温克民族乡', '新发朝鲜民族乡', 
+                '那吉镇', '阿荣旗农牧业局', '向阳峪镇', '兴安镇',
+                '三岔河镇', '得力其尔鄂温克民族乡', '音河达斡尔鄂温克民族乡',
+                '阿荣旗林业局', '查巴奇鄂温克民族乡', '新发朝鲜民族乡',
                 '霍尔奇镇', '亚东镇', '六合镇', '复兴镇'
             ];
 
@@ -18,13 +18,13 @@ const sql = (params, query) => {
                 SELECT 
                     '${townName}' as name,
                     COUNT(DISTINCT bdh) as bdsl,
-                    COUNT(gid) as dksl,
-                    SUM(dkmj::numeric) as dkmj,
-                    SUM(bdmj::numeric) as bdmj,
-                    (SELECT COUNT(DISTINCT bdh) FROM public.procjet_2024_nmgarq_excel WHERE xiangzhen='${townName}' AND cdmj>0) as cdbd,
-                    (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel WHERE xiangzhen='${townName}' AND cdmj>0) as cddk,
-                    (SELECT SUM(dkcdl::numeric)/COUNT(gid) FROM public.procjet_2024_nmgarq_excel WHERE xiangzhen='${townName}') as dkcdl
-                FROM public.procjet_2024_nmgarq_excel 
+                    sum(v6)/count(gid) as bxfgl,
+                    SUM(v1::numeric) as dkmj,
+                    SUM(v5::numeric) as bdmj,
+                    (SELECT COUNT(DISTINCT bdh) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE xiangzhen='${townName}' ) as cdbd,
+                    (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel WHERE xiangzhen='${townName}' and cdmj>0)  as cddk,
+                    (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel WHERE xiangzhen='${townName}' ) as dksl
+                FROM public.procjet_2024_nmgarq_excel_dhdk 
                 WHERE xiangzhen='${townName}'
                 UNION ALL
                 `;
@@ -35,13 +35,13 @@ const sql = (params, query) => {
             SELECT 
                 '总计' as name,
                 COUNT(DISTINCT bdh) as bdsl,
-                COUNT(gid) as dksl,
-                SUM(dkmj::numeric) as dkmj,
-                SUM(bdmj::numeric) as bdmj,
-                (SELECT COUNT(DISTINCT bdh) FROM public.procjet_2024_nmgarq_excel WHERE cdmj>0) as cdbd,
-                (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel WHERE cdmj>0) as cddk,
-                (SELECT SUM(dkcdl::numeric)/COUNT(gid) FROM public.procjet_2024_nmgarq_excel) as dkcdl
-            FROM public.procjet_2024_nmgarq_excel 
+              sum(v6)/count(gid) as bxfgl,
+                    SUM(v1::numeric) as dkmj,
+                    SUM(v5::numeric) as bdmj,
+                (SELECT COUNT(DISTINCT bdh) FROM public.procjet_2024_nmgarq_excel_dhdk) as cdbd,
+                (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel  where cdmj>0) as cddk,
+                (SELECT COUNT(gid) FROM public.procjet_2024_nmgarq_excel  ) as dksl
+            FROM public.procjet_2024_nmgarq_excel_dhdk 
             `;
             break;
 
@@ -132,9 +132,9 @@ const sql = (params, query) => {
         case "yghy_sql_4":
             // 定义县级名称数组
             let county = [
-                '那吉镇', '阿荣旗农牧业局', '向阳峪镇', '兴安镇', 
-                '三岔河镇', '得力其尔鄂温克民族乡', '音河达斡尔鄂温克民族乡', 
-                '阿荣旗林业局', '查巴奇鄂温克民族乡', '新发朝鲜民族乡', 
+                '那吉镇', '阿荣旗农牧业局', '向阳峪镇', '兴安镇',
+                '三岔河镇', '得力其尔鄂温克民族乡', '音河达斡尔鄂温克民族乡',
+                '阿荣旗林业局', '查巴奇鄂温克民族乡', '新发朝鲜民族乡',
                 '霍尔奇镇', '亚东镇', '六合镇', '复兴镇'
             ];
 
@@ -261,7 +261,7 @@ module.exports = function (fastify, opts, next) {
         handler: function (request, reply) {
             fastify.pg.connect(onConnect)
 
-            function onConnect(err, client, release) {
+            function onConnect (err, client, release) {
                 if (err) {
                     request.log.error(err)
                     return reply.code(500).send({ error: "Database connection error." })
@@ -269,7 +269,7 @@ module.exports = function (fastify, opts, next) {
 
                 client.query(
                     sql(request.params, request.query),
-                    function onResult(err, result) {
+                    function onResult (err, result) {
                         release()
                         reply.send(err || result.rows)
                     }

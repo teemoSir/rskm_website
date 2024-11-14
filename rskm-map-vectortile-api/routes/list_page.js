@@ -15,11 +15,8 @@ const sql = (params, query) => {
     }
 
 
-   // let str = `select * from  ___get_paged_data('${params.table}',$$${ filter }$$,${query.page},${query.size} )`
-
-
-    let str =`
-    SELECT * FROM ${params.table} where 1=1 ${query.filter} LIMIT ${query.size} OFFSET ${query.page};
+    let str = `
+    SELECT * FROM ${params.table} where 1=1 ${query.filter} LIMIT ${query.size} OFFSET ${(query.size - 1) * query.page};
     
     `
 

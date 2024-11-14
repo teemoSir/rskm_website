@@ -59,63 +59,135 @@ const router = useRouter();
 const loadEcharts = (data) => {
 
 
+    // var chartDom = document.getElementById('main');
+    // var myChart = echarts.init(chartDom);
+    // var option;
+
+    // option = {
+
+    //     aria: {
+    //         enabled: false,
+    //         decal: {
+    //             show: false
+    //         }
+    //     },
+    //     color: [
+    //         "#ee6666",
+    //         "#91cc75",
+    //         "#fac858",
+    //     ],
+    //     tooltip: {
+    //         trigger: 'item'
+    //     },
+    //     legend: {
+    //         top: '30%',
+    //         right: 'right',
+    //         textStyle: {
+    //             fontSize: 16 // 图例文字大小
+    //         }
+    //     },
+    //     series: [
+    //         {
+    //             name: '',
+    //             type: 'pie',
+    //             radius: ['0%', '80%'],
+
+    //             avoidLabelOverlap: false,
+    //             padAngle: 2,
+    //             itemStyle: {
+    //                 borderRadius: 3
+    //             },
+    //             label: {
+    //                 show: true,
+    //                 //position: 'center',
+
+    //             },
+    //             emphasis: {
+    //                 label: {
+    //                     show: true,
+    //                     fontSize: 30,
+    //                     // /  fontWeight: 'bold'
+    //                 }
+    //             },
+
+    //             data: data
+    //         }
+    //     ]
+    // };
+
+    // option && myChart.setOption(option);
+
+
+
+
     var chartDom = document.getElementById('main');
     var myChart = echarts.init(chartDom);
     var option;
 
-    option = {
+    // There should not be negative values in rawData
+    const rawData = [
+        [100],
+        [320],
+        [220],
+    ];
+    const totalData = [];
+    for (let i = 0; i < rawData[0].length; ++i) {
+        let sum = 0;
+        for (let j = 0; j < rawData.length; ++j) {
+            sum += rawData[j][i];
+        }
+        totalData.push(sum);
+    }
+    const grid = {
+        left: 0,
+        right: 10,
+        top: 10,
+        bottom: 20
+    };
+    const series = [
+        '正常',
+        '保障不足',
+        '涉嫌超保',
 
-        aria: {
-            enabled: false,
-            decal: {
-                show: false
-            }
-        },
+    ].map((name, sid) => {
+        return {
+            name,
+            type: 'bar',
+            stack: 'total',
+            barWidth: '60%',
+            label: {
+                show: true,
+                formatter: (params) => Math.round(params.value * 1000) / 10 + '%'
+            },
+            data: rawData[sid].map((d, did) =>
+                totalData[did] <= 0 ? 0 : d / totalData[did]
+            )
+        };
+    });
+    option = {
         color: [
-            "#ee6666",
             "#91cc75",
             "#fac858",
+
+            "RGB(242,132,137)",
         ],
-        tooltip: {
-            trigger: 'item'
-        },
         legend: {
-            top: '30%',
-            right: 'right',
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
+            selectedMode: false
         },
-        series: [
-            {
-                name: '',
-                type: 'pie',
-                radius: ['40%', '80%'],
+        grid,
+        yAxis: {
+            type: 'category',
+            data: ['Mon']
 
-                avoidLabelOverlap: false,
-                padAngle: 2,
-                itemStyle: {
-                    borderRadius: 3
-                },
-                label: {
-                    show: true,
-                    //position: 'center',
-
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 30,
-                        // /  fontWeight: 'bold'
-                    }
-                },
-
-                data: data
-            }
-        ]
+        },
+        xAxis: {
+            type: 'value'
+        },
+        series
     };
 
     option && myChart.setOption(option);
+
 
 }
 /**
@@ -1002,19 +1074,19 @@ const echartsDK03 = (names, data1, data2) => {
 
 
 // 表格数据
-const dataSource = ref([])
-// baodanhao, jigou, "time", shuliang, baofei, xianzhong, dishi, quxian, xiangzhen, cun, qibao, zhongbao, rings, dkmj, cdmj, cdmjzb, cd, bdmj, bdzb, pass, sfz, bbxrmc, geom)
+const baodanDataSource = ref([])
+//	id, jigou, baodanhao, type, type_code, shuliang, bf, dishi, quxian, xiangzhen, cun, qibao, zhongbao, dikuai, dkmj, bdmj, bdzb, tbzb, cbhs)		
 const columns = [
     {
         title: '保单号',
         dataIndex: 'baodanhao',
         key: 'baodanhao',
     },
-    {
-        title: '被保险人',
-        dataIndex: 'bbxrmc',
-        key: 'bbxrmc',
-    },
+    // {
+    //     title: '被保险人',
+    //     dataIndex: 'bbxrmc',
+    //     key: 'bbxrmc',
+    // },
     {
         title: '机构',
         dataIndex: 'jigou',
@@ -1070,6 +1142,16 @@ const columns = [
         dataIndex: 'bdzb',
         key: 'bdzb',
     },
+    // {
+    //     title: '地块数量',
+    //     dataIndex: 'dikuai',
+    //     key: 'dikuai',
+    // },
+    // {
+    //     title: '参保户数',
+    //     dataIndex: 'cbhs',
+    //     key: 'cbhs',
+    // },
     {
         title: '是否一致',
         dataIndex: 'pass',
@@ -1182,6 +1264,7 @@ const columnsDk = [
                 title: '地块是否合格',
                 dataIndex: 'v8',
                 key: 'v8',
+                onFilter: (value, record) => record.v8.includes(value),
             },
 
         ]
@@ -1223,22 +1306,7 @@ const addTownByName = async (name) => {
         }
 
 
-        let hzBaseData = [
-            { name: '阿荣旗林业局', mj: 8593, ygmj: 63957, fgl: 13.44, zt: '保障不足' },
-            { name: '查巴奇鄂温克民族乡', mj: 98874, ygmj: 69895, fgl: 141.46, zt: '涉嫌超保' },
-            { name: '得力其尔鄂温克民族乡', mj: 88061, ygmj: 97760, fgl: 90.08, zt: '涉嫌超保' },
-            { name: '复兴镇', mj: 122110, ygmj: 140513, fgl: 86.90, zt: '正常' },
-            { name: '霍尔奇镇', mj: 181851, ygmj: 239687, fgl: 75.87, zt: '正常' },
-            { name: '六合镇', mj: 130997, ygmj: 224923, fgl: 58.24, zt: '正常' },
-            { name: '那吉镇', mj: 7074, ygmj: 4660, fgl: 151.82, zt: '涉嫌超保' },
-            { name: '三岔河镇', mj: 111598, ygmj: 153936, fgl: 72.50, zt: '正常' },
-            { name: '向阳峪镇', mj: 110639, ygmj: 252189, fgl: 43.87, zt: '正常' },
-            { name: '新发朝鲜民族乡', mj: 37209, ygmj: 62535, fgl: 59.50, zt: '正常' },
-            { name: '兴安镇', mj: 153499, ygmj: 204302, fgl: 75.13, zt: '正常' },
-            { name: '亚东镇', mj: 185965, ygmj: 184654, fgl: 100.71, zt: '涉嫌超保' },
-            { name: '音河达斡尔鄂温克民族乡', mj: 68871, ygmj: 101572, fgl: 67.81, zt: '正常' },
 
-        ]
 
         // 计算是否超保
         let hzBaseDataClone = hzBaseData.filter(item => item.name == p.town_name);
@@ -1781,6 +1849,23 @@ const setCountyPopup = async (data) => {
     return text
 }
 
+
+let hzBaseData = [
+    { name: '阿荣旗林业局', mj: 8593, ygmj: 63957, fgl: 13.44, zt: '保障不足' },
+    { name: '查巴奇鄂温克民族乡', mj: 98874, ygmj: 69895, fgl: 141.46, zt: '涉嫌超保' },
+    { name: '得力其尔鄂温克民族乡', mj: 88061, ygmj: 97760, fgl: 90.08, zt: '涉嫌超保' },
+    { name: '复兴镇', mj: 122110, ygmj: 140513, fgl: 86.90, zt: '正常' },
+    { name: '霍尔奇镇', mj: 181851, ygmj: 239687, fgl: 75.87, zt: '正常' },
+    { name: '六合镇', mj: 130997, ygmj: 224923, fgl: 58.24, zt: '正常' },
+    { name: '那吉镇', mj: 7074, ygmj: 4660, fgl: 151.82, zt: '涉嫌超保' },
+    { name: '三岔河镇', mj: 111598, ygmj: 153936, fgl: 72.50, zt: '正常' },
+    { name: '向阳峪镇', mj: 110639, ygmj: 252189, fgl: 43.87, zt: '正常' },
+    { name: '新发朝鲜民族乡', mj: 37209, ygmj: 62535, fgl: 59.50, zt: '正常' },
+    { name: '兴安镇', mj: 153499, ygmj: 204302, fgl: 75.13, zt: '正常' },
+    { name: '亚东镇', mj: 185965, ygmj: 184654, fgl: 100.71, zt: '涉嫌超保' },
+    { name: '音河达斡尔鄂温克民族乡', mj: 68871, ygmj: 101572, fgl: 67.81, zt: '正常' },
+
+]
 /**
  * 加载镇数据
  * @param {string} code - 行政区代码
@@ -1799,7 +1884,7 @@ const addLayerByTowns = async (name) => {
 
     let ps = [];
     features.map((feature) => {
-        console.log(feature)
+        // console.log(feature)
         let p = {
             town_name: feature.town_name,
             gid: 'GEOM' + (Math.random() * 1000000).toFixed(0),
@@ -1811,26 +1896,11 @@ const addLayerByTowns = async (name) => {
         // }
 
 
-        let hzBaseData = [
-            { name: '阿荣旗林业局', mj: 8593, ygmj: 63957, fgl: 13.44, zt: '保障不足' },
-            { name: '查巴奇鄂温克民族乡', mj: 98874, ygmj: 69895, fgl: 141.46, zt: '涉嫌超保' },
-            { name: '得力其尔鄂温克民族乡', mj: 88061, ygmj: 97760, fgl: 90.08, zt: '涉嫌超保' },
-            { name: '复兴镇', mj: 122110, ygmj: 140513, fgl: 86.90, zt: '正常' },
-            { name: '霍尔奇镇', mj: 181851, ygmj: 239687, fgl: 75.87, zt: '正常' },
-            { name: '六合镇', mj: 130997, ygmj: 224923, fgl: 58.24, zt: '正常' },
-            { name: '那吉镇', mj: 7074, ygmj: 4660, fgl: 151.82, zt: '涉嫌超保' },
-            { name: '三岔河镇', mj: 111598, ygmj: 153936, fgl: 72.50, zt: '正常' },
-            { name: '向阳峪镇', mj: 110639, ygmj: 252189, fgl: 43.87, zt: '正常' },
-            { name: '新发朝鲜民族乡', mj: 37209, ygmj: 62535, fgl: 59.50, zt: '正常' },
-            { name: '兴安镇', mj: 153499, ygmj: 204302, fgl: 75.13, zt: '正常' },
-            { name: '亚东镇', mj: 185965, ygmj: 184654, fgl: 100.71, zt: '涉嫌超保' },
-            { name: '音河达斡尔鄂温克民族乡', mj: 68871, ygmj: 101572, fgl: 67.81, zt: '正常' },
 
-        ]
 
         // 计算是否超保
         let hzBaseDataClone = hzBaseData.filter(item => item.name == p.town_name);
-        console.log(hzBaseDataClone)
+        //  console.log(hzBaseDataClone)
         p.rs = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.ygmj), 0);
         p.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.mj), 0);
         p.coverage = (p.area && p.rs) ? (p.area / p.rs * 100) : 0;
@@ -2019,6 +2089,8 @@ watch(activeKey, () => {
 
     (activeKey.value == 1) && addLayerByTowns("'阿荣旗'")
     //fitTownByName
+
+
 })
 
 /**
@@ -2047,9 +2119,13 @@ const getArea = async () => {
 
     let initdata = procjet_2024_nmgarq_excel.filter((rows) => rows.name == (header.value ? header.value : '总计'));
 
-    cbmj.value = Number(initdata[0].dkmj);
-    ygmj.value = Number(initdata[0].bdmj);
-    bxfgl.value = Number(ygmj.value / cbmj.value * 100).toFixed(2)
+    header.value && (cbmj.value = hzBaseData.filter((fx) => fx.name == header.value).reduce((acc, item) => acc + item.mj, 0));
+    header.value && (ygmj.value = hzBaseData.filter((fx) => fx.name == header.value).reduce((acc, item) => acc + item.ygmj, 0));
+    header.value && (bxfgl.value = Number(hzBaseData.filter((fx) => fx.name == header.value).reduce((acc, item) => acc + item.fgl, 0) / hzBaseData.filter((fx) => fx.name == header.value).length).toFixed(2));
+
+    !header.value && (cbmj.value = hzBaseData.reduce((acc, item) => acc + item.mj, 0));
+    !header.value && (ygmj.value = hzBaseData.reduce((acc, item) => acc + item.ygmj, 0));
+    !header.value && (bxfgl.value = Number(hzBaseData.reduce((acc, item) => acc + item.fgl, 0) / hzBaseData.length).toFixed(2));
 
     zcxz.value = Number(initdata[0].bdsl).toFixed(0);
     bzxz.value = Number(initdata[0].dksl).toFixed(0);
@@ -2058,11 +2134,15 @@ const getArea = async () => {
     cddk_val.value = Number(Number(initdata[0].cddk) / bzxz.value * 100).toFixed(1);
 
 
+    console.log(hzBaseData)
+    let newhx = [];
+
     // 图表一
     let tbdata = [
-        { value: cddk.value, name: '重叠' },
-        { value: bzxz.value - cddk.value, name: '不重叠' },
-    ]
+        [hzBaseData.filter((fx) => fx.zt == '正常').length],
+        [hzBaseData.filter((fx) => fx.zt == '保障不足').length],
+        [hzBaseData.filter((fx) => fx.zt == '涉嫌超保').length
+        ]]
     loadEcharts(tbdata)
 }
 
@@ -2270,7 +2350,7 @@ const getAnalysisEchars4 = async (key, where = "") => {
 
 };
 
-let hzBaseData = [];
+
 
 
 const getBxjg = () => {
@@ -2332,7 +2412,7 @@ onMounted(() => {
 
     // 装载检索数据
     loadCount();
-    loadTabel(1, 10);
+    loadTabel();
 
     getAnalysisDK("yghy_sql_3");
     getAnalysisEchars2("yghy_sql_4");
@@ -2371,22 +2451,22 @@ onMounted(() => {
  * @param size 
  * @param filter 
  */
-const loadTabel = async (page, size, filter = "") => {
-    let dkList = await api.get_page("procjet_2024_nmgarq_excel_dhdk", page, size, filter);
-    console.log(dkList)
-    // let arr = []
-    // dkList.map((dk) => {
-    //   arr.push(dk)
-    // })
+const loadTabel = async (page = 1, size = 20, filter = "") => {
+    console.log(activeKey.value)
+
+
+
+    let List = await api.get_page("procjet_2024_nmgarq_area", page, paginationArea.value.pageSize, filter);
+    //    console.log(List)
+    baodanDataSource.value = List;
+
+    let dkList = await api.get_page("procjet_2024_nmgarq_excel_dhdk", page, pagination.value.pageSize, filter);
+    //    console.log(dkList)
     dataSourceDk.value = dkList;
 
-    let List = await api.get_page("procjet_2024_nmgarq_area", page, size, filter);
-    console.log(List)
-    // let arr = []
-    // dkList.map((dk) => {
-    //   arr.push(dk)
-    // })
-    dataSource.value = List;
+
+
+
 }
 
 
@@ -2566,15 +2646,16 @@ watch(radioValue, (newr) => {
  * 获取分页
  */
 const pagination = ref({
-    pageSize: 10, // 每页显示10条数据
+    pageSize: 20, // 每页显示10条数据
     total: 1, // 总数据条数
     responsive: true,
     //pageSizeOptions: false,
-    showLessItems: true,
+    //  showLessItems: true,
     showTotal: (total, range) => {
         return `${total} 条`;
     },
     onChange: (page) => {
+        loadCount()
         loadTabel(page, pagination.value.pageSize);
     },
 });
@@ -2583,16 +2664,19 @@ const pagination = ref({
  * 获取分页
  */
 const paginationArea = ref({
-    pageSize: 10, // 每页显示10条数据
+    pageSize: 20, // 每页显示10条数据
     total: 1, // 总数据条数
     responsive: true,
     //pageSizeOptions: false,
-    showLessItems: true,
+    // showLessItems: true,
     showTotal: (total, range) => {
         return `${total} 条`;
     },
     onChange: (page) => {
+        //  console.log(page, paginationArea.value.pageSize)
+        loadCount()
         loadTabel(page, paginationArea.value.pageSize);
+
     },
 });
 
@@ -2609,7 +2693,7 @@ const loadCount = async (filter = "") => {
     pagination.value.total = Number(data[0].count);
     // console.log(data[0].count)
 
-    const data2 = await api.get_count("procjet_2024_nmgarq_excel", filter);
+    const data2 = await api.get_count("procjet_2024_nmgarq_area", filter);
     paginationArea.value.total = Number(data2[0].count);
     // console.log(data[0].count)
 };
@@ -2648,10 +2732,13 @@ const lockDownOpen = ref(false)
     <div class="page">
         <a-modal v-model:open="open" :title="activeKey == 1 ? '保单详情' : '地块详情'" @ok="open = !open" width="95%"
             :footer="null">
-            <!-- baodanhao, jigou, "time", shuliang, baofei, xianzhong, dishi, quxian, xiangzhen, cun, qibao, zhongbao, rings, dkmj, cdmj, cdmjzb, cd, bdmj, bdzb, pass, sfz, bbxrmc, geom) -->
+            <div class="table-operations">
+                <a-button @click="setAgeSort"> 重置筛选</a-button>
 
-            <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle"
-                :pagination="paginationArea">
+            </div>
+
+            <a-table :columns="columns" :data-source="baodanDataSource" v-if="activeKey == 1" bordered size="middle"
+                :scroll="{ y: 740 }" :pagination="paginationArea">
                 <template #bodyCell="{ column, record }">
                     <template v-if="column.key === 'dishi'">
                         {{ record.dishi + record.quxian + record.xiangzhen + record.cun }}
@@ -2670,10 +2757,10 @@ const lockDownOpen = ref(false)
                     </template>
 
                     <template v-if="column.key === 'cd'">
-                        <a-tag color="red"> {{ record.cdmj }}亩</a-tag>
-                        <a-tag color="blue">{{ record.cdmjzb }}%</a-tag>
-                        <a-tag color="green" v-if="record.cd"> 重叠</a-tag>
-                        <a-tag color="red" v-else> 不重叠</a-tag>
+                        <a-tag color="red"> {{ Number(record.cdmj) }}亩</a-tag>
+                        <a-tag color="blue">{{ Number(record.cdmjzb) }}%</a-tag>
+                        <a-tag color="red" v-if="record.cd"> 重叠</a-tag>
+                        <a-tag color="green" v-else> 不重叠</a-tag>
                     </template>
                     <template v-if="column.key === 'pass'">
                         <a-tag color="green" v-if="record.pass"> 一致</a-tag>
@@ -3531,5 +3618,13 @@ p {
 ::v-deep .ant-statistic .ant-statistic-content {
     font-size: 22px;
     line-height: 30px;
+}
+
+.table-operations {
+    margin-bottom: 16px;
+}
+
+.table-operations>button {
+    margin-right: 8px;
 }
 </style>

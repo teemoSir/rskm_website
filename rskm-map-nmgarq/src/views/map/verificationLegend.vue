@@ -233,7 +233,6 @@ message.config({
 });
 
 watch(state, () => {
-
     //保单地块
     let hgdks = [
         "rskm_pt_outline",
@@ -244,7 +243,6 @@ watch(state, () => {
 
 
     if (!state.checked1 && !state.checked2 && !state.checked3 && !state.checked4) {
-
         hgdks.forEach((gd) => {
             map.setFilter(gd, [
                 "all",
@@ -259,36 +257,32 @@ watch(state, () => {
         let newFilter = [
             "any"
         ];
-        if (state.checked1) {
+        if (state.checked4) {
             console.log("number")
             newFilter.push(["all",
-                ["<", ['get', "bdzb"], 5]
+                ["<=", ['get', "bdzb"], 0]
             ])
-
-        }
-
-        if (state.checked2) {
-            newFilter.push(["all",
-                [">=", ['get', "bdzb"], 5],
-                ["<", ['get', "bdzb"], 20]
-            ])
-
         }
 
         if (state.checked3) {
             newFilter.push(["all",
-                [">=", ['get', "bdzb"], 20],
-                ["<", ['get', "bdzb"], 50]
+                [">=", ['get', "bdzb"], 0],
+                ["<", ['get', "bdzb"], 60]
             ])
-
         }
 
-        if (state.checked4) {
+        if (state.checked2) {
+            newFilter.push(["all",
+                [">=", ['get', "bdzb"], 60],
+                ["<", ['get', "bdzb"], 90]
+            ])
+        }
+
+        if (state.checked1) {
             newFilter.push([
                 "all",
-                [">=", ['get', "bdzb"], 50],
+                [">=", ['get', "bdzb"], 90],
             ])
-
         }
 
         hgdks.forEach((gd) => {
@@ -357,19 +351,19 @@ watch(state2, () => {
             map.setPaintProperty('rskm_pt', 'fill-color',
                 [
                     'case',
-                    ["<", ['get', "bdzb"], 5],
-                    'RGB(144,204,123)',
+                    ["<=", ['get', "bdzb"], 0],
+                    'RGB(125,39,41)',
                     ["all",
-                        [">=", ['get', "bdzb"], 5],
-                        ["<", ['get', "bdzb"], 20]
-                    ],
-                    'RGB(246,200,100)',
-                    ["all",
-                        [">=", ['get', "bdzb"], 20],
-                        ["<", ['get', "bdzb"], 50]
+                        [">", ['get', "bdzb"], 0],
+                        ["<", ['get', "bdzb"], 60]
                     ],
                     'RGB(234,102,104)',
-                    'RGB(125,39,41)'
+                    ["all",
+                        [">=", ['get', "bdzb"], 60],
+                        ["<", ['get', "bdzb"], 90]
+                    ],
+                    'RGB(244,200,105)',
+                    'RGB(144,204,120)'
                 ]
             );
             map.setFilter("rskm_pt", null);
