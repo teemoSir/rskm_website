@@ -1126,21 +1126,25 @@ const columns = [
         title: '遥感种植面积(亩)',
         dataIndex: 'bdmj',
         key: 'bdmj',
+        sorter: (a, b) => a.bdmj - b.bdmj,
     },
     {
         title: '地块面积(亩)',
         dataIndex: 'dkmj',
         key: 'dkmj',
+        sorter: (a, b) => a.dkmj - b.dkmj,
     },
     {
         title: '承保面积(亩)',
         dataIndex: 'shuliang',
         key: 'shuliang',
+        sorter: (a, b) => a.shuliang - b.shuliang,
     },
     {
         title: '保险覆盖率',
         dataIndex: 'bdzb',
         key: 'bdzb',
+        sorter: (a, b) => a.bdzb - b.bdzb,
     },
     // {
     //     title: '地块数量',
@@ -1215,6 +1219,7 @@ const columnsDk = [
                 title: '承保数量',
                 dataIndex: 'cbsl',
                 key: 'cbsl',
+                sorter: (a, b) => a.cbsl - b.cbsl,
             }
         ]
     },
@@ -1234,11 +1239,13 @@ const columnsDk = [
                 title: '覆盖率',
                 dataIndex: 'v2',
                 key: 'v2',
+                sorter: (a, b) => a.v2 - b.v2,
             },
             {
                 title: '地块与承保面积(亩)',
                 dataIndex: 'v3',
                 key: 'v3',
+                sorter: (a, b) => a.v3 - b.v3,
             },
             {
                 title: '地块重叠',
@@ -1246,14 +1253,16 @@ const columnsDk = [
                 key: 'v4',
             },
             {
-                title: '地块内标的面积(亩)',
+                title: '地块内标的面积',
                 dataIndex: 'v5',
                 key: 'v5',
+
             },
             {
                 title: '标的占比',
                 dataIndex: 'v6',
                 key: 'v6',
+                sorter: (a, b) => a.v6 - b.v6,
             },
             {
                 title: '差异率是否达标',
@@ -2646,10 +2655,10 @@ watch(radioValue, (newr) => {
  * 获取分页
  */
 const pagination = ref({
-    pageSize: 20, // 每页显示10条数据
+    pageSize: 50, // 每页显示10条数据
     total: 1, // 总数据条数
     responsive: true,
-    //pageSizeOptions: false,
+    showSizeChanger: false,
     //  showLessItems: true,
     showTotal: (total, range) => {
         return `${total} 条`;
@@ -2664,11 +2673,12 @@ const pagination = ref({
  * 获取分页
  */
 const paginationArea = ref({
-    pageSize: 20, // 每页显示10条数据
+    pageSize: 50, // 每页显示10条数据
     total: 1, // 总数据条数
     responsive: true,
-    //pageSizeOptions: false,
-    // showLessItems: true,
+    showSizeChanger: false,
+    // pageSizeOptions: false,
+    //showLessItems: false,
     showTotal: (total, range) => {
         return `${total} 条`;
     },
@@ -2738,7 +2748,7 @@ const lockDownOpen = ref(false)
             </div>
 
             <a-table :columns="columns" :data-source="baodanDataSource" v-if="activeKey == 1" bordered size="middle"
-                :scroll="{ y: 740 }" :pagination="paginationArea">
+                :scroll="{ y: 540 }" :pagination="paginationArea">
                 <template #bodyCell="{ column, record }">
                     <template v-if="column.key === 'dishi'">
                         {{ record.dishi + record.quxian + record.xiangzhen + record.cun }}
@@ -2757,8 +2767,8 @@ const lockDownOpen = ref(false)
                     </template>
 
                     <template v-if="column.key === 'cd'">
-                        <a-tag color="red"> {{ Number(record.cdmj) }}亩</a-tag>
-                        <a-tag color="blue">{{ Number(record.cdmjzb) }}%</a-tag>
+                        <a-tag color="red"> {{ Number(record.cdmj).toFixed(2) }}亩</a-tag>
+                        <a-tag color="blue">{{ Number(record.cdmjzb).toFixed(2) }}%</a-tag>
                         <a-tag color="red" v-if="record.cd"> 重叠</a-tag>
                         <a-tag color="green" v-else> 不重叠</a-tag>
                     </template>
@@ -2769,7 +2779,7 @@ const lockDownOpen = ref(false)
                 </template>
             </a-table>
             <div v-if="activeKey == 2">
-                <a-table :columns="columnsDk" :data-source="dataSourceDk" bordered size="middle"
+                <a-table :columns="columnsDk" :data-source="dataSourceDk" bordered size="middle" :scroll="{ y: 540 }"
                     :pagination="pagination">
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'city'">
