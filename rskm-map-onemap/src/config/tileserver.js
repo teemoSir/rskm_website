@@ -47,7 +47,7 @@ const config = {
         }
     },
 
-    
+
     wpoi: {
         name: "world_poi",
         tile: {
@@ -86,9 +86,9 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code`,
+                `${host}/v1/mvt/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid`,
             ],
-            minzoom: 9,
+            minzoom: 8,
             maxzoom: 14
         }
     },
@@ -122,6 +122,16 @@ const config = {
                 `${host}/v1/mvt/world_china_polygon/{z}/{x}/{y}?geom_column=geom&columns=building,naturals`,
             ],
             minzoom: 30
+        }
+    },
+    china_wgs84_all: {
+        name: "china_wgs84_all",
+        tile: {
+            type: "vector",
+            tiles: [
+                `${host}/v1/pbf/china_wgs84_all/{z}/{x}/{y}?geom_column=geom&columns=gid,name,code,town_name,town_code`,
+            ],
+            minzoom: 9
         }
     }
 };

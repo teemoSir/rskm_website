@@ -1114,25 +1114,18 @@ let specYghy = [
 
 
     {
-        id: "procjet_2024_yghy_sense",
+        id: "procjet_2024_nmgarq_sense",
         name: "遥感成果",
         "type": "fill",
-        source: config.procjet_2024_yghy_sense.name,
-        "source-layer": config.procjet_2024_yghy_sense.name,
+        source: config.procjet_2024_nmgarq_sense.name,
+        "source-layer": config.procjet_2024_nmgarq_sense.name,
         minzoom: 4.4,
         layout: {
             visibility: 'none'
         },
         'slot': 'top',
         "paint": {
-            'fill-color': [
-                'case',
-                ["==", ['get', "v8"], '1'],
-                'RGB(158,224,132)',
-                ["==", ['get', "v8"], '0'],
-                'RGB(253,112,113)',
-                'RGB(112,131,194)'
-            ],
+            'fill-color': 'RGB(112,131,194)',
             "fill-opacity": ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1151,11 +1144,11 @@ let specYghy = [
     {
 
 
-        id: "procjet_2024_yghy_sense_outline",
+        id: "procjet_2024_nmgarq_sense_outline",
         name: "保单地块外框",
         type: "line",
-        source: config.procjet_2024_yghy_sense.name,
-        "source-layer": config.procjet_2024_yghy_sense.name,
+        source: config.procjet_2024_nmgarq_sense.name,
+        "source-layer": config.procjet_2024_nmgarq_sense.name,
         layout: {
             "line-join": "round",
             "line-cap": "round",

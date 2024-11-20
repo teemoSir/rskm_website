@@ -118,8 +118,6 @@ const loadEcharts = (data) => {
     // option && myChart.setOption(option);
 
 
-
-
     var chartDom = document.getElementById('main');
     var myChart = echarts.init(chartDom);
     var option;
@@ -309,7 +307,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
             axisPointer: {
                 type: 'shadow'
             },
-            formatter: '保险覆盖率: {c0}<br />地块重叠率: {c1}',
+            formatter: '保险覆盖率: {c0}%<br />地块重叠率: {c1}%',
         },
         legend: {
             // data: [],
@@ -538,7 +536,7 @@ const loadEcharts03 = (yAxis, series1) => {
             },
         },
         legend: {
-            // data: [],
+            // data: ['承保覆盖率'],
             textStyle: {
                 fontSize: 16 // 图例文字大小
             }
@@ -588,10 +586,10 @@ const loadEcharts03 = (yAxis, series1) => {
     };
 
 
-    //option.legend.data = ['承保覆盖率','asasdfas']
+    option.legend.data = ['承保覆盖率']
     option.series = [];
     option.series.push({
-        //  name: '承保覆盖率',
+        //   name: '承保覆盖率',
         type: 'bar',
         barGap: 0,
         label: labelOption,
@@ -617,7 +615,7 @@ const loadEcharts03 = (yAxis, series1) => {
 /**
  * 地块一图
  */
-const echartsDK01 = (a = 11, b = 22, c = 66) => {
+const echartsDK01 = (a = 50, b = 40, c = 10) => {
 
     var chartDom = document.getElementById('echartsDK01');
     if (!chartDom) return;
@@ -631,7 +629,10 @@ const echartsDK01 = (a = 11, b = 22, c = 66) => {
             left: 'center'
         },
         tooltip: {
-            trigger: 'item'
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
         },
         legend: {
             bottom: '-3.5%',
@@ -650,9 +651,9 @@ const echartsDK01 = (a = 11, b = 22, c = 66) => {
                 type: 'pie',
                 radius: ['40%', '80%'],
                 data: [
-                    { value: a, name: '无地块户数' },
-                    { value: b, name: '地块合格户数' },
-                    { value: c, name: '地块不合格户数' },
+                    { value: a, name: '无地块保单' },
+                    { value: b, name: '地块合格保单' },
+                    { value: c, name: '地块不合格保单' },
                 ],
                 emphasis: {
                     itemStyle: {
@@ -2246,7 +2247,7 @@ const getAnalysisDK = async (key) => {
 
     let data = await api.get_data_tj(
         key,
-        header.value ? `and xiangzhen in ('${header.value}')` : '',
+        header.value ? `and town in ('${header.value}')` : '',
     );
     console.log(data[0])
 
@@ -2308,7 +2309,7 @@ const getAnalysisEchars3 = async (key, where = "") => {
 
     let data = await api.get_data_tj(
         key,
-        header.value ? ` and xiangzhen in('${header.value}')` : ''
+        header.value ? ` and town in('${header.value}')` : ''
     );
     console.log(data)
 
@@ -2382,10 +2383,7 @@ const getBxjg = () => {
         { name: '音河达斡尔鄂温克民族乡', zc: 67.81 },
         { name: '总计', zc: 66.01 }
     ]
-    // let data = [
-    //   { name: '国寿财', zc: 558969, bz: 2437, cb: 0 },
-    //   { name: '太保', zc: 600918, bz: 38418, cb: 0 },
-    // ]
+
     let bxjg = [];
     let zc = [];
     let bz = [];
@@ -3146,11 +3144,11 @@ const lockDownOpen = ref(false)
 
 
                         <a-row :gutter="16">
-                            <a-col :span="11">
+                            <a-col :span="12">
                                 <table class="tjfx">
 
                                     <tr>
-                                        <th>遥感面积：</th>
+                                        <th>投保面积：</th>
                                         <td>{{ tb_area ? Number(tb_area).toFixed(0) : '-' }}亩</td>
                                     </tr>
                                     <tr>
@@ -3159,32 +3157,28 @@ const lockDownOpen = ref(false)
                                     </tr>
                                     <tr>
                                         <th>保单数量：</th>
-                                        <td>{{ dhsl }} 条</td>
-                                    </tr>
-                                    <!-- <tr>
-                    <th>有地块大户数：</th>
-                    <td>{{ ydkdhsl }} 户</td>
-                  </tr> -->
-                                    <tr>
-                                        <th>地块合格户数：</th>
-                                        <td>{{ dkhghs }} 户</td>
+                                        <td>{{ dhsl }} 个</td>
                                     </tr>
                                     <tr>
-                                        <th>地块面积不符户数：</th>
-                                        <td>{{ dkmjbfs }} 户</td>
+                                        <th>地块合格保单：</th>
+                                        <td>{{ dkhghs }} 个</td>
                                     </tr>
                                     <tr>
-                                        <th>地块重叠户数：</th>
-                                        <td>{{ dkcd }} 户</td>
+                                        <th>无地块保单</th>
+                                        <td>{{ dkmjbfs }} 个</td>
                                     </tr>
                                     <tr>
-                                        <th>标的面积不符户数：</th>
-                                        <td>{{ bdmjbfhs }} 户</td>
+                                        <th>地块重叠保单：</th>
+                                        <td>{{ dkcd }} 个</td>
+                                    </tr>
+                                    <tr>
+                                        <th>标的面积显著不符保单：</th>
+                                        <td>{{ bdmjbfhs }} 个</td>
                                     </tr>
 
                                 </table>
                             </a-col>
-                            <a-col :span="13">
+                            <a-col :span="12">
                                 <div id="echartsDK01" style="height:99%;"></div>
                             </a-col>
                         </a-row>

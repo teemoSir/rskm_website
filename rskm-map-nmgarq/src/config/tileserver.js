@@ -34,20 +34,19 @@ const config = {
             maxzoom: 14
         }
     },
-    procjet_2024_yghy_sense: {
-        name: 'procjet_2024_yghy_sense',
+    procjet_2024_nmgarq_sense: {
+        name: 'procjet_2024_nmgarq_sense',
         tile: {
             type: "vector",
             tiles: [
-                //gid,geom,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkbcd,dkcdl,dkmj,rs_area,cbsl,bxqj,bdmj
-                `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
+                `${host}/v1/pbf/procjet_2024_nmgarq_sense/{z}/{x}/{y}?geom_column=geom`,
             ],
             minzoom: 4,
             maxzoom: 14
         }
     },
 
-    
+
     wpoi: {
         name: "world_poi",
         tile: {

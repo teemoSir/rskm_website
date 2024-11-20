@@ -48,33 +48,33 @@ const sql = (params, query) => {
         case "nmgarq_sql_2":
             // 统计村和乡镇的面积比例
             sqljb += `
-            SELECT 
-                xiangzhen,  -- 乡镇字段
+          SELECT 
+                town as xiangzhen,  -- 乡镇字段
                 cun,
                 SUM(bdmj::numeric) / SUM(dkmj::numeric) * 100 as fgl,
-                SUM(dkcdl::numeric) / COUNT(gid) as cdl
+                (COUNT(id)-SUM(v3::numeric)) / COUNT(id)*100 as cdl
             FROM 
-                public.procjet_2024_nmgarq_excel 
+               public.procjet_2024_nmgarq_excel_data
             GROUP BY 
-                cun, xiangzhen 
+                cun, town 
             ORDER BY 
-                xiangzhen;
+                town;
             `;
             break;
 
         case "nmgarq_sql_3":
             // 统计乡镇的面积比例
             sqljb += `
-            SELECT 
-                xiangzhen,  -- 乡镇字段
+           	 SELECT 
+                town as xiangzhen,  -- 乡镇字段
                 SUM(bdmj::numeric) / SUM(dkmj::numeric) * 100 as fgl,
-                SUM(dkcdl::numeric) / COUNT(gid) as cdl
+               (COUNT(id)-SUM(v3::numeric)) / COUNT(id)*100 as cdl
             FROM 
-                public.procjet_2024_nmgarq_excel 
+                public.procjet_2024_nmgarq_excel_data 
             GROUP BY 
-                xiangzhen 
+                town 
             ORDER BY 
-                xiangzhen;
+                town;
             `;
             break;
 
@@ -116,17 +116,21 @@ const sql = (params, query) => {
             // 统计不同指标的总和
             sqljb = `
             SELECT 
-                (SELECT SUM(cbsl) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as tb_area,
-                (SELECT SUM(v1) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as dk_area,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as dhsl,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as ydkdhsl,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v8 IN (1) ${query.where}) as dkhghs,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v8 IN (0) ${query.where}) as dkbhghs,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v3 NOT IN (1) ${query.where}) as dkmjbfs,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v4 NOT IN (1) ${query.where}) as dkcd,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v7 NOT IN (1) ${query.where}) as bdmjbfhs,
-                (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as wdkdhsl;
+                (SELECT SUM(tbsl) FROM public.procjet_2024_nmgarq_excel_data WHERE 1=1 ${query.where}) as tb_area,
+                (SELECT SUM(dkmj) FROM public.procjet_2024_nmgarq_excel_data WHERE 1=1 ${query.where}) as dk_area,
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE 1=1 ${query.where}) as dhsl,
+          
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE v5 IN (1) ${query.where}) as dkhghs,
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE v5 IN (0) ${query.where}) as dkbhghs,
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE dikuai isnull ${query.where}) as dkmjbfs,
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE v3 IN (0) ${query.where}) as dkcd,
+                (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_data WHERE v4  IN (0) ${query.where}) as bdmjbfhs;
+          
             `;
+
+            //      (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as ydkdhsl,
+            //   (SELECT COUNT(bdh) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE v5 IN (0) ${query.where}) as dkbhghs,
+            //      (SELECT COUNT(name) FROM public.procjet_2024_nmgarq_excel_dhdk WHERE 1=1 ${query.where}) as wdkdhsl;
             break;
 
         case "yghy_sql_4":
@@ -206,12 +210,12 @@ const sql = (params, query) => {
         case "nmgarq_sql_8":
             // 统计村的合格数量
             sqljb = `
-            SELECT 
+      SELECT 
                 cun as xiangzhen,
-                COUNT(name) AS dhsl,
-                COUNT(CASE WHEN v8 = '1' THEN 1 END) AS dkhghs
+                COUNT(bdh) AS dhsl,
+                COUNT(CASE WHEN v4 = '1' THEN 1 END) AS dkhghs
             FROM 
-                public.procjet_2024_nmgarq_excel_dhdk
+        public.procjet_2024_nmgarq_excel_data
             WHERE 1=1 ${query.where} 
             GROUP BY 
                 cun

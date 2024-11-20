@@ -12,16 +12,16 @@ import {
 let legends = [
 
 
-    // {
-    //   key: 0,
-    //   title: "遥感种植分布图",
-    //   isShow: ref(false),
-    //   type: "polygon",
-    //   outlineColor: "RGB(112,131,194)",
-    //   fillColor: "RGBA(112,131,194,0.7)",
-    //   outlineWidth: 3,
-    //   order: "遥感图层"
-    // },
+    {
+        key: 0,
+        title: "遥感种植分布图",
+        isShow: ref(false),
+        type: "polygon",
+        outlineColor: "RGB(112,131,194)",
+        fillColor: "RGBA(112,131,194,0.7)",
+        outlineWidth: 3,
+        order: "遥感图层"
+    },
 
     {
         key: 1,
@@ -260,7 +260,7 @@ watch(state, () => {
         if (state.checked4) {
             console.log("number")
             newFilter.push(["all",
-                ["<=", ['get', "bdzb"], 0]
+                ["<=", ['get', "bdzb"], 1]
             ])
         }
 
@@ -411,11 +411,11 @@ const radioValue = ref(false);
  */
 watch(radioValue, (newr) => {
     if (newr) {
-        map.setLayoutProperty('procjet_2024_yghy_sense_outline', 'visibility', 'visible');
-        map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_nmgarq_sense_outline', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_nmgarq_sense', 'visibility', 'visible');
     } else {
-        map.setLayoutProperty('procjet_2024_yghy_sense_outline', 'visibility', 'none');
-        map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'none');
+        map.setLayoutProperty('procjet_2024_nmgarq_sense_outline', 'visibility', 'none');
+        map.setLayoutProperty('procjet_2024_nmgarq_sense', 'visibility', 'none');
     }
 })
 
@@ -475,8 +475,48 @@ const dkRadioDisabled = ref(true);
 
             </a-row>
 
-            <!--遥感图层-->
 
+            <!--遥感图层-->
+            <a-row v-for="tar in legends.filter(le => le.order == '遥感图层')" :key="tar.key"
+                style="display: flex; align-items: center; line-height: 30px">
+                <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '遥感图层')[0].key">
+                    <div class="legendTitle">{{
+                        tar.order }}</div>
+                </a-col>
+
+                <a-col :span="6">
+                    <div v-if="tar.type == 'polygon'" :style="{
+                        background: tar.fillColor,
+                        border: `${tar.outlineWidth}px solid ${tar.outlineColor}`,
+                        width: '35px',
+                        height: '20px',
+                    }"></div>
+                    <div v-if="tar.type == 'line-dotted'" :style="{
+                        borderBottom: `${tar.outlineWidth}px dashed ${tar.fillColor}`,
+                        width: '35px',
+                        height: '0px',
+                        paddingTop: '3.5px',
+                    }"></div>
+
+                    <div v-if="tar.type == 'line'" :style="{
+                        borderBottom: `${tar.outlineWidth}px solid ${tar.fillColor}`,
+                        width: '35px',
+                        height: '0px',
+                        paddingTop: '3.5px',
+                    }"></div>
+                </a-col>
+
+                <a-col :span="18" style="font-size: 15px;">
+                    {{ tar.title }}
+
+                    <div style="position: absolute; right: 10px; bottom: 0">
+                        <a-switch v-if="tar.key == 0" checked-children="显示" un-checked-children="隐藏"
+                            v-model:checked="radioValue" />
+                    </div>
+                </a-col>
+                <a-col :span="24" style="font-size: 15px;">
+                </a-col>
+            </a-row>
             <!--地块是否合格-->
 
 
@@ -578,7 +618,7 @@ const dkRadioDisabled = ref(true);
             </a-row> -->
             <a-row>
                 <a-col :span="24">
-                    <div class="legendTitle">地块核验(标的物占比)</div>
+                    <div class="legendTitle">地块重叠核验</div>
                 </a-col>
                 <a-col :span="12" v-for="tar in legends.filter(le => le.order == '地块重叠核验')" :key="tar.key">
 
