@@ -2,13 +2,13 @@
 const sql = (params, query) => {
 
 
- 
+
     let lyz = 0.00000001;
     if (params.z <= 7) {
-        lyz = 1000;
+        lyz = 1500;
     } else if (params.z > 7 && params.z < 9.99) {
-        lyz = 400;
-    } else if (params.z > 9.99 && params.z < 12.99) {
+        lyz = 1000;
+    } else if (params.z > 9.99 && params.z < 11.99) {
         lyz = 100;
     }
     return `
@@ -35,7 +35,7 @@ const sql = (params, query) => {
       
 
         -- Optional Filter
-        ${query.filter > 0 ? ` AND ${query.filter}` : ''}
+        ${query.filter ? ` AND ${query.filter}` : ''}
     )
     SELECT ST_AsMVT(mvtgeom.*, '${params.table}', 4096, 'geom' ${query.id_column ? `, '${query.id_column}'` : ''
         }) AS mvt from mvtgeom;
@@ -118,13 +118,13 @@ module.exports = function (fastify, opts, next) {
         handler: function (request, reply) {
             fastify.pg.connect(onConnect)
 
-            function onConnect(err, client, release) {
+            function onConnect (err, client, release) {
                 if (err) {
                     request.log.error(err)
                     return reply.code(500).send({ error: "Database connection error." })
                 }
 
-                client.query(sql(request.params, request.query), function onResult(
+                client.query(sql(request.params, request.query), function onResult (
                     err,
                     result
                 ) {
