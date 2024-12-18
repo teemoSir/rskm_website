@@ -9,14 +9,7 @@ const apiService = new ApiService();
 
 // 接口API
 const api = {
-    /**
-     * 获取公司
-     */
-    //rskm_pt_insure_com: apiService.get(`/v1/list_json/rskm_pt_insure_com?col=insurcompanycode,insurcompanyname,id`),
-    /**
-     * 获取险种
-     */
-    //rskm_pt_insure_type: apiService.get(`/v1/list_json/rskm_pt_insure_type?col=codenum,xzname,id,insurancetype,insurancetypeid`),
+
     /**
      * 根据filter获取详细
      * @param {*} table 
@@ -25,6 +18,25 @@ const api = {
      */
     get_table_by_filter: (table, filter, col = "") => {
         return apiService.get(`/v1/list_json/${table}?filter=${filter}&col=${col}`)
+    },
+    /**
+     * install
+     * @param {*} table 
+     * @param {*} filter 
+     * @returns 
+     */
+    install_table: (table, data) => {
+        return apiService.post(`/v1/list_json_install/${table}`, { data: data })
+    },
+
+    /**
+     * update
+     * @param {*} table 
+     * @param {*} filter 
+     * @returns 
+     */
+    update_table_by_filter: (table, filter, set = "") => {
+        return apiService.get(`/v1/list_json_update/${table}?filter=${filter}&set=${set}`)
     },
     /**
      * 根据查年份分页数据
@@ -48,11 +60,20 @@ const api = {
     },
 
     /**
-     * 统计数据
+     * 二次核验 统计数据
      * @param {*} where 
      * @param {*} key 
      * @returns 
      */
+    get_table_tj_echy: (key, where) => {
+        return apiService.get(`/v1/get_echy/${key}?where=${where}`)
+    },
+    /**
+  * 统计数据
+  * @param {*} where 
+  * @param {*} key 
+  * @returns 
+  */
     get_table_tj: (key, where) => {
         return apiService.get(`/v1/list_any/${key}?where=${where}`)
     },

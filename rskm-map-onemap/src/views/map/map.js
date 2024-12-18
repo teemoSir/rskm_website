@@ -58,7 +58,7 @@ const eventRender = () => {
 const popup = new mapboxgl.Popup({
     closeOnClick: false,
     closeButton: false,
-     maxWidth: "350px",
+    maxWidth: "350px",
 });
 
 /**
@@ -68,7 +68,7 @@ const popup = new mapboxgl.Popup({
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
     closeButton: true,
-     maxWidth: "480px",
+    maxWidth: "480px",
 });
 
 /**

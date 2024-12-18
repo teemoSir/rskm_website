@@ -28,7 +28,19 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/procjet_2024_yghy_hz10_county/{z}/{x}/{y}?geom_column=geom&columns=gid,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkmj,dkcdl,bdmj,dkbcd,cbsl,v8,v3,v4,v7`,
+                `${host}/v1/pbf/procjet_2024_yghy_hz10_county/{z}/{x}/{y}?geom_column=geom&columns=gid,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkmj,dkcdl,bdmj,dkbcd,cbsl,v8,v3,v4,v7,ygjg`,
+            ],
+            minzoom: 4,
+            maxzoom: 14
+        }
+    },
+
+    procjet_2024_yghy_hz10_county_2: {
+        name: 'procjet_2024_yghy_hz10_county_2',
+        tile: {
+            type: "vector",
+            tiles: [
+                `${host}/v1/pbf/procjet_2024_yghy_hz10_county_2/{z}/{x}/{y}?geom_column=geom&columns=gid,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkmj,dkcdl,bdmj,dkbcd,cbsl,v8,v3,v4,v7,ygjg`,
             ],
             minzoom: 4,
             maxzoom: 14

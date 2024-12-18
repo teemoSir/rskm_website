@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import page from "../../../package.json";
 import StateManager from "@/utils/state_manager";
-import { logo } from "@/views/index.js";
+
 import { FileDigit, Home, Settings, TextSearch } from "lucide-vue-next";
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import dayjs from "dayjs";
@@ -11,9 +11,12 @@ import { storeToRefs } from "pinia";
 import { hedaerStore } from "@/store/store.js";
 
 const router = useRouter();
+import {
+    Shield,
+    Sprout
+} from "lucide-vue-next";
 
-// Tab 栏选中菜单项
-//const selectedKeys = ref(["/"]);
+
 
 
 const hctive = hedaerStore();
@@ -72,15 +75,46 @@ const items = ref([
         key: "verification",
         icon: () => h(TextSearch),
         label: "遥感核验",
-        onClick: () => {
-            // headerActive.value = 'verification';
-            // console.log( headerActive.value )
-            router.push("/verification");
-        },
+        title: "遥感核验",
+        children: [
+            {
+                type: "group",
+                label: "核验管理",
+                children: [
+                    {
+                        label: "遥感核验（第一次）",
+                        key: "verification:1",
+                        onClick: () => {
+                            router.push("/verification");
+                        },
+                    },
+                    {
+                        label: "遥感核验（第二次）",
+                        key: "verification:2",
+                        onClick: () => {
+                            router.push("/yaogan");
+                        },
+                    },
+                ],
+            },
+            {
+                type: "group",
+                label: "任务管理",
+                children: [
+                    {
+                        label: "核验任务",
+                        key: "verification:3",
+                        onClick: () => {
+                            router.push("/renwu");
+                        },
+                    },
+                ],
+            },
+        ],
 
     },
     {
-        key: "sub1",
+        key: "chengxiao",
         icon: () => h(FileDigit),
         label: "统计分析",
         title: "统计分析",
@@ -89,32 +123,12 @@ const items = ref([
                 type: "group",
                 label: "数据分析",
                 children: [
-                    // {
-                    //     label: "农险大数据一张图",
-                    //     key: "sub5:1",
-
-                    // },
-                    // {
-                    //     label: "保单统计",
-                    //     key: "sub4:1",
-                    // },
-                    // {
-                    //     label: "结构分析",
-                    //     key: "sub1:2",
-                    //     children: [
-                    //         {
-                    //             label: "区域",
-                    //             key: "sub2:3",
-                    //         },
-                    //         {
-                    //             label: "机构",
-                    //             key: "sub2:4",
-                    //         },
-                    //     ],
-                    // },
                     {
                         label: "成效分析",
-                        key: "sub3:2",
+                        key: "chengxiao:1",
+                        onClick: () => {
+                            router.push("/chengxiao");
+                        },
                     },
                 ],
             },
@@ -142,18 +156,18 @@ const items = ref([
             },
         ],
     },
-    {
-        key: "alipay",
-        label: h(
-            "a",
-            {
-                href: "",
-                target: "_blank",
-            },
-            ""
-        ),
-        title: "Navigation Four - Link",
-    },
+    // {
+    //     key: "alipay",
+    //     label: h(
+    //         "a",
+    //         {
+    //             href: "",
+    //             target: "_blank",
+    //         },
+    //         ""
+    //     ),
+    //     title: "Navigation Four - Link",
+    // },
 ]);
 defineProps({
     pageStyle: {
@@ -174,10 +188,12 @@ onMounted(() => {
 
 <template>
 
-    <a-page-header class="header" :title="page.name" :sub-title="page.cnname + ' V' + page.version" :style="pageStyle"
-        :avatar="{ src: logo }">
+    <a-page-header class="header" :title="page.cnname" :sub-title="page.name + ' V' + page.version" :style="pageStyle">
+        <div style="position: absolute;left: 20px; top: 15px;">
+            <Sprout :size="45" color="green" />
+        </div>
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
-            style="position: absolute; left: 600px; top: 0px; line-height: 92px" />
+            style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
 
         <!--年份-->
         <template #extra>
@@ -192,7 +208,8 @@ onMounted(() => {
 
 <style scoped>
 ::v-deep .ant-menu {
-    font-size: 16px;
+    font-size: 18px;
+
 }
 
 
@@ -204,5 +221,13 @@ onMounted(() => {
 
 ::v-deep .ant-picker input {
     color: #ccc;
+}
+</style>
+
+<style>
+.header {
+    font-family: 'FZZongYi-M05';
+    letter-spacing: 1.5px;
+    padding-left: 80px;
 }
 </style>

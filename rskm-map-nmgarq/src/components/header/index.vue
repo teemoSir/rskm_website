@@ -206,3 +206,14 @@ onMounted(() => {
     color: #ccc;
 }
 </style>
+
+<style>
+/* @font-face {
+    font-family: 'FZZongYi-M05';
+    src: url('../../../public/font/FZZYK--GBK1-0.woff2') format('woff2'),
+        url('../../../public/font/FZZYK--GBK1-0.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+} */
+</style>

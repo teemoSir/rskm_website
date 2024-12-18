@@ -15,6 +15,9 @@ class ApiService {
     }
 
     async post (url, data = {}) {
+        if (!data || Object.keys(data).length === 0) {
+            throw new Error("请求失败: body 必须包含 'data' 属性");
+        }
         try {
             const response = await http.post(url, data);
             return response.data;

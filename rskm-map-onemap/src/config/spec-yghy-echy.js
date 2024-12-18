@@ -261,7 +261,7 @@ let layers = ref([
 /**
  * 遥感核验
  */
-let specYghy = [
+let specYghyEchy = [
 
 
     {
@@ -1163,8 +1163,8 @@ let specYghy = [
         id: "rskm_pt",
         name: "保单地块",
         "type": "fill",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         minzoom: 4.4,
         layout: {
             visibility: 'none'
@@ -1200,8 +1200,8 @@ let specYghy = [
         id: "rskm_pt_outline",
         name: "保单地块外框",
         type: "line",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         layout: {
             "line-join": "round",
             "line-cap": "round",
@@ -1265,8 +1265,8 @@ let specYghy = [
         id: "Highlight_DK_Line",
         name: "保单地块高亮",
         type: "fill",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         minzoom: 10,
         //     maxzoom: 18,
         layout: {
@@ -1286,8 +1286,8 @@ let specYghy = [
         id: "Highlight_DK_Line_Click",
         name: "点击高亮",
         type: "fill",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         minzoom: 10,
         layout: {
             visibility: "none",
@@ -1304,8 +1304,8 @@ let specYghy = [
     {
         id: "rskm_pt_name",
         type: "symbol",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1356,8 +1356,8 @@ let specYghy = [
     {
         id: "rskm_pt_name_1",
         type: "symbol",
-        source: config.procjet_2024_yghy_hz10_county.name,
-        "source-layer": config.procjet_2024_yghy_hz10_county.name,
+        source: config.procjet_2024_yghy_hz10_county_2.name,
+        "source-layer": config.procjet_2024_yghy_hz10_county_2.name,
         layout: {
             "symbol-avoid-edges": true,
             "icon-rotation-alignment": "viewport",
@@ -1494,4 +1494,4 @@ let specYghy = [
 
 
 
-export { layers, specYghy }
+export { layers, specYghyEchy }
