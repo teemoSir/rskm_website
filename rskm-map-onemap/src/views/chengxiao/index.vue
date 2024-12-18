@@ -3036,10 +3036,10 @@ const loadYGSL = async () => {
     let rs_data = 0;
     echy_sql_qy_ygsl.forEach(e => {
         if (!header.value || header.value == '全部试点县') {
-            rs_data += e.rs_area;
+            rs_data += Number(e.rs_area);
         } else {
             if (e.county == header.value) {
-                rs_data += e.rs_area;
+                rs_data += Number(e.rs_area);
             }
         }
 

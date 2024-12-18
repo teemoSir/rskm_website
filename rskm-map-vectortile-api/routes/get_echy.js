@@ -20,7 +20,7 @@ const sql = (params, query) => {
         // 参保农户(户次)
         case "echy_sql_qy_cbhc":
             sql = `
-         select sum("参保户次") as cbhc,区县 as county,乡镇 as town,地市 as city,version,count("保单号") as cbsl   from public.procjet_2024_yghy_baodan_echymx where 1=1  group by version,区县,乡镇,地市
+            select sum("参保户次") as cbhc,区县 as county,乡镇 as town,地市 as city,version,count("保单号") as cbsl   from public.procjet_2024_yghy_baodan_echymx where 1=1  group by version,区县,乡镇,地市
             `
             break;
 
