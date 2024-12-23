@@ -35,7 +35,7 @@ const eventRotate = () => {
  * @function
  * @returns {void}
  */
-const eventRender = () => {
+const eventRender = (double = undefined) => {
     const MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
     const ll = {
         lng: window.lnglatrender?.lng.toFixed(6) ?? "0",
@@ -49,6 +49,8 @@ const eventRender = () => {
     <span style='padding-right: 10px;'>等级：${map.getZoom().toFixed(2) || ""} </span>
     <span style='padding-right: 10px;'>模式：${(map.getProjection().name || "default") === "globe" ? "三维" : "二维"} </span>
     <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`);
+
+
 }
 
 /**
@@ -57,9 +59,10 @@ const eventRender = () => {
  */
 const popup = new mapboxgl.Popup({
     closeOnClick: false,
-    closeButton: false,
-    maxWidth: "350px",
+    //  closeButton: false,
 });
+
+popup.setOffset(5);
 
 /**
  * Mapbox 大型弹出窗口实例
@@ -67,9 +70,12 @@ const popup = new mapboxgl.Popup({
  */
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
-    closeButton: true,
+    //  closeButton: true,
     maxWidth: "480px",
+
 });
+
+popupbig.setOffset(5);
 
 /**
  * 向地图添加图层

@@ -34,14 +34,14 @@ const sql = (params, query) => {
             SELECT 
                     (select sum(cbsl::numeric) from public.procjet_2024_yghy_hz10_excel where cbsl not in ('') ${query.where})  as tb_area,
                     (select sum(v1::numeric) from public.procjet_2024_yghy_hz10_excel where v1 not in ('') ${query.where}) as dk_area,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') ${query.where}) as dhsl ,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') and v1 not in ('') ${query.where}) as ydkdhsl,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v8 in ('1') ${query.where}) as dkhghs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v8 in ('0') ${query.where}) as dkbhghs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v3 not in ('1') ${query.where}) as dkmjbfs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v4 not in ('1') ${query.where}) as dkcd,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v7 not in ('1') ${query.where}) as bdmjbfhs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') and v1 in ('') ${query.where}) as wdkdhsl 
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') ${query.where}) as dhsl ,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and v1 not in ('') ${query.where}) as ydkdhsl,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v8 in ('1') ${query.where}) as dkhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v8 in ('0') ${query.where}) as dkbhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v3 not in ('1') ${query.where}) as dkmjbfs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v4 not in ('1') ${query.where}) as dkcd,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v7 not in ('1') ${query.where}) as bdmjbfhs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and v1 in ('') ${query.where}) as wdkdhsl 
                     ;
             `
 
@@ -56,14 +56,14 @@ const sql = (params, query) => {
                     '${countyName}' as county,
                     (select sum(cbsl::numeric) from public.procjet_2024_yghy_hz10_excel where cbsl not in ('') and quxian='${countyName}')  as tb_area,
                     (select sum(v1::numeric) from public.procjet_2024_yghy_hz10_excel where v1 not in ('') and quxian='${countyName}') as dk_area,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') and quxian='${countyName}') as dhsl ,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') and v1 not in ('') and quxian='${countyName}') as ydkdhsl,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v8 in ('1') and quxian='${countyName}') as dkhghs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v8 in ('0') and quxian='${countyName}') as dkbhghs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v3 not in ('1') and quxian='${countyName}') as dkmjbfs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v4 not in ('1') and quxian='${countyName}') as dkcd,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where  v7 not in ('1') and quxian='${countyName}') as bdmjbfhs,
-                    (select count(name) from public.procjet_2024_yghy_hz10_excel where name not in ('') and v1 in ('') and quxian='${countyName}') as wdkdhsl 
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and quxian='${countyName}') as dhsl ,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and v1 not in ('') and quxian='${countyName}') as ydkdhsl,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v8 in ('1') and quxian='${countyName}') as dkhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v8 in ('0') and quxian='${countyName}') as dkbhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v3 not in ('1') and quxian='${countyName}') as dkmjbfs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v4 not in ('1') and quxian='${countyName}') as dkcd,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where  v7 not in ('1') and quxian='${countyName}') as bdmjbfhs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and v1 in ('') and quxian='${countyName}') as wdkdhsl 
                 `;
 
                 if (i < county.length - 1) {
@@ -81,7 +81,7 @@ const sql = (params, query) => {
             sql = `
             SELECT 
                     xiangzhen,
-                count(name) AS dhsl,
+                count(bbxrmc) AS dhsl,
                     count(CASE WHEN v8 = '1' THEN 1 END) AS dkhghs
                 FROM 
                     public.procjet_2024_yghy_hz10_excel
@@ -99,7 +99,7 @@ const sql = (params, query) => {
                 
                 SELECT 
                     bxjg,
-                count(name) AS dhsl,
+                count(bbxrmc) AS dhsl,
                     count(CASE WHEN v8 = '1' THEN 1 END) AS dkhghs
                 FROM 
                     public.procjet_2024_yghy_hz10_excel
@@ -202,7 +202,7 @@ module.exports = function (fastify, opts, next) {
         handler: function (request, reply) {
             fastify.pg.connect(onConnect)
 
-            function onConnect(err, client, release) {
+            function onConnect (err, client, release) {
                 if (err) {
                     request.log.error(err)
                     return reply.code(500).send({ error: "Database connection error." })
@@ -210,7 +210,7 @@ module.exports = function (fastify, opts, next) {
 
                 client.query(
                     sql(request.params, request.query),
-                    function onResult(err, result) {
+                    function onResult (err, result) {
                         release()
                         reply.send(err || result.rows)
                     }

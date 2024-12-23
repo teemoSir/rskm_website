@@ -1,6 +1,6 @@
 <script setup>
-import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
-import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
+import "../../../public/mapboxgl/mapbox-gl-js-3.8.0/mapbox-gl.css";
+import "../../../public/mapboxgl/mapbox-gl-js-3.8.0/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { config, mapbox } from "@/config/tileserver.js";
 import syncMove from '@mapbox/mapbox-gl-sync-move';
@@ -8,10 +8,19 @@ import * as echarts from "echarts"
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
 import { message } from "ant-design-vue";
-import SDMap from "@/views/map/index.vue";
+// import SDMap from "@/views/map/index.vue";
 import Header from "@/components/header/index.vue";
+import c2 from "@/assets/images/map/c2.svg";
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import {
+    ScanSearch,
+    // Layers,
+    Globe,
+    Map,
+    MountainSnow,
+    Scale3D,
+    Ruler,
+    Minus,
     ArrowDownSquareIcon,
     FoldersIcon,
     ChevronDownIcon,
@@ -43,6 +52,9 @@ import {
     UserCheck,
     Grid2x2Check,
     ArrowUp,
+    Plus,
+    ChevronLeft,
+    ChevronRight,
     ArrowDown
 } from "lucide-vue-next";
 import { useRouter } from "vue-router";
@@ -58,7 +70,8 @@ import {
     popup, popupbig,
     eventRotate,
     eventRender,
-    addIcon,
+    addIcon
+
 
     //  setPopup
 } from "@/views/map/map.js";
@@ -67,7 +80,7 @@ import VerificationLegend from "@/views/map/verificationLegend.vue"
 import AreaLegend from "@/views/map/areaLegend.vue";
 import * as turf from "@turf/turf";
 
-import { specYghy } from "@/config/spec-yghy.js";
+import { layers, specYghy } from "@/config/spec-yghy.js";
 import { specYghyEchy } from "@/config/spec-yghy-echy.js";
 
 
@@ -1103,7 +1116,7 @@ const exportPDF = () => {
 }
 // 获取label
 const getLabelByValue = (value) => {
-    console.log(value)
+    // console.log(value)
     const label = value.split('-').map(item => options[0].children[0].children[item].label).join(' ');
     return label;
 }
@@ -1158,8 +1171,8 @@ const loadTown = async (name) => {
 
             let daa1 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.town == feature.t_xzqmc && (e.county == feature.f_xzqhmc || e.county == '莱芜区')))
             let daa2 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.town == feature.t_xzqmc && (e.county == feature.f_xzqhmc || e.county == '莱芜区')))
-            console.log(daa1)
-            console.log(feature)
+            // console.log(daa1)
+            // console.log(feature)
             let newFeature_1 = {
                 type: "Feature",
                 geometry: JSON.parse(feature.json),
@@ -1171,11 +1184,14 @@ const loadTown = async (name) => {
                     gid: feature.gid,
                     p_xzqmc: feature.p_xzqmc,
                     t_xzqdm: feature.t_xzqdm,
-                    t_xzqmc: feature.t_xzqmc
+                    t_xzqmc: feature.t_xzqmc,
+                    coverage: 0,
+                    rs_area: 0,
+                    tbsl: 0,
                 }
             }
 
-            if ((header.value || header.value != '全部试点县') && daa1.length > 0) {
+            if ((header.value) && daa1.length > 0) {
                 newFeature_1.properties.coverage = daa1[0].fgl * 100;
                 newFeature_1.properties.rs_area = daa1[0].rs_area;
                 newFeature_1.properties.tbsl = daa1[0].tbsl;
@@ -1194,57 +1210,25 @@ const loadTown = async (name) => {
                     p_xzqmc: feature.p_xzqmc,
                     t_xzqdm: feature.t_xzqdm,
                     t_xzqmc: feature.t_xzqmc,
+                    coverage: 0,
+                    rs_area: 0,
+                    tbsl: 0,
                 }
             }
 
-            if ((header.value || header.value != '全部试点县') && daa2.length > 0) {
+            if ((header.value) && daa2.length > 0) {
                 newFeature_2.properties.coverage = daa2[0].fgl * 100;
                 newFeature_2.properties.rs_area = daa2[0].rs_area;
                 newFeature_2.properties.tbsl = daa2[0].tbsl;
             }
             properties_2.push(newFeature_2)
         })
-        console.log(properties_1)
+        // console.log(properties_1)
         drawGeom([properties_1, properties_2])
     }
 
 
 
-    // fitCenter()
-
-
-
-
-    // let = []
-    // //console.log(features)
-    // features.forEach(feature => {
-    //     let p = {
-    //         c_xzqdm: feature.c_xzqdm,
-    //         c_xzqmc: feature.c_xzqmc,
-    //         f_xzqhdm: feature.f_xzqhdm,
-    //         f_xzqhmc: feature.f_xzqhmc,
-    //         gid: feature.gid,
-    //         p_xzqmc: feature.p_xzqmc,
-    //         t_xzqdm: feature.t_xzqdm,
-    //         t_xzqmc: feature.t_xzqmc,
-    //     }
-
-
-    //     ps.push({
-    //         type: "Feature",
-    //         geometry: JSON.parse(feature.json),
-    //         properties: p
-    //     })
-    // })
-
-
-
-    // if (activeKey.value == 1) {
-    //     drawGeom(ps, window.map)
-
-    // } else {
-    //     drawGeom(ps, window.map)
-    // }
 
 
 };
@@ -1311,13 +1295,6 @@ const goGeomOne = (data, property) => {
     }
 
 
-    // map.addSource("adminGeom" , {
-    //   type: "geojson",
-    //   data: {
-    //     type: "FeatureCollection",
-    //     features: [json],
-    //   },
-    // });
 
 
     //添加图层
@@ -1445,22 +1422,25 @@ const drawGeom = (data) => {
         type: "fill",
         source: "adminGeom",
         paint: {
-            "fill-opacity": 0.4,
+            "fill-opacity": 0.6,
             'fill-color': [
                 'case',
                 ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
                 'rgba(248,200,94,1)',
-                ['>', ['get', 'coverage'], 105],
+                ['>=', ['get', 'coverage'], 105],
                 'RGB(236,102,103)',
-                ['all', ['<', ['get', 'coverage'], 105], ['>', ['get', 'coverage'], 60]],
+                ['all', ['<', ['get', 'coverage'], 105], ['>=', ['get', 'coverage'], 60]],
                 'RGB(144,204,120)',
                 '#ccc',
             ],
         },
     }
 
-    window.map.addLayer(l01);
-    window.mapp.addLayer(l01);
+    if (activeKey.value == 1) {
+        window.map.addLayer(l01);
+        window.mapp.addLayer(l01);
+    }
+
 
 
     if (header.value) {
@@ -1484,7 +1464,7 @@ const drawGeom = (data) => {
                     'RGB(144,204,120)',
                     '#ccc',
                 ],
-                "line-width": 1.5,
+                "line-width": 2.5,
             },
         };
         map.addLayer(adminGeomOut);
@@ -1648,21 +1628,31 @@ const loadEvent = ((newMap) => {
         newMap.getSource("lockGeom") && newMap.removeSource("lockGeom");
     });
 
-    newMap.on("click", "adminGeom", async (e) => {
-        addEventArea(e, newMap)
+    newMap.on("mousemove", "adminGeom", async (e) => {
+        newMap.getCanvas().style.cursor = "pointer";
+        addEventGeomArea(e, newMap)
     });
 
+    newMap.on("mouseleave", "adminGeom", async (e) => {
+        popupbig && popupbig.setHTML(undefined);
+        popupbig && popupbig.setLngLat([0, 0]);
+
+        popup && popup.setHTML(undefined);
+        popup && popup.setLngLat([0, 0]);
+
+        newMap.getCanvas().style.cursor = "";
+    });
     newMap.on("click", "rskm_pt", async (e) => {
         addEventDk(e, newMap)
     });
 
-    newMap.on("mousemove", "adminGeom", () => {
-        newMap.getCanvas().style.cursor = "pointer";
-    });
+    // newMap.on("mousemove", "adminGeom", () => {
+    //     newMap.getCanvas().style.cursor = "pointer";
+    // });
 
-    newMap.on("mouseleave", "adminGeom", () => {
-        newMap.getCanvas().style.cursor = "";
-    });
+    // newMap.on("mouseleave", "adminGeom", () => {
+    //     newMap.getCanvas().style.cursor = "";
+    // });
 
     newMap.on("mousemove", "rskm_pt", () => {
         newMap.getCanvas().style.cursor = "pointer";
@@ -1671,7 +1661,38 @@ const loadEvent = ((newMap) => {
     newMap.on("mouseleave", "rskm_pt", () => {
         newMap.getCanvas().style.cursor = "";
     });
+
+
+    newMap.on("rotate", (e) => {
+        eventRotate();
+    });
 })
+
+/**
+ * 
+ * @param 行政区域点击
+ * @param newMap 
+ */
+const addEventGeomArea = async (e, newMap) => {
+
+
+    popupbig && popupbig.setHTML(undefined);
+    popupbig && popupbig.setLngLat([0, 0]);
+
+    const feature = e.features[0];
+    // console.log(feature)
+    let text = await setCountyPopup(feature);
+
+    // newMap.setFilter("Highlight_DK_Line_Click", [
+    //     "all",
+    //     ["in", "name", feature.properties.name],
+    // ]);
+    // newMap.setPaintProperty("adminGeom", "fill-opacity", 1);
+
+    popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
+}
+
+
 
 /**
  * 
@@ -1681,12 +1702,11 @@ const loadEvent = ((newMap) => {
 const addEventArea = async (e, newMap) => {
 
 
-    popupbig && popup.setHTML(undefined);
-    popupbig && popup.setLngLat([0, 0]);
+    popupbig && popupbig.setHTML(undefined);
+    popupbig && popupbig.setLngLat([0, 0]);
 
-    // newMap.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
-    //console.log(feature)
+    // console.log(feature)
     let text = await setCountyPopup(feature);
 
     newMap.setFilter("Highlight_DK_Line_Click", [
@@ -1695,14 +1715,14 @@ const addEventArea = async (e, newMap) => {
     ]);
     newMap.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
 
-    newMap.flyTo({
-        center: e.lngLat,
-        speed: 1,
-        curve: 1,
-        easing (t) {
-            return t;
-        },
-    });
+    // newMap.flyTo({
+    //     center: e.lngLat,
+    //     speed: 1,
+    //     curve: 1,
+    //     easing (t) {
+    //         return t;
+    //     },
+    // });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
 }
 
@@ -1726,15 +1746,15 @@ const addEventDk = async (e, newMap) => {
     newMap.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
 
     // fitBox(feature);
-    newMap.flyTo({
-        center: e.lngLat,
-        // zoom: 7.5,
-        speed: 1,
-        curve: 1,
-        easing (t) {
-            return t;
-        },
-    });
+    // newMap.flyTo({
+    //     center: e.lngLat,
+    //     // zoom: 7.5,
+    //     speed: 1,
+    //     curve: 1,
+    //     easing (t) {
+    //         return t;
+    //     },
+    // });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
 
 }
@@ -1751,11 +1771,11 @@ const addEventDk = async (e, newMap) => {
  * @returns {Promise<string|boolean>} 弹出窗口内容或如果未找到要素则返回 false
  */
 const setPopup = async (info) => {
-    console.log(info)
+    // console.log(info)
 
     if (!info) return false;
-    let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and name in ('${info.bbxrmc}') `,
-        ` bdh, name, sfz, telphone, type, type_xl, bxjg, city, city_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
+    let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
+        `gid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, type_xl, bxjg_code, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
 
     let successData = data[0] || {};
     let meginfo = {}
@@ -1786,7 +1806,7 @@ const setPopup = async (info) => {
     meginfo.dkmj = info.dkmj ? Number(info.dkmj).toFixed(1) : 0;
     meginfo.ygjg = info.ygjg || "";
 
-    console.log(meginfo)
+    // console.log(meginfo)
     meginfo.bdmj = info.bdmj ? Number(info.bdmj).toFixed(1) : "";
     meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) * 100).toFixed(2);
     meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
@@ -1825,7 +1845,7 @@ const setPopup = async (info) => {
 const setCountyPopup = async (data) => {
 
 
-    //console.log(data, data.properties.name)
+    //// console.log(data, data.properties.name)
 
     let text = ``;
     text = `
@@ -1847,7 +1867,7 @@ const setCountyPopup = async (data) => {
  * @returns {Promise<void>}
  */
 const loadCountyFit = async (name, newMap) => {
-    //console.log(String(code).substring(0, 4));
+    //// console.log(String(code).substring(0, 4));
     let features = await api.get_table_by_filter(
         "admin_2022_county",
         `and name in (${name})  order by county_code`,
@@ -1867,7 +1887,7 @@ const loadCountyFit = async (name, newMap) => {
  */
 const loadCounty = async (name) => {
 
-    //console.log(String(code).substring(0, 4));
+    //// console.log(String(code).substring(0, 4));
     let features = await api.get_table_by_filter(
         "admin_2022_county",
         `and name in (${name})  order by county_code`,
@@ -1880,8 +1900,8 @@ const loadCounty = async (name) => {
 
 
 
-    console.log(echy_sql_qy_dq_county)
-    console.log(features)
+    // console.log(echy_sql_qy_dq_county)
+    // console.log(features)
 
     if (features.length == 1) {
         let feature = JSON.parse(features[0].json);
@@ -1919,7 +1939,7 @@ const loadCounty = async (name) => {
                 }
             }
 
-            if (!header.value || header.value == '全部试点县') {
+            if (!header.value) {
                 newFeature_1.properties.coverage = daa1[0].fgl * 100;
                 newFeature_1.properties.rs_area = daa1[0].rs_area;
                 newFeature_1.properties.tbsl = daa1[0].tbsl;
@@ -1943,7 +1963,7 @@ const loadCounty = async (name) => {
                 }
             }
 
-            if (!header.value || header.value == '全部试点县') {
+            if (!header.value) {
                 newFeature_2.properties.coverage = daa2[0].fgl * 100;
                 newFeature_2.properties.rs_area = daa2[0].rs_area;
                 newFeature_2.properties.tbsl = daa2[0].tbsl;
@@ -1951,7 +1971,7 @@ const loadCounty = async (name) => {
             properties_2.push(newFeature_2)
         })
 
-        // console.log(geoms)
+        // // console.log(geoms)
 
         fitCenter()
 
@@ -2000,14 +2020,14 @@ let tongji = {
  * @param name 
  */
 const getCount = async (key, name = "") => {
-    //console.log(String(code).substring(0, 4));
+    //// console.log(String(code).substring(0, 4));
     let data = await api.get_table_tj(
         key,
         name,
     );
     if (data.length > 0) {
-        // console.log(data)
-        // console.log( data[0].bdh_count)
+        // // console.log(data)
+        // // console.log( data[0].bdh_count)
         tongji.bdh_count.value = data[0].bdh_count;
         tongji.dk_count.value = data[0].dk_count;
         tongji.area_count.value = data[0].area_count;
@@ -2031,7 +2051,7 @@ const selectedKeys = ref(['0-0']);
 
 
 watch(selectedKeys, () => {
-    //console.log(selectedKeys.value[0])
+    //// console.log(selectedKeys.value[0])
 
     switch (selectedKeys.value[0]) {
         case "0-0":
@@ -2121,29 +2141,29 @@ const bzxz_val = ref(0);
 
 
 
-const loadDataRight = async (filter) => {
+// const loadDataRight = async (filter) => {
 
-    // 地块第二个柱状图
-    if (!header.value) {
-        await getAnalysisEchars2("yghy_sql_4")
-        await getAnalysisEchars4('yghy_sql_6')
+//     // 地块第二个柱状图
+//     if (!header.value) {
+//         await getAnalysisEchars2("yghy_sql_4")
+//         await getAnalysisEchars4('yghy_sql_6')
 
-    } else {
-        // 图表三统计
-        await getAnalysisEchars3('yghy_sql_5', `and quxian in ('${filter}')`);
-        await getAnalysisEchars4('yghy_sql_6', `and quxian in ('${filter}')`);
-    }
+//     } else {
+//         // 图表三统计
+//         await getAnalysisEchars3('yghy_sql_5', `and quxian in ('${filter}')`);
+//         await getAnalysisEchars4('yghy_sql_6', `and quxian in ('${filter}')`);
+//     }
 
-    // 地块概况及饼图查询
-    if (!filter) {
-        await getAnalysisDK("yghy_sql_3")
-    } else {
-        await getAnalysisDK("yghy_sql_3", `and quxian in ('${filter}')`)
+//     // 地块概况及饼图查询
+//     if (!filter) {
+//         await getAnalysisDK("yghy_sql_3")
+//     } else {
+//         await getAnalysisDK("yghy_sql_3", `and quxian in ('${filter}')`)
 
-    }
+//     }
 
 
-}
+// }
 
 
 /**
@@ -2151,8 +2171,8 @@ const loadDataRight = async (filter) => {
  * @param filter 
  */
 const loadLayers = () => {
-    console.log("打印区域行政地图与独立县地图")
-    if (!header.value || header.value == '全部试点县') {
+    // console.log("打印区域行政地图与独立县地图")
+    if (!header.value) {
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
         if (activeKey.value == 2) {
@@ -2174,7 +2194,7 @@ const loadLayers = () => {
  */
 const loadLocalData = () => {
     geomClear()
-    console.log("loadLocalData")
+    // console.log("loadLocalData")
 
 
     popup && popup.setHTML(undefined);
@@ -2188,7 +2208,7 @@ const loadLocalData = () => {
     } else {
         addLayerDk()
 
-        console.log("loadCountyFit")
+        // console.log("loadCountyFit")
         if (!header.value) {
             fitCenter()
         } else {
@@ -2201,41 +2221,41 @@ const loadLocalData = () => {
 
 
 
-const loadDataHgl = () => {
-    // 图表二
-    let countys = ['济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '东阿县', '无棣县'];
-    console.log(header.value)
-    if (!header.value) {
-        let fgl = [];
-        let hgl = [];
-        countys.map((ca) => {
-            // 覆盖率
-            let sa = hzBaseData.filter(item => item.county == ca)
-            let totalIcoverage = sa.reduce((total, item) => total + Number(item.i_coverage || 0), 0);
-            fgl.push(Number(totalIcoverage / sa.length).toFixed(0));
+// const loadDataHgl = () => {
+//     // 图表二
+//     let countys = ['济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '东阿县', '无棣县'];
+//     // console.log(header.value)
+//     if (!header.value) {
+//         let fgl = [];
+//         let hgl = [];
+//         countys.map((ca) => {
+//             // 覆盖率
+//             let sa = hzBaseData.filter(item => item.county == ca)
+//             let totalIcoverage = sa.reduce((total, item) => total + Number(item.i_coverage || 0), 0);
+//             fgl.push(Number(totalIcoverage / sa.length).toFixed(0));
 
-            // 合格率
-            let ha = hzBaseData.filter(item => item.county == ca)
-            let hatotal = ha.filter((item) => Number(item.pass || 0) == 1);
-            hgl.push(Number(hatotal.length / ha.length * 100).toFixed(0));
-        })
-        loadEcharts02(countys, fgl, hgl)
-    } else {
-        let fgl = [];
-        let hgl = [];
-        let towns = []
-        // 覆盖率
-        let sa = hzBaseData.filter(item => item.county == header.value)
-        sa.forEach((s) => {
-            towns.push(s.town)
-            fgl.push(s.i_coverage)
-            hgl.push(0)
+//             // 合格率
+//             let ha = hzBaseData.filter(item => item.county == ca)
+//             let hatotal = ha.filter((item) => Number(item.pass || 0) == 1);
+//             hgl.push(Number(hatotal.length / ha.length * 100).toFixed(0));
+//         })
+//         loadEcharts02(countys, fgl, hgl)
+//     } else {
+//         let fgl = [];
+//         let hgl = [];
+//         let towns = []
+//         // 覆盖率
+//         let sa = hzBaseData.filter(item => item.county == header.value)
+//         sa.forEach((s) => {
+//             towns.push(s.town)
+//             fgl.push(s.i_coverage)
+//             hgl.push(0)
 
-        })
+//         })
 
-        loadEcharts02(towns, fgl, hgl)
-    }
-}
+//         loadEcharts02(towns, fgl, hgl)
+//     }
+// }
 
 
 const bdmjbfhs = ref("")
@@ -2260,7 +2280,7 @@ const getAnalysisDK = async (key, where = "") => {
         key,
         where,
     );
-    //console.log(data[0])
+    //// console.log(data[0])
 
     if (data[0]) {
         bdmjbfhs.value = data[0].bdmjbfhs;
@@ -2291,7 +2311,7 @@ const getAnalysisEchars2 = async (key, where = "") => {
         key,
         where,
     );
-    //console.log(data)
+    //// console.log(data)
 
     if (data) {
 
@@ -2324,7 +2344,7 @@ const getAnalysisEchars3 = async (key, where = "") => {
         key,
         where,
     );
-    // console.log(data)
+    // // console.log(data)
 
     if (data) {
 
@@ -2358,7 +2378,7 @@ const getAnalysisEchars4 = async (key, where = "") => {
         key,
         where,
     );
-    // console.log(data)
+    // // console.log(data)
 
     if (data) {
         let bxjg = []
@@ -2382,15 +2402,15 @@ const getAnalysisEchars4 = async (key, where = "") => {
 
 let hzBaseData = [];
 
-const LoadHzBaseData = async () => {
-    // 在这里实现你的方法
-    let data = await api.get_table_by_filter("procjet_2024_yghy_area_excel", "", "gid, city, city_code, county, county_code, town, town_code, type, i_area, rs_area, i_coverage, pass, cun, cun_code")
+// const LoadHzBaseData = async () => {
+//     // 在这里实现你的方法
+//     let data = await api.get_table_by_filter("procjet_2024_yghy_area_excel", "", "gid, city, city_code, county, county_code, town, town_code, type, i_area, rs_area, i_coverage, pass, cun, cun_code")
 
 
-    data.length > 0 && (hzBaseData = data);
-    dataSource.value = hzBaseData;
-    loadDataHgl()
-}
+//     data.length > 0 && (hzBaseData = data);
+//     dataSource.value = hzBaseData;
+//     loadDataHgl()
+// }
 
 
 
@@ -2407,7 +2427,7 @@ const LoadHzBaseData = async () => {
  */
 const loadTabel = async (page, size, filter = "") => {
     let dkList = await api.get_page("procjet_2024_yghy_hz10_excel", page, size, filter);
-    //console.log(dkList)
+    //// console.log(dkList)
     let arr = []
     dkList.map((dk) => {
         arr.push(dk)
@@ -2471,7 +2491,7 @@ const onSearch = async (searchText) => {
         searchSaData.value = data;
 
         let nsmes = [...new Set(data.map(n => ({ value: n.bbxrmc, bbxrzjh: n.bbxrzjh, cun: n.cun })))];
-        //console.log(nsmes)
+        //// console.log(nsmes)
         options.value = [...new Set(nsmes.map(item =>
             JSON.stringify(item)
         ))].map(val => JSON.parse(val))
@@ -2481,14 +2501,14 @@ const onSearch = async (searchText) => {
 };
 const onSelect = (selectedOption) => {
     valueSearch.value = selectedOption;
-    //console.log(valueSearch.value);
+    //// console.log(valueSearch.value);
 
     // 绘制
 
     let newGeom = searchSaData.value.filter((sa) => {
         return sa.bbxrmc == selectedOption
     })
-    //console.log(newGeom)
+    //// console.log(newGeom)
     //newGeom[0] && drawGeom(newGeom[0].geom)
 
     let inputdata = [];
@@ -2620,7 +2640,7 @@ const pagination = ref({
 const loadCount = async (filter = "") => {
     const data = await api.get_count("procjet_2024_yghy_hz10_excel", filter);
     pagination.value.total = Number(data[0].count);
-    // console.log(data[0].count)
+    // // console.log(data[0].count)
 };
 
 
@@ -2645,7 +2665,7 @@ const loadDoubleMap = () => {
     let map1 = initMap("before");
     let map2 = initMap("after", "rgba(145, 210, 235,0.3)");
 
-    //  console.log(map1, map2)
+    //  // console.log(map1, map2)
 
     window.map = map1;
     window.mapp = map2;
@@ -2724,7 +2744,7 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
         maxWidth: 150,
         unit: "metric",
     });
-    !mapl.hasControl(cc) && mapl.addControl(cc);
+    !mapl.hasControl(cc) && mapl.addControl(cc, 'bottom-right');
 
     mapl.on("load", () => {
         addTiles();
@@ -2740,7 +2760,7 @@ let machine = ref("globe");
  * 添加图层
  */
 const addTiles = () => {
-    let ts = StateManager.get("MAP_LAYERS") || layers.value[17];
+    let ts = StateManager.get("MAP_LAYERS") || layers.value[17];//
     addRasterTileLayer(ts.param, ts.key);
 };
 
@@ -2804,12 +2824,18 @@ watch(selectValue, () => {
     selectedKeys.value = [selectValue.value]
 })
 
+const ygjg = ref([]);
+const loadYGJG = async () => {
+    //echy_sql_ygjg
+    ygjg.value = await api.get_table_tj_echy("echy_sql_ygjg");
+}
+
 
 /**
  * 数据加载
  */
 const loadData = () => {
-    console.log("loadData")
+    // console.log("loadData")
     loadCBSL()
     loadYGSL()
     loadCBHC()
@@ -2819,6 +2845,8 @@ const loadData = () => {
     loadQYDQ()
     loadQYJG()
     loadDKJG()
+    loadYGJG()
+    loadBDSL()
 }
 
 
@@ -2832,39 +2860,48 @@ onMounted(() => {
 
     loadDoubleMap()
 
-    // 装载检索数据
-    //  loadCount();
-    // loadTabel(1, 10);
-    // LoadHzBaseData();
-    // getAnalysisEchars2("yghy_sql_4")
-    // getAnalysisEchars4('yghy_sql_6')
-    // getAnalysisDK("yghy_sql_3")
-
     loadData()
 
-
-
     map && map.on("load", () => {
-        addLayersYghy(map, specYghy)
+
+        addLayersYghy(map, specYghyEchy);
+        map && loadEvent(map);
+        loadTerrain(map);
     })
 
     mapp && mapp.on("load", () => {
-        addLayersYghy(mapp, specYghyEchy)
-    })
-    setTimeout(() => {
-
-        //  loadLocalData(undefined, map)
-        map && loadEvent(map);
+        addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
-
+        loadTerrain(mapp);
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
-
-
-
     })
+    /**
+       * 渲染运行时
+       */
+    map.on("move", (e) => {
+        eventRender();
+    });
 
-
+    map.on("mousemove", (e) => {
+        window.lnglatrender = {
+            lng: e.lngLat.lng,
+            lat: e.lngLat.lat,
+        };
+        eventRender();
+    });
 })
+
+// 追加地形
+const loadTerrain = (mm) => {
+    let bool = mm.getSource("mapbox-dem");
+    !bool &&
+        mm.addSource("mapbox-dem", {
+            type: "raster-dem",
+            url: "mapbox://mapbox.terrain-rgb",
+            tileSize: 512,
+            maxzoom: 16,
+        });
+};
 
 
 
@@ -2900,7 +2937,7 @@ const addLayersYghy = (newMap, css) => {
 const loadTitleDIV = () => {
     //mapboxgl-compare
     let doc = document.getElementById("after")
-    console.log(doc)
+    // console.log(doc)
 
 
     let div = document.createElement("div")
@@ -2975,21 +3012,21 @@ const dataQqzt = ref([
         borrow: 0,
         repayment: 0, qushi: 0
     },
-    {
-        key: '5',
-        name: '签单保费(万元)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '6',
-        name: '补贴金额(万元)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
+    // {
+    //     key: '5',
+    //     name: '签单保费(万元)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
+    // {
+    //     key: '6',
+    //     name: '补贴金额(万元)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
     {
         key: '7',
-        name: '参保数量(张)',
+        name: '保单数量(张)',
         borrow: 0,
         repayment: 45, qushi: 0
     },
@@ -3005,25 +3042,32 @@ const dataQqzt = ref([
         borrow: 0,
         repayment: 0, qushi: 0
     },
+    // {
+    //     key: '10',
+    //     name: '保单数量(张)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
 
-    {
-        key: '9',
-        name: '修改保单(张)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '9',
-        name: '撤销保单(张)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '9',
-        name: '新增保单(张)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
+
+    // {
+    //     key: '9',
+    //     name: '修改保单(张)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
+    // {
+    //     key: '9',
+    //     name: '撤销保单(张)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
+    // {
+    //     key: '9',
+    //     name: '新增保单(张)',
+    //     borrow: 0,
+    //     repayment: 0, qushi: 0
+    // },
 ]);
 
 /**
@@ -3031,11 +3075,11 @@ const dataQqzt = ref([
  */
 const loadYGSL = async () => {
     let echy_sql_qy_ygsl = await api.get_table_tj_echy("echy_sql_qy_ygsl");
-    // console.log(echy_sql_qy_ygsl)
+    // // console.log(echy_sql_qy_ygsl)
 
     let rs_data = 0;
     echy_sql_qy_ygsl.forEach(e => {
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             rs_data += Number(e.rs_area);
         } else {
             if (e.county == header.value) {
@@ -3064,12 +3108,12 @@ const loadCBSL = async () => {
 
 
 
-    console.log(echy_sql_qy_cbsl)
+    // console.log(echy_sql_qy_cbsl)
 
     let tbsl_1 = 0;
     let tbsl_2 = 0;
     echy_sql_qy_cbsl.forEach(e => {
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             (e.version == '2024年_玉米_第一次_0913') && (tbsl_1 += Number(e.tbsl));
             (e.version == '2024年_玉米_第二次_1125') && (tbsl_2 += Number(e.tbsl));
         } else {
@@ -3081,8 +3125,8 @@ const loadCBSL = async () => {
 
     });
     //"2024年_玉米_第一次_0913"
-    dataQqzt.value[0].borrow = Number(tbsl_1).toFixed(0)
-    dataQqzt.value[0].repayment = Number(tbsl_2).toFixed(0)
+    dataQqzt.value[0].borrow = tbsl_1.toFixed(0)
+    dataQqzt.value[0].repayment = tbsl_2.toFixed(0)
 
     // 覆盖率
     loadFGL()
@@ -3099,7 +3143,7 @@ const loadCBSL = async () => {
  */
 const loadCBHC = async () => {
     let echy_sql_qy_cbhc = await api.get_table_tj_echy("echy_sql_qy_cbhc");
-    //console.log(echy_sql_qy_cbhc)
+    //// console.log(echy_sql_qy_cbhc)
 
     let tbhc_1 = 0;
     let tbhc_2 = 0;
@@ -3107,7 +3151,7 @@ const loadCBHC = async () => {
     let cbsl_1 = 0;
     let cbsl_2 = 0;
     echy_sql_qy_cbhc.forEach(e => {
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             (e.version == '2024年_玉米_第二次_1125') && (tbhc_2 += Number(e.cbhc));
             (e.version == '2024年_玉米_第一次_0913') && (tbhc_1 += Number(e.cbhc));
 
@@ -3124,12 +3168,12 @@ const loadCBHC = async () => {
         }
     });
     //"2024年_玉米_第一次_0913"
-    //console.log(tbhc_1, tbhc_2)
+    //// console.log(tbhc_1, tbhc_2)
     dataQqzt.value[3].borrow = tbhc_1;
     dataQqzt.value[3].repayment = tbhc_2;
 
-    dataQqzt.value[6].borrow = cbsl_1;
-    dataQqzt.value[6].repayment = cbsl_2;
+    // dataQqzt.value[4].borrow = cbsl_1;
+    // dataQqzt.value[4].repayment = cbsl_2;
 }
 
 
@@ -3140,7 +3184,7 @@ const loadCBHC = async () => {
 const loadCBXZ = async () => {
 
     let echy_sql_qy_cbxz = await api.get_table_tj_echy("echy_sql_qy_cbxz");
-    // console.log(echy_sql_qy_cbxz)
+    // // console.log(echy_sql_qy_cbxz)
 
     let cbxz_1 = 0;
     let cbxz_2 = 0;
@@ -3148,7 +3192,7 @@ const loadCBXZ = async () => {
     let cbmj_1 = 0;
     let cbmj_2 = 0;
     echy_sql_qy_cbxz.forEach(e => {
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             (e.version == '2024年_玉米_第一次_0913') && ((Number(e.fgl) >= 1.05) && (cbxz_1++));
             (e.version == '2024年_玉米_第二次_1125') && ((Number(e.fgl) >= 1.05) && (cbxz_2++));
 
@@ -3164,15 +3208,15 @@ const loadCBXZ = async () => {
             }
         }
     });
-    // console.log(cbxz_1.length, cbxz_2.length)
+    // // console.log(cbxz_1.length, cbxz_2.length)
     // 超保乡镇
-    dataQqzt.value[7].borrow = Math.abs(cbxz_1);
-    dataQqzt.value[7].repayment = Math.abs(cbxz_2);
+    dataQqzt.value[5].borrow = Math.abs(cbxz_1);
+    dataQqzt.value[5].repayment = Math.abs(cbxz_2);
 
 
     // 超保面积
-    dataQqzt.value[8].borrow = cbmj_1.toFixed(2);
-    dataQqzt.value[8].repayment = cbmj_2.toFixed(2);
+    dataQqzt.value[6].borrow = cbmj_1.toFixed(2);
+    dataQqzt.value[6].repayment = cbmj_2.toFixed(2);
 }
 
 
@@ -3185,13 +3229,41 @@ const loadFGL = () => {
     dataQqzt.value[2].repayment = Number(dataQqzt.value[0].repayment / dataQqzt.value[1].repayment * 100).toFixed(2);
 }
 
+/**
+ * 保单数量
+ */
+const loadBDSL = async () => {
+    let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_bdsl");
+    // // console.log(echy_sql_qy_bdsl)
+
+    let bdsl_1 = 0;
+    let bdsl_2 = 0;
+
+    echy_sql_qy_bdsl.forEach(e => {
+        if (!header.value) {
+            (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+            (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
 
 
+        } else {
+            if (e.county == header.value) {
+                (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+                (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
+            }
+        }
+    });
+    // // console.log(cbxz_1.length, cbxz_2.length)
+    // 超保乡镇
+    dataQqzt.value[4].borrow = Math.abs(bdsl_1);
+    dataQqzt.value[4].repayment = Math.abs(bdsl_2);
+
+}
 
 
-
+/**
+ * 根据改变重载
+ */
 watch(header, () => {
-
     loadData();
 })
 
@@ -3425,12 +3497,12 @@ const dataDkzt = ref([
  */
 const loadDK = async () => {
 
-    let echy_sql_qy_cbxz = await api.get_table_tj_echy("echy_sql_dk_zt");
+    // let echy_sql_dk_zt = await api.get_table_tj_echy("echy_sql_dk_zt");
     let echy_sql_dk_zt02 = await api.get_table_tj_echy("echy_sql_dk_zt02");
-    console.log(echy_sql_qy_cbxz)
-    console.log(echy_sql_dk_zt02)
+    // console.log(echy_sql_qy_cbxz)
+    // console.log(echy_sql_dk_zt02)
 
-    if (echy_sql_qy_cbxz && echy_sql_qy_cbxz) {
+    if (echy_sql_dk_zt02) {
         // 参保大户
         let dhhc_1 = 0;
         let dhhc_2 = 0;
@@ -3570,7 +3642,7 @@ const loadDK = async () => {
         // });
 
         echy_sql_dk_zt02.forEach(e => {
-            if (!header.value || header.value == '全部试点县') {
+            if (!header.value) {
                 comply02(e)
             } else {
                 if (e.county == header.value) {
@@ -3580,7 +3652,7 @@ const loadDK = async () => {
         });
 
 
-        console.log(cbsl_1, cbsl_2)
+        // console.log(cbsl_1, cbsl_2)
         // 参保大户
         dataDkzt.value[0].borrow = dhhc_1.toFixed(0);
         dataDkzt.value[0].repayment = dhhc_2.toFixed(0);
@@ -3710,19 +3782,19 @@ const loadQYDQ = async () => {
     dataQqdq.value = [];
 
     let data;
-    if (!header.value || header.value == '全部试点县') {
+    if (!header.value) {
         data = "echy_sql_qy_dq_county";
     } else {
         data = "echy_sql_qy_dq_town";
     }
 
     let echy_sql_dk_dq = await api.get_table_tj_echy(data);
-    console.log(echy_sql_dk_dq)
+    // console.log(echy_sql_dk_dq)
 
     let index = 1;
     echy_sql_dk_dq.forEach(e => {
 
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             let re = "";
 
             dataQqdq.value.push({
@@ -3754,10 +3826,10 @@ const loadQYDQ = async () => {
 
     dataQqdq.value.forEach(e => {
 
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             let fa = echy_sql_dk_dq.filter(a => (a.county == e.name && a.version == "2024年_玉米_第二次_1125"))
             let fa2 = echy_sql_dk_dq.filter(a => (a.county == e.name && a.version == "2024年_玉米_第一次_0913"))
-            // console.log(fa, fa2)
+            // // console.log(fa, fa2)
             let re = Number(fa[0].tbsl) - Number(fa2[0].tbsl)
             if (e.pc == 1) {
                 e.repayment = re.toFixed(0)
@@ -3766,7 +3838,7 @@ const loadQYDQ = async () => {
             if (header.value == e.county) {
                 let fa = echy_sql_dk_dq.filter(a => (a.town == e.name && a.version == "2024年_玉米_第二次_1125"))
                 let fa2 = echy_sql_dk_dq.filter(a => (a.town == e.name && a.version == "2024年_玉米_第一次_0913"))
-                // console.log(fa, fa2)
+                // // console.log(fa, fa2)
                 let re = Number(fa[0].tbsl) - Number(fa2[0].tbsl)
                 if (e.pc == 1) {
                     e.repayment = re.toFixed(0)
@@ -3841,18 +3913,18 @@ const loadDKDQ = async () => {
     dataDkdq.value = []
 
     let data;
-    if (!header.value || header.value == '全部试点县') {
+    if (!header.value) {
         data = "echy_sql_dk_dq_county";
     } else {
         data = "echy_sql_dk_dq_town";
     }
 
     let echy_sql_dk_dq = await api.get_table_tj_echy(data);
-    console.log(echy_sql_dk_dq)
+    // console.log(echy_sql_dk_dq)
 
     let newdq = []
     echy_sql_dk_dq.forEach(e => {
-        if (!header.value || header.value == '全部试点县') {
+        if (!header.value) {
             newdq.push({
                 name: e.county,
                 borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
@@ -3948,41 +4020,87 @@ const loadQYJG = async () => {
 
 
 
-    let echy_sql_dk_dq;
-    if (!header.value || header.value == '全部试点县') {
-        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", "");
-    } else {
-        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", `and 区县='${header.value}'`);
-    }
+    // let echy_sql_dk_dq;
+    // if (!header.value) {
+    //     echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", "");
+    // } else {
+    //     echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", `and 区县='${header.value}'`);
+    // }
+
+    let echy_sql_qy_jg_tg = await api.get_table_tj_echy("echy_sql_qy_jg_tg")
 
 
-    console.log(echy_sql_dk_dq)
+    // console.log(echy_sql_dk_dq)
 
     dataQqjg.value = [];
 
     let newjg = []
 
-    echy_sql_dk_dq.forEach(e => {
+    // echy_sql_dk_dq.forEach(e => {
 
-        if (e.bxjg) {
-            newjg.push({
-                name: e.bxjg,
-                borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                repayment: e.xiangzhen,
-                repayment1: e.between_06_105_count,
-                repayment2: e.over_105_count,
-                repayment3: Number(e.total_tbsl).toFixed(0),
-                repayment4: Number(e.total_rs_area - e.total_tbsl).toFixed(0)
-            })
-        }
+    //     if (e.bxjg) {
+    //         newjg.push({
+    //             name: e.bxjg,
+    //             borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
+    //             repayment: e.xiangzhen,
+    //             repayment1: e.between_06_105_count,
+    //             repayment2: e.over_105_count,
+    //             repayment3: Number(e.total_tbsl).toFixed(0),
+    //             repayment4: Number(e.total_rs_area - e.total_tbsl).toFixed(0)
+    //         })
+    //     }
 
 
+    // })
+
+
+    let uniqueBxjg = [...new Set(echy_sql_qy_jg_tg.map(e => e.bxjg))];
+    console.log(uniqueBxjg)
+
+    uniqueBxjg.forEach((ew) => {
+        let tbsl_1 = 0;
+        let tbsl_2 = 0;
+
+        let zzsl_1 = 0;
+        let zzsl_2 = 0;
+
+        let a1 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第二次_1125"));
+        let a2 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第一次_0913"));
+
+        a1.forEach(e => {
+            tbsl_1 += e.tbsl;
+            zzsl_1 += e.zzsl;
+        })
+
+        a2.forEach(e => {
+            tbsl_2 += e.tbsl;
+            zzsl_2 += e.zzsl;
+        })
+
+
+        newjg.push({
+            name: ew,
+            borrow: "1",
+            repayment: zzsl_1.length,
+            // repayment1: e.between_06_105_count,
+            repayment2: (tbsl_1 / zzsl_1).toFixed(2),
+            repayment3: tbsl_1.toFixed(0),
+            repayment4: tbsl_1.toFixed(0) - zzsl_1.toFixed(0)
+        });
+        newjg.push({
+            name: ew,
+            borrow: "2",
+            repayment: zzsl_1.length,
+            // repayment1: e.between_06_105_count,
+            repayment2: (tbsl_2 / zzsl_2).toFixed(2),
+            repayment3: tbsl_2.toFixed(0),
+            repayment4: tbsl_2.toFixed(0) - zzsl_2.toFixed(0)
+        });
     })
 
-
-    console.log(newjg)
+    // console.log(newjg)
     dataQqjg.value = newjg;
-    console.log(dataQqjg)
+    // console.log(dataQqjg)
 
 }
 
@@ -4053,14 +4171,14 @@ const loadDKJG = async () => {
 
 
     let echy_sql_dk_jg;
-    if (!header.value || header.value == '全部试点县') {
+    if (!header.value) {
         echy_sql_dk_jg = await api.get_table_tj_echy("echy_sql_dk_jg_tg", "");
     } else {
         echy_sql_dk_jg = await api.get_table_tj_echy("echy_sql_dk_jg_tg", `and 区县='${header.value}'`);
     }
 
 
-    console.log(echy_sql_dk_jg)
+    // console.log(echy_sql_dk_jg)
 
     dataDkjg.value = [];
 
@@ -4083,9 +4201,9 @@ const loadDKJG = async () => {
     })
 
 
-    console.log(newjg)
+    // console.log(newjg)
     dataDkjg.value = newjg;
-    console.log(dataDkjg)
+    // console.log(dataDkjg)
 
 }
 
@@ -4120,7 +4238,7 @@ const items = reactive([
     getItem(header.value || '全部试点区县', '0-0', () => h(AppstoreOutlined), ad()),
 ]);
 const handleClick = e => {
-    console.log('click', e);
+    // console.log('click', e);
     selectedKeys.value = [e.key];
 
 
@@ -4129,7 +4247,7 @@ const handleClick = e => {
 
 };
 watch(openKeys, val => {
-    console.log('openKeys', val);
+    // console.log('openKeys', val);
 });
 
 
@@ -4141,6 +4259,82 @@ const activeKeyChildren = ref("1")
 const Ieight = ref({
     y: 500, x: 400
 })
+
+
+const switchLayer = () => {
+    rightLayer.value = !rightLayer.value;
+    //console.log(rightLayer.value);
+};
+
+
+let terrainSP = ref(false);
+/**
+ * 地形开启关闭
+ */
+const onTerrain = () => {
+    terrainSP.value = !terrainSP.value;
+    terrainSP.value && map.setTerrain({ source: "mapbox-dem", exaggeration: 1.0 });
+    !terrainSP.value && map.setTerrain(undefined);
+
+
+    terrainSP.value = !terrainSP.value;
+    terrainSP.value && mapp.setTerrain({ source: "mapbox-dem", exaggeration: 1.0 });
+    !terrainSP.value && mapp.setTerrain(undefined);
+};
+
+
+
+const zoomIn = () => {
+    map && map.zoomIn({ duration: 1000 });
+};
+const zoomOut = () => {
+    map && map.zoomOut({ duration: 1000 });
+};
+const Zero = () => {
+    map.resetNorthPitch({ duration: 2000 });
+};
+
+// 图层切换
+const switchTile = (layer) => {
+    layers.value.forEach((ll) => {
+        ll.isShow = false;
+    });
+    layer.isShow = true;
+
+    message.success("已更新为" + layer.name, 1);
+
+    // 图层叠加
+    addRasterTileLayer(layer.param, layer.key);
+
+    // 历史缓存
+    StateManager.set("MAP_LAYERS", layer);
+
+};
+
+/**
+ * 模式切换
+ */
+const three3D = () => {
+    if (map.getProjection().name == "globe") {
+        map.setProjection("mercator");
+        mapp.setProjection("mercator");
+
+        message.success("二维地图切换完成", 1);
+    } else {
+        map.setProjection("globe");
+        mapp.setProjection("globe");
+
+        message.success("三维地图切换完成", 1);
+    }
+
+
+
+    machine.value = map.getProjection().name;
+};
+
+
+
+const rightHeight = ref("-3000px")
 </script>
 
 <template>
@@ -4152,11 +4346,301 @@ const Ieight = ref({
 
     <!-- 地图 -->
     <div class="verification">
-        <!-- <SDMap :MapToolPosition="{ top: '240px', right: '12px' }"></SDMap> -->
         <div id="before"
-            style="position: absolute;left: 0;top:0;width: 40%;height:100%;z-index: 1000;outline: 3px dotted #ccc;">
+            style="position: absolute;left: 0;top:0;width: 50%;height:100%;z-index: 1000;outline: 3px dotted #ccc;">
         </div>
-        <div id="after" style="position: absolute;left: 24%;top:0;width: 76%;height:100%;z-index: 999;">
+        <div id="after" style="position: absolute;left: 50%;top:0px;width: 50%;height:100%;z-index: 999;">
+        </div>
+        <!--地图工具栏-->
+        <div class="right-tool" :style="MapToolPosition">
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>统计信息</span>
+                </template>
+                <a-button @click="rightHeight = '100px'" size="large" class="boxshadow">
+                    <ChevronLeft color="RGB(58,123,251)" />
+                </a-button>
+                <!-- <a-button @click="rightHeight = '3000px'" size="large" class="boxshadow">
+
+                    <ChevronRight color="RGB(58,123,251)" />
+                </a-button> -->
+            </a-tooltip>
+
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>最佳视野</span>
+                </template>
+                <a-button @click="fitCenter()" size="large" class="boxshadow">
+                    <ScanSearch color="RGB(58,123,251)" />
+                </a-button>
+            </a-tooltip>
+            <br />
+            <a-tooltip title="重置视角 " placement="left">
+                <!-- <a-button @click="Zero()" size="large" class="boxshadow">
+                    <Layers color="RGB(58,123,251)" />
+                </a-button> -->
+                <div @click="Zero()" class="pst">
+                    <img id="Zero" :src="c2" @click="Zero()" />
+                </div>
+            </a-tooltip>
+
+            <br />
+            <div v-if="false">
+                <a-tooltip title="底图切换" placement="left">
+                    <a-button @click="switchLayer()" size="large" class="boxshadow">
+                        <Layers v-if="!rightLayer" color="RGB(58,123,251)" />
+                        <X color="RGB(58,123,251)" v-else />
+                        <span class="arrow">◣</span>
+                    </a-button>
+                </a-tooltip>
+                <!--图层列表 -->
+                <div class="switch-layer" v-if="rightLayer">
+                    <a-card title="" v-show="machine != 'mercator'">
+                        <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                            display: item.projection ? 'block' : 'none',
+                        }">
+                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
+                                @click="switchTile(item)" />
+                            <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
+                                {{ item.name }}
+                            </div>
+                        </a-card-grid>
+                    </a-card>
+                    <a-card title="" v-show="machine == 'mercator'">
+                        <a-card-grid v-for="item in layers" :key="item.id" :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }" @click="switchTile(item)">
+                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
+                            <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
+                                {{ item.name }}
+                            </div>
+                        </a-card-grid>
+                    </a-card>
+                    <br />
+
+
+                    <a-card>
+
+                        <!--地名注记-->
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                地名
+                                <a-switch checked-children="显示" un-checked-children="隐藏"
+                                    v-model:checked="state.DMZJiSHow" size="small" />
+                            </div>
+                        </a-card-grid>
+
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                省界
+                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
+                                    v-model:checked="state_layer.checked7" />
+                            </div>
+                        </a-card-grid>
+
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                市界
+                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
+                                    v-model:checked="state_layer.checked8" />
+                            </div>
+                        </a-card-grid>
+
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                县界
+                                <a-switch checked-children="显示" un-checked-children="隐藏"
+                                    v-model:checked="state_layer.checked4" size="small" />
+                            </div>
+                        </a-card-grid>
+
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                镇界
+                                <a-switch checked-children="显示" un-checked-children="隐藏"
+                                    v-model:checked="state_layer.checked5" size="small" />
+                            </div>
+                        </a-card-grid>
+
+                        <a-card-grid :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                        }">
+                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                                村界
+                                <a-switch checked-children="显示" un-checked-children="隐藏"
+                                    v-model:checked="state_layer.checked6" size="small" />
+                            </div>
+                        </a-card-grid>
+                    </a-card>
+                </div>
+            </div>
+
+
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>二三维切换</span>
+                </template>
+                <a-button @click="three3D()" size="large" class="boxshadow">
+                    <Map v-if="machine != 'mercator'" color="RGB(58,123,251)"></Map>
+                    <Globe v-else color="RGB(58,123,251)" />
+                </a-button>
+            </a-tooltip>
+
+            <a-tooltip placement="left">
+                <template #title>
+                    <span>{{ !ruler ? "开始量测" : "关闭量测" }}</span>
+                </template>
+
+                <div v-if="false">
+                    <!-- {{ ruler }} -->
+                    <a-button @click="onPencilRuler()" size="large" class="boxshadow">
+                        <!-- <PencilRuler /> -->
+                        <Ruler v-if="!ruler" color="RGB(58,123,251)" />
+                        <X color="RGB(58,123,251)" v-else="ruler" />
+                        <span class="arrow">◣</span>
+                    </a-button>
+
+                    <!--量测列表 -->
+                    <div class="right-ruler" v-if="ruler">
+                        <a-tooltip placement="left">
+                            <template #title>
+                                <span>测量坐标<br />点击左键标记位置</span>
+                            </template>
+                            <a-button size="large" class="boxshadow" @click="celiang_point">
+                                <!-- <MapPinned /> -->
+                                <Scale3D color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="left">
+                            <template #title>
+                                <span>距离测量<br />点击左键绘制节点<br />双击左键完成测量</span>
+                            </template>
+                            <a-button size="large" class="boxshadow" @click="celiang_line_string">
+                                <Ruler color="RGB(58,123,251)" />
+                                <div>
+                                    <Minus color="RGB(58,123,251)" :size="30"
+                                        style="position: absolute; left: 12px; top: 26px" />
+                                </div>
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="left">
+                            <template #title>
+                                <span>面积测量<br />点击左键绘制节点<br />双击左键完成测量</span>
+                            </template>
+                            <a-button size="large" class="boxshadow" @click="celiang_polygon">
+                                <LandPlot />
+                            </a-button>
+                        </a-tooltip>
+                    </div>
+                </div>
+            </a-tooltip>
+
+            <!-- <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
+                </template>
+                <a-button @click="onTerrain()" size="large" class="boxshadow">
+                    <MountainSnow :color="!terrainSP ? 'RGB(58,123,251)' : '#3277fc'" />
+                </a-button>
+            </a-tooltip> -->
+            <a-tooltip placement="leftTop" v-if="1 == 2">
+                <template #title>
+                    <span>绘制</span>
+                </template>
+                <div>
+                    <!-- {{ draw }} -->
+                    <a-button @click="onDraw()" size="large" class="boxshadow">
+                        <Pencil color="RGB(58,123,251)" />
+
+                        <!-- <div style="position:absolute;left:8px;top:10px">
+            <Pentagon :size="40" />
+           </div> -->
+
+                        <span class="arrow">◣</span>
+                    </a-button>
+                    <!--绘制列表 -->
+                    <div class="right-draw" v-if="draw">
+                        <a-tooltip placement="leftTop">
+                            <template #title>
+                                <span>绘制点</span>
+                            </template>
+                            <a-button size="large" class="boxshadow">
+                                <Dot color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="leftTop">
+                            <template #title>
+                                <span>绘制线条</span>
+                            </template>
+                            <a-button size="large" class="boxshadow">
+                                <!-- <Route /> -->
+                                <Slash color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="leftTop">
+                            <template #title>
+                                <span>绘制矩形</span>
+                            </template>
+                            <a-button size="large" class="boxshadow">
+                                <RectangleHorizontal color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="leftTop">
+                            <template #title>
+                                <span>绘制多边形</span>
+                            </template>
+                            <a-button size="large" class="boxshadow">
+                                <Pentagon color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="leftTop">
+                            <template #title>
+                                <span>绘制圆形</span>
+                            </template>
+                            <a-button size="large" class="boxshadow">
+                                <Circle color="RGB(58,123,251)" />
+                            </a-button>
+                        </a-tooltip>
+                    </div>
+                </div>
+            </a-tooltip>
+            <br />
+
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>放大</span>
+                </template>
+                <a-button @click="zoomIn()" size="large" class="boxshadow">
+                    <Plus color="RGB(58,123,251)" />
+                </a-button>
+            </a-tooltip>
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>缩小</span>
+                </template>
+                <a-button @click="zoomOut()" size="large" class="boxshadow">
+                    <Minus color="RGB(58,123,251)" />
+                </a-button>
+            </a-tooltip>
         </div>
     </div>
 
@@ -4164,7 +4648,6 @@ const Ieight = ref({
     <div class="page">
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
             :footer="null">
-
             <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
                 <template #bodyCell="{ column, record }">
                     <template v-if="column.key === 'i_area'">
@@ -4231,45 +4714,19 @@ const Ieight = ref({
             </div>
         </a-modal>
 
-
-        <!-- <a-button type="primary" @click="showModal">Open Modal of 1000px width</a-button> -->
         <a-modal v-model:open="lockDownOpen" width="90%" title="" :footer="null">
             <div v-html="lockDownHtml" class="lockDownHtml"></div>
         </a-modal>
 
         <!-- 左侧菜单栏 -->
-
         <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
-            <!-- <a-select v-model:value="selectValue" style="width: 220px" :dropdown-match-select-width="false" size="large"
-                :placement="placement">
-                <a-select-opt-group>
-                    <template #label>
-                        <div style="font-size: 18px;display: flex;align-items: center;">
-                            <FoldersIcon></FoldersIcon>&nbsp;
-                            2024年玉米
-                        </div>
-                    </template>
-                    <a-select-option value="0-0">全部试点县</a-select-option>
-                    <a-select-option v-for="tld in treeLeftData[0].children" :value="tld.key">{{ tld.title
-                        }}</a-select-option>
-
-                </a-select-opt-group>
-            </a-select> -->
-
             <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
                 :inlineCollapsed="false"
                 style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
                 :items="items" @click="handleClick"></a-menu>
-
-
         </div>
-
-
-
-
         <!-- 中间 -->
-        <div class="center-card">
-
+        <div class="center-card" style="cursor:all-scroll;">
             <table style="width: 100%;">
                 <tr>
                     <td style="display: flex;justify-content: right;">
@@ -4299,30 +4756,29 @@ const Ieight = ref({
 
         <!--右侧统计栏-->
 
-        <div class="right-card">
+        <div class="right-card" :style="{ top: rightHeight ? rightHeight : '-3000px' }">
 
             <a-typography-title :level="1"
                 style="color: RGB(31,31,31);line-height: 80px;  font-family: 'FZZongYi-M05';">
                 {{ header ?
                     header :
-                    "全部试点县"
-                }} <a-tag color="RGB(81,196,43)">国土测绘院</a-tag>
-                <a-tag color="RGB(81,196,43)">航天信德智图 </a-tag>
-                <a-tag color="RGB(81,196,43)">二十一世纪</a-tag>
+                    "试点县区域"
+                }}
+                <a-tag v-for="item in ygjg.filter(e => (e.quxian == header))" :key="item.quxian" style="z-index: 10000;"
+                    color="RGB(81,196,43)">{{ item.ygjg ? item.ygjg : '' }}</a-tag>
 
-                <a-empty :image-style="{
-                    position: 'absolute',
-                    right: '0px',
-                    top: '15px',
-                    height: '60px'
+                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
+                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
+                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
+                {{ header.value }}
 
-
-                }"> <template #description>
-                        <span>
-                        </span>
-                    </template></a-empty>
-
+                <a-tooltip placement="right"> <a-button @click="rightHeight = '-3000px'" size="large"
+                        style="position: absolute;top: 20px;right: 15px">
+                        <ChevronRight color="RGB(58,123,251)" />
+                    </a-button>
+                </a-tooltip>
             </a-typography-title>
+
 
 
             <div style="margin: -25px 0 15px 0;">
@@ -4965,14 +5421,14 @@ const Ieight = ref({
 .tuli {
     position: absolute;
     left: 15px;
-    bottom: 40px;
+    bottom: 10px;
     z-index: 1000;
 }
 
 .tuli-right {
     position: absolute;
-    left: 40%;
-    bottom: 40px;
+    left: 50%;
+    bottom: 10px;
     z-index: 1000;
     margin-left: 20px;
 }
@@ -5015,7 +5471,7 @@ const Ieight = ref({
     z-index: 1000;
     position: absolute;
     top: 100px;
-    left: 40%;
+    left: 50%;
     margin-left: -335px;
     /* background-color: #ccc */
     /* background: linear-gradient(to bottom, rgba(19, 18, 18, 0.39), rgba(3, 11, 85, 0)); */
@@ -5234,5 +5690,86 @@ p {
     margin: 0;
     padding: 0;
     background-color: #48b04c;
+}
+
+.right-tool {
+    position: absolute;
+    right: 15px;
+    top: 140px;
+    /* width: 2rem; */
+    z-index: 1000;
+}
+
+.boxshadow {
+    cursor: pointer;
+
+    /* background-color: rgba(0, 0, 0, 0.6); */
+    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
+    border-radius: 3px;
+    width: 55px;
+    height: 55px;
+    color: #ccc;
+    border: 1px double #99999986;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boxshadow:hover {
+    background-color: #3277fc;
+    color: #fff;
+}
+
+.arrow {
+    position: absolute;
+    left: 1px;
+    bottom: -6px;
+}
+
+.right-ruler,
+.right-draw {
+    position: absolute;
+    right: 60px;
+    z-index: 1000;
+    border: 0;
+    margin-top: -58px;
+}
+
+.switch-layer {
+    position: absolute;
+    right: 81px;
+    top: 140px;
+    width: 600px;
+    z-index: 1000;
+    border: 0;
+}
+
+
+
+.pst>img {
+    height: 64px;
+    width: 54px;
+    cursor: pointer;
+}
+
+.mmapcs {
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    position: relative;
+    margin-top: -22px;
+
+    color: #faf9f9c0;
+    font-size: 14px;
+    font-weight: 3000;
+}
+
+.mmapcs-av {
+    /* background-color: #2b8ee7; */
+    background: linear-gradient(to bottom, #2b8fe79c, #2b8fe7f8);
+    z-index: 1000;
+    position: relative;
+    margin-top: -22px;
+    color: #f2f2f8ec;
+    font-size: 14px;
 }
 </style>

@@ -192,7 +192,12 @@ const props = defineProps({
 
 <style scoped>
 .win {
-    background-color: transparent;
+    /* background-color: transparent; */
     background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));
+}
+
+
+::v-deep .ant-card-head {
+    border-bottom: 0;
 }
 </style>

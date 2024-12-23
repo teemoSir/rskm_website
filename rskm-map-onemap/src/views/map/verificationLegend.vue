@@ -803,4 +803,9 @@ const props = defineProps({
 ::v-deep .ant-card-body {
     padding: 5px 20px;
 }
+
+
+::v-deep .ant-card-head {
+    border-bottom: 0;
+}
 </style>

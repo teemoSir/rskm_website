@@ -820,7 +820,7 @@ defineProps({
             <div>
 
                 <a-tooltip title="底图切换" placement="left">
-                    <a-button @click="switchLayer()" size="large" class="boxshadow">
+                    <a-button @click="rightLayer = !rightLayer" size="large" class="boxshadow">
                         <Layers v-if="!rightLayer" />
                         <X color="#3277fc" v-else />
                         <span class="arrow">◣</span>

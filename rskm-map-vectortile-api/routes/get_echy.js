@@ -24,7 +24,12 @@ const sql = (params, query) => {
             `
             break;
 
-
+        // 保单数量
+        case "echy_sql_qy_bdsl":
+            sql = `
+           	select count("保单号") as bdsl,区县 as county,乡镇 as town,地市 as city,version from public.procjet_2024_yghy_baodan_echy group by version,区县,乡镇,地市 
+            `
+            break;
 
         // 超保乡镇
         case "echy_sql_qy_cbxz":
@@ -55,7 +60,7 @@ const sql = (params, query) => {
                     MAX(地市) AS city,
                     version 
                 FROM 
-                    public.procjet_2024_yghy_baodan_echy 
+                    public.procjet_2024_yghy_baodan_echy
                 GROUP BY 
                     乡镇, 区县, 地市, version) AS b
             ON 
@@ -93,20 +98,19 @@ const sql = (params, query) => {
             break;
         case "echy_sql_dk_zt02":
             sql = `
-         select shi,quxian,xiangzhen,version,
+             select shi,quxian,xiangzhen,version,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen) as dhhc, 
+            (select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen) as tbsl,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in ('1')) as hgdhhc,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in (null,'0','')) as bhgdhhc,
+            (select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8='1') as hgdhtbsl,
+            (select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in (null,'0','')) as bhgdhtbsl,
 
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen) as dhhc, 
-(select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen) as tbsl,
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in ('1')) as hgdhhc,
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in (null,'0','')) as bhgdhhc,
-(select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8='1') as hgdhtbsl,
-(select sum(cbsl::double precision) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v8 in (null,'0','')) as bhgdhtbsl,
-
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v1 in (null,'0','')) as ydkdhhc,
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v3 in (null,'0','')) as dkmjbhgdhhc,
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v4 in (null,'0','')) as ycddkdhhc,
-(select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v7 in (null,'0','')) as zwmjdbdbdhhc
-from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order by shi
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v1 in (null,'0','')) as ydkdhhc,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v3 in (null,'0','')) as dkmjbhgdhhc,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v4 in (null,'0','')) as ycddkdhhc,
+            (select count(bdh) from public.procjet_2024_yghy_dahu where version = a.version and xiangzhen= a.xiangzhen and v7 in (null,'0','')) as zwmjdbdbdhhc
+            from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order by shi
 
                 `
             break;
@@ -220,17 +224,8 @@ from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order
                         county,version desc;
             `
             break;
-        // 区域机构 县
-        //         case "echy_sql_qy_jg_county":
-        //             sql = `
-
-        //       SELECT  count(distinct 乡镇) as xiangzhen,保险机构 as bxjg,version from public.procjet_2024_yghy_baodan_echymx where 1=1 ${query.where} group by version,保险机构 
-        // order by 保险机构,version
-        //             `
-        //             break;
-
         // 区域机构 镇
-        case "echy_sql_qy_jg_tg":
+        case "echy_sql_qy_jg_tg2":
             sql = `
             				
                             WITH base_query AS (
@@ -272,8 +267,8 @@ from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order
                             
             )
             SELECT 
-            COUNT(CASE WHEN fgl >= 1.05 THEN 1 END) as over_105_count,
-                COUNT(CASE WHEN fgl < 1.05 AND fgl > 0.6 THEN 1 END) as between_06_105_count,
+          COUNT(CASE WHEN fgl >= 1.05 THEN 1 END) as over_105_count,
+                COUNT(CASE WHEN fgl < 1.05 AND fgl >= 0.6 THEN 1 END) as between_06_105_count,
             count(distinct town) as xiangzhen,
                 bxjg,
                 SUM(rs_area) as total_rs_area,
@@ -288,7 +283,15 @@ from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order
                 bxjg, version DESC;
             `
             break;
+        // 区域机构 2
+        case "echy_sql_qy_jg_tg":
+            sql = `
+         select count(distinct xiangzhen),xiangzhen,
+bxjg,version, sum(v1::double precision) as  tbsl, sum(v5::double precision) as zzsl, sum(v5::double precision)/sum(v1::double precision) as fgl, sum(v1::double precision) - sum(v5::double precision) as cbsl
+from public.procjet_2024_yghy_hz10_v1v8 a  where v5 <> '' group by bxjg,version,xiangzhen
 
+            `
+            break;
 
         case "echy_sql_dk_jg_tg":
             sql = `
@@ -300,6 +303,13 @@ from public.procjet_2024_yghy_dahu a group by shi,quxian,xiangzhen,version order
                 from public.procjet_2024_yghy_baodan_echymx a where 1=1 ${query.where} group by 保险机构,version order by 保险机构
                 `
             break
+        case "echy_sql_ygjg":
+            sql = `
+      select  quxian, ygjg from public.procjet_2024_yghy_hz10_county_2 group by quxian,ygjg
+                    `
+            break
+
+
         default:
             break;
     }
