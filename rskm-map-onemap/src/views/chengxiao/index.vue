@@ -1,6 +1,6 @@
 <script setup>
-import "../../../public/mapboxgl/mapbox-gl-js-3.8.0/mapbox-gl.css";
-import "../../../public/mapboxgl/mapbox-gl-js-3.8.0/mapbox-gl";
+import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
+import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { config, mapbox } from "@/config/tileserver.js";
 import syncMove from '@mapbox/mapbox-gl-sync-move';
