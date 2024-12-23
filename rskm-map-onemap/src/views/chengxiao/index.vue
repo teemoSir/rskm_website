@@ -2865,7 +2865,7 @@ onMounted(() => {
 
     map && map.on("load", () => {
 
-        addLayersYghy(map, specYghyEchy);
+        addLayersYghy(map, specYghy);
         map && loadEvent(map);
         loadTerrain(map);
     })
@@ -3240,12 +3240,13 @@ const loadBDSL = async () => {
     let bdsl_1 = 0;
     let bdsl_2 = 0;
 
+    dataQqzt.value[4].borrow = 0;
+    dataQqzt.value[4].repayment = 0;
+
     echy_sql_qy_bdsl.forEach(e => {
         if (!header.value) {
             (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
             (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-
-
         } else {
             if (e.county == header.value) {
                 (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
