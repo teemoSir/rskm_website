@@ -792,14 +792,6 @@ defineProps({
         <a-spin class="spin" v-if="spin" :tip="spintext" size="large"></a-spin>
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
-            <!-- <a-tooltip placement="leftTop">
-        <template #title>
-          <span>全球视角</span>
-        </template>
-<a-button @click="goGlobal()" size="large" class="boxshadow">
-    <ScanSearch />
-</a-button>
-</a-tooltip> -->
 
             <a-tooltip placement="leftTop">
                 <template #title>
@@ -857,26 +849,12 @@ defineProps({
                     <!--地名注记-->
                     <a-card>
                         <!--行政边界-->
-                        <!-- <a-card-grid
-          :style="{
-            width: '25%',
-            textAlign: 'center',
-          }"
-        >
-          <div style="font-weight: 8000; font-size: 16px; color: #ffffff">行政边界</div>
-
-          <a-switch
-            v-model:checked="state.ZJiSHow"
-            checked-children="显示"
-            un-checked-children="隐藏"
-          />
-        </a-card-grid> -->
                         <!--地名注记-->
                         <a-card-grid :style="{
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 地名
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state.DMZJiSHow" size="small" />
@@ -887,7 +865,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 省界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked7" />
@@ -898,7 +876,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 市界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked8" />
@@ -909,7 +887,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 县界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked4" size="small" />
@@ -920,7 +898,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 镇界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked5" size="small" />
@@ -931,7 +909,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 村界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked6" size="small" />

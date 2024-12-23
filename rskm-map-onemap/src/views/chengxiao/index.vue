@@ -14,7 +14,7 @@ import c2 from "@/assets/images/map/c2.svg";
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import {
     ScanSearch,
-    // Layers,
+    Layers,
     Globe,
     Map,
     MountainSnow,
@@ -55,6 +55,7 @@ import {
     Plus,
     ChevronLeft,
     ChevronRight,
+    Menu,
     ArrowDown
 } from "lucide-vue-next";
 import { useRouter } from "vue-router";
@@ -1986,23 +1987,23 @@ const loadCounty = async (name) => {
 // 初始化视野
 const fitCenter = () => {
     map.flyTo({
-        center: [119.207, 36.79],
-        zoom: 7.3,
+        center: [118.28, 36.80],
+        zoom: 6.6,
         speed: 1,
         curve: 2,
-        easing (t) {
-            return t;
-        },
+        // easing (t) {
+        //     return t;
+        // },
     });
 
     mapp.flyTo({
-        center: [119.207, 36.79],
-        zoom: 7.3,
+        center: [118.28, 36.80],
+        zoom: 6.6,
         speed: 1,
         curve: 2,
-        easing (t) {
-            return t;
-        },
+        // easing (t) {
+        //     return t;
+        // },
     });
 };
 
@@ -3234,7 +3235,7 @@ const loadFGL = () => {
  */
 const loadBDSL = async () => {
     let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_bdsl");
-    // // console.log(echy_sql_qy_bdsl)
+    console.log(echy_sql_qy_bdsl)
 
     let bdsl_1 = 0;
     let bdsl_2 = 0;
@@ -3252,7 +3253,7 @@ const loadBDSL = async () => {
             }
         }
     });
-    // // console.log(cbxz_1.length, cbxz_2.length)
+    //console.log(bdsl_1.length, bdsl_2.length)
     // 超保乡镇
     dataQqzt.value[4].borrow = Math.abs(bdsl_1);
     dataQqzt.value[4].repayment = Math.abs(bdsl_2);
@@ -4018,6 +4019,41 @@ const dataQqjg = ref([
  */
 const loadQYJG = async () => {
 
+    let echy_sql_dk_dq;
+    if (!header.value) {
+        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg2", "");
+    } else {
+        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg2", `and 区县='${header.value}'`);
+    }
+
+    dataQqjg.value = [];
+
+    let newjg = []
+
+    echy_sql_dk_dq.forEach(e => {
+
+        if (e.bxjg) {
+            newjg.push({
+                name: e.bxjg,
+                borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
+                repayment: e.xiangzhen,
+                repayment1: e.between_06_105_count,
+                repayment2: e.over_105_count,
+                repayment3: Number(e.total_tbsl).toFixed(0),
+                repayment4: Number(e.total_rs_area - e.total_tbsl).toFixed(0)
+            })
+        }
+    })
+
+    dataQqjg.value = newjg;
+
+}
+
+/**
+ * 区域 机构 
+ */
+const loadQYJG2 = async () => {
+
 
 
     // let echy_sql_dk_dq;
@@ -4064,24 +4100,30 @@ const loadQYJG = async () => {
         let zzsl_1 = 0;
         let zzsl_2 = 0;
 
-        let a1 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第二次_1125"));
-        let a2 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第一次_0913"));
 
+        let a1 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第一次_0913"));
+        let a2 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第二次_1125"));
+
+
+        let name_a1 = [];
+        let name_a2 = [];
         a1.forEach(e => {
             tbsl_1 += e.tbsl;
             zzsl_1 += e.zzsl;
+            name_a1.push(e.xiangzhen)
         })
 
         a2.forEach(e => {
             tbsl_2 += e.tbsl;
             zzsl_2 += e.zzsl;
+            name_a2.push(e.xiangzhen)
         })
 
-
+        console.log((new Set(name_a1)).size);
         newjg.push({
             name: ew,
             borrow: "1",
-            repayment: zzsl_1.length,
+            repayment: (new Set(name_a1)).size,
             // repayment1: e.between_06_105_count,
             repayment2: (tbsl_1 / zzsl_1).toFixed(2),
             repayment3: tbsl_1.toFixed(0),
@@ -4090,7 +4132,7 @@ const loadQYJG = async () => {
         newjg.push({
             name: ew,
             borrow: "2",
-            repayment: zzsl_1.length,
+            repayment: (new Set(name_a2)).size,
             // repayment1: e.between_06_105_count,
             repayment2: (tbsl_2 / zzsl_2).toFixed(2),
             repayment3: tbsl_2.toFixed(0),
@@ -4103,6 +4145,7 @@ const loadQYJG = async () => {
     // console.log(dataQqjg)
 
 }
+
 
 
 
@@ -4273,11 +4316,10 @@ let terrainSP = ref(false);
  */
 const onTerrain = () => {
     terrainSP.value = !terrainSP.value;
+
     terrainSP.value && map.setTerrain({ source: "mapbox-dem", exaggeration: 1.0 });
     !terrainSP.value && map.setTerrain(undefined);
 
-
-    terrainSP.value = !terrainSP.value;
     terrainSP.value && mapp.setTerrain({ source: "mapbox-dem", exaggeration: 1.0 });
     !terrainSP.value && mapp.setTerrain(undefined);
 };
@@ -4335,6 +4377,37 @@ const three3D = () => {
 
 
 const rightHeight = ref("-3000px")
+
+const state = reactive({
+    ZJiSHow: true,
+    DMZJiSHow: true,
+});
+
+/**
+ * 地名注记
+ */
+watch(state, () => {
+    [
+        "admin_2024_village_name",
+        "POI_WORLD_1",
+        "POI_WORLD_2",
+        "POI_WORLD_3",
+        "POI_WORLD_4",
+        "POI_WORLD_5",
+        "POI_WORLD_6",
+    ].forEach((v) => {
+        map && map.setLayoutProperty(v, "visibility", state.DMZJiSHow ? "visible" : "none");
+    });
+});
+
+// 图层控制
+const state_layer = reactive({
+    checked4: true,
+    checked5: true,
+    checked6: true,
+    checked7: true,
+    checked8: true,
+});
 </script>
 
 <template>
@@ -4357,14 +4430,14 @@ const rightHeight = ref("-3000px")
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                <a-button @click="rightHeight = '100px'" size="large" class="boxshadow">
-                    <ChevronLeft color="RGB(58,123,251)" />
+                <a-button @click="rightHeight = '90px'" size="large" class="boxshadow">
+                    <Menu color="RGB(58,123,251)" />
                 </a-button>
-                <!-- <a-button @click="rightHeight = '3000px'" size="large" class="boxshadow">
-
-                    <ChevronRight color="RGB(58,123,251)" />
-                </a-button> -->
             </a-tooltip>
+            <br>
+
+            <br>
+
 
             <a-tooltip placement="leftTop">
                 <template #title>
@@ -4385,7 +4458,7 @@ const rightHeight = ref("-3000px")
             </a-tooltip>
 
             <br />
-            <div v-if="false">
+            <div>
                 <a-tooltip title="底图切换" placement="left">
                     <a-button @click="switchLayer()" size="large" class="boxshadow">
                         <Layers v-if="!rightLayer" color="RGB(58,123,251)" />
@@ -4396,9 +4469,10 @@ const rightHeight = ref("-3000px")
                 <!--图层列表 -->
                 <div class="switch-layer" v-if="rightLayer">
                     <a-card title="" v-show="machine != 'mercator'">
-                        <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
+                        <div v-for="item in layers" style="float: left;" :key="item.id" :style="{
                             width: '25%',
                             textAlign: 'center',
+                            height: '120px',
                             display: item.projection ? 'block' : 'none',
                         }">
                             <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
@@ -4406,18 +4480,19 @@ const rightHeight = ref("-3000px")
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
                             </div>
-                        </a-card-grid>
+                        </div>
                     </a-card>
                     <a-card title="" v-show="machine == 'mercator'">
-                        <a-card-grid v-for="item in layers" :key="item.id" :style="{
+                        <div v-for="item in layers" :key="item.id" :style="{
                             width: '25%',
                             textAlign: 'center',
+                            height: '120px',
                         }" @click="switchTile(item)">
                             <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
                             </div>
-                        </a-card-grid>
+                        </div>
                     </a-card>
                     <br />
 
@@ -4429,7 +4504,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 地名
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state.DMZJiSHow" size="small" />
@@ -4440,7 +4515,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 省界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked7" />
@@ -4451,7 +4526,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 市界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked8" />
@@ -4462,7 +4537,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 县界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked4" size="small" />
@@ -4473,7 +4548,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 镇界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked5" size="small" />
@@ -4484,7 +4559,7 @@ const rightHeight = ref("-3000px")
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
+                            <div style="font-weight: 8000; font-size: 16px; color: #000">
                                 村界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked6" size="small" />
@@ -4510,7 +4585,7 @@ const rightHeight = ref("-3000px")
                     <span>{{ !ruler ? "开始量测" : "关闭量测" }}</span>
                 </template>
 
-                <div v-if="false">
+                <div v-if="2 == 3">
                     <!-- {{ ruler }} -->
                     <a-button @click="onPencilRuler()" size="large" class="boxshadow">
                         <!-- <PencilRuler /> -->
@@ -4554,14 +4629,14 @@ const rightHeight = ref("-3000px")
                 </div>
             </a-tooltip>
 
-            <!-- <a-tooltip placement="leftTop">
+            <a-tooltip placement="leftTop">
                 <template #title>
                     <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
                 </template>
                 <a-button @click="onTerrain()" size="large" class="boxshadow">
                     <MountainSnow :color="!terrainSP ? 'RGB(58,123,251)' : '#3277fc'" />
                 </a-button>
-            </a-tooltip> -->
+            </a-tooltip>
             <a-tooltip placement="leftTop" v-if="1 == 2">
                 <template #title>
                     <span>绘制</span>
@@ -4772,8 +4847,13 @@ const rightHeight = ref("-3000px")
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
                 {{ header.value }}
 
-                <a-tooltip placement="right"> <a-button @click="rightHeight = '-3000px'" size="large"
+                <a-tooltip placement="right">
+                    <!-- <a-button @click="rightHeight = '-3000px'" size="large"
                         style="position: absolute;top: 20px;right: 15px">
+                        <ChevronRight color="RGB(58,123,251)" />
+                    </a-button> -->
+                    <a-button @click="rightHeight = '-3000px'" size="large" class="boxshadow"
+                        style="position: absolute;top: 10px;right: 15px">
                         <ChevronRight color="RGB(58,123,251)" />
                     </a-button>
                 </a-tooltip>
@@ -5695,7 +5775,7 @@ p {
 .right-tool {
     position: absolute;
     right: 15px;
-    top: 140px;
+    top: 100px;
     /* width: 2rem; */
     z-index: 1000;
 }
@@ -5738,8 +5818,8 @@ p {
 .switch-layer {
     position: absolute;
     right: 81px;
-    top: 140px;
-    width: 600px;
+    top: 10px;
+    width: 400px;
     z-index: 1000;
     border: 0;
 }
@@ -5756,7 +5836,7 @@ p {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     position: relative;
-    margin-top: -22px;
+    margin-top: -42px;
 
     color: #faf9f9c0;
     font-size: 14px;
@@ -5768,8 +5848,9 @@ p {
     background: linear-gradient(to bottom, #2b8fe79c, #2b8fe7f8);
     z-index: 1000;
     position: relative;
-    margin-top: -22px;
+    margin-top: -42px;
     color: #f2f2f8ec;
     font-size: 14px;
+
 }
 </style>
