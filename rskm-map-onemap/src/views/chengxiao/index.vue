@@ -4044,7 +4044,7 @@ const loadQYJG = async () => {
             })
         }
     })
-
+    console.log(newjg)
     dataQqjg.value = newjg;
 
 }
