@@ -3121,28 +3121,37 @@ const loadYGSL = async () => {
  */
 const loadCBSL = async () => {
     let echy_sql_qy_cbsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
-
-
-
     // console.log(echy_sql_qy_cbsl)
 
     let tbsl_1 = 0;
     let tbsl_2 = 0;
+
+    let bdsl_1 = 0;
+    let bdsl_2 = 0;
     echy_sql_qy_cbsl.forEach(e => {
         if (!header.value) {
             (e.version == '2024年_玉米_第一次_0913') && (tbsl_1 += Number(e.tbsl));
             (e.version == '2024年_玉米_第二次_1125') && (tbsl_2 += Number(e.tbsl));
+
+            (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+            (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
         } else {
             if (e.county == header.value) {
                 (e.version == '2024年_玉米_第一次_0913') && (tbsl_1 += Number(e.tbsl));
                 (e.version == '2024年_玉米_第二次_1125') && (tbsl_2 += Number(e.tbsl));
+
+                (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+                (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
             }
         }
 
     });
     //"2024年_玉米_第一次_0913"
-    dataQqzt.value[0].borrow = tbsl_1.toFixed(0)
-    dataQqzt.value[0].repayment = tbsl_2.toFixed(0)
+    dataQqzt.value[0].borrow = tbsl_1.toFixed(0);
+    dataQqzt.value[0].repayment = tbsl_2.toFixed(0);
+
+    dataQqzt.value[4].borrow = Math.abs(bdsl_1);
+    dataQqzt.value[4].repayment = Math.abs(bdsl_2);
 
     // 覆盖率
     loadFGL()
@@ -3249,30 +3258,30 @@ const loadFGL = () => {
  * 保单数量
  */
 const loadBDSL = async () => {
-    let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
-    console.log(echy_sql_qy_bdsl)
+    // let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
+    // console.log(echy_sql_qy_bdsl)
 
-    let bdsl_1 = 0;
-    let bdsl_2 = 0;
+    // let bdsl_1 = 0;
+    // let bdsl_2 = 0;
 
-    dataQqzt.value[4].borrow = 88;
-    dataQqzt.value[4].repayment = 88;
+    // dataQqzt.value[4].borrow = 88;
+    // dataQqzt.value[4].repayment = 88;
 
-    echy_sql_qy_bdsl.forEach(e => {
-        if (!header.value) {
-            (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-            (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-        } else {
-            if (e.county == header.value) {
-                (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-                (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-            }
-        }
-    });
-    //console.log(bdsl_1.length, bdsl_2.length)
-    // 超保乡镇
-    dataQqzt.value[4].borrow = Math.abs(bdsl_1);
-    dataQqzt.value[4].repayment = Math.abs(bdsl_2);
+    // echy_sql_qy_bdsl.forEach(e => {
+    //     if (!header.value) {
+    //         (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+    //         (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
+    //     } else {
+    //         if (e.county == header.value) {
+    //             (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
+    //             (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
+    //         }
+    //     }
+    // });
+    // //console.log(bdsl_1.length, bdsl_2.length)
+    // // 超保乡镇
+    // dataQqzt.value[4].borrow = Math.abs(bdsl_1);
+    // dataQqzt.value[4].repayment = Math.abs(bdsl_2);
 
 }
 
