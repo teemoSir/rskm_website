@@ -1815,8 +1815,8 @@ const setPopup = async (info, index) => {
     meginfo.v2 = Number(successData.v2).toFixed(2) || 0;
     meginfo.v3 = successData.v3 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.v4 = successData.v4 == '1' ? "<div style=' color: #fff;background-color: #91cc75;'>通过</div>" : "<div style=' color: #fff;background-color: #ee6666;'>未通过</div>";
-    meginfo.v5 = successData.v5 || 0;
-    meginfo.v6 = Number(successData.v6).toFixed(2) || 0;
+    meginfo.v5 = Number(successData.v5).toFixed(2) || 0;
+    meginfo.v6 = Number((Number(successData.v6) < 1 ? (Number(successData.v6) * 100) : Number(successData.v6))).toFixed(2) || 0;
     meginfo.v7 = successData.v7 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.v8 = successData.v8 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.dkmj = successData.v1 ? Number(successData.v1).toFixed(1) : 0;
@@ -3150,8 +3150,8 @@ const loadCBSL = async () => {
     dataQqzt.value[0].borrow = tbsl_1.toFixed(0);
     dataQqzt.value[0].repayment = tbsl_2.toFixed(0);
 
-    dataQqzt.value[4].borrow = Math.abs(bdsl_1);
-    dataQqzt.value[4].repayment = Math.abs(bdsl_2);
+    dataQqzt.value[4].borrow = bdsl_1;
+    dataQqzt.value[4].repayment = bdsl_2;
 
     // 覆盖率
     loadFGL()
@@ -5365,10 +5365,11 @@ const state_layer = reactive({
             <tr>
                 <th colspan="10">
 
-                    <div style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: #ccc ;display:
-                    flex;align-items: center;">
-                        <ShieldCheck :size="25" />
-                        &nbsp;保单基本信息
+                    <div
+                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
+
+                        <ShieldCheck :size="22" />
+                        &nbsp;保单信息
                     </div>
                 </th>
             </tr>
@@ -5407,16 +5408,16 @@ const state_layer = reactive({
                 <th>投保数量：</th>
                 <td>{tbsl}亩</td>
             </tr>
-            <tr>
+            <!-- <tr>
 
                 <th>保险期间：</th>
                 <td>{bxqj}</td>
-            </tr>
+            </tr> -->
             <tr>
                 <th colspan="10">
                     <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: #ccc ;display: flex;align-items: center;">
-                        <UserCheck :size="25" />&nbsp;大户核验信息
+                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
+                        <UserCheck :size="22" />&nbsp;大户信息
                     </div>
 
                 </th>
@@ -5451,13 +5452,13 @@ const state_layer = reactive({
                 <td>标的面积：{v5} 亩<br>标的占比：{v6} %</td>
             </tr>
 
-            <tr>
+            <!-- <tr>
                 <th colspan="10">
                     <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: #ccc ;display: flex;align-items: center;">
+                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
 
-                        <LandPlot :size="25" />
-                        &nbsp;当前地块信息
+                        <LandPlot :size="22" />
+                        &nbsp;地块信息
                     </div>
                 </th>
             </tr>
@@ -5467,7 +5468,6 @@ const state_layer = reactive({
                 <td>{dkmj} 亩</td>
             </tr>
             <tr>
-
                 <th>地块重叠指标：</th>
                 <td>面积：{cdmj} 亩<br>重叠率：{dkcdl} %</td>
             </tr>
@@ -5475,7 +5475,7 @@ const state_layer = reactive({
 
                 <th>地块标的信息：</th>
                 <td> 面积：{bdmj} 亩<br>占比：{bdzb} %</td>
-            </tr>
+            </tr> -->
 
         </table>
     </div>
@@ -5629,6 +5629,7 @@ p {
 
 
 
+
 }
 
 .tjfx td {
@@ -5657,15 +5658,6 @@ p {
 }
 
 
-/* .headerbg {
-    background: linear-gradient(0deg, rgba(89, 112, 196, 0.1), rgba(89, 112, 196, 0.01));
-    padding: 5px;
-    border-bottom: 1px solid #cccccc86;
-    color: #5a5959;
-    font-size: 18px;
-    font-weight: 1000;
-
-} */
 
 ::v-deep .ant-page-header-heading-title {
     color: #323334;
@@ -5716,28 +5708,30 @@ p {
 .text th {
     border-collapse: collapse;
     font-size: 17px;
-    text-align: left;
-    /* background-color: rgb(238, 237, 237);
-    border: 1px solid RGB(250, 250, 250); */
-
+    text-align: right;
     padding: 2px 3px;
     letter-spacing: -1px;
     width: 120px;
     color: #2c2c2c;
 }
 
+.text tr {
+
+    /* border-bottom: 1px dotted #2c2c2c61; */
+    /* background-color: #ccc; */
+}
+
 .text td {
     border-collapse: collapse;
-    font-size: 18px;
-    text-align: right;
-    /* border: 1px solid RGB(250, 250, 250); */
+    font-size: 17px;
+    text-align: left;
     width: 180px;
     letter-spacing: -1px;
     color: #2c2c2c;
+
 }
 
 .text {
-
     cursor: pointer;
 }
 
@@ -5878,5 +5872,9 @@ p {
     color: #f2f2f8ec;
     font-size: 14px;
 
+}
+
+::v-deep .mapboxgl-popup-content {
+    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.83), rgba(251, 250, 250, 0.83));
 }
 </style>
