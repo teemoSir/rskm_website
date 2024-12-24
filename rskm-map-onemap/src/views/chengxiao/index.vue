@@ -72,9 +72,6 @@ import {
     eventRotate,
     eventRender,
     addIcon
-
-
-    //  setPopup
 } from "@/views/map/map.js";
 
 import VerificationLegend from "@/views/map/verificationLegend.vue"
@@ -1716,14 +1713,14 @@ const addEventArea = async (e, newMap) => {
     ]);
     newMap.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
 
-    // newMap.flyTo({
-    //     center: e.lngLat,
-    //     speed: 1,
-    //     curve: 1,
-    //     easing (t) {
-    //         return t;
-    //     },
-    // });
+    newMap.flyTo({
+        center: e.lngLat,
+        // speed: 1,
+        // curve: 1,
+        // easing (t) {
+        //     return t;
+        // },
+    });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
 }
 
@@ -1736,26 +1733,39 @@ const addEventDk = async (e, newMap) => {
 
     newMap.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
-    let text = await setPopup(feature.properties);
+    let text;
 
-    newMap.setFilter("Highlight_DK_Line_Click", [
+    if (newMap.getContainer().id == 'before') {
+        text = await setPopup(feature.properties, 0);
+    } else {
+        text = await setPopup(feature.properties, 1);
+    }
+
+    map.setFilter("Highlight_DK_Line_Click", [
+        "all",
+        ["in", "bbxrmc", feature.properties.bbxrmc],
+        ["in", "bdh", feature.properties.bdh],
+    ]);
+    mapp.setFilter("Highlight_DK_Line_Click", [
         "all",
         ["in", "bbxrmc", feature.properties.bbxrmc],
         ["in", "bdh", feature.properties.bdh],
     ]);
 
-    newMap.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
+
+    map.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
+    mapp.setLayoutProperty("Highlight_DK_Line_Click", "visibility", "visible");
 
     // fitBox(feature);
-    // newMap.flyTo({
-    //     center: e.lngLat,
-    //     // zoom: 7.5,
-    //     speed: 1,
-    //     curve: 1,
-    //     easing (t) {
-    //         return t;
-    //     },
-    // });
+    newMap.flyTo({
+        center: e.lngLat,
+        // zoom: 7.5,
+        // speed: 1,
+        // curve: 1,
+        // easing (t) {
+        //     return t;
+        // },
+    });
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
 
 }
@@ -1771,14 +1781,19 @@ const addEventDk = async (e, newMap) => {
  * @param {Object} data - 要素数据
  * @returns {Promise<string|boolean>} 弹出窗口内容或如果未找到要素则返回 false
  */
-const setPopup = async (info) => {
+const setPopup = async (info, index) => {
     // console.log(info)
 
     if (!info) return false;
-    let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
-        `gid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, type_xl, bxjg_code, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
+    // let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
+    //     `gid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, type_xl, bxjg_code, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
 
-    let successData = data[0] || {};
+    let data = await api.get_table_by_filter("procjet_2024_yghy_dahu", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
+        `bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, v1, v2, v3, v4, v5, v6, v7, v8, version`);
+
+
+    console.log(data)
+    let successData = data[index] || {};
     let meginfo = {}
 
     meginfo.bdh = info.bdh || "";
@@ -1793,7 +1808,7 @@ const setPopup = async (info) => {
     meginfo.xianzhong = info.xianzhong || "";
     meginfo.bbxrzjh = info.bbxrzjh || "";
     meginfo.bbxrdh = info.bbxrdh || "";
-    meginfo.bxqj = successData.bxqj.replace(/年|月|日/g, "/");
+    meginfo.bxqj = "";//successData.bxqj.replace(/年|月|日/g, "/");
 
     meginfo.tbsl = successData.cbsl || 0;
     meginfo.v1 = successData.v1 || 0;
@@ -1804,14 +1819,14 @@ const setPopup = async (info) => {
     meginfo.v6 = Number(successData.v6).toFixed(2) || 0;
     meginfo.v7 = successData.v7 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.v8 = successData.v8 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
-    meginfo.dkmj = info.dkmj ? Number(info.dkmj).toFixed(1) : 0;
+    meginfo.dkmj = successData.v1 ? Number(successData.v1).toFixed(1) : 0;
     meginfo.ygjg = info.ygjg || "";
 
     // console.log(meginfo)
-    meginfo.bdmj = info.bdmj ? Number(info.bdmj).toFixed(1) : "";
+    meginfo.bdmj = successData.v5 ? Number(successData.v5).toFixed(1) : "";
     meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) * 100).toFixed(2);
-    meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
-    meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
+    // meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
+    // meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
 
     // ①地块面积合计（亩）	
     // ②地块面积合计/承保数量	

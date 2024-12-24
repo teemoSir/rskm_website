@@ -1293,7 +1293,7 @@ let specYghy = [
             visibility: "none",
         },
         "paint": {
-            'fill-color': '#fff',
+            'fill-color': 'red',
             // 'line-width': 2,
             'fill-opacity': 0.6,
         },
