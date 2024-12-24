@@ -1210,6 +1210,7 @@ let specYghyEchy = [
             "line-cap": "round",
             visibility: 'none'
         },
+        minzoom: 14,
         'slot': 'top',
         "paint": {
             // 'line-blur':0.5,
@@ -1296,9 +1297,9 @@ let specYghyEchy = [
             visibility: "none",
         },
         "paint": {
-            'fill-color': 'red',
+            'fill-color': 'yellow',
             // 'line-width': 2,
-            'fill-opacity': 0.6,
+            'fill-opacity': 0.8,
         },
         'slot': 'top',
         interactive: true,

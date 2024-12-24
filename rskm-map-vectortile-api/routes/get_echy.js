@@ -14,7 +14,7 @@ const sql = (params, query) => {
         // 承保数量
         case "echy_sql_qy_cbsl":
             sql = `
-            select SUM(投保数量) as tbsl,乡镇 as town,MAX(区县) as county,MAX(地市) as city,version from public.procjet_2024_yghy_baodan_echy  GROUP  by 乡镇,区县,地市,version order by 地市
+            select  count("保单号") as bdsl, SUM(投保数量) as tbsl,乡镇 as town,MAX(区县) as county,MAX(地市) as city,version from public.procjet_2024_yghy_baodan_echy  GROUP  by 乡镇,区县,地市,version order by 地市
             `
             break;
         // 参保农户(户次)

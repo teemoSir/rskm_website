@@ -1792,7 +1792,7 @@ const setPopup = async (info, index) => {
         `bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, v1, v2, v3, v4, v5, v6, v7, v8, version`);
 
 
-    console.log(data)
+    console.log(info)
     let successData = data[index] || {};
     let meginfo = {}
 
@@ -1825,8 +1825,8 @@ const setPopup = async (info, index) => {
     // console.log(meginfo)
     meginfo.bdmj = successData.v5 ? Number(successData.v5).toFixed(1) : "";
     meginfo.bdzb = (Number(meginfo.bdmj) / Number(meginfo.dkmj) * 100).toFixed(2);
-    // meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
-    // meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
+    meginfo.dkcdl = Number(info.dkcdl).toFixed(2) || 0;
+    meginfo.cdmj = (Number(meginfo.dkmj) * Number(meginfo.dkcdl)).toFixed(2)
 
     // ①地块面积合计（亩）	
     // ②地块面积合计/承保数量	
@@ -3044,7 +3044,7 @@ const dataQqzt = ref([
         key: '7',
         name: '保单数量(张)',
         borrow: 0,
-        repayment: 45, qushi: 0
+        repayment: 0, qushi: 0
     },
     {
         key: '8',
@@ -3249,14 +3249,14 @@ const loadFGL = () => {
  * 保单数量
  */
 const loadBDSL = async () => {
-    let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_bdsl");
+    let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
     console.log(echy_sql_qy_bdsl)
 
     let bdsl_1 = 0;
     let bdsl_2 = 0;
 
-    dataQqzt.value[4].borrow = 0;
-    dataQqzt.value[4].repayment = 0;
+    dataQqzt.value[4].borrow = 88;
+    dataQqzt.value[4].repayment = 88;
 
     echy_sql_qy_bdsl.forEach(e => {
         if (!header.value) {
@@ -4042,6 +4042,7 @@ const loadQYJG = async () => {
         echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg2", `and 区县='${header.value}'`);
     }
 
+    console.log(echy_sql_dk_dq)
     dataQqjg.value = [];
 
     let newjg = []
