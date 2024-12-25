@@ -1811,8 +1811,8 @@ const setPopup = async (info, index) => {
     meginfo.bxqj = "";//successData.bxqj.replace(/年|月|日/g, "/");
 
     meginfo.tbsl = successData.cbsl || 0;
-    meginfo.v1 = successData.v1 || 0;
-    meginfo.v2 = Number(successData.v2).toFixed(2) || 0;
+    meginfo.v1 = Number(successData.v1).toFixed(2) || 0;
+    meginfo.v2 = Number((Number(successData.v2) < 1 ? (Number(successData.v2) * 100) : Number(successData.v2))).toFixed(2) || 0;
     meginfo.v3 = successData.v3 == '1' ? "<div style='color: #fff;background-color: #91cc75;'>通过</div>" : "<div style='  color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.v4 = successData.v4 == '1' ? "<div style=' color: #fff;background-color: #91cc75;'>通过</div>" : "<div style=' color: #fff;background-color: #ee6666;'>未通过</div>";
     meginfo.v5 = Number(successData.v5).toFixed(2) || 0;
@@ -2847,7 +2847,7 @@ const loadYGJG = async () => {
 }
 
 
-/**
+/** =
  * 数据加载
  */
 const loadData = () => {
@@ -2871,7 +2871,7 @@ const loadData = () => {
 onMounted(() => {
 
     Ieight.value = ({
-        y: window.innerHeight - 450, x: 400
+        y: window.innerHeight - 580, x: 400
     })
 
     loadDoubleMap()
@@ -4450,14 +4450,19 @@ const state_layer = reactive({
         </div>
         <div id="after" style="position: absolute;left: 50%;top:0px;width: 50%;height:100%;z-index: 999;">
         </div>
+
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                <a-button @click="rightHeight = '90px'" size="large" class="boxshadow">
-                    <Menu color="RGB(58,123,251)" />
+                <a-button v-if="rightHeight != '215px'" @click="rightHeight = '215px'" size="large" class="boxshadow">
+                    <Menu color="RGB(58,123,251)"></Menu>
+                </a-button>
+                <a-button v-if="rightHeight == '215px'" @click="rightHeight = '-3000px'" size="large" class="boxshadow"
+                    style="">
+                    <ChevronRight color="RGB(58,123,251)" />
                 </a-button>
             </a-tooltip>
             <br>
@@ -4747,6 +4752,10 @@ const state_layer = reactive({
 
     <!-- 页面 -->
     <div class="page">
+
+        <a-segmented v-model:value="segmented" block :options="data" size="large"
+            style="width: 260px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
+        </a-segmented>
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
             :footer="null">
             <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
@@ -4821,6 +4830,7 @@ const state_layer = reactive({
 
         <!-- 左侧菜单栏 -->
         <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
+
             <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
                 :inlineCollapsed="false"
                 style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
@@ -4871,18 +4881,9 @@ const state_layer = reactive({
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
-                {{ header.value }}
+                <!-- {{ header.value }} -->
 
-                <a-tooltip placement="right">
-                    <!-- <a-button @click="rightHeight = '-3000px'" size="large"
-                        style="position: absolute;top: 20px;right: 15px">
-                        <ChevronRight color="RGB(58,123,251)" />
-                    </a-button> -->
-                    <a-button @click="rightHeight = '-3000px'" size="large" class="boxshadow"
-                        style="position: absolute;top: 10px;right: 15px">
-                        <ChevronRight color="RGB(58,123,251)" />
-                    </a-button>
-                </a-tooltip>
+
             </a-typography-title>
 
 
@@ -4900,10 +4901,10 @@ const state_layer = reactive({
 
             <div>
 
-                <a-segmented v-model:value="segmented" block :options="data" size="large"
+                <!-- <a-segmented v-model:value="segmented" block :options="data" size="large"
                     style="width: 260px;margin-left: 260px;margin-top: -60px;">
 
-                </a-segmented> <br>
+                </a-segmented> <br> -->
                 <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
 
                     <a-tab-pane key="1" tab="整体">
@@ -5556,12 +5557,12 @@ const state_layer = reactive({
 
 .right-card {
     position: absolute;
-    right: 0px;
+    right: 15px;
     top: 92px;
     width: 550px;
 
     z-index: 1000;
-    height: calc(100% - 100px);
+    height: calc(100% - 250px);
     background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
     padding: 10px;
     /* box-shadow: 2px 2px 5px #f5f4f469 inset; */
@@ -5795,7 +5796,7 @@ p {
 .right-tool {
     position: absolute;
     right: 15px;
-    top: 100px;
+    top: 150px;
     /* width: 2rem; */
     z-index: 1000;
 }

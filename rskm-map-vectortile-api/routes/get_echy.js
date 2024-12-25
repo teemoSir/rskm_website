@@ -284,14 +284,14 @@ const sql = (params, query) => {
             `
             break;
         // 区域机构 2
-        case "echy_sql_qy_jg_tg":
-            sql = `
-         select count(distinct xiangzhen),xiangzhen,
-bxjg,version, sum(v1::double precision) as  tbsl, sum(v5::double precision) as zzsl, sum(v5::double precision)/sum(v1::double precision) as fgl, sum(v1::double precision) - sum(v5::double precision) as cbsl
-from public.procjet_2024_yghy_hz10_v1v8 a  where v5 <> '' group by bxjg,version,xiangzhen
+        //         case "echy_sql_qy_jg_tg":
+        //             sql = `
+        //          select count(distinct xiangzhen),xiangzhen,
+        // bxjg,version, sum(v1::double precision) as  tbsl, sum(v5::double precision) as zzsl, sum(v5::double precision)/sum(v1::double precision) as fgl, sum(v1::double precision) - sum(v5::double precision) as cbsl
+        // from public.procjet_2024_yghy_hz10_v1v8 a  where v5 <> '' group by bxjg,version,xiangzhen
 
-            `
-            break;
+        //             `
+        //             break;
 
         case "echy_sql_dk_jg_tg":
             sql = `
