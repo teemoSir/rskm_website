@@ -3619,22 +3619,32 @@ const state_layer = reactive({
     checked8: true,
 });
 
-const current = ref(['mail']);
-const itemsref = ref([
-    {
-        key: 'mail',
-        icon: () => h(MailOutlined),
-        label: '区域',
-        title: 'Navigation One',
-    },
-    {
-        key: 'app',
-        icon: () => h(AppstoreOutlined),
-        label: '地块',
-        title: 'Navigation Two',
-    },
+// const current = ref(['mail']);
+// const itemsref = ref([
+//     {
+//         key: 'mail',
+//         icon: () => h(MailOutlined),
+//         label: '区域',
+//         title: 'Navigation One',
+//     },
+//     {
+//         key: 'app',
+//         icon: () => h(AppstoreOutlined),
+//         label: '地块',
+//         title: 'Navigation Two',
+//     },
 
-]);
+// ]);
+
+
+const placement = ref('right');
+const opens = ref(false);
+const showDrawers = () => {
+    opens.value = true;
+};
+const onClose = () => {
+    opens.value = false;
+};
 </script>
 
 <template>
@@ -3645,7 +3655,8 @@ const itemsref = ref([
     </div>
 
     <!-- 地图 -->
-    <div class="verification">
+
+    <div class="verification" :style="{ width: !opens ? '100%' : 'calc(100% - 520px)' }">
         <!-- <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
             <div id="before" class="map">
             </div>
@@ -3654,26 +3665,51 @@ const itemsref = ref([
         </div> -->
 
         <div>
-            <div id="before"
-                style="position: absolute;left: 0;top:0;width: 50%;height:100%;z-index: 1000;outline: 3px dotted #ccc;">
+            <div id="before" :style="{
+                width: '50%',
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                height: '100%',
+                zIndex: 1000
+            }">
             </div>
-            <div id="after" style="position: absolute;left: 50%;top:0px;width: 50%;height:100%;z-index: 999;">
+            <div
+                style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;border-left: 3px dotted #fff;z-index: 1100;">
             </div>
+            <div id="after" :style="{
+                width: '50%',
+                position: 'absolute',
+                left: '50%',
+                top: '0',
+                height: '100%',
+                zIndex: 1000
+            }">
+            </div>
+
         </div>
 
 
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
+            <a-segmented v-model:value="segmented" block :options="data" size="large"
+                style="width: 260px;position: absolute;right: 0;top: -50px;z-index: 1000;">
+            </a-segmented>
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                <a-button v-if="rightHeight != '215px'" @click="rightHeight = '215px'" size="large" class="boxshadow">
+                <!-- <a-button v-if="rightHeight != '215px'" @click="rightHeight = '215px'" size="large" class="boxshadow">
                     <Menu color="RGB(58,123,251)"></Menu>
                 </a-button>
                 <a-button v-if="rightHeight == '215px'" @click="rightHeight = '-3000px'" size="large" class="boxshadow"
                     style="">
                     <ChevronRight color="RGB(58,123,251)" />
+                </a-button> -->
+
+                <a-button type="primary" @click="showDrawers" class="boxshadow">
+                    <!-- <ChevronRight color="RGB(58,123,251)" /> -->
+                    <Menu color="RGB(58,123,251)"></Menu>
                 </a-button>
             </a-tooltip>
             <br>
@@ -3966,9 +4002,193 @@ const itemsref = ref([
     <!-- 页面 -->
     <div class="page">
 
-        <a-segmented v-model:value="segmented" block :options="data" size="large"
-            style="width: 260px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
-        </a-segmented>
+        <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
+            <br>
+            <!-- <a-button style="margin-right: 8px" @click="onClose">关闭</a-button> -->
+            <a-button type="primary" @click="onClose" style="position: absolute;right:10px">
+                <X></X>
+            </a-button>
+            <br>
+            <br>
+            <p>
+
+                <a-typography-title :level="1"
+                    style="color: RGB(31,31,31);line-height: 80px;  font-family: 'FZZongYi-M05';">
+                    {{ header ?
+                        header :
+                        "试点县区域"
+                    }}
+                    <a-tag v-for="item in ygjg.filter(e => (e.quxian == header))" :key="item.quxian"
+                        style="z-index: 10000;" color="RGB(81,196,43)">{{ item.ygjg ? item.ygjg : '' }}</a-tag>
+
+                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
+                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
+                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
+
+
+
+                </a-typography-title>
+
+            <div style="margin: -25px 0 15px 0;">
+                <a-row type="flex">
+                    <a-statistic title="核验年份" value="2024年" />
+
+                    <a-statistic title="核验作物" value="玉米" :style="{
+                        margin: '0 32px',
+                    }" />
+
+                </a-row>
+            </div>
+
+            <div>
+                <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
+                    <a-tab-pane key="1" tab="整体">
+                        <div v-if="activeKey == 1">
+                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
+                                size="small" :scroll="Ieight">
+                                <template #suffix>
+                                    %
+                                </template>
+                                <template #bodyCell="{ column, record }">
+
+                                    <template v-if="column.dataIndex == 'qushi'">
+
+                                        <div v-if="record.repayment > record.borrow" style="color: red;">
+                                            <ArrowUp color="red"></ArrowUp> {{ Number(Number(record.repayment) -
+                                                Number(record.borrow)).toFixed(2) }}
+                                        </div>
+                                        <div v-if="record.repayment < record.borrow" style="color: green;">
+                                            <ArrowDown color="green"></ArrowDown> {{ Number(Number(record.repayment) -
+                                                Number(record.borrow)).toFixed(2) }}
+                                        </div>
+                                        <div v-if="record.repayment == record.borrow">
+                                            无变化
+                                        </div>
+
+                                    </template>
+
+                                </template>
+                            </a-table>
+                        </div>
+                        <div v-else>
+                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
+                                size="small" :scroll="Ieight">
+                                <template #bodyCell="{ column, record }">
+
+                                    <template v-if="column.dataIndex == 'qushi'">
+
+                                        <div v-if="record.repayment > record.borrow" style="color: red;">
+                                            <ArrowUp color="red"></ArrowUp> {{ String(Number(Number(record.repayment) -
+                                                Number(record.borrow)).toFixed(0)) }}
+                                        </div>
+                                        <div v-if="record.repayment < record.borrow" style="color: green;">
+                                            <ArrowDown color="green"></ArrowDown> {{ String(
+                                                parseInt(Number(record.repayment) -
+                                                    Number(record.borrow)).toFixed(0)) }}
+                                        </div>
+                                        <div v-if="record.repayment == record.borrow">
+                                            无变化
+                                        </div>
+
+                                    </template>
+
+                                </template>
+                            </a-table>
+                        </div>
+
+                    </a-tab-pane>
+                    <a-tab-pane key="2" tab="地区">
+
+                    </a-tab-pane>
+                    <a-tab-pane key="3" tab="机构">
+
+                    </a-tab-pane>
+                </a-tabs>
+
+                <div v-show="activeKeyChildren == '2'">
+
+
+                    <div v-show="activeKey == 1">
+                        <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
+                            size="small" bordered>
+                            <template #bodyCell="{ column, record }">
+
+                                <template v-if="column.dataIndex == 'repayment2'">
+
+                                    <div v-if="record.repayment2 > 1.05" style="color: red;">
+                                        超保
+                                    </div>
+
+                                    <div v-if="record.repayment2 < 0.6" style="color: orange;">
+                                        不足
+                                    </div>
+                                    <div v-if="(record.repayment2 >= 0.6 && record.repayment2 <= 1.05)"
+                                        style="color: green;">
+                                        合格
+                                    </div>
+
+                                </template>
+                                <template v-if="column.dataIndex == 'repayment'">
+
+                                    <div v-if="record.repayment > 0" style="color: red;">
+                                        <ArrowUp color="red"></ArrowUp><br> {{ record.repayment }}
+                                    </div>
+                                    <div v-if="record.repayment < 0" style="color: green;">
+                                        <ArrowDown color="green"></ArrowDown><br> {{ record.repayment }}
+                                    </div>
+                                    <div v-if="record.repayment == 0">
+                                        无变化
+                                    </div>
+
+                                </template>
+
+                            </template>
+                        </a-table>
+                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+
+                    </div>
+
+                    <div v-show="activeKey == 2">
+                        <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
+                            size="small" bordered></a-table>
+
+                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+                    </div>
+                </div>
+
+                <div v-show="activeKeyChildren == '3'">
+
+
+
+                    <div v-show="activeKey == 1">
+                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
+                            :scroll="Ieight" size="small"></a-table>
+                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+                    </div>
+
+                    <div v-show="activeKey == 2">
+                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
+                            :scroll="Ieight" size="small"></a-table>
+                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+                    </div>
+
+                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
+
+
+                </div>
+            </div>
+
+
+
+
+            </p>
+            <!-- <template #footer>
+                <a-button style="margin-right: 8px" @click="onClose">Cancel</a-button>
+                <a-button type="primary" @click="onClose">Submit</a-button>
+            </template> -->
+        </a-drawer>
+
+
 
         <!-- <a-menu v-model:selectedKeys="current" mode="horizontal" :items="itemsref" inlineIndent="100"
             style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;" />
@@ -3986,7 +4206,7 @@ const itemsref = ref([
         </a-segmented> -->
 
 
-
+        <!-- 
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
             :footer="null">
             <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
@@ -4057,7 +4277,7 @@ const itemsref = ref([
 
         <a-modal v-model:open="lockDownOpen" width="90%" title="" :footer="null">
             <div v-html="lockDownHtml" class="lockDownHtml"></div>
-        </a-modal>
+        </a-modal> -->
 
         <!-- 左侧菜单栏 -->
         <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
@@ -4068,7 +4288,7 @@ const itemsref = ref([
                 :items="items" @click="handleClick"></a-menu>
         </div>
         <!-- 中间 -->
-        <div class="center-card" style="cursor:all-scroll;">
+        <div class="center-card" :style="{ cursor: 'all-scroll', left: !opens ? '50%' : '40%' }">
             <table style="width: 100%;">
                 <tr>
                     <td style="display: flex;justify-content: right;">
@@ -4112,12 +4332,10 @@ const itemsref = ref([
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
                 <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
-                <!-- {{ header.value }} -->
+
 
 
             </a-typography-title>
-
-
 
             <div style="margin: -25px 0 15px 0;">
                 <a-row type="flex">
@@ -4131,16 +4349,8 @@ const itemsref = ref([
             </div>
 
             <div>
-
-                <!-- <a-segmented v-model:value="segmented" block :options="data" size="large"
-                    style="width: 260px;margin-left: 260px;margin-top: -60px;">
-
-                </a-segmented> <br> -->
                 <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
-
                     <a-tab-pane key="1" tab="整体">
-
-                        <!-- <a-empty /> -->
                         <div v-if="activeKey == 1">
                             <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
                                 size="small" :scroll="Ieight">
@@ -4204,7 +4414,7 @@ const itemsref = ref([
                 </a-tabs>
 
                 <div v-show="activeKeyChildren == '2'">
-                    <!-- <a-empty /> -->
+
 
                     <div v-show="activeKey == 1">
                         <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
@@ -4242,25 +4452,37 @@ const itemsref = ref([
 
                             </template>
                         </a-table>
-                        <a-button type="link" :size="size">查看详细信息</a-button>
+                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+
                     </div>
 
                     <div v-show="activeKey == 2">
                         <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
                             size="small" bordered></a-table>
-                        <a-button type="link" :size="size">查看详细信息</a-button>
+
+                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
                     </div>
                 </div>
 
                 <div v-show="activeKeyChildren == '3'">
 
-                    <!-- <a-empty /> -->
-                    <a-table v-show="activeKey == 1" :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false"
-                        bordered :scroll="Ieight" size="small"></a-table>
 
-                    <a-table v-show="activeKey == 2" :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false"
-                        bordered :scroll="Ieight" size="small"></a-table>
-                    <a-button type="link" :size="size">查看详细信息</a-button>
+
+                    <div v-show="activeKey == 1">
+                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
+                            :scroll="Ieight" size="small"></a-table>
+                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+                    </div>
+
+                    <div v-show="activeKey == 2">
+                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
+                            :scroll="Ieight" size="small"></a-table>
+                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
+                    </div>
+
+                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
+
+
                 </div>
             </div>
 
@@ -4279,7 +4501,7 @@ const itemsref = ref([
         <AreaLegend v-if="activeKey == 1" core="map"></AreaLegend>
     </div>
 
-    <div class="tuli-right">
+    <div class="tuli-right" :style="{ left: !opens ? '50%' : '40%' }">
         <VerificationLegend v-if="activeKey == 2" core="mapp"></VerificationLegend>
         <AreaLegend v-if="activeKey == 1" core="mapp"></AreaLegend>
     </div>
@@ -4416,7 +4638,7 @@ const itemsref = ref([
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%;
+
     height: 100%;
 }
 
@@ -4460,7 +4682,6 @@ const itemsref = ref([
 
 .tuli-right {
     position: absolute;
-    left: 50%;
     bottom: 10px;
     z-index: 1000;
     margin-left: 20px;
@@ -4504,7 +4725,7 @@ const itemsref = ref([
     z-index: 1000;
     position: absolute;
     top: 100px;
-    left: 50%;
+
     margin-left: -335px;
     /* background-color: #ccc */
     /* background: linear-gradient(to bottom, rgba(19, 18, 18, 0.39), rgba(3, 11, 85, 0)); */
