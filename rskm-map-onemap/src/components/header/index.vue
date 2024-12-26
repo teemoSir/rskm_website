@@ -208,7 +208,7 @@ onMounted(() => {
 
 <style scoped>
 ::v-deep .ant-menu {
-    font-size: 18px;
+    font-size: 20px;
 
 }
 
@@ -221,6 +221,10 @@ onMounted(() => {
 
 ::v-deep .ant-picker input {
     color: #ccc;
+}
+
+::v-deep .ant-page-header-heading-title {
+    font-size: 25px;
 }
 </style>
 

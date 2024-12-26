@@ -1,6 +1,8 @@
 <script setup>
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.css";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { config, mapbox } from "@/config/tileserver.js";
 import syncMove from '@mapbox/mapbox-gl-sync-move';
@@ -11,7 +13,8 @@ import { message } from "ant-design-vue";
 // import SDMap from "@/views/map/index.vue";
 import Header from "@/components/header/index.vue";
 import c2 from "@/assets/images/map/c2.svg";
-import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons-vue';
+
 import {
     ScanSearch,
     Layers,
@@ -92,847 +95,6 @@ dayjs.locale('zh-cn');
 
 // 路由
 const router = useRouter();
-
-
-
-/**
- * 区域一图
- */
-const loadEcharts = (data) => {
-
-
-    var chartDom = document.getElementById('main');
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-
-        aria: {
-            enabled: false,
-            decal: {
-                show: false
-            }
-        },
-        color: [
-            "#ee6666",
-            "#91cc75",
-            "#fac858",
-        ],
-        tooltip: {
-            trigger: 'item'
-        },
-        legend: {
-            top: '30%',
-            right: 'right',
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-        series: [
-            {
-                name: '',
-                type: 'pie',
-                radius: ['40%', '80%'],
-
-                avoidLabelOverlap: false,
-                padAngle: 2,
-                itemStyle: {
-                    borderRadius: 3
-                },
-                label: {
-                    show: true,
-                    //position: 'center',
-
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 30,
-                        // /  fontWeight: 'bold'
-                    }
-                },
-
-                data: data
-            }
-        ]
-    };
-
-    option && myChart.setOption(option);
-
-}
-/**
- * 区域二图
- */
-const loadEcharts02 = (yAxis, series1, series2) => {
-
-    let app = {};
-    let chartDom = document.getElementById('loadEcharts02');
-
-    let myChart = echarts.init(chartDom);
-    let option = undefined;
-
-    const posList = [
-        'left',
-        'right',
-        'top',
-        'bottom',
-        'inside',
-        'insideTop',
-        'insideLeft',
-        'insideRight',
-        'insideBottom',
-        'insideTopLeft',
-        'insideTopRight',
-        'insideBottomLeft',
-        'insideBottomRight'
-    ];
-    app.configParameters = {
-        rotate: {
-            min: -90,
-            max: 90
-        },
-        align: {
-            options: {
-                left: 'left',
-                center: 'center',
-                right: 'right'
-            }
-        },
-        verticalAlign: {
-            options: {
-                top: 'top',
-                middle: 'middle',
-                bottom: 'bottom'
-            }
-        },
-        position: {
-            options: posList.reduce(function (map, pos) {
-                map[pos] = pos;
-                return map;
-            }, {})
-        },
-        distance: {
-            min: 0,
-            max: 100
-        }
-    };
-    app.config = {
-        rotate: 90,
-        align: 'left',
-        verticalAlign: 'middle',
-        position: 'insideBottom',
-        distance: 1,
-
-        onChange: function () {
-            const labelOption = {
-                rotate: app.config.rotate,
-                align: app.config.align,
-                verticalAlign: app.config.verticalAlign,
-                position: app.config.position,
-                distance: app.config.distance
-            };
-            myChart.setOption({
-                series: [
-                    {
-                        label: labelOption
-                    },
-                    {
-                        label: labelOption
-                    },
-                ]
-            });
-        }
-    };
-
-
-    const labelOption = {
-        show: true,
-        distance: app.config.distance,
-        formatter: function (e) {
-            return e.value ? Number(e.value).toFixed(0) : ''
-        },
-        fontSize: 16,
-        // color: 'green',
-        // textBorderColor: '#999',
-        rich: {
-            name: {}
-        }
-    };
-
-    option = {
-        grid: {
-            top: '8%',
-            left: '10%',  // grid布局设置适当调整避免X轴文字只能部分显示
-            right: '5%', // grid布局设置适当调整避免X轴文字只能部分显示
-            bottom: '15%',
-
-        },
-        color: [
-
-            "#fac858",
-            "#91cc75",
-            "#ea7ccc",
-            "#5470c6",
-        ],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        legend: {
-            // data: [],
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-
-        toolbox: {
-            show: true,
-            orient: 'vertical',
-            left: 'right',
-            top: 'center',
-            feature: {
-                mark: { show: true },
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'stack'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        yAxis: [
-            {
-                type: 'value',
-                axisLabel: {
-                    fontSize: 16 // 文字大小
-                },
-            }
-
-        ],
-        xAxis: [
-            {
-
-                type: 'category',
-                axisTick: { show: false },
-                axisLabel: {
-                    show: true, // 是否显示刻度标签，默认显示
-                    interval: 0, // 坐标轴刻度标签的显示间隔，在类目轴中有效；默认会采用标签不重叠的策略间隔显示标签；可以设置成0强制显示所有标签；如果设置为1，表示『隔一个标签显示一个标签』，如果值为2，表示隔两个标签显示一个标签，以此类推。
-                    rotate: -40, // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从-90度到90度
-                    inside: false, // 刻度标签是否朝内，默认朝外
-                    margin: 6, // 刻度标签与轴线之间的距离
-                    //  formatter: '{value} Day', // 刻度标签的内容格式器
-                    fontSize: 16 // 文字大小
-                },
-                data: yAxis
-            }
-        ],
-        series: [
-        ]
-    };
-
-    if (!series2) {
-        option.legend.data = ['保险覆盖率']
-        option.series = [];
-        option.series.push({
-            name: '保险覆盖率',
-            type: 'bar',
-            barGap: 0,
-            label: labelOption,
-            emphasis: {
-                focus: 'series'
-            },
-            data: series1
-        })
-
-
-    } else {
-        option.legend.data = ['保险覆盖率', '承保合格率']
-        option.series = [];
-        option.series.push({
-            name: '保险覆盖率',
-            type: 'bar',
-            barGap: 0,
-            label: labelOption,
-            emphasis: {
-                focus: 'series'
-            },
-            data: series1
-        })
-        option.series.push({
-            name: '承保合格率',
-            type: 'bar',
-            label: labelOption,
-            emphasis: {
-                focus: 'series'
-            },
-            data: series2
-        })
-
-
-    }
-
-
-    option && myChart.setOption(option);
-}
-
-/**
- * 区域三图
- */
-const loadEcharts03 = (data, rawdata) => {
-
-
-
-    var chartDom = document.getElementById('main03');
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    // There should not be negative values in rawData
-    const rawData = rawdata;
-    const totalData = [];
-    for (let i = 0; i < rawData[0].length; ++i) {
-        let sum = 0;
-        for (let j = 0; j < rawData.length; ++j) {
-            sum += rawData[j][i];
-        }
-        totalData.push(sum);
-    }
-    const grid = {
-        left: 80,
-        right: 30,
-        top: 30,
-        bottom: 50
-    };
-    const series = [
-        '合格', '不足', '超保'
-    ].map((name, sid) => {
-        return {
-            name,
-            type: 'bar',
-            stack: 'total',
-            barWidth: '60%',
-
-            label: {
-                show: true,
-                formatter: (params) => Math.round(params.value * 1000) / 10 + '%'
-            },
-            data: rawData[sid].map((d, did) =>
-                totalData[did] <= 0 ? 0 : d / totalData[did]
-            )
-        };
-    });
-    option = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            },
-            formatter: function (params) {
-                return params[0].name + '<br/>正常：' + Number(params[0].value * 100).toFixed(0) + '%<br/>不足：' + Number(params[1].value * 100).toFixed(0) + '%<br/>超保：' + Number(params[2].value * 100).toFixed(0) + '%';
-            }
-        },
-        toolbox: {
-            show: true,
-            orient: 'vertical',
-            left: 'right',
-            top: 'center',
-            feature: {
-                mark: { show: true },
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'stack'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        color: [
-            "#91cc75",
-            "#fac858",
-            "#ee6666",
-        ],
-        legend: {
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-        grid,
-        yAxis: {
-            axisLabel: {
-                fontSize: 16 // 文字大小
-            },
-            type: 'category',
-            data: data
-        },
-        xAxis: {
-            type: 'value',
-            axisLabel: {
-                fontSize: 16 // 文字大小
-            },
-        },
-        series
-    };
-
-    option && myChart.setOption(option);
-
-
-}
-
-
-/**
- * 地块一图
- */
-const echartsDK01 = (a = 11, b = 22, c = 66) => {
-
-    var chartDom = document.getElementById('echartsDK01');
-    if (!chartDom) return;
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-        title: {
-            //   text: '合格地块占比',
-            //  subtext: '2024一期',
-            left: 'center'
-        },
-        tooltip: {
-            trigger: 'item'
-        },
-        legend: {
-            bottom: '-3.5%',
-            left: 'center',
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-        series: [
-            {
-
-                color: ["#fac858",
-                    "#91cc75",
-                    "#ee6666",],
-                name: '',
-                type: 'pie',
-                radius: ['40%', '80%'],
-                data: [
-                    { value: a, name: '无地块户数' },
-                    { value: b, name: '地块合格户数' },
-                    { value: c, name: '地块不合格户数' },
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                }
-            }
-        ]
-    };
-
-    option && myChart.setOption(option);
-
-}
-
-
-/**
- * 地块二图
- */
-const echartsDK02 = (names, hgdhValues, dhValues) => {
-
-
-    var app = {};
-
-    var chartDom = document.getElementById('echartsDK02');
-    if (!chartDom) return;
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    const posList = [
-        'left',
-        'right',
-        'top',
-        'bottom',
-        'inside',
-        'insideTop',
-        'insideLeft',
-        'insideRight',
-        'insideBottom',
-        'insideTopLeft',
-        'insideTopRight',
-        'insideBottomLeft',
-        'insideBottomRight'
-    ];
-    app.configParameters = {
-        rotate: {
-            min: -90,
-            max: 90
-        },
-        align: {
-            options: {
-                left: 'left',
-                center: 'center',
-                right: 'right'
-            }
-        },
-        verticalAlign: {
-            options: {
-                top: 'top',
-                middle: 'middle',
-                bottom: 'bottom'
-            }
-        },
-        position: {
-            options: posList.reduce(function (map, pos) {
-                map[pos] = pos;
-                return map;
-            }, {})
-        },
-        distance: {
-            min: 0,
-            max: 100
-        }
-    };
-    app.config = {
-        rotate: 90,
-        align: 'left',
-        verticalAlign: 'middle',
-        position: 'insideBottom',
-        distance: 15,
-
-        onChange: function () {
-            const labelOption = {
-                rotate: app.config.rotate,
-                align: app.config.align,
-                verticalAlign: app.config.verticalAlign,
-                position: app.config.position,
-                distance: app.config.distance
-            };
-            myChart.setOption({
-
-                series: [
-                    {
-                        label: labelOption
-                    },
-                    {
-                        label: labelOption
-                    },
-                    // {
-                    //   label: labelOption
-                    // },
-                    // {
-                    //   label: labelOption
-                    // }
-                ]
-            });
-        }
-    };
-    const labelOption = {
-        show: true,
-        //   position: app.config.position,
-        distance: app.config.distance,
-        //  align: app.config.align,
-        // verticalAlign: app.config.verticalAlign,
-        // rotate: app.config.rotate,
-        //  formatter: '{c}%',
-        // formatter: '{c}',
-        fontSize: 16,
-        rich: {
-            name: {}
-        }
-    };
-
-    const grid = {
-        left: 60,
-        right: 30,
-        top: 30,
-        bottom: 50
-    };
-    option = {
-        grid,
-        color: [
-
-            // "#ea7ccc",
-
-            //  "#73c0de",
-
-            // "#fc8452",
-            // "#9a60b4",
-            "#3ba272",
-            "#5470c6",
-            // "#ee6666",
-        ],
-        tooltip: {
-            trigger: 'axis',
-
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        legend: {
-            data: ['合格大户', '大户数量'],
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-        toolbox: {
-            show: true,
-            orient: 'vertical',
-            left: 'right',
-            top: 'center',
-            feature: {
-                mark: { show: true },
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'stack'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        xAxis: [{
-            type: 'value',
-            axisLabel: {
-                fontSize: 16 // 文字大小
-            },
-        }
-
-        ],
-        yAxis: [
-            {
-                axisLabel: {
-                    fontSize: 16 // 文字大小
-                },
-                type: 'category',
-                axisTick: { show: false },
-                data: names
-            }
-        ],
-
-        series: [
-
-            {
-                name: '合格大户',
-                type: 'bar',
-                label: labelOption,
-                emphasis: {
-                    focus: 'series'
-                },
-                data: hgdhValues
-            },
-            {
-
-                name: '大户数量',
-                type: 'bar',
-                barGap: 0,
-                label: labelOption,
-                emphasis: {
-                    focus: 'series'
-                },
-                data: dhValues
-            }
-        ]
-    };
-
-
-
-    option && myChart.setOption(option);
-
-}
-
-
-/**
- * 地块三图
- */
-const echartsDK03 = (names, data1, data2) => {
-
-    var app = {};
-
-    var chartDom = document.getElementById('echartsDK03');
-    if (!chartDom) return;
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    const posList = [
-        'left',
-        'right',
-        'top',
-        'bottom',
-        'inside',
-        'insideTop',
-        'insideLeft',
-        'insideRight',
-        'insideBottom',
-        'insideTopLeft',
-        'insideTopRight',
-        'insideBottomLeft',
-        'insideBottomRight'
-    ];
-    app.configParameters = {
-        rotate: {
-            min: -90,
-            max: 90
-        },
-        align: {
-            options: {
-                left: 'left',
-                center: 'center',
-                right: 'right'
-            }
-        },
-        verticalAlign: {
-            options: {
-                top: 'top',
-                middle: 'middle',
-                bottom: 'bottom'
-            }
-        },
-        position: {
-            options: posList.reduce(function (map, pos) {
-                map[pos] = pos;
-                return map;
-            }, {})
-        },
-        distance: {
-            min: 0,
-            max: 100
-        }
-    };
-    app.config = {
-        rotate: 90,
-        align: 'left',
-        verticalAlign: 'middle',
-        position: 'insideBottom',
-        distance: 15,
-
-        onChange: function () {
-            const labelOption = {
-                rotate: app.config.rotate,
-                align: app.config.align,
-                verticalAlign: app.config.verticalAlign,
-                position: app.config.position,
-                distance: app.config.distance
-            };
-            myChart.setOption({
-                series: [
-                    {
-                        label: labelOption
-                    },
-                    {
-                        label: labelOption
-                    },
-                    // {
-                    //   label: labelOption
-                    // },
-                    // {
-                    //   label: labelOption
-                    // }
-                ]
-            });
-        }
-    };
-    const labelOption = {
-        show: true,
-        //   position: app.config.position,
-        distance: app.config.distance,
-        //  align: app.config.align,
-        // verticalAlign: app.config.verticalAlign,
-        // rotate: app.config.rotate,
-        // formatter: '{c}  {name|{a}}',
-        formatter: '{c}',
-        fontSize: 16,
-        rich: {
-            name: {}
-        }
-    };
-
-    const grid = {
-        left: 60,
-        right: 30,
-        top: 30,
-        bottom: 60
-    };
-    option = {
-        grid,
-        color: [
-
-
-            // "#ea7ccc",
-            // "#5470c6",
-            // "#73c0de",
-            // "#3ba272",
-            "#3ba272",
-            //"#5470c6",
-            "#73c0de",
-        ],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        legend: {
-            data: ['合格数量', '大户数量'],
-            textStyle: {
-                fontSize: 16 // 图例文字大小
-            }
-        },
-        toolbox: {
-            show: true,
-            orient: 'vertical',
-            left: 'right',
-            top: 'center',
-            feature: {
-                mark: { show: true },
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'stack'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        xAxis: [{
-            type: 'value',
-            axisLabel: {
-                fontSize: 16 // 文字大小
-            },
-        }
-
-        ],
-        yAxis: [
-            {
-                axisLabel: {
-                    fontSize: 16 // 文字大小
-                },
-                type: 'category',
-                axisTick: { show: false },
-                data: names
-            }
-        ],
-        series: [
-            {
-                name: '合格数量',
-                type: 'bar',
-                barGap: 0,
-                label: labelOption,
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data1
-            },
-            {
-                name: '大户数量',
-                type: 'bar',
-                label: labelOption,
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data2
-            },
-
-        ]
-    };
-
-    option && myChart.setOption(option);
-
-}
-
-
-
 
 // 表格数据
 const dataSource = ref([])
@@ -1891,7 +1053,7 @@ const loadCountyFit = async (name, newMap) => {
     );
 
     newMap.fitBounds(turf.bbox(JSON.parse(features[0].json)), {
-        padding: { top: 100, left: 600, right: 600, bottom: 100 },
+        padding: { top: 50, left: 50, right: 50, bottom: 50 },
         linear: true,
     });
 }
@@ -2690,6 +1852,28 @@ const loadDoubleMap = () => {
 
 
 
+
+
+}
+/**
+ * 
+ */
+const loadDoubleMap2 = () => {
+
+    let container = '#comparison-container';
+    let before = initMap("before");
+    let after = initMap("after");
+
+    console.log(before, after)
+
+    window.map = before;
+    window.mapp = after;
+
+    let compare = new mapboxgl.Compare(before, after, container, {
+        // orientation: 'horizontal' 
+    });
+
+    //  compare.setSlider(800);
 }
 
 
@@ -4434,6 +3618,23 @@ const state_layer = reactive({
     checked7: true,
     checked8: true,
 });
+
+const current = ref(['mail']);
+const itemsref = ref([
+    {
+        key: 'mail',
+        icon: () => h(MailOutlined),
+        label: '区域',
+        title: 'Navigation One',
+    },
+    {
+        key: 'app',
+        icon: () => h(AppstoreOutlined),
+        label: '地块',
+        title: 'Navigation Two',
+    },
+
+]);
 </script>
 
 <template>
@@ -4445,11 +3646,21 @@ const state_layer = reactive({
 
     <!-- 地图 -->
     <div class="verification">
-        <div id="before"
-            style="position: absolute;left: 0;top:0;width: 50%;height:100%;z-index: 1000;outline: 3px dotted #ccc;">
+        <!-- <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
+            <div id="before" class="map">
+            </div>
+            <div id="after" style="map">
+            </div>
+        </div> -->
+
+        <div>
+            <div id="before"
+                style="position: absolute;left: 0;top:0;width: 50%;height:100%;z-index: 1000;outline: 3px dotted #ccc;">
+            </div>
+            <div id="after" style="position: absolute;left: 50%;top:0px;width: 50%;height:100%;z-index: 999;">
+            </div>
         </div>
-        <div id="after" style="position: absolute;left: 50%;top:0px;width: 50%;height:100%;z-index: 999;">
-        </div>
+
 
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
@@ -4509,7 +3720,8 @@ const state_layer = reactive({
                             <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
                                 @click="switchTile(item)" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-                                {{ item.name }}
+                                {{ item.name.split("-")[0] }} <br>
+                                {{ item.name.split("-")[1] }}
                             </div>
                         </div>
                     </a-card>
@@ -4521,7 +3733,8 @@ const state_layer = reactive({
                         }" @click="switchTile(item)">
                             <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-                                {{ item.name }}
+                                {{ item.name.split("-")[0] }} <br>
+                                {{ item.name.split("-")[1] }}
                             </div>
                         </div>
                     </a-card>
@@ -4756,6 +3969,24 @@ const state_layer = reactive({
         <a-segmented v-model:value="segmented" block :options="data" size="large"
             style="width: 260px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
         </a-segmented>
+
+        <!-- <a-menu v-model:selectedKeys="current" mode="horizontal" :items="itemsref" inlineIndent="100"
+            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;" />
+        <br />
+        <br />
+       -->
+        <!-- <a-segmented v-model:value="segmented" :options="data" size="large"
+            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
+            <template #label="{ payload }">
+                <div style="padding: 20px 10px">
+                    <div>{{ payload.title }}</div>
+                    <div>{{ payload.subTitle }}</div>
+                </div>
+            </template>
+        </a-segmented> -->
+
+
+
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
             :footer="null">
             <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
@@ -4911,7 +4142,8 @@ const state_layer = reactive({
 
                         <!-- <a-empty /> -->
                         <div v-if="activeKey == 1">
-                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered>
+                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
+                                size="small" :scroll="Ieight">
                                 <template #suffix>
                                     %
                                 </template>
@@ -4937,7 +4169,8 @@ const state_layer = reactive({
                             </a-table>
                         </div>
                         <div v-else>
-                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered>
+                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
+                                size="small" :scroll="Ieight">
                                 <template #bodyCell="{ column, record }">
 
                                     <template v-if="column.dataIndex == 'qushi'">
@@ -4975,7 +4208,7 @@ const state_layer = reactive({
 
                     <div v-show="activeKey == 1">
                         <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
-                            bordered>
+                            size="small" bordered>
                             <template #bodyCell="{ column, record }">
 
                                 <template v-if="column.dataIndex == 'repayment2'">
@@ -5014,7 +4247,7 @@ const state_layer = reactive({
 
                     <div v-show="activeKey == 2">
                         <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
-                            bordered></a-table>
+                            size="small" bordered></a-table>
                         <a-button type="link" :size="size">查看详细信息</a-button>
                     </div>
                 </div>
@@ -5023,323 +4256,16 @@ const state_layer = reactive({
 
                     <!-- <a-empty /> -->
                     <a-table v-show="activeKey == 1" :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false"
-                        bordered :scroll="Ieight"></a-table>
+                        bordered :scroll="Ieight" size="small"></a-table>
 
                     <a-table v-show="activeKey == 2" :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false"
-                        bordered :scroll="Ieight"></a-table>
+                        bordered :scroll="Ieight" size="small"></a-table>
                     <a-button type="link" :size="size">查看详细信息</a-button>
                 </div>
             </div>
 
 
-            <div title="" style="height: 99%;" v-show="false">
 
-                <a-tabs v-model:activeKey="activeKey" type="card" style="position: absolute;top: 0;left: 0; ">
-                    <a-tab-pane key="1">
-                        <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
-                                <LandPlotIcon :size="20"></LandPlotIcon>
-                                &nbsp;区域
-                            </div>
-                        </template>
-                    </a-tab-pane>
-                    <a-tab-pane key="2">
-                        <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
-                                <LucideSquareMousePointer :size="20"></LucideSquareMousePointer>
-                                &nbsp;地块
-                            </div>
-                        </template>
-                    </a-tab-pane>
-
-
-                </a-tabs>
-                <a-tooltip placement="left">
-                    <template #title>
-                        <span>隐藏统计栏</span>
-                    </template>
-                    <X style="float: right;cursor: pointer;" color="#999" @click="xRightSquareShow = false"></X>
-                </a-tooltip>
-                <!--区域核验-->
-                <div v-show="activeKey == '1'"
-                    style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
-
-                    <div style="width: 100%; height: 100%;overflow-y: hidden;overflow-x: hidden;">
-                        <div style="width: 100%;height: 260px;">
-                            <div class="headerbg">
-                                <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> {{ header ? header :
-                                    '试点区县' }}
-                                <table style="position: absolute;right: 10px;margin-top: -30px">
-                                    <tr>
-                                        <td> <a-button type="link" primary>
-                                                <div style="display: flex;align-items: center;">
-                                                    <a @click="lockDownExcel('/data/20241029_区域核验汇总_01.xlsx', [0])"
-                                                        download>区域核验汇总</a>
-                                                </div>
-                                            </a-button>
-
-                                            <a :href="'/data/20241029_区域核验汇总_01.xlsx'">
-                                                <Download :size="16"></Download>
-                                            </a>
-
-                                        </td>
-                                        <td> <a-button type="link" primary>
-                                                <div style="display: flex;align-items: center;">
-                                                    <a @click="lockDownExcel('/data/20241029_区域核验详情_01.xlsx', [0])"
-                                                        download>区域核验详情</a>
-                                                </div>
-                                            </a-button>
-                                            <a :href="'/data/20241029_区域核验详情_01.xlsx'">
-                                                <Download :size="16"></Download>
-                                            </a>
-                                        </td>
-
-                                    </tr>
-
-                                </table>
-                            </div>
-                            <a-row :gutter="16">
-
-                                <a-col :span="8">
-
-                                    <a-statistic title="承保面积" :value="Number(cbmj).toFixed(0) + ' 亩'"
-                                        class="demo-class">
-                                    </a-statistic>
-
-
-                                </a-col>
-                                <a-col :span="8">
-                                    <a-statistic title="遥感面积" :value="Number(ygmj).toFixed(0) + ' 亩'"
-                                        class="demo-class">
-
-                                    </a-statistic>
-                                </a-col>
-                                <a-col :span="8">
-                                    <a-statistic title="保险覆盖率" :value="bxfgl" class="demo-class">
-                                        <template #suffix>
-                                            %
-                                        </template>
-                                    </a-statistic>
-                                </a-col>
-
-                                <a-col :span="6"><a-row :gutter="16">
-                                        <a-col :span="24">
-                                            <a-statistic title="正常乡镇" :value="zcxz" class="demo-class">
-                                                <template #suffix>
-                                                    <a-tag color="#87d068">{{ zcxz_val }}%</a-tag>
-                                                </template>
-                                            </a-statistic>
-                                        </a-col>
-
-                                        <a-col :span="24">
-                                            <a-statistic title="超保乡镇" :value="cbxz" class="demo-class">
-                                                <template #suffix>
-                                                    <a-tag color="#f50">{{ cbxz_val }}%</a-tag>
-                                                </template>
-                                            </a-statistic>
-                                        </a-col>
-
-
-
-                                        <a-col :span="24">
-                                            <a-statistic title="不足乡镇" :value="bzxz" class="demo-class">
-                                                <template #suffix>
-                                                    <a-tag color="RGB(248,200,94)">{{ bzxz_val }}%</a-tag>
-                                                </template>
-                                            </a-statistic>
-                                        </a-col>
-
-
-                                    </a-row>
-                                </a-col>
-
-                                <a-col :span="18">
-                                    <div id="main" style="height:100%;"></div>
-                                </a-col>
-                            </a-row>
-
-                        </div>
-                        <div style="width: 100%; height: calc(100% - 260px);">
-                            <div style="width: 100%;height: 55%;">
-                                <div class="headerbg">
-
-                                    <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart>
-                                    区域统计<small>&nbsp;
-                                        <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
-                                            <Info :size="16" color="#ccc"></Info>
-                                        </a-tooltip>
-                                    </small>
-
-
-                                    <a-button type="link" primary style="position: absolute;right: 10px;"
-                                        @click="open = true">
-                                        <div style="display: flex;align-items: center;">
-                                            <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;试点区域详情
-                                        </div>
-                                    </a-button>
-
-                                </div>
-
-                                <div id="loadEcharts02" style="height:95%;"></div>
-
-                            </div>
-                            <div style="width: 100%;height: 45%;">
-                                <div class="headerbg">
-
-                                    <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon>
-                                    机构统计<small>&nbsp;
-                                        <a-tooltip title="合格(大于80%且小于105%)，超保(大于105%)，不足(小于80%)" :color="orange">
-                                            <Info :size="16" color="#ccc"></Info>
-                                        </a-tooltip>
-                                    </small>
-
-                                    <a-button type="link" primary style="position: absolute;right: 10px;">
-                                        <!-- <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;更多
-                  </div> -->
-                                    </a-button>
-
-                                </div>
-
-                                <div id="main03" style="height:95%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!--地块核验-->
-                <div v-if="activeKey == '2'"
-                    style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
-                    <div style="width: 100%;height: 300px;">
-                        <div class="headerbg">
-                            <MapPinned :size="25" style="margin-bottom: -5px;"></MapPinned> {{ header ? header : '试点区县'
-                            }}
-                            <a-tag color="red"> 重点乡镇 </a-tag>
-
-                            <table style="position: absolute;right: 10px;margin-top: -30px">
-                                <tr>
-                                    <td>
-                                        <a-button type="link" primary>
-                                            <div style="display: flex;align-items: center;">
-                                                <a @click="lockDownExcel('/data/20241029_地块核验汇总_01.xlsx', [0, 1])"
-                                                    download>地块核验汇总</a>
-
-                                            </div>
-                                        </a-button> <a :href="'/data/20241029_地块核验汇总_01.xlsx'">
-                                            <Download :size="16"></Download>
-                                        </a>
-                                    </td>
-                                    <td> <a-button type="link" primary>
-                                            <div style="display: flex;align-items: center;">
-                                                <a :href="'/data/20241029_地块核验详情_01.xlsx'" download>地块核验详情</a>
-
-                                            </div>
-                                        </a-button> <a :href="'/data/20241029_地块核验详情_01.xlsx'">
-                                            <Download :size="16"></Download>
-                                        </a></td>
-                                </tr>
-                            </table>
-
-                        </div>
-
-
-                        <a-row :gutter="16">
-                            <a-col :span="11">
-                                <table class="tjfx">
-
-                                    <tr>
-                                        <th>投保面积：</th>
-                                        <td>{{ tb_area ? Number(tb_area).toFixed(0) : '-' }}亩</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块面积：</th>
-                                        <td>{{ dk_area ? Number(dk_area).toFixed(0) : '-' }}亩</td>
-                                    </tr>
-                                    <tr>
-                                        <th>大户数量：</th>
-                                        <td>{{ dhsl }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>有地块大户数：</th>
-                                        <td>{{ ydkdhsl }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块合格户数：</th>
-                                        <td>{{ dkhghs }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块面积不符户数：</th>
-                                        <td>{{ dkmjbfs }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块重叠户数：</th>
-                                        <td>{{ dkcd }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>标的面积不符户数：</th>
-                                        <td>{{ bdmjbfhs }} 户</td>
-                                    </tr>
-
-                                </table>
-                            </a-col>
-                            <a-col :span="13">
-                                <div id="echartsDK01" style="height:97%;"></div>
-                            </a-col>
-                        </a-row>
-
-                    </div>
-                    <div style="width: 100%; height: calc(100% - 300px);">
-                        <div style="width: 100%;height: 60%;">
-                            <div class="headerbg">
-                                <LucideAreaChart :size="20" style="margin-bottom: -5px;"></LucideAreaChart> 地块统计
-                                <small>&nbsp;
-                                    <a-tooltip title="大户数量(大于50亩被保险人)，合格大户(地块重叠，标的占比均符合)" :color="orange">
-                                        <Info :size="16" color="#ccc"></Info>
-                                    </a-tooltip>
-                                </small>
-
-                                <a-button type="link" primary style="position: absolute;right: 10px;"
-                                    @click="open = true">
-                                    <div style="display: flex;align-items: center;">
-                                        <MoreHorizontal :size="15"></MoreHorizontal>&nbsp;地块详情
-                                    </div>
-                                </a-button>
-
-                            </div>
-
-                            <div id="echartsDK02" style="height:99%;"></div>
-
-                        </div>
-                        <div style="width: 100%;height: 40%;">
-                            <div class="headerbg">
-                                <LucideAreaChart :size="25" style="margin-bottom: -5px;"></LucideAreaChart> 机构统计
-                                <small>&nbsp;
-                                    <a-tooltip title="大户数量(大于50亩被保险人)，合格大户(地块重叠，标的占比均符合)" :color="orange">
-                                        <Info :size="16" color="#ccc"></Info>
-                                    </a-tooltip>
-                                </small>
-
-                                <!-- <a-button type="link" primary style="position: absolute;right: 10px;">
-                  <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;更多
-                  </div>
-                </a-button> -->
-
-                            </div>
-
-                            <div id="echartsDK03" style="height:99%"></div>
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-            </div>
 
         </div>
 
@@ -5877,5 +4803,13 @@ p {
 
 ::v-deep .mapboxgl-popup-content {
     background: linear-gradient(to bottom, rgba(251, 250, 250, 0.83), rgba(251, 250, 250, 0.83));
+}
+
+.map {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
 }
 </style>
