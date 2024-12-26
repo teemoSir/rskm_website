@@ -3707,9 +3707,11 @@ const onClose = () => {
                     <ChevronRight color="RGB(58,123,251)" />
                 </a-button> -->
 
-                <a-button type="primary" @click="showDrawers" class="boxshadow">
-                    <!-- <ChevronRight color="RGB(58,123,251)" /> -->
+                <a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
                     <Menu color="RGB(58,123,251)"></Menu>
+                </a-button>
+                <a-button type="primary" @click="onClose" class="boxshadow" v-if="opens">
+                    <ChevronRight color="RGB(58,123,251)" />
                 </a-button>
             </a-tooltip>
             <br>
