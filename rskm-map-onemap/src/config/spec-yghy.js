@@ -1117,6 +1117,23 @@ let specYghy = [
         },
         interactive: true,
     },
+
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.7
+        },
+        //    'slot': 'top',
+        // interactive: true,
+    },
+
     {
 
 
@@ -1157,6 +1174,9 @@ let specYghy = [
         },
         interactive: true,
     },
+
+
+
 
     // 是否合格
     {
@@ -1213,33 +1233,22 @@ let specYghy = [
         minzoom: 14,
         'slot': 'top',
         "paint": {
-            // 'line-blur':0.5,
-            // 'line-color': 'RGBA(213,217,41,0.7)',
-            'line-color': [
-                'case',
-                [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-                'RGB(76,127,217)',
-                [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-                'RGB(233,124,203)',
-                [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-                'RGB(147,138,87)',
-                [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-                '#000',
-                [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-                'RGB(126,72,225)',
-                [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-                'RGB(250,131,86)',
-                '#ccc'
-            ],
             // 'line-color': [
             //     'case',
-            //     ["==", ['get', "v8"], '1'],
-            //     'RGB(158,224,132)',
-            //     ["==", ['get', "v8"], '0'],
-            //     'RGB(253,112,113)',
-            //     'yellow'
+            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
+            //     'RGB(76,127,217)',
+            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
+            //     'RGB(233,124,203)',
+            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
+            //     'RGB(147,138,87)',
+            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
+            //     '#000',
+            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
+            //     'RGB(126,72,225)',
+            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
+            //     'RGB(250,131,86)',
+            //     '#ccc'
             // ],
-            //  'line-width': 4,
             'line-width': ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1251,15 +1260,6 @@ let specYghy = [
                 2,
                 14,
                 4.5,],
-            // "line-opacity": ["interpolate",
-            //     ["exponential", 1.5],
-            //     ["zoom"],
-            //     7,
-            //     0.5,
-            //     14,
-            //     0.7,
-            //     15,
-            //     1,],
         },
         interactive: true,
     },

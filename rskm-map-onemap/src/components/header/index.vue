@@ -82,34 +82,34 @@ const items = ref([
                 label: "核验管理",
                 children: [
                     {
-                        label: "遥感核验（第一次）",
+                        label: "遥感核验",
                         key: "verification:1",
                         onClick: () => {
-                            router.push("/verification");
+                            router.push("/verification"); router.push("/verification");
                         },
                     },
-                    {
-                        label: "遥感核验（第二次）",
-                        key: "verification:2",
-                        onClick: () => {
-                            router.push("/yaogan");
-                        },
-                    },
+                    // {
+                    //     label: "遥感核验（第二次）",
+                    //     key: "verification:2",
+                    //     onClick: () => {
+                    //         router.push("/yaogan");
+                    //     },
+                    // },
                 ],
             },
-            {
-                type: "group",
-                label: "任务管理",
-                children: [
-                    {
-                        label: "核验任务",
-                        key: "verification:3",
-                        onClick: () => {
-                            router.push("/renwu");
-                        },
-                    },
-                ],
-            },
+            // {
+            //     type: "group",
+            //     label: "任务管理",
+            //     children: [
+            //         {
+            //             label: "核验任务",
+            //             key: "verification:3",
+            //             onClick: () => {
+            //                 router.push("/renwu");
+            //             },
+            //         },
+            //     ],
+            // },
         ],
 
     },
@@ -135,7 +135,7 @@ const items = ref([
         ],
     },
     {
-        key: "cloud",
+        key: "jiance",
         icon: () => h(Settings),
         label: "遥感监测",
         title: "遥感监测",
@@ -145,29 +145,25 @@ const items = ref([
                 label: "基础监测",
                 children: [
                     {
-                        label: "灾损遥感监测",
-                        key: "cloud4:1",
-                    },
-                    {
                         label: "长势遥感监测",
-                        key: "cloud3:1",
+                        key: "jiance:1",
+                        onClick: () => {
+                            router.push("/jiance");
+                        },
                     },
+                    // {
+                    //     label: "灾损遥感监测",
+                    //     key: "jiance:1",
+                    //     onClick: () => {
+                    //         router.push("/jiance");
+                    //     },
+
+                    // },
+
                 ],
             },
         ],
-    },
-    // {
-    //     key: "alipay",
-    //     label: h(
-    //         "a",
-    //         {
-    //             href: "",
-    //             target: "_blank",
-    //         },
-    //         ""
-    //     ),
-    //     title: "Navigation Four - Link",
-    // },
+    }
 ]);
 defineProps({
     pageStyle: {
@@ -233,5 +229,6 @@ onMounted(() => {
     font-family: 'FZZongYi-M05';
     letter-spacing: 1.5px;
     padding-left: 80px;
+    z-index: 200000;
 }
 </style>

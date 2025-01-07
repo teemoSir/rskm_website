@@ -2221,7 +2221,7 @@
                 rightTop = this.gridCache[this.createTileKey(xyz.x + 1, xyz.y + 1, xyz.z)];
                 leftBottom = this.gridCache[this.createTileKey(xyz)];
                 rightBottom = this.gridCache[this.createTileKey(xyz.x + 1, xyz.y, xyz.z)];
-            } 
+            }
 
             //顶点坐标+纹理坐标
             var attrData = new Float32Array([leftTop.lng, leftTop.lat, 0.0, 1.0, leftBottom.lng, leftBottom.lat, 0.0, 0.0, rightTop.lng, rightTop.lat, 1.0, 1.0, rightBottom.lng, rightBottom.lat, 1.0, 0.0]);
@@ -2506,7 +2506,7 @@
             },
             ArcGIS: {
                 Satellite: {
-                     Map: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}{key}{s}",
+                    Map: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}{key}{s}",
                     minzoom: 3,
                     maxzoom: 18
                 },
@@ -2586,7 +2586,7 @@
         var tileType = providers[providerName].tileType;
 
         var tilelayer;
-        if (providerName === 'TianDiTu' || providerName === 'OSM' || providerName === 'Geovisearth' || providerName === 'ArcGIS' || providerName === 'Mapbox'  || providerName === 'JLONE' || providerName === 'Google') {
+        if (providerName === 'TianDiTu' || providerName === 'OSM' || providerName === 'Geovisearth' || providerName === 'ArcGIS' || providerName === 'Mapbox' || providerName === 'JLONE' || providerName === 'Google') {
             //天地图使用大地2000坐标可以直接使用，不用偏移
             var key = _options.key || providers[providerName].key;
             var urls = [];
@@ -2595,8 +2595,8 @@
             }
 
             var scheme = "xyz";
-            if(providerName=="JLONE"){
-                scheme="tms"
+            if (providerName == "JLONE") {
+                scheme = "tms"
             }
             tilelayer = {
                 "id": layerId,
@@ -2607,7 +2607,7 @@
                     "tileSize": 256,
                     "minzoom": minzoom,
                     "maxzoom": maxzoom,
-                    "scheme":scheme
+                    "scheme": scheme
                 }
             };
         } else {

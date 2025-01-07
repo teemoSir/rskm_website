@@ -109,68 +109,68 @@ let legends = [
     },
 
 
-    {
-        key: 3,
-        title: "国寿财",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(76,127,217)",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
+    // {
+    //     key: 3,
+    //     title: "国寿财",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "RGB(76,127,217)",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
 
-    {
-        key: 4,
-        title: "太平",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(147,138,87)",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
+    // {
+    //     key: 4,
+    //     title: "太平",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "RGB(147,138,87)",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
 
-    {
-        key: 5,
-        title: "人保",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "#000",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
-    {
-        key: 6,
-        title: "太保",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(126,72,225)",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
-    {
-        key: 7,
-        title: "中华",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(250,131,86)",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
-    {
-        key: 8,
-        title: "安华",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(233,124,203)",
-        fillColor: "RGBA(43,128,251,0.0)",
-        outlineWidth: 5,
-        order: "保险机构"
-    },
+    // {
+    //     key: 5,
+    //     title: "人保",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "#000",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
+    // {
+    //     key: 6,
+    //     title: "太保",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "RGB(126,72,225)",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
+    // {
+    //     key: 7,
+    //     title: "中华",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "RGB(250,131,86)",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
+    // {
+    //     key: 8,
+    //     title: "安华",
+    //     isShow: ref(false),
+    //     type: "polygon",
+    //     outlineColor: "RGB(233,124,203)",
+    //     fillColor: "RGBA(43,128,251,0.0)",
+    //     outlineWidth: 5,
+    //     order: "保险机构"
+    // },
 
 ];
 
@@ -527,9 +527,9 @@ const props = defineProps({
         <div v-if="tuli" style="width: 300px;">
             <!--保险机构-->
             <a-row style="display: flex; align-items: center; line-height: 30px">
-                <a-col :span="24">
+                <!-- <a-col :span="24" >
                     <div class="legendTitle">保险机构</div>
-                </a-col>
+                </a-col> -->
                 <a-col :span="12" v-for="tar in legends.filter(le => le.order == '保险机构')" :key="tar.key">
 
                     <table style="width: 100%;">

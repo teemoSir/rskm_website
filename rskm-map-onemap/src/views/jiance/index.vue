@@ -1,14 +1,16 @@
 <script setup>
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
-import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
-import "../../../public/mapboxgl/pulgins/rasterTileLayer";
+import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.js";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.css";
+import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.js";
+import "../../../public/mapboxgl/pulgins/rasterTileLayer.js";
 import { config, mapbox } from "@/config/tileserver.js";
-import syncMove from '@mapbox/mapbox-gl-sync-move';
+import page from "../../../package.json";
+// import syncMove from '@mapbox/mapbox-gl-sync-move';
 import * as echarts from "echarts"
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
 import { message } from "ant-design-vue";
-// import SDMap from "@/views/map/index.vue";
 import Header from "@/components/header/index.vue";
 import c2 from "@/assets/images/map/c2.svg";
 import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons-vue';
@@ -65,18 +67,17 @@ import 'dayjs/locale/zh-cn';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import html2canvas from 'html2canvas';
 import StateManager from "@/utils/state_manager";
-import { treeLeftData } from "./data"
+import { treeLeftData } from "./data.js"
 import { downloadAndReadExcel } from "@/utils/excel.js"
 
 import {
     popup, popupbig,
-    eventRotate,
-    eventRender,
     addIcon
 } from "@/views/map/map.js";
 
 import VerificationLegend from "@/views/map/verificationLegend.vue"
-import AreaLegend from "@/views/map/areaLegend.vue";
+import JianceLegend from "@/views/map/jianceLegend.vue";
+import TucengLegend from "@/views/map/tucengLegend.vue";
 import * as turf from "@turf/turf";
 
 import { layers, specYghy } from "@/config/spec-yghy.js";
@@ -824,7 +825,46 @@ const loadEvent = ((newMap) => {
     newMap.on("rotate", (e) => {
         eventRotate();
     });
+
+
 })
+
+/**
+ * 处理地图旋转事件
+ * @function
+ * @returns {void}
+ */
+const eventRotate = () => {
+    const bear = mapp.getBearing();
+    const pitch = mapp.getPitch();
+    const rad = -(bear * (Math.PI / 180));
+    const r = document.getElementById("Zero");
+    if (r) r.style.transform = `rotateZ(${rad}rad)`;
+}
+
+/**
+ * 处理地图渲染事件
+ * @function
+ * @returns {void}
+ */
+const eventRender = (double = undefined) => {
+    const MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
+    const ll = {
+        lng: window.lnglatrender?.lng.toFixed(6) ?? "0",
+        lat: window.lnglatrender?.lat.toFixed(6) ?? "0"
+    };
+
+    mapp && (document.getElementById("xyz").innerHTML = `
+    <span style='padding-right: 10px;'>${MAP_LAYERS.st ? `审图号：${MAP_LAYERS.st}` : ""}</span>
+    <span style='padding-right: 10px;'>© ${page.name}</span>
+    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
+    <span style='padding-right: 10px;'>等级：${mapp.getZoom().toFixed(2) || ""} </span>
+    <span style='padding-right: 10px;'>模式：${(mapp.getProjection().name || "default") === "globe" ? "三维" : "二维"} </span>
+    <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`);
+
+
+}
+
 
 /**
  * 
@@ -1349,13 +1389,13 @@ const bzxz_val = ref(0);
 const loadLayers = () => {
     // console.log("打印区域行政地图与独立县地图")
     if (!header.value) {
-        loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
+        //loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
         if (activeKey.value == 2) {
             loadCounty("'" + header.value + "'");
         } else if (activeKey.value == 1) {
             loadCounty("'" + header.value + "'");
-            loadTown("'" + header.value + "'");
+            // loadTown("'" + header.value + "'");
         }
     }
 
@@ -1396,42 +1436,6 @@ const loadLocalData = () => {
 }
 
 
-
-// const loadDataHgl = () => {
-//     // 图表二
-//     let countys = ['济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '东阿县', '无棣县'];
-//     // console.log(header.value)
-//     if (!header.value) {
-//         let fgl = [];
-//         let hgl = [];
-//         countys.map((ca) => {
-//             // 覆盖率
-//             let sa = hzBaseData.filter(item => item.county == ca)
-//             let totalIcoverage = sa.reduce((total, item) => total + Number(item.i_coverage || 0), 0);
-//             fgl.push(Number(totalIcoverage / sa.length).toFixed(0));
-
-//             // 合格率
-//             let ha = hzBaseData.filter(item => item.county == ca)
-//             let hatotal = ha.filter((item) => Number(item.pass || 0) == 1);
-//             hgl.push(Number(hatotal.length / ha.length * 100).toFixed(0));
-//         })
-//         loadEcharts02(countys, fgl, hgl)
-//     } else {
-//         let fgl = [];
-//         let hgl = [];
-//         let towns = []
-//         // 覆盖率
-//         let sa = hzBaseData.filter(item => item.county == header.value)
-//         sa.forEach((s) => {
-//             towns.push(s.town)
-//             fgl.push(s.i_coverage)
-//             hgl.push(0)
-
-//         })
-
-//         loadEcharts02(towns, fgl, hgl)
-//     }
-// }
 
 
 const bdmjbfhs = ref("")
@@ -1572,27 +1576,7 @@ const getAnalysisEchars4 = async (key, where = "") => {
 
 };
 
-
-
-
-
 let hzBaseData = [];
-
-// const LoadHzBaseData = async () => {
-//     // 在这里实现你的方法
-//     let data = await api.get_table_by_filter("procjet_2024_yghy_area_excel", "", "gid, city, city_code, county, county_code, town, town_code, type, i_area, rs_area, i_coverage, pass, cun, cun_code")
-
-
-//     data.length > 0 && (hzBaseData = data);
-//     dataSource.value = hzBaseData;
-//     loadDataHgl()
-// }
-
-
-
-
-
-
 
 
 /**
@@ -1835,7 +1819,7 @@ const lockDownExcel = async (path, sheet) => {
 
 const lockDownOpen = ref(false)
 
-const loadDoubleMap = () => {
+const loadDoubleMap2 = () => {
 
 
     let map1 = initMap("before");
@@ -1847,31 +1831,38 @@ const loadDoubleMap = () => {
     window.mapp = map2;
 
     syncMove(map1, map2)
-
-
-
-
-
 }
+
+let compare;
 /**
  * 
  */
-const loadDoubleMap2 = () => {
+const loadDoubleMap = () => {
+
 
     let container = '#comparison-container';
     let before = initMap("before");
     let after = initMap("after");
 
-    console.log(before, after)
+    //console.log(before, after)
 
     window.map = before;
     window.mapp = after;
 
-    let compare = new mapboxgl.Compare(before, after, container, {
+    compare = new mapboxgl.Compare(before, after, container, {
         // orientation: 'horizontal' 
     });
 
-    //  compare.setSlider(800);
+    compare.setSlider(0);
+
+
+
+
+
+
+    document.body.addEventListener('mousemove', (event) => {
+        observeSaLeft.value = compare.currentPosition;
+    });
 }
 
 
@@ -1947,6 +1938,12 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
     mapl.on("load", () => {
         addTiles();
     });
+
+    mapl.addControl(
+        new mapboxgl.AttributionControl({
+            customAttribution: "<div id='xyz'></div>",
+        })
+    );
 
     return mapl;
 };
@@ -2034,17 +2031,19 @@ const loadYGJG = async () => {
  */
 const loadData = () => {
     // console.log("loadData")
-    loadCBSL()
-    loadYGSL()
-    loadCBHC()
-    loadCBXZ()
-    loadDK()
-    loadDKDQ()
-    loadQYDQ()
-    loadQYJG()
-    loadDKJG()
-    loadYGJG()
-    loadBDSL()
+    // loadCBSL()
+    // loadYGSL()
+    // loadCBHC()
+    // loadCBXZ()
+    // loadDK()
+    // loadDKDQ()
+    // loadQYDQ()
+    // loadQYJG()
+    // loadDKJG()
+    // loadYGJG()
+    // loadBDSL()
+
+
 }
 
 
@@ -2058,35 +2057,98 @@ onMounted(() => {
 
     loadDoubleMap()
 
-    loadData()
+    // loadData()
 
     map && map.on("load", () => {
 
         addLayersYghy(map, specYghy);
         map && loadEvent(map);
-        loadTerrain(map);
+
+        // map.addSource('procjet_2024_yghy_yumi_zhangshi', {
+        //     'type': 'raster',
+        //     'scheme': 'tms',
+        //     'tiles': [
+        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
+
+        //     ],
+
+        //     'tileSize': 256 // 瓦片大小
+        // });
+
+        // map.addLayer({
+        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
+        //     'type': 'raster',
+        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
+        //     "paint": {
+        //         "raster-opacity": 0.7
+        //     },
+        // });
+
+        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
+        //  map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
+
+        // map.setLayoutProperty('rskm_pt', 'visibility', 'visible');
+        // map.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
+        // map.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
+        // map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
     })
 
     mapp && mapp.on("load", () => {
         addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
-        loadTerrain(mapp);
-        loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
+
+        // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
+        //     'type': 'raster',
+        //     'scheme': 'tms',
+        //     'tiles': [
+        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
+
+        //     ],
+
+        //     'tileSize': 256 // 瓦片大小
+        // });
+
+        // mapp.addLayer({
+        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
+        //     'type': 'raster',
+        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
+        //     "paint": {
+        //         "raster-opacity": 0.7
+        //     },
+        // });
+
+
+
+        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
+        //  mapp.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
+
+
+
+        // mapp.setLayoutProperty('rskm_pt', 'visibility', 'visible');
+        // mapp.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
+        // mapp.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
+        // mapp.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
+
+
+
+        fitCenter()
+
     })
     /**
        * 渲染运行时
        */
-    map.on("move", (e) => {
+    mapp.on("move", (e) => {
         eventRender();
     });
 
-    map.on("mousemove", (e) => {
+    mapp.on("mousemove", (e) => {
         window.lnglatrender = {
             lng: e.lngLat.lng,
             lat: e.lngLat.lat,
         };
         eventRender();
     });
+
 })
 
 // 追加地形
@@ -2129,1334 +2191,34 @@ const addLayersYghy = (newMap, css) => {
     });
 };
 
-/**
- * 增加标题对比
- */
-const loadTitleDIV = () => {
-    //mapboxgl-compare
-    let doc = document.getElementById("after")
-    // console.log(doc)
 
-
-    let div = document.createElement("div")
-    div.innerHTML = "第一次比对";
-    div.style.cssText = "background:rgba(26,26,26,0.58);color:#fff;width:200px;padding:10px;margin-top:125px;float:right;text-align:center;font-size:22px;border-radius:3px"
-
-    let divright = document.createElement("div")
-    divright.innerHTML = "第二次比对";
-    divright.style.cssText = "background:rgba(26,26,26,0.58);color:#FFF;width:200px;padding:10px;margin-top:125px;float:left;text-align:center;font-size:22px;border-radius:3px"
-
-    doc.append(div)
-    doc.append(divright)
-}
 
 /**
  * 总控按钮
  */
-const data = reactive(['区域核验', '地块核验']);
+
+
+const data = reactive(['长势监测', '灾损监测']);
 const segmented = ref(data[0]);
 watch(segmented, () => {
-    (segmented.value == '区域核验') ? (activeKey.value = 1) : (activeKey.value = 2)
+    (segmented.value == '区域') ? (activeKey.value = 1) : (activeKey.value = 2)
 })
 
-//const value1 = ref('a');
-
-
-/**
- * 区域整体表
- */
-const columnsQqzt = ref([
-    {
-        title: '指标',
-        dataIndex: 'name',
-
-    },
-    {
-        title: '第一次',
-        dataIndex: 'borrow',
-    },
-    {
-        title: '第二次',
-        dataIndex: 'repayment',
-    },
-    {
-        title: '趋势变化',
-        dataIndex: 'qushi',
-    },
-]);
-const dataQqzt = ref([
-    {
-        key: '1',
-        name: '承保数量(亩)',
-        borrow: 0,
-        repayment: 0,
-        qushi: 0
-    },
-    {
-        key: '2',
-        name: '遥感数量(亩)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '3',
-        name: '保险覆盖率(%)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '4',
-        name: '参保农户(户次)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    // {
-    //     key: '5',
-    //     name: '签单保费(万元)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-    // {
-    //     key: '6',
-    //     name: '补贴金额(万元)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-    {
-        key: '7',
-        name: '保单数量(张)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '8',
-        name: '超保乡镇(个)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '9',
-        name: '超保面积(亩)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    // {
-    //     key: '10',
-    //     name: '保单数量(张)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-
-
-    // {
-    //     key: '9',
-    //     name: '修改保单(张)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-    // {
-    //     key: '9',
-    //     name: '撤销保单(张)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-    // {
-    //     key: '9',
-    //     name: '新增保单(张)',
-    //     borrow: 0,
-    //     repayment: 0, qushi: 0
-    // },
-]);
-
-/**
- * 加载区域 遥感数量
- */
-const loadYGSL = async () => {
-    let echy_sql_qy_ygsl = await api.get_table_tj_echy("echy_sql_qy_ygsl");
-    // // console.log(echy_sql_qy_ygsl)
-
-    let rs_data = 0;
-    echy_sql_qy_ygsl.forEach(e => {
-        if (!header.value) {
-            rs_data += Number(e.rs_area);
-        } else {
-            if (e.county == header.value) {
-                rs_data += Number(e.rs_area);
-            }
-        }
-
-    });
-
-    dataQqzt.value[1].borrow = Number(rs_data).toFixed()
-    dataQqzt.value[1].repayment = Number(rs_data).toFixed()
-
-    // 覆盖率
-    loadFGL()
-
-
-
-
-}
-
-/**
- * 加载区域 承保数量
- */
-const loadCBSL = async () => {
-    let echy_sql_qy_cbsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
-    // console.log(echy_sql_qy_cbsl)
-
-    let tbsl_1 = 0;
-    let tbsl_2 = 0;
-
-    let bdsl_1 = 0;
-    let bdsl_2 = 0;
-    echy_sql_qy_cbsl.forEach(e => {
-        if (!header.value) {
-            (e.version == '2024年_玉米_第一次_0913') && (tbsl_1 += Number(e.tbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (tbsl_2 += Number(e.tbsl));
-
-            (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-            (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-        } else {
-            if (e.county == header.value) {
-                (e.version == '2024年_玉米_第一次_0913') && (tbsl_1 += Number(e.tbsl));
-                (e.version == '2024年_玉米_第二次_1125') && (tbsl_2 += Number(e.tbsl));
-
-                (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-                (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-            }
-        }
-
-    });
-    //"2024年_玉米_第一次_0913"
-    dataQqzt.value[0].borrow = tbsl_1.toFixed(0);
-    dataQqzt.value[0].repayment = tbsl_2.toFixed(0);
-
-    dataQqzt.value[4].borrow = bdsl_1;
-    dataQqzt.value[4].repayment = bdsl_2;
-
-    // 覆盖率
-    loadFGL()
-
-
-
-
-}
-
-
-
-/**
- * 加载区域 参保户次 参保数量
- */
-const loadCBHC = async () => {
-    let echy_sql_qy_cbhc = await api.get_table_tj_echy("echy_sql_qy_cbhc");
-    //// console.log(echy_sql_qy_cbhc)
-
-    let tbhc_1 = 0;
-    let tbhc_2 = 0;
-
-    let cbsl_1 = 0;
-    let cbsl_2 = 0;
-    echy_sql_qy_cbhc.forEach(e => {
-        if (!header.value) {
-            (e.version == '2024年_玉米_第二次_1125') && (tbhc_2 += Number(e.cbhc));
-            (e.version == '2024年_玉米_第一次_0913') && (tbhc_1 += Number(e.cbhc));
-
-            (e.version == '2024年_玉米_第二次_1125') && (cbsl_2 += Number(e.cbsl));
-            (e.version == '2024年_玉米_第一次_0913') && (cbsl_1 += Number(e.cbsl));
-        } else {
-            if (e.county == header.value) {
-                (e.version == '2024年_玉米_第二次_1125') && (tbhc_2 += Number(e.cbhc));
-                (e.version == '2024年_玉米_第一次_0913') && (tbhc_1 += Number(e.cbhc));
-
-                (e.version == '2024年_玉米_第二次_1125') && (cbsl_2 += Number(e.cbsl));
-                (e.version == '2024年_玉米_第一次_0913') && (cbsl_1 += Number(e.cbsl));
-            }
-        }
-    });
-    //"2024年_玉米_第一次_0913"
-    //// console.log(tbhc_1, tbhc_2)
-    dataQqzt.value[3].borrow = tbhc_1;
-    dataQqzt.value[3].repayment = tbhc_2;
-
-    // dataQqzt.value[4].borrow = cbsl_1;
-    // dataQqzt.value[4].repayment = cbsl_2;
-}
-
-
-
-/**
- * 加载区域 超保乡镇
- */
-const loadCBXZ = async () => {
-
-    let echy_sql_qy_cbxz = await api.get_table_tj_echy("echy_sql_qy_cbxz");
-    // // console.log(echy_sql_qy_cbxz)
-
-    let cbxz_1 = 0;
-    let cbxz_2 = 0;
-
-    let cbmj_1 = 0;
-    let cbmj_2 = 0;
-    echy_sql_qy_cbxz.forEach(e => {
-        if (!header.value) {
-            (e.version == '2024年_玉米_第一次_0913') && ((Number(e.fgl) >= 1.05) && (cbxz_1++));
-            (e.version == '2024年_玉米_第二次_1125') && ((Number(e.fgl) >= 1.05) && (cbxz_2++));
-
-            (e.version == '2024年_玉米_第一次_0913') && ((Number(e.fgl) >= 1.05) && (cbmj_1 += Number(e.tbsl) - Number(e.rs_area)));
-            (e.version == '2024年_玉米_第二次_1125') && ((Number(e.fgl) >= 1.05) && (cbmj_2 += Number(e.tbsl) - Number(e.rs_area)));
-        } else {
-            if (e.county == header.value) {
-                (e.version == '2024年_玉米_第一次_0913') && ((Number(e.fgl) >= 1.05) && (cbxz_1++));
-                (e.version == '2024年_玉米_第二次_1125') && ((Number(e.fgl) >= 1.05) && (cbxz_2++));
-
-                (e.version == '2024年_玉米_第一次_0913') && ((Number(e.fgl) >= 1.05) && (cbmj_1 += Number(e.tbsl) - Number(e.rs_area)));
-                (e.version == '2024年_玉米_第二次_1125') && ((Number(e.fgl) >= 1.05) && (cbmj_2 += Number(e.tbsl) - Number(e.rs_area)));
-            }
-        }
-    });
-    // // console.log(cbxz_1.length, cbxz_2.length)
-    // 超保乡镇
-    dataQqzt.value[5].borrow = Math.abs(cbxz_1);
-    dataQqzt.value[5].repayment = Math.abs(cbxz_2);
-
-
-    // 超保面积
-    dataQqzt.value[6].borrow = cbmj_1.toFixed(2);
-    dataQqzt.value[6].repayment = cbmj_2.toFixed(2);
-}
-
-
-/**
- * 覆盖率
- */
-const loadFGL = () => {
-
-    dataQqzt.value[2].borrow = Number(dataQqzt.value[0].borrow / dataQqzt.value[1].borrow * 100).toFixed(2);
-    dataQqzt.value[2].repayment = Number(dataQqzt.value[0].repayment / dataQqzt.value[1].repayment * 100).toFixed(2);
-}
-
-/**
- * 保单数量
- */
-const loadBDSL = async () => {
-    // let echy_sql_qy_bdsl = await api.get_table_tj_echy("echy_sql_qy_cbsl");
-    // console.log(echy_sql_qy_bdsl)
-
-    // let bdsl_1 = 0;
-    // let bdsl_2 = 0;
-
-    // dataQqzt.value[4].borrow = 88;
-    // dataQqzt.value[4].repayment = 88;
-
-    // echy_sql_qy_bdsl.forEach(e => {
-    //     if (!header.value) {
-    //         (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-    //         (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-    //     } else {
-    //         if (e.county == header.value) {
-    //             (e.version == '2024年_玉米_第一次_0913') && (bdsl_1 += Number(e.bdsl));
-    //             (e.version == '2024年_玉米_第二次_1125') && (bdsl_2 += Number(e.bdsl));
-    //         }
-    //     }
-    // });
-    // //console.log(bdsl_1.length, bdsl_2.length)
-    // // 超保乡镇
-    // dataQqzt.value[4].borrow = Math.abs(bdsl_1);
-    // dataQqzt.value[4].repayment = Math.abs(bdsl_2);
-
-}
 
 
 /**
  * 根据改变重载
  */
 watch(header, () => {
-    loadData();
+    // loadData();
 })
 
 
-/**
- * 地块整体表
- */
-const columnsDkzt = ref([
-    {
-        title: '指标',
-        dataIndex: 'fname',
-        customCell: (_, index) => {
-            if (index === 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index === 1) {
-                return {
-                    rowSpan: 0,
-                }
-            }
-            if (index === 2) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index === 3) {
-                return {
-                    rowSpan: 0,
-                }
-            }
-            if (index === 4) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index === 5) {
-                return {
-                    rowSpan: 0,
-                }
-            }
-            if (index === 6) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 7) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 8) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 9) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 10) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 11) {
-                return {
-                    colSpan: 2,
-                }
-            }
-            if (index === 12) {
-                return {
-                    colSpan: 2,
-                }
-            }
-        }
 
-    },
-    {
-        title: '子项',
-        dataIndex: 'name',
-        customCell: (_, index) => {
 
-            if (index === 6) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 7) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 8) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 9) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 10) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 11) {
-                return {
-                    colSpan: 0,
-                }
-            }
-            if (index === 12) {
-                return {
-                    colSpan: 0,
-                }
-            }
-        }
-    },
 
 
-    {
-        title: '第一次',
-        dataIndex: 'borrow',
-    },
-    {
-        title: '第二次',
-        dataIndex: 'repayment',
-    },
-    {
-        title: '趋势变化',
-        dataIndex: 'qushi',
-    },
-]);
-const dataDkzt = ref([
-    {
-        key: '1',
-        name: '户次',
-        fname: '参保大户',
-        borrow: "",
-        repayment: 0,
-        qushi: 0
 
-    },
-    {
-        key: '2',
-        name: '数量(亩)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '3',
-        fname: '地块合格大户',
-        name: '户次',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '4',
-        name: '数量(亩)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '5',
-        fname: '地块不合格大户',
-        name: '户次',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '6',
-        name: '数量(亩)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '7',
-        // fname: '无地块大户',
-        fname: '无地块大户(户次)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    // {
-    //     key: '8',
-    //     name: '投保数量(亩)',
-    //     borrow: 75,
-    //     repayment: 45,
-    // },
-
-    // {
-    //     key: '10',
-    //     fname: '地块不合格大户(户次)',
-    //     borrow: 75,
-    //     repayment: 45,
-    // },
-
-    {
-        key: '12',
-        fname: '地块面积不合格大户(户次)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '13',
-        fname: '有重叠地块大户(户次)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    {
-        key: '14',
-        fname: '作物面积不达标大户(户次)',
-        borrow: 0,
-        repayment: 0, qushi: 0
-    },
-    // {
-    //     key: '14',
-    //     fname: '作物面积不达标大户90%(户次)',
-    //     borrow: 75,
-    //     repayment: 45, qushi: 0
-    // },
-]);
-
-
-
-/**
- * 加载地块 
- */
-const loadDK = async () => {
-
-    // let echy_sql_dk_zt = await api.get_table_tj_echy("echy_sql_dk_zt");
-    let echy_sql_dk_zt02 = await api.get_table_tj_echy("echy_sql_dk_zt02");
-    // console.log(echy_sql_qy_cbxz)
-    // console.log(echy_sql_dk_zt02)
-
-    if (echy_sql_dk_zt02) {
-        // 参保大户
-        let dhhc_1 = 0;
-        let dhhc_2 = 0;
-
-        let cbsl_1 = 0;
-        let cbsl_2 = 0;
-
-        // 地块合格大户
-        let dkhgdh_1 = 0;
-        let dkhgdh_2 = 0;
-
-        let hgdhtbsl_1 = 0;
-        let hgdhtbsl_2 = 0;
-
-        // 地块不合格大户
-        let bhgdhhc_1 = 0;
-        let bhgdhhc_2 = 0;
-
-        let bhgdhsl_1 = 0;
-        let bhgdhsl_2 = 0;
-
-        // 无地块大户户次
-        let wdkdhhc_1 = 0;
-        let wdkdhhc_2 = 0;
-
-        // 地块面积不合格大户(户次)
-        let dkmjbhgdhhc_1 = 0;
-        let dkmjbhgdhhc_2 = 0;
-
-        // 有重叠地块大户(户次)
-        let ycddkdhhc_1 = 0;
-        let ycddkdhhc_2 = 0;
-
-        //zwmjdbdbdhhc
-        let zwmjdbdbdhhc_1 = 0;
-        let zwmjdbdbdhhc_2 = 0;
-
-        const comply = (e) => {
-            (e.version == '2024年_玉米_第一次_0913') && (dhhc_1 += Number(e.dhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dhhc_2 += Number(e.dhhc));
-
-            // (e.version == '2024年_玉米_第一次_0913') && (cbsl_1 += Number(e.tbsl));
-            // (e.version == '2024年_玉米_第二次_1125') && (cbsl_2 += Number(e.tbsl));
-
-            // 地块合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (dkhgdh_1 += Number(e.hgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dkhgdh_2 += Number(e.hgdhhc));
-
-            // (e.version == '2024年_玉米_第一次_0913') && (hgdhtbsl_1 += Number(e.hgdhtbsl));
-            // (e.version == '2024年_玉米_第二次_1125') && (hgdhtbsl_2 += Number(e.hgdhtbsl));
-
-            // 地块不合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (bhgdhhc_1 += Number(e.bhgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (bhgdhhc_2 += Number(e.bhgdhhc));
-
-            // (e.version == '2024年_玉米_第一次_0913') && (bhgdhsl_1 += Number(e.bhgdhtbsl));
-            // (e.version == '2024年_玉米_第二次_1125') && (bhgdhsl_2 += Number(e.bhgdhtbsl));
-
-            // 无地块大户户次
-            (e.version == '2024年_玉米_第一次_0913') && (wdkdhhc_1 += Number(e.ydkdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (wdkdhhc_2 += Number(e.ydkdhhc));
-
-            // 地块面积不合格大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (dkmjbhgdhhc_1 += Number(e.dkmjbhgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dkmjbhgdhhc_2 += Number(e.dkmjbhgdhhc));
-
-            // 有重叠地块大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (ycddkdhhc_1 += Number(e.ycddkdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (ycddkdhhc_2 += Number(e.ycddkdhhc));
-
-
-            // 作物面积不达标大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (zwmjdbdbdhhc_1 += Number(e.zwmjdbdbdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (zwmjdbdbdhhc_2 += Number(e.zwmjdbdbdhhc));
-        }
-
-        const comply02 = (e) => {
-            (e.version == '2024年_玉米_第一次_0913') && (cbsl_1 += Number(e.tbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (cbsl_2 += Number(e.tbsl));
-
-            // 地块合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (hgdhtbsl_1 += Number(e.hgdhtbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (hgdhtbsl_2 += Number(e.hgdhtbsl));
-
-            // 地块不合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (bhgdhsl_1 += Number(e.bhgdhtbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (bhgdhsl_2 += Number(e.bhgdhtbsl));
-
-
-            (e.version == '2024年_玉米_第一次_0913') && (dhhc_1 += Number(e.dhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dhhc_2 += Number(e.dhhc));
-
-            (e.version == '2024年_玉米_第一次_0913') && (cbsl_1 += Number(e.tbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (cbsl_2 += Number(e.tbsl));
-
-            // 地块合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (dkhgdh_1 += Number(e.hgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dkhgdh_2 += Number(e.hgdhhc));
-
-            (e.version == '2024年_玉米_第一次_0913') && (hgdhtbsl_1 += Number(e.hgdhtbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (hgdhtbsl_2 += Number(e.hgdhtbsl));
-
-            // 地块不合格大户
-            (e.version == '2024年_玉米_第一次_0913') && (bhgdhhc_1 += Number(e.bhgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (bhgdhhc_2 += Number(e.bhgdhhc));
-
-            (e.version == '2024年_玉米_第一次_0913') && (bhgdhsl_1 += Number(e.bhgdhtbsl));
-            (e.version == '2024年_玉米_第二次_1125') && (bhgdhsl_2 += Number(e.bhgdhtbsl));
-
-            // 无地块大户户次
-            (e.version == '2024年_玉米_第一次_0913') && (wdkdhhc_1 += Number(e.ydkdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (wdkdhhc_2 += Number(e.ydkdhhc));
-
-            // 地块面积不合格大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (dkmjbhgdhhc_1 += Number(e.dkmjbhgdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (dkmjbhgdhhc_2 += Number(e.dkmjbhgdhhc));
-
-            // 有重叠地块大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (ycddkdhhc_1 += Number(e.ycddkdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (ycddkdhhc_2 += Number(e.ycddkdhhc));
-
-
-            // 作物面积不达标大户(户次)
-            (e.version == '2024年_玉米_第一次_0913') && (zwmjdbdbdhhc_1 += Number(e.zwmjdbdbdhhc));
-            (e.version == '2024年_玉米_第二次_1125') && (zwmjdbdbdhhc_2 += Number(e.zwmjdbdbdhhc));
-
-        }
-
-        // echy_sql_qy_cbxz.forEach(e => {
-        //     if (!header.value || header.value == '全部试点县') {
-        //         comply(e)
-        //     } else {
-        //         if (e.county == header.value) {
-        //             comply(e)
-        //         }
-        //     }
-        // });
-
-        echy_sql_dk_zt02.forEach(e => {
-            if (!header.value) {
-                comply02(e)
-            } else {
-                if (e.county == header.value) {
-                    comply02(e)
-                }
-            }
-        });
-
-
-        // console.log(cbsl_1, cbsl_2)
-        // 参保大户
-        dataDkzt.value[0].borrow = dhhc_1.toFixed(0);
-        dataDkzt.value[0].repayment = dhhc_2.toFixed(0);
-        dataDkzt.value[0].qushi = Number(dataDkzt.value[0].borrow) - Number(dataDkzt.value[0].repayment);
-
-
-        dataDkzt.value[1].borrow = cbsl_1.toFixed(0) / 2;
-        dataDkzt.value[1].repayment = cbsl_2.toFixed(0) / 2;
-        dataDkzt.value[1].qushi = Number(dataDkzt.value[1].borrow) - Number(dataDkzt.value[1].repayment);
-
-        // 地块合格大户
-        dataDkzt.value[2].borrow = dkhgdh_1.toFixed(0);
-        dataDkzt.value[2].repayment = dkhgdh_2.toFixed(0);
-        dataDkzt.value[2].qushi = Number(dataDkzt.value[2].borrow) - Number(dataDkzt.value[2].repayment);
-
-        dataDkzt.value[3].borrow = hgdhtbsl_1.toFixed(0) / 2;
-        dataDkzt.value[3].repayment = hgdhtbsl_2.toFixed(0) / 2;
-        dataDkzt.value[3].qushi = Number(dataDkzt.value[3].borrow) - Number(dataDkzt.value[3].repayment);
-
-        // 地块不合格大户
-        dataDkzt.value[4].borrow = bhgdhhc_1.toFixed(0);
-        dataDkzt.value[4].repayment = bhgdhhc_2.toFixed(0);
-        dataDkzt.value[4].qushi = Number(dataDkzt.value[4].borrow) - Number(dataDkzt.value[4].repayment);
-
-        dataDkzt.value[5].borrow = bhgdhsl_1.toFixed(0) / 2;
-        dataDkzt.value[5].repayment = bhgdhsl_2.toFixed(0) / 2;
-        dataDkzt.value[5].qushi = Number(dataDkzt.value[5].borrow) - Number(dataDkzt.value[5].repayment);
-
-        // 无地块大户户次
-        dataDkzt.value[6].borrow = dhhc_1.toFixed(0) - wdkdhhc_1.toFixed(0);
-        dataDkzt.value[6].repayment = dhhc_2.toFixed(0) - wdkdhhc_2.toFixed(0);
-        dataDkzt.value[6].qushi = Number(dataDkzt.value[6].borrow) - Number(dataDkzt.value[6].repayment);
-
-        // 地块面积不合格大户(户次)
-        dataDkzt.value[7].borrow = dkmjbhgdhhc_1.toFixed(0);
-        dataDkzt.value[7].repayment = dkmjbhgdhhc_2.toFixed(0);
-        dataDkzt.value[7].qushi = Number(dataDkzt.value[7].borrow) - Number(dataDkzt.value[7].repayment);
-
-        // 有重叠地块大户(户次)
-        dataDkzt.value[8].borrow = ycddkdhhc_1.toFixed(0);
-        dataDkzt.value[8].repayment = ycddkdhhc_2.toFixed(0);
-        dataDkzt.value[8].qushi = Number(dataDkzt.value[8].borrow) - Number(dataDkzt.value[8].repayment);
-
-        // 作物面积不达标大户(户次)
-        dataDkzt.value[9].borrow = zwmjdbdbdhhc_1.toFixed(0);
-        dataDkzt.value[9].repayment = zwmjdbdbdhhc_2.toFixed(0);
-        dataDkzt.value[9].qushi = Number(dataDkzt.value[9].borrow) - Number(dataDkzt.value[9].repayment);
-    }
-
-}
-
-
-
-/**
- * 区域地区表
- */
-const columnsQqdq = ref([
-    {
-        title: '地区',
-        dataIndex: 'name',
-        width: 50,
-        customCell: (_, index) => {
-            if (index % 2 == 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index % 2 != 0) {
-                return {
-                    colSpan: 0,
-                }
-            }
-
-        }
-    },
-    {
-        title: '批次',
-        dataIndex: 'pc', width: 50,
-    },
-    {
-        title: '承保面积',
-        dataIndex: 'borrow',
-    },
-    {
-        title: '变化面积',
-        dataIndex: 'repayment',
-        customCell: (_, index) => {
-            if (index % 2 == 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index % 2 != 0) {
-                return {
-                    colSpan: 0,
-                }
-            }
-
-        }
-    },
-    {
-        title: '遥感面积',
-        dataIndex: 'repayment1',
-    },
-    {
-        title: '核验结果',
-        dataIndex: 'repayment2',
-    },
-]);
-const dataQqdq = ref([
-    // {
-    //     key: '1',
-    //     name: '济南市济阳区',
-    //     borrow: 0,
-    //     repayment: 0,
-    //     repayment1: 0,
-    //     repayment2: 0,
-    // },
-]);
-
-//echy_sql_qy_dq
-
-/**
- * 区域地区 
- */
-const loadQYDQ = async () => {
-    dataQqdq.value = [];
-
-    let data;
-    if (!header.value) {
-        data = "echy_sql_qy_dq_county";
-    } else {
-        data = "echy_sql_qy_dq_town";
-    }
-
-    let echy_sql_dk_dq = await api.get_table_tj_echy(data);
-    // console.log(echy_sql_dk_dq)
-
-    let index = 1;
-    echy_sql_dk_dq.forEach(e => {
-
-        if (!header.value) {
-            let re = "";
-
-            dataQqdq.value.push({
-                name: e.county,
-                borrow: Number(e.tbsl).toFixed(0),
-                pc: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                repayment: re,
-                repayment1: Number(e.rs_area).toFixed(0),
-                repayment2: Number(e.fgl).toFixed(2)
-            })
-
-
-        } else {
-            if (header.value == e.county) {
-                let re = "";
-
-                dataQqdq.value.push({
-                    name: e.town,
-                    borrow: Number(e.tbsl).toFixed(0),
-                    pc: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                    repayment: re,
-                    repayment1: Number(e.rs_area).toFixed(0),
-                    repayment2: Number(e.fgl).toFixed(2)
-                })
-            }
-        }
-        index++;
-    });
-
-    dataQqdq.value.forEach(e => {
-
-        if (!header.value) {
-            let fa = echy_sql_dk_dq.filter(a => (a.county == e.name && a.version == "2024年_玉米_第二次_1125"))
-            let fa2 = echy_sql_dk_dq.filter(a => (a.county == e.name && a.version == "2024年_玉米_第一次_0913"))
-            // // console.log(fa, fa2)
-            let re = Number(fa[0].tbsl) - Number(fa2[0].tbsl)
-            if (e.pc == 1) {
-                e.repayment = re.toFixed(0)
-            }
-        } else {
-            if (header.value == e.county) {
-                let fa = echy_sql_dk_dq.filter(a => (a.town == e.name && a.version == "2024年_玉米_第二次_1125"))
-                let fa2 = echy_sql_dk_dq.filter(a => (a.town == e.name && a.version == "2024年_玉米_第一次_0913"))
-                // // console.log(fa, fa2)
-                let re = Number(fa[0].tbsl) - Number(fa2[0].tbsl)
-                if (e.pc == 1) {
-                    e.repayment = re.toFixed(0)
-                }
-            }
-        }
-
-
-    })
-}
-
-
-
-/**
- * 地块地区表
- */
-const columnsDkdq = ref([
-    {
-        title: '地区',
-        dataIndex: 'name',
-        customCell: (_, index) => {
-            if (index % 2 == 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index % 2 != 0) {
-                return {
-                    colSpan: 0,
-                }
-            }
-
-        }
-    },
-    {
-        title: '批次',
-        dataIndex: 'borrow',
-    },
-    {
-        title: '大户保单',
-        dataIndex: 'repayment',
-    },
-    {
-        title: '合格保单',
-        dataIndex: 'repayment1',
-    },
-    {
-        title: '参保大户',
-        dataIndex: 'repayment2',
-    },
-    {
-        title: '合格大户',
-        dataIndex: 'repayment3',
-    },
-]);
-const dataDkdq = ref([
-    // {
-    //     key: '1',
-    //     name: '济南市济阳区',
-    //     borrow: 10,
-    //     repayment: 33,
-    //     repayment1: 33,
-    //     repayment2: 33,
-    // },
-
-]);
-
-/**
- * 加载地块 
- */
-const loadDKDQ = async () => {
-    dataDkdq.value = []
-
-    let data;
-    if (!header.value) {
-        data = "echy_sql_dk_dq_county";
-    } else {
-        data = "echy_sql_dk_dq_town";
-    }
-
-    let echy_sql_dk_dq = await api.get_table_tj_echy(data);
-    // console.log(echy_sql_dk_dq)
-
-    let newdq = []
-    echy_sql_dk_dq.forEach(e => {
-        if (!header.value) {
-            newdq.push({
-                name: e.county,
-                borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                repayment: e.dhbd,
-                repayment1: e.hgbd,
-                repayment2: e.dhhc,
-                repayment3: e.hgdhhc
-            })
-        } else {
-            if (header.value == e.county) {
-                newdq.push({
-                    name: e.town,
-                    borrow: (e.version != '2024年_玉米_第一次_0913') ? "1" : "2",
-                    repayment: e.dhbd,
-                    repayment1: e.hgbd,
-                    repayment2: e.dhhc,
-                    repayment3: e.hgdhhc
-                })
-            }
-
-        }
-    });
-    dataDkdq.value = newdq;
-}
-
-
-
-
-/**
- * 区域机构表
- */
-const columnsQqjg = ref([
-    {
-        title: '机构',
-        dataIndex: 'name',
-        customCell: (_, index) => {
-            if (index % 2 == 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index % 2 != 0) {
-                return {
-                    colSpan: 0,
-                }
-            }
-
-        },
-        width: 40
-    },
-    {
-        title: '批次',
-        dataIndex: 'borrow', width: 40
-    },
-    {
-        title: '主保乡镇(个)',
-        dataIndex: 'repayment', width: 70
-    },
-    {
-        title: '合格乡镇(个)',
-        dataIndex: 'repayment1', width: 70
-    },
-    {
-        title: '超保乡镇(个)',
-        dataIndex: 'repayment2', width: 70
-    },
-    {
-        title: '承保面积(亩)',
-        dataIndex: 'repayment3',
-    },
-    {
-        title: '超保面积(亩)',
-        dataIndex: 'repayment4',
-    },
-]);
-const dataQqjg = ref([
-    // {
-    //     key: '1',
-    //     name: '安华',
-    //     borrow: 10,
-    //     repayment: 33,
-    //     repayment1: 33,
-    //     repayment2: 33,
-    //     repayment3: 33,
-    //     repayment4: 33,
-    // },
-]);
-
-/**
- * 区域 机构 
- */
-const loadQYJG = async () => {
-
-    let echy_sql_dk_dq;
-    if (!header.value) {
-        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg2", "");
-    } else {
-        echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg2", `and 区县='${header.value}'`);
-    }
-
-    console.log(echy_sql_dk_dq)
-    dataQqjg.value = [];
-
-    let newjg = []
-
-    echy_sql_dk_dq.forEach(e => {
-
-        if (e.bxjg) {
-            newjg.push({
-                name: e.bxjg,
-                borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                repayment: e.xiangzhen,
-                repayment1: e.between_06_105_count,
-                repayment2: e.over_105_count,
-                repayment3: Number(e.total_tbsl).toFixed(0),
-                repayment4: Number(e.total_rs_area - e.total_tbsl).toFixed(0)
-            })
-        }
-    })
-    console.log(newjg)
-    dataQqjg.value = newjg;
-
-}
-
-/**
- * 区域 机构 
- */
-const loadQYJG2 = async () => {
-
-
-
-    // let echy_sql_dk_dq;
-    // if (!header.value) {
-    //     echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", "");
-    // } else {
-    //     echy_sql_dk_dq = await api.get_table_tj_echy("echy_sql_qy_jg_tg", `and 区县='${header.value}'`);
-    // }
-
-    let echy_sql_qy_jg_tg = await api.get_table_tj_echy("echy_sql_qy_jg_tg")
-
-
-    // console.log(echy_sql_dk_dq)
-
-    dataQqjg.value = [];
-
-    let newjg = []
-
-    // echy_sql_dk_dq.forEach(e => {
-
-    //     if (e.bxjg) {
-    //         newjg.push({
-    //             name: e.bxjg,
-    //             borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-    //             repayment: e.xiangzhen,
-    //             repayment1: e.between_06_105_count,
-    //             repayment2: e.over_105_count,
-    //             repayment3: Number(e.total_tbsl).toFixed(0),
-    //             repayment4: Number(e.total_rs_area - e.total_tbsl).toFixed(0)
-    //         })
-    //     }
-
-
-    // })
-
-
-    let uniqueBxjg = [...new Set(echy_sql_qy_jg_tg.map(e => e.bxjg))];
-    console.log(uniqueBxjg)
-
-    uniqueBxjg.forEach((ew) => {
-        let tbsl_1 = 0;
-        let tbsl_2 = 0;
-
-        let zzsl_1 = 0;
-        let zzsl_2 = 0;
-
-
-        let a1 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第一次_0913"));
-        let a2 = echy_sql_qy_jg_tg.filter(a => (a.bxjg == ew && a.version == "2024年_玉米_第二次_1125"));
-
-
-        let name_a1 = [];
-        let name_a2 = [];
-        a1.forEach(e => {
-            tbsl_1 += e.tbsl;
-            zzsl_1 += e.zzsl;
-            name_a1.push(e.xiangzhen)
-        })
-
-        a2.forEach(e => {
-            tbsl_2 += e.tbsl;
-            zzsl_2 += e.zzsl;
-            name_a2.push(e.xiangzhen)
-        })
-
-        console.log((new Set(name_a1)).size);
-        newjg.push({
-            name: ew,
-            borrow: "1",
-            repayment: (new Set(name_a1)).size,
-            // repayment1: e.between_06_105_count,
-            repayment2: (tbsl_1 / zzsl_1).toFixed(2),
-            repayment3: tbsl_1.toFixed(0),
-            repayment4: tbsl_1.toFixed(0) - zzsl_1.toFixed(0)
-        });
-        newjg.push({
-            name: ew,
-            borrow: "2",
-            repayment: (new Set(name_a2)).size,
-            // repayment1: e.between_06_105_count,
-            repayment2: (tbsl_2 / zzsl_2).toFixed(2),
-            repayment3: tbsl_2.toFixed(0),
-            repayment4: tbsl_2.toFixed(0) - zzsl_2.toFixed(0)
-        });
-    })
-
-    // console.log(newjg)
-    dataQqjg.value = newjg;
-    // console.log(dataQqjg)
-
-}
-
-
-
-
-/**
- * 地块机构表
- */
-const columnsDkjg = ref([
-    {
-        title: '机构',
-        dataIndex: 'name',
-        customCell: (_, index) => {
-            if (index % 2 == 0) {
-                return {
-                    rowSpan: 2,
-                }
-            }
-            if (index % 2 != 0) {
-                return {
-                    colSpan: 0,
-                }
-            }
-
-        },
-        width: 40
-    },
-    {
-        title: '批次',
-        dataIndex: 'borrow', width: 40
-    },
-    {
-        title: '大户保单',
-        dataIndex: 'repayment',
-    },
-    {
-        title: '合格保单',
-        dataIndex: 'repayment1',
-    },
-    {
-        title: '参保大户',
-        dataIndex: 'repayment2',
-    },
-    {
-        title: '合格大户',
-        dataIndex: 'repayment3',
-    }
-]);
-const dataDkjg = ref([
-    // {
-    //     key: '1',
-    //     name: '安华',
-    //     borrow: 10,
-    //     repayment: 33,
-    //     repayment1: 33,
-    //     repayment2: 33,
-    //     repayment3: 33,
-    //     repayment4: 33,
-    // },
-]);
-
-
-/**
- * 地块 机构 
- */
-const loadDKJG = async () => {
-
-
-
-    let echy_sql_dk_jg;
-    if (!header.value) {
-        echy_sql_dk_jg = await api.get_table_tj_echy("echy_sql_dk_jg_tg", "");
-    } else {
-        echy_sql_dk_jg = await api.get_table_tj_echy("echy_sql_dk_jg_tg", `and 区县='${header.value}'`);
-    }
-
-
-    // console.log(echy_sql_dk_jg)
-
-    dataDkjg.value = [];
-
-    let newjg = []
-
-    echy_sql_dk_jg.forEach(e => {
-
-        if (e.bxjg) {
-            newjg.push({
-                name: e.bxjg,
-                borrow: (e.version == '2024年_玉米_第一次_0913') ? "1" : "2",
-                repayment: e.dhbd,
-                repayment1: e.hgbd,
-                repayment2: e.dhhc,
-                repayment3: e.hgdhhc,
-            })
-        }
-
-
-    })
-
-
-    // console.log(newjg)
-    dataDkjg.value = newjg;
-    // console.log(dataDkjg)
-
-}
 
 
 
@@ -3617,22 +2379,7 @@ const state_layer = reactive({
     checked8: true,
 });
 
-// const current = ref(['mail']);
-// const itemsref = ref([
-//     {
-//         key: 'mail',
-//         icon: () => h(MailOutlined),
-//         label: '区域',
-//         title: 'Navigation One',
-//     },
-//     {
-//         key: 'app',
-//         icon: () => h(AppstoreOutlined),
-//         label: '地块',
-//         title: 'Navigation Two',
-//     },
 
-// ]);
 
 
 const placement = ref('right');
@@ -3643,78 +2390,105 @@ const showDrawers = () => {
 const onClose = () => {
     opens.value = false;
 };
+
+
+/**
+ * 选择器
+ */
+const dataSegmented = reactive([{
+    value: '1月',
+    disabled: true,
+}, {
+    value: '2月',
+    disabled: true,
+}, {
+    value: '3月',
+    disabled: true,
+}, {
+    value: '4月',
+    disabled: false,
+},
+{
+    value: '5月',
+    disabled: false,
+},
+{
+    value: '6月',
+    disabled: false,
+}, {
+    value: '7月',
+    disabled: false,
+},
+{
+    value: '8月',
+    disabled: false,
+},
+{
+    value: '9月',
+    disabled: false,
+},
+{
+    value: '10月',
+    disabled: false,
+},
+{
+    value: '11月',
+    disabled: true,
+},
+{
+    value: '12月',
+    disabled: true,
+},
+]);
+const valueSegmented = ref(dataSegmented[dataSegmented.length - 1]);
+
+
+/**
+ * 监听sa元素的left值变化
+ */
+let observeSaLeft = ref();
+
+
+
 </script>
 
 <template>
 
+
     <!-- 头部 -->
     <div class="header">
         <Header></Header>
+
     </div>
 
     <!-- 地图 -->
 
     <div class="verification" :style="{ width: !opens ? '100%' : 'calc(100% - 520px)' }">
-        <!-- <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
+        <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
             <div id="before" class="map">
             </div>
-            <div id="after" style="map">
+            <div id="after" class="map">
             </div>
-        </div> -->
-
-        <div>
-            <div id="before" :style="{
-                width: '50%',
-                position: 'absolute',
-                left: '0',
-                top: '0',
-                height: '100%',
-                zIndex: 1000
-            }">
-            </div>
-            <div
-                style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;border-left: 3px dotted #fff;z-index: 1100;">
-            </div>
-            <div id="after" :style="{
-                width: '50%',
-                position: 'absolute',
-                left: '50%',
-                top: '0',
-                height: '100%',
-                zIndex: 1000
-            }">
-            </div>
-
         </div>
-
-
-
-
 
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
-            <a-segmented v-model:value="segmented" block :options="data" size="large"
+            <!-- <a-segmented v-model:value="segmented" block :options="data" size="large"
                 style="width: 260px;position: absolute;right: 0;top: -50px;z-index: 1000;">
-            </a-segmented>
-            <a-tooltip placement="leftTop">
+            </a-segmented> -->
+            <!-- <a-tooltip placement="leftTop">
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                <!-- <a-button v-if="rightHeight != '215px'" @click="rightHeight = '215px'" size="large" class="boxshadow">
-                    <Menu color="RGB(58,123,251)"></Menu>
-                </a-button>
-                <a-button v-if="rightHeight == '215px'" @click="rightHeight = '-3000px'" size="large" class="boxshadow"
-                    style="">
-                    <ChevronRight color="RGB(58,123,251)" />
-                </a-button> -->
 
-                <a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
-                    <Menu color="RGB(58,123,251)"></Menu>
-                </a-button>
-                <a-button type="primary" @click="onClose" class="boxshadow" v-if="opens">
-                    <ChevronRight color="RGB(58,123,251)" />
-                </a-button>
-            </a-tooltip>
+
+<a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
+    <Menu color="RGB(58,123,251)"></Menu>
+</a-button>
+<a-button type="primary" @click="onClose" class="boxshadow" v-if="opens">
+    <ChevronRight color="RGB(58,123,251)" />
+</a-button>
+</a-tooltip> -->
             <br>
 
 
@@ -3913,14 +2687,14 @@ const onClose = () => {
                 </div>
             </a-tooltip>
 
-            <a-tooltip placement="leftTop">
+            <!-- <a-tooltip placement="leftTop">
                 <template #title>
                     <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
                 </template>
                 <a-button @click="onTerrain()" size="large" class="boxshadow">
                     <MountainSnow :color="!terrainSP ? 'RGB(58,123,251)' : '#3277fc'" />
                 </a-button>
-            </a-tooltip>
+            </a-tooltip> -->
             <a-tooltip placement="leftTop" v-if="1 == 2">
                 <template #title>
                     <span>绘制</span>
@@ -4005,6 +2779,18 @@ const onClose = () => {
 
     <!-- 页面 -->
     <div class="page">
+        <div style="position: absolute;top: 110px;left: 40%; z-index: 1000;">
+
+
+            <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
+                <span style="text-shadow: 1px 2px 2px #000;"> 2024年玉米长势监测 </span>
+            </h1>
+
+
+
+            <a-segmented v-model:value="valueSegmented" :options="dataSegmented" />
+        </div>
+
 
         <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
             <br>
@@ -4186,102 +2972,11 @@ const onClose = () => {
 
 
             </p>
-            <!-- <template #footer>
-                <a-button style="margin-right: 8px" @click="onClose">Cancel</a-button>
-                <a-button type="primary" @click="onClose">Submit</a-button>
-            </template> -->
+
         </a-drawer>
 
 
 
-        <!-- <a-menu v-model:selectedKeys="current" mode="horizontal" :items="itemsref" inlineIndent="100"
-            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;" />
-        <br />
-        <br />
-       -->
-        <!-- <a-segmented v-model:value="segmented" :options="data" size="large"
-            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
-            <template #label="{ payload }">
-                <div style="padding: 20px 10px">
-                    <div>{{ payload.title }}</div>
-                    <div>{{ payload.subTitle }}</div>
-                </div>
-            </template>
-        </a-segmented> -->
-
-
-        <!-- 
-        <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
-            :footer="null">
-            <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
-                <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'i_area'">
-                        {{ record.i_area ? record.i_area + ' 亩' : '' }}
-                    </template>
-                    <template v-if="column.key === 'rs_area'">
-                        {{ record.rs_area ? record.rs_area + ' 亩' : '' }}
-                    </template>
-                    <template v-if="column.key === 'i_coverage'">
-                        {{ record.i_coverage ? Number(record.i_coverage).toFixed(2) + ' %' : '' }}
-                    </template>
-
-                    <template v-if="column.key === 'pass'">
-                        <a-tag color="green" v-if="record.pass"> 合格</a-tag>
-                        <a-tag color="red" v-else> 不合格</a-tag>
-                    </template>
-                </template>
-            </a-table>
-            <div v-if="activeKey == 2">
-                <a-table :columns="columnsDk" :data-source="dataSourceDk" bordered size="middle"
-                    :pagination="pagination">
-                    <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'city'">
-                            {{ record.city + record.quxian + record.xiangzhen + record.cun }}
-                        </template>
-                        <template v-if="column.key === 'cbsl'">
-                            {{ record.cbsl ? record.cbsl + ' 亩' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v1'">
-                            {{ record.v1 ? record.v1 + ' 亩' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v2'">
-                            {{ record.v2 ? record.v2 + ' %' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v6'">
-                            {{ record.v6 ? record.v6 + ' %' : '' }}
-                        </template>
-                        <template v-if="column.key === 'name'">
-                            {{ record.name ? record.name : '' }}
-                        </template>
-                        <template v-if="column.key === 'v3'">
-                            <a-tag color="green" v-if="record.v3 == 1"> 一致</a-tag>
-                            <a-tag color="red" v-else> 不一致</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v4'">
-                            <a-tag color="green" v-if="record.v3 == 1"> 无重叠</a-tag>
-                            <a-tag color="red" v-else> 有重叠</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v7'">
-                            <a-tag color="green" v-if="record.v7 == 1"> 达标</a-tag>
-                            <a-tag color="red" v-else> 未达标</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v8'">
-                            <a-tag color="#87d068" v-if="record.v8 == 1"> 合格</a-tag>
-                            <a-tag color="#f50" v-else> 不合格</a-tag>
-                        </template>
-                        <template v-if="column.key === 'bdh'">
-                            保单号:{{ record.bdh }} <br>
-                            保险期间:{{ record.bxqj }}
-                        </template>
-
-                    </template>
-                </a-table>
-            </div>
-        </a-modal>
-
-        <a-modal v-model:open="lockDownOpen" width="90%" title="" :footer="null">
-            <div v-html="lockDownHtml" class="lockDownHtml"></div>
-        </a-modal> -->
 
         <!-- 左侧菜单栏 -->
         <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
@@ -4293,30 +2988,7 @@ const onClose = () => {
         </div>
         <!-- 中间 -->
         <div class="center-card" :style="{ cursor: 'all-scroll', left: !opens ? '50%' : '40%' }">
-            <table style="width: 100%;">
-                <tr>
-                    <td style="display: flex;justify-content: right;">
-                        <a-page-header
-                            style="background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));  "
-                            title="第一次比对" sub-title="2024年09月13日">
-                            <template #tags>
-                                <a-tag color="green">已完成</a-tag>
-                            </template>
-                        </a-page-header>
-                    </td>
-                    <td>
-                        <a-page-header
-                            style="background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));  "
-                            title="第二次比对" sub-title="2024年11月25日">
-                            <template #tags>
-                                <a-tag color="green">已完成</a-tag>
-                            </template>
-                        </a-page-header>
-                    </td>
-                </tr>
 
-
-            </table>
         </div>
 
 
@@ -4500,14 +3172,18 @@ const onClose = () => {
 
     <!--图例-->
 
-    <div class="tuli">
-        <VerificationLegend v-if="activeKey == 2" core="map"></VerificationLegend>
-        <AreaLegend v-if="activeKey == 1" core="map"></AreaLegend>
+    <div style="position: absolute;bottom: 35px;right: 20px;z-index: 1000;">
+        <JianceLegend v-if="activeKey == 1" core="map"></JianceLegend>
     </div>
 
-    <div class="tuli-right" :style="{ left: !opens ? '50%' : '40%' }">
-        <VerificationLegend v-if="activeKey == 2" core="mapp"></VerificationLegend>
-        <AreaLegend v-if="activeKey == 1" core="mapp"></AreaLegend>
+    <!--图层控制-->
+    <div class="tuli" :style="{ left: (observeSaLeft - 200) + 'px' }">
+        <TucengLegend v-if="activeKey == 1" core="map"></TucengLegend><br>
+
+    </div>
+
+    <div class="tuli-right" :style="{ left: observeSaLeft + 'px' }">
+        <TucengLegend v-if="activeKey == 1" core="mapp"></TucengLegend><br>
     </div>
 
 
@@ -5036,5 +3712,28 @@ p {
     top: 0;
     bottom: 0;
     width: 100%;
+}
+
+/* For demo */
+:deep(.slick-slide) {
+    text-align: center;
+    height: 100px;
+    line-height: 100px;
+    /* background: red; */
+    overflow: hidden;
+    font-size: 20px;
+}
+
+:deep(.slick-slide h3) {
+    color: #eeeeefc7;
+    text-shadow: 2px 3px 2px #000;
+}
+
+:deep(.slick-dots li button) {
+    background-color: RGB(66, 119, 249);
+    height: 5px;
+    width: 20px;
+    opacity: 1;
+    box-shadow: 1px 1px 2px #000;
 }
 </style>

@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import path from "path";
 import viteImagemin from 'vite-plugin-imagemin';
 import { visualizer } from 'rollup-plugin-visualizer';
- import viteCompression from 'vite-plugin-compression'
+import viteCompression from 'vite-plugin-compression'
 import WindiCSS from 'vite-plugin-windicss';
 
 // const pathResolve = (dir) => resolve(__dirname, dir);
@@ -79,6 +79,15 @@ export default defineConfig(({ command, mode }) => {
             hmr: true,
             watch: { usePolling: true },
             port: env.VITE_PORT,
+            server: {
+                proxy: {
+                    '/mapserver': {
+                        target: 'http://39.102.63.192:3001', // 目标服务器地址
+                        changeOrigin: true, // 允许跨域
+                        rewrite: (path) => path.replace(/^\/mapserver/, ''), // 重写路径
+                    },
+                },
+            },
         },
         resolve: {
             alias: {

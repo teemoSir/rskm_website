@@ -50,11 +50,12 @@ const config = {
         name: 'procjet_2024_yghy_sense',
         tile: {
             type: "vector",
+            scheme: 'tms',
             tiles: [
-                //gid,geom,bdh,bbxrmc,bbxrzjh,bbxrdh,xianlei,xianzhong,bxjg,shi,shidm,quxian,quxiandm,zhen,zhendm,cun,cundm,youxiao,dkbcd,dkcdl,dkmj,rs_area,cbsl,bxqj,bdmj
-                `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
+                // `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
+                'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_sense@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf'
             ],
-            minzoom: 4,
+            minzoom: 3,
             maxzoom: 14
         }
     },
@@ -145,7 +146,31 @@ const config = {
             ],
             minzoom: 9
         }
-    }
+    },
+    procjet_2024_yghy_yumi_zhangshi: {
+        name: "procjet_2024_yghy_yumi_zhangshi",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6
+        }
+    },
+    // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
+    //     'type': 'raster',
+    //     'scheme': 'tms',
+    //     'tiles': [
+    //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
+
+    //     ],
+
+    //     'tileSize': 256 // 瓦片大小
+    // });
+
+
+
 };
 
 export { config, mapbox };

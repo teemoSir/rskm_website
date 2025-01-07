@@ -46,6 +46,11 @@ const router = createRouter({
             path: "/chengxiao",
             name: "chengxiao",
             component: () => import("@/views/chengxiao/index.vue"),
+        },
+        {
+            path: "/jiance",
+            name: "jiance",
+            component: () => import("@/views/jiance/index.vue"),
         }
     ],
 });
