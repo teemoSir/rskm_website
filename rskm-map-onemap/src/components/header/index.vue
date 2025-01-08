@@ -204,7 +204,7 @@ onMounted(() => {
 
 <style scoped>
 ::v-deep .ant-menu {
-    font-size: 20px;
+    font-size: 1.1rem;
 
 }
 
@@ -220,7 +220,7 @@ onMounted(() => {
 }
 
 ::v-deep .ant-page-header-heading-title {
-    font-size: 25px;
+    font-size: 2rem;
 }
 </style>
 

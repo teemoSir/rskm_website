@@ -39,7 +39,7 @@ let legends = [
         isShow: ref(true),
         type: "polygon",
         outlineColor: "RGB(236,102,103)",
-        fillColor: "#008000",
+        fillColor: "#90EE90",
         outlineWidth: 0,
         order: "长势分布"
     },
@@ -49,7 +49,7 @@ let legends = [
         isShow: ref(true),
         type: "polygon",
         outlineColor: "RGB(236,102,103)",
-        fillColor: "#90EE90",
+        fillColor: "#008000",
         outlineWidth: 0,
         order: "长势分布"
     },
@@ -229,8 +229,8 @@ const props = defineProps({
             <a-row v-for="tar in legends.filter(le => le.order == '长势分布')" :key="tar.key"
                 style="display: flex; align-items: center; line-height: 30px">
                 <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '长势分布')[0].key">
-                    <div class="legendTitle">{{
-                        tar.order }}</div>
+                    <!-- <div class="legendTitle">{{
+                        tar.order }}</div> -->
                 </a-col>
                 <a-col :span="10">
                     <div v-if="tar.type == 'polygon'" :style="{
@@ -254,9 +254,9 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="4" style="font-size: 15px;">
+                <a-col :span="4" style="font-size: 0.8rem;">
                 </a-col>
-                <a-col :span="10" style="font-size: 15px;">
+                <a-col :span="10" style="font-size: 0.8rem;">
                     {{ tar.title }}
 
 
@@ -273,19 +273,20 @@ const props = defineProps({
 }
 
 
-::v-deep .ant-card-head {
+:deep(.ant-card-head) {
     border-bottom: 0;
+    font-weight: normal;
 }
 
-::v-deep .ant-card-body {
-    padding: 0 20px 20px 20px;
-    width: 180px;
+:deep(.ant-card-body) {
+    padding: 5px 15px 5px 15px;
+    width: 120px;
     border-top: 1px solid #ccc;
 }
 
 .legendTitle {
     font-size: 16px;
-    font-weight: 600;
+
     padding: 10px 0 0 0;
     width: 100%;
 

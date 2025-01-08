@@ -181,15 +181,15 @@ const props = defineProps({
             <a-row v-for="tar in legends.filter(le => le.order == '图层')" :key="tar.key"
                 style="display: flex; align-items: center; line-height: 30px">
                 <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '图层')[0].key">
-                    <div class="legendTitle">{{
-                        tar.order }}</div>
+                    <!-- <div class="legendTitle">{{
+                        tar.order }}</div> -->【
                 </a-col>
 
                 <a-col :span="14"> {{ tar.title }}
                 </a-col>
                 <a-col :span="4">
                 </a-col>
-                <a-col :span="6" style="font-size: 14px;">
+                <a-col :span="6" style="font-size: 1rem;">
                     <a-switch v-if="tar.key == 6" checked-children="显示" un-checked-children="隐藏"
                         v-model:checked="state.checked1" />
                     <a-switch v-if="tar.key == 7" checked-children="显示" un-checked-children="隐藏"
@@ -246,19 +246,23 @@ const props = defineProps({
 }
 
 
-::v-deep .ant-card-head {
+
+
+
+:deep(.ant-card-head) {
     border-bottom: 0;
+    font-weight: normal;
 }
 
-::v-deep .ant-card-body {
-    padding: 0 20px 20px 20px;
-    width: 180px;
+:deep(.ant-card-body) {
+    padding: 1rem;
+    width: 160px;
     border-top: 1px solid #ccc;
 }
 
 .legendTitle {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 1rem;
+
     padding: 10px 0 0 0;
     width: 100%;
 

@@ -14,7 +14,7 @@ let legends = [
 
     {
         key: 0,
-        title: "遥感种植分布图",
+        title: "种植分布",
         isShow: ref(false),
         type: "polygon",
         outlineColor: "RGB(112,131,194)",
@@ -524,7 +524,7 @@ const props = defineProps({
             </div>
         </template>
 
-        <div v-if="tuli" style="width: 300px;">
+        <div v-if="tuli" style="width: 180px;">
             <!--保险机构-->
             <a-row style="display: flex; align-items: center; line-height: 30px">
                 <!-- <a-col :span="24" >
@@ -594,7 +594,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 15px;">
+                <a-col :span="17" style="font-size: 12px;">
                     {{ tar.title }}
 
                     <div style="position: absolute; right: 10px; bottom: 0">
@@ -602,7 +602,7 @@ const props = defineProps({
                             v-model:checked="radioValue" />
                     </div>
                 </a-col>
-                <a-col :span="24" style="font-size: 15px;">
+                <a-col :span="24" style="font-size: 12px;">
                 </a-col>
             </a-row>
 
@@ -637,7 +637,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 15px;">
+                <a-col :span="17" style="font-size: 12px;">
                     {{ tar.title }}
 
                     <div style="position: absolute; right: 10px; bottom: 0">
@@ -683,7 +683,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 15px;">
+                <a-col :span="17" style="font-size: 12px;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
 
@@ -726,7 +726,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 15px;">
+                <a-col :span="17" style="font-size: 12px;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
                         <a-switch v-if="tar.key == 11" checked-children="显示" un-checked-children="隐藏"
@@ -766,7 +766,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 15px;">
+                <a-col :span="17" style="font-size: 12px;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
                         <a-switch v-if="tar.key == 13" checked-children="显示" un-checked-children="隐藏"
@@ -784,12 +784,9 @@ const props = defineProps({
 
 <style scoped>
 .legendTitle {
-    font-size: 16px;
-    font-weight: 600;
-    padding: 10px 0 0 0;
+    font-size: 14px;
+
     width: 100%;
-    /* background-color: red; */
-    /* border-bottom: 1px dotted #ccc; */
 
 
 }
@@ -800,12 +797,14 @@ const props = defineProps({
 }
 
 
-::v-deep .ant-card-body {
-    padding: 5px 20px;
+
+:deep(.ant-card-head) {
+    border-bottom: 0;
+    font-weight: normal;
 }
 
-
-::v-deep .ant-card-head {
-    border-bottom: 0;
+:deep(.ant-card-body) {
+    padding: 0px 15px 15px 15px;
+    border-top: 1px solid #ccc;
 }
 </style>
