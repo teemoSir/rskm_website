@@ -3695,7 +3695,7 @@ const onClose = () => {
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                {{ opens }}
+
                 <a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
                     <Menu color="RGB(58,123,251)"></Menu>
                 </a-button>
@@ -3703,11 +3703,6 @@ const onClose = () => {
                     <ChevronRight color="RGB(58,123,251)" />
                 </a-button>
             </a-tooltip>
-            <br>
-
-
-            <br>
-
 
             <a-tooltip placement="leftTop">
                 <template #title>
@@ -3738,45 +3733,33 @@ const onClose = () => {
                 </a-tooltip>
                 <!--图层列表 -->
                 <div class="switch-layer" v-if="rightLayer">
-                    <a-card title="" v-show="machine != 'mercator'">
+                    <a-card title="" style="padding: 0;">
                         <div v-for="item in layers" style="float: left;" :key="item.id" :style="{
                             width: '25%',
                             textAlign: 'center',
-                            height: '120px',
                             display: item.projection ? 'block' : 'none',
                         }">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
+                            <img :src="item.url" style="width: 100%; height: 60px; border-radius: 2px"
                                 @click="switchTile(item)" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-                                {{ item.name.split("-")[0] }} <br>
-                                {{ item.name.split("-")[1] }}
+                                <!-- {{ item.name.split("-")[0] }} <br>
+                                {{ item.name.split("-")[1] }} -->
+                                {{ item.name }}
                             </div>
                         </div>
                     </a-card>
-                    <a-card title="" v-show="machine == 'mercator'">
-                        <div v-for="item in layers" :key="item.id" :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            height: '120px',
-                        }" @click="switchTile(item)">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
-                            <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
-                                {{ item.name.split("-")[0] }} <br>
-                                {{ item.name.split("-")[1] }}
-                            </div>
-                        </div>
-                    </a-card>
-                    <br />
 
 
-                    <a-card>
+                    <br>
+                    <a-card v-if="1 == 2">
 
                         <!--地名注记-->
                         <a-card-grid :style="{
                             width: '25%',
                             textAlign: 'center',
+                            padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style=" font-size: 12px; color: #000">
                                 地名
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state.DMZJiSHow" size="small" />
@@ -3786,8 +3769,9 @@ const onClose = () => {
                         <a-card-grid :style="{
                             width: '25%',
                             textAlign: 'center',
+                            padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #000">
                                 省界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked7" />
@@ -3797,8 +3781,9 @@ const onClose = () => {
                         <a-card-grid :style="{
                             width: '25%',
                             textAlign: 'center',
+                            padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #000">
                                 市界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked8" />
@@ -3807,9 +3792,9 @@ const onClose = () => {
 
                         <a-card-grid :style="{
                             width: '25%',
-                            textAlign: 'center',
+                            textAlign: 'center', padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #000">
                                 县界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked4" size="small" />
@@ -3818,9 +3803,9 @@ const onClose = () => {
 
                         <a-card-grid :style="{
                             width: '25%',
-                            textAlign: 'center',
+                            textAlign: 'center', padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #000">
                                 镇界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked5" size="small" />
@@ -3829,9 +3814,9 @@ const onClose = () => {
 
                         <a-card-grid :style="{
                             width: '25%',
-                            textAlign: 'center',
+                            textAlign: 'center', padding: '10px'
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #000">
                                 村界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked6" size="small" />
@@ -3901,14 +3886,14 @@ const onClose = () => {
                 </div>
             </a-tooltip>
 
-            <a-tooltip placement="leftTop">
+            <!-- <a-tooltip placement="leftTop">
                 <template #title>
                     <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
                 </template>
                 <a-button @click="onTerrain()" size="large" class="boxshadow">
                     <MountainSnow :color="!terrainSP ? 'RGB(58,123,251)' : '#3277fc'" />
                 </a-button>
-            </a-tooltip>
+            </a-tooltip> -->
             <a-tooltip placement="leftTop" v-if="1 == 2">
                 <template #title>
                     <span>绘制</span>
@@ -3970,7 +3955,7 @@ const onClose = () => {
                     </div>
                 </div>
             </a-tooltip>
-            <br />
+
 
             <a-tooltip placement="leftTop">
                 <template #title>
@@ -4868,14 +4853,15 @@ p {
 
     /* background-color: rgba(0, 0, 0, 0.6); */
     background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
-    border-radius: 3px;
-    width: 55px;
-    height: 55px;
+    border-radius: 2px;
+    width: 50px;
+    height: 50px;
     color: #ccc;
-    border: 1px double #99999986;
+    outline: 1px solid #99999986;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 5px 0 5px 0;
 }
 
 .boxshadow:hover {
@@ -4900,9 +4886,9 @@ p {
 
 .switch-layer {
     position: absolute;
-    right: 81px;
-    top: 10px;
-    width: 400px;
+    right: 70px;
+    top: 0px;
+    width: 460px;
     z-index: 1000;
     border: 0;
 }
@@ -4910,8 +4896,8 @@ p {
 
 
 .pst>img {
-    height: 64px;
-    width: 54px;
+    height: 50px;
+    width: 50px;
     cursor: pointer;
 }
 
@@ -4919,10 +4905,10 @@ p {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     position: relative;
-    margin-top: -42px;
+
 
     color: #faf9f9c0;
-    font-size: 14px;
+    font-size: 0.8rem;
     font-weight: 3000;
 }
 
@@ -4931,9 +4917,9 @@ p {
     background: linear-gradient(to bottom, #2b8fe79c, #2b8fe7f8);
     z-index: 1000;
     position: relative;
-    margin-top: -42px;
+
     color: #f2f2f8ec;
-    font-size: 14px;
+    font-size: 0.8rem;
 
 }
 

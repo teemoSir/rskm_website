@@ -182,7 +182,7 @@ const props = defineProps({
                 style="display: flex; align-items: center; line-height: 30px">
                 <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '图层')[0].key">
                     <!-- <div class="legendTitle">{{
-                        tar.order }}</div> -->【
+                        tar.order }}</div> -->
                 </a-col>
 
                 <a-col :span="14"> {{ tar.title }}
