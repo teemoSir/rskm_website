@@ -376,7 +376,7 @@ let specYghy = [
 
         }
         , minzoom: 11.4,
-        maxzoom: 20
+        maxzoom: 14
     },
 
 

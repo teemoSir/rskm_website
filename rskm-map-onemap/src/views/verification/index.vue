@@ -2439,8 +2439,6 @@ const removeLayerDk = () => {
     map.setLayoutProperty('rskm_pt_name', 'visibility', 'none');
     map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'none');
 
-
-
     // map.setLayoutProperty('admin_2024_county_yghy_outline', 'visibility', 'visible');
     // map.setLayoutProperty('admin_2024_county_yghy', 'visibility', 'visible');
 }
@@ -2453,10 +2451,6 @@ const loadLayerDk = () => {
     map.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
     map.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
     map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
-
-
-    // map.setLayoutProperty('admin_2024_county_yghy', 'visibility', 'none');
-
 
 }
 
@@ -2661,7 +2655,7 @@ const lockDownOpen = ref(false)
 
     <!-- 地图 -->
     <div class="verification">
-        <SDMap :MapToolPosition="{ top: '240px', right: '12px' }"></SDMap>
+        <SDMap :MapToolPosition="{ top: '160px', right: '12px' }"></SDMap>
     </div>
 
     <!-- 页面 -->
@@ -2735,8 +2729,6 @@ const lockDownOpen = ref(false)
             </div>
         </a-modal>
 
-
-        <!-- <a-button type="primary" @click="showModal">Open Modal of 1000px width</a-button> -->
         <a-modal v-model:open="lockDownOpen" width="90%" title="" :footer="null">
             <div v-html="lockDownHtml" class="lockDownHtml"></div>
         </a-modal>
@@ -2748,11 +2740,11 @@ const lockDownOpen = ref(false)
                 <template #title>
                     <span>显示菜单</span>
                 </template>
-                <SidebarOpen :size="25"></SidebarOpen>
+                <SidebarOpen :size="18" color="#ccc"></SidebarOpen>
             </a-tooltip>
 
         </div>
-        <div class="left-card" style="padding:0 10px" v-show="xSquareShow">
+        <div class="left-card" v-show="xSquareShow">
 
             <a-row :gutter="16">
                 <a-col :span="24">
@@ -2778,29 +2770,20 @@ const lockDownOpen = ref(false)
 
                         <div v-if="activeKey == 2" style="padding: 10px 0px;">
                             <a-space>
-
-                                <!-- <a-input placeholder="请输入搜索关键词"
-                  style="width: 320px;border: 0;height: 40px;outline: 1px solid #ccc; border-radius: 1px;" /> -->
-                                <label style="font-weight: 600;">被保险人查询：</label>
+                                <label style="font-weight: 600;">查询：</label>
                                 <a-auto-complete :allowClear="true" v-model:value="valueSearch" :options="options"
-                                    style="width: 290px;" @select="onSelect" @search="onSearch" placeholder="请输入大户名称">
+                                    style="width: 180px;" @select="onSelect" @search="onSearch" placeholder="请输入大户名称">
 
                                     <template #option="item">
                                         <div style="display: flex; justify-content: space-between">
                                             <span>
                                                 {{ item.value }}
-                                                <!-- {{ JSON.stringify(item) }} -->
                                             </span>
-
-
                                             <span>{{ item.cun }} </span>
-
-                                            <!-- <span>{{ item.bdmj ? Number(item.bdmj).toFixed(0) : '' }}亩 </span> -->
                                             <span>{{ item.bbxrzjh }} </span>
                                         </div>
                                     </template>
                                 </a-auto-complete>
-                                <!-- <a-button style="margin-left: 10px;" type="primary">检索</a-button> -->
                             </a-space>
                         </div>
 
@@ -2810,8 +2793,8 @@ const lockDownOpen = ref(false)
                             <template #icon="{ key, selected, dataRef }">
                                 <template v-if="dataRef.isPass === true && key != '0-0'">
 
-                                    <div style="float: left;margin-left: 220px;;width: 100px;">
-                                        <a-tooltip color="RGB(144,204,120)" placement="right">
+                                    <div style="float: left;margin-left: 100px;;width: 100px;">
+                                        <a-tooltip placement="right">
                                             <template #title>{{ dataRef.title }}完成核验</template>
                                             <CheckCircle2Icon color="RGB(144,204,120)" :size="20"></CheckCircle2Icon>
                                         </a-tooltip>
@@ -2819,9 +2802,9 @@ const lockDownOpen = ref(false)
                                 </template>
                                 <template v-if="dataRef.isPass === false && key != '0-0'">
 
-                                    <div style="float: left;margin-left: 220px;width: 100px;">
+                                    <div style="float: left;margin-left: 100px;width: 100px;">
 
-                                        <a-tooltip color="RGB(236,102,103)" placement="right">
+                                        <a-tooltip placement="right">
                                             <template #title>{{ dataRef.title }}暂未完成</template>
                                             <CircleAlertIcon color="RGB(236,102,103)" :size="20"></CircleAlertIcon>
                                         </a-tooltip>
@@ -2832,9 +2815,8 @@ const lockDownOpen = ref(false)
 
                         </a-directory-tree>
 
-                        <br>
 
-                        <a-alert message="提示：本期核验数据截止2024年9月30日" type="success" show-icon />
+                        <a-alert message="提示：本期为2024年9月30日核验数据" type="success" show-icon />
                     </a-card>
                 </a-col>
 
@@ -2847,28 +2829,6 @@ const lockDownOpen = ref(false)
 
         <!-- 中间 -->
         <div class="center-card">
-            <!-- <a-typography-title class="center-card-title">遥感核验与分析
-        <a-dropdown>
-          <a class="ant-dropdown-link" @click.prevent>
-            <a-tag color="#87d068">静态
-              <CheckCheckIcon :size="16" />
-            </a-tag>
-          </a>
-          <template #overlay>
-            <a-menu>
-              <a-menu-item>
-                <a @click="router.push('/verification/index')">静态</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a @click="router.push('/verification/index')">动态</a>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-
-      </a-typography-title> -->
-
-
         </div>
 
 
@@ -2879,9 +2839,7 @@ const lockDownOpen = ref(false)
                 <template #title>
                     <span>显示统计栏</span>
                 </template>
-
-
-                <PanelRightOpenIcon :size="25"></PanelRightOpenIcon>
+                <PanelRightOpenIcon :size="18" color="#ccc"></PanelRightOpenIcon>
             </a-tooltip>
         </div>
         <div class="right-card" v-show="xRightSquareShow">
@@ -2953,38 +2911,7 @@ const lockDownOpen = ref(false)
                                 </table>
                             </div>
                             <a-row :gutter="16">
-                                <!-- <a-col :span="10"> -->
 
-                                <!-- <table class="tjfx">
-                    <tr>
-                      <th>承保面积：</th>
-                      <td>{{ Number(cbmj).toFixed(0) }}亩</td>
-                    </tr>
-                    <tr>
-                      <th>遥感面积：</th>
-                      <td>{{ Number(ygmj).toFixed(0) }}亩</td>
-                    </tr>
-                    <tr>
-                      <th>保险覆盖率：</th>
-                      <td>{{ bxfgl }}%</td>
-                    </tr>
-                    <tr>
-                      <th>超保乡镇：</th>
-                      <td> <a-tag color="#f50">{{ cbxz_val }}%</a-tag> {{ cbxz }}个</td>
-                    </tr>
-                    <tr>
-                      <th>正常乡镇：</th>
-                      <td> <a-tag color="#87d068">{{ zcxz_val }}%</a-tag> {{ zcxz }}个</td>
-                    </tr>
-                    <tr>
-                      <th>不足乡镇：</th>
-                      <td> <a-tag color="RGB(248,200,94)">{{ bzxz_val }}%</a-tag> {{ bzxz }}个</td>
-                    </tr>
-
-                  </table> -->
-
-
-                                <!-- </a-col> -->
                                 <a-col :span="8">
 
                                     <a-statistic title="承保面积" :value="Number(cbmj).toFixed(0) + ' 亩'"
@@ -3079,9 +3006,7 @@ const lockDownOpen = ref(false)
                                     </small>
 
                                     <a-button type="link" primary style="position: absolute;right: 10px;">
-                                        <!-- <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;更多
-                  </div> -->
+
                                     </a-button>
 
                                 </div>
@@ -3205,11 +3130,7 @@ const lockDownOpen = ref(false)
                                     </a-tooltip>
                                 </small>
 
-                                <!-- <a-button type="link" primary style="position: absolute;right: 10px;">
-                  <div style="display: flex;align-items: center;">
-                    <MoreHorizontal :size="18"></MoreHorizontal>&nbsp;更多
-                  </div>
-                </a-button> -->
+
 
                             </div>
 
@@ -3418,7 +3339,7 @@ const lockDownOpen = ref(false)
 
 .left-card {
     position: absolute;
-    width: 450px;
+    width: 270px;
     left: 0;
     top: 100px;
     max-height: calc(100% - 100px);
@@ -3543,9 +3464,9 @@ p {
 .xRightSquareShow {
     position: absolute;
     right: 12px;
-    top: 120px;
+    top: 105px;
     cursor: pointer;
-    padding: 13px 14px;
+    padding: 13px 15px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
     border-radius: 2px;
     color: #fff;
@@ -3555,9 +3476,9 @@ p {
 .xSquareShow {
     position: absolute;
     left: 12px;
-    top: 120px;
+    top: 105px;
     cursor: pointer;
-    padding: 13px 14px;
+    padding: 13px 15px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
     border-radius: 2px;
     color: #fff;

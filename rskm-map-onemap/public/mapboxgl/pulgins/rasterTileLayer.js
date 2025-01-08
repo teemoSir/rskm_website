@@ -2485,7 +2485,7 @@
             //     Subdomains: '0123456789',
             //     tileType: 'bd09'
             // },
-            Geoq: {//
+            Geoq: {
                 Normal: {
                     Map: "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}",
                     PurplishBlue: "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}",

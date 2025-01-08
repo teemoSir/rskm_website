@@ -19,19 +19,19 @@ import { config } from "@/config/tileserver.js";
 import { ref } from "vue";
 
 let layers = ref([
-    {
-        id: 1,
-        projection: false,
-        name: "高德地图-影像(注记)",
-        url: Gaode_WX,
-        key: "",
-        st: "GS(2023)4677号",
-        zj: true,
-        param: [
-            ["gdyx", "GaoDe.Satellite.Map"],
-            ["gdyxzj", "GaoDe.Satellite.Annotion"],
-        ],
-    },
+    // {
+    //     id: 1,
+    //     projection: false,
+    //     name: "高德地图-影像(注记)",
+    //     url: Gaode_WX,
+    //     key: "",
+    //     st: "GS(2023)4677号",
+    //     zj: true,
+    //     param: [
+    //         ["gdyx", "GaoDe.Satellite.Map"],
+    //         ["gdyxzj", "GaoDe.Satellite.Annotion"],
+    //     ],
+    // },
     {
         id: 2,
         name: "高德地图-影像",
@@ -44,7 +44,7 @@ let layers = ref([
     },
     {
         id: 3,
-        name: "高德地图-矢量(注记)",
+        name: "高德地图-标准(注记)",
         projection: false,
         url: Gaode_BZ,
         st: "GS(2023)4677号",
@@ -54,7 +54,7 @@ let layers = ref([
     },
     {
         id: 4,
-        name: "高德地图-矢量",
+        name: "高德地图-标准",
         projection: false,
         url: Gaode_BZ_WZJ,
         st: "GS(2023)4677号",
@@ -62,19 +62,19 @@ let layers = ref([
         zj: false,
         param: [["gdslwzj", "GaoDe.Normal_NoTag.Map"]],
     },
-    {
-        id: 5,
-        name: "百度地图-影像(注记)",
-        projection: false,
-        url: Baidu_WX,
-        st: "GS(2023)3206号",
-        key: "11",
-        zj: true,
-        param: [
-            ["bdyx", "Baidu.Satellite.Map"],
-            ["bdyxzj", "Baidu.Satellite.Annotion"],
-        ],
-    },
+    // {
+    //     id: 5,
+    //     name: "百度地图-影像(注记)",
+    //     projection: false,
+    //     url: Baidu_WX,
+    //     st: "GS(2023)3206号",
+    //     key: "11",
+    //     zj: true,
+    //     param: [
+    //         ["bdyx", "Baidu.Satellite.Map"],
+    //         ["bdyxzj", "Baidu.Satellite.Annotion"],
+    //     ],
+    // },
     {
         id: 6,
         name: "百度地图-影像",
@@ -85,22 +85,22 @@ let layers = ref([
         zj: false,
         param: [["bdyx", "Baidu.Satellite.Map"]],
     },
-    {
-        id: 7,
-        name: "百度地图-矢量(注记)",
-        projection: false,
-        url: Baidu_BZ,
-        st: "GS(2023)3206号",
-        key: "",
-        zj: true,
-        param: [
-            ["bdsl", "Baidu.Normal.Map"],
-            ["bdsl", "Baidu.Normal_NoTag.Map"],
-        ],
-    },
+    // {
+    //     id: 7,
+    //     name: "百度地图-标准(注记)",
+    //     projection: false,
+    //     url: Baidu_BZ,
+    //     st: "GS(2023)3206号",
+    //     key: "",
+    //     zj: true,
+    //     param: [
+    //         ["bdsl", "Baidu.Normal.Map"],
+    //         ["bdsl", "Baidu.Normal_NoTag.Map"],
+    //     ],
+    // },
     {
         id: 8,
-        name: "百度地图-矢量",
+        name: "百度地图-标准",
         projection: false,
         url: Baidu_BZ_WZJ,
         st: "GS(2023)3206号",
@@ -108,19 +108,19 @@ let layers = ref([
         zj: false,
         param: [["bdsl", "Baidu.Normal_NoTag.Map"]],
     },
-    {
-        id: 9,
-        name: "天地图-影像(注记)",
-        projection: true,
-        url: TDT_WX,
-        st: "GS(2023)336号",
-        key: "9998977aa7629c0d5088a986b20567a1",
-        zj: true,
-        param: [
-            ["tdtyx", "TianDiTu.Satellite.Map"],
-            ["tdtyxzj", "TianDiTu.Satellite.Annotion"],
-        ],
-    },
+    // {
+    //     id: 9,
+    //     name: "天地图-影像(注记)",
+    //     projection: true,
+    //     url: TDT_WX,
+    //     st: "GS(2023)336号",
+    //     key: "9998977aa7629c0d5088a986b20567a1",
+    //     zj: true,
+    //     param: [
+    //         ["tdtyx", "TianDiTu.Satellite.Map"],
+    //         ["tdtyxzj", "TianDiTu.Satellite.Annotion"],
+    //     ],
+    // },
     {
         id: 10,
         name: "天地图-影像",
@@ -131,22 +131,22 @@ let layers = ref([
         zj: false,
         param: [["tdtyx", "TianDiTu.Satellite.Map"]],
     },
-    {
-        id: 11,
-        name: "天地图-矢量(注记)",
-        projection: true,
-        url: TDT_BZ,
-        st: "GS(2023)336号",
-        key: "2afa77972bd56e6da7f45dee6517b59a",
-        zj: true,
-        param: [
-            ["tdtsl", "TianDiTu.Normal.Map"],
-            ["tdtslzj", "TianDiTu.Normal.Annotion"],
-        ],
-    },
+    // {
+    //     id: 11,
+    //     name: "天地图-标准(注记)",
+    //     projection: true,
+    //     url: TDT_BZ,
+    //     st: "GS(2023)336号",
+    //     key: "2afa77972bd56e6da7f45dee6517b59a",
+    //     zj: true,
+    //     param: [
+    //         ["tdtsl", "TianDiTu.Normal.Map"],
+    //         ["tdtslzj", "TianDiTu.Normal.Annotion"],
+    //     ],
+    // },
     {
         id: 12,
-        name: "天地图-矢量",
+        name: "天地图-标准",
         projection: true,
         url: TDT_BZ_WZJ,
         st: "GS(2023)336号",
@@ -206,7 +206,7 @@ let layers = ref([
     },
     {
         id: 18,
-        name: "中科星图-矢量",
+        name: "中科星图-标准",
         st: "GS(2023)1924号",
         projection: true,
         url: Gaode_BZ,
@@ -216,7 +216,7 @@ let layers = ref([
     },
     {
         id: 22,
-        name: "Mapbox地图-影像",
+        name: "Mapbox-影像",
         projection: true,
         st: "",
         url: ESRI_WX,
@@ -245,16 +245,16 @@ let layers = ref([
         param: [["google", "Google.Satellite.Map"]],
         isShow: true,
     },
-    {
-        id: 25,
-        name: "矢量地图",
-        projection: true,
-        st: "",
-        url: ESRI_BZ,
-        zj: true,
-        key: "",
+    // {
+    //     id: 25,
+    //     name: "本地地图",
+    //     projection: true,
+    //     st: "",
+    //     url: ESRI_BZ,
+    //     zj: true,
+    //     key: "",
 
-    },
+    // },
 ])
 
 
@@ -1285,7 +1285,7 @@ let spec = [
                 'RGB(158,224,132)'
             ],
             "text-halo-width": 1.4, // 文字轮廓宽度
-           "text-halo-blur": 0.5, // 文字轮廓模糊度
+            "text-halo-blur": 0.5, // 文字轮廓模糊度
         },
         minzoom: 12,
         maxzoom: 14.55,

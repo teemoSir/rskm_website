@@ -801,14 +801,11 @@ defineProps({
                     <ScanSearch />
                 </a-button>
             </a-tooltip>
-            <br />
             <a-tooltip title="重置视角 " placement="left">
                 <div @click="Zero()" class="pst">
                     <img id="Zero" :src="c2" @click="Zero()" />
                 </div>
             </a-tooltip>
-
-            <br />
             <div>
 
                 <a-tooltip title="底图切换" placement="left">
@@ -819,14 +816,25 @@ defineProps({
                     </a-button>
                 </a-tooltip>
                 <!--图层列表 -->
-                <div class="switch-layer" v-if="rightLayer">
-                    <a-card title="" v-show="machine != 'mercator'">
+                <div class="switch-layer" v-if="rightLayer"><a-card title="">
                         <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
                             width: '25%',
                             textAlign: 'center',
                             display: item.projection ? 'block' : 'none',
                         }">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
+                            <img :src="item.url" style="width: 100%; height: 60px; border-radius: 2px"
+                                @click="switchTile(item)" />
+                            <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
+                                {{ item.name }}
+                            </div>
+                        </a-card-grid></a-card>
+                    <!-- <a-card title="" v-show="machine != 'mercator'">
+                        <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
+                            width: '25%',
+                            textAlign: 'center',
+                            display: item.projection ? 'block' : 'none',
+                        }">
+                            <img :src="item.url" style="width: 100%; height: 60px; border-radius: 2px"
                                 @click="switchTile(item)" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
@@ -838,12 +846,12 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }" @click="switchTile(item)">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
+                            <img :src="item.url" style="width: 100%; height: 60px; border-radius: 2px" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
                             </div>
                         </a-card-grid>
-                    </a-card>
+                    </a-card> -->
                     <br />
 
                     <!--地名注记-->
@@ -854,7 +862,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 地名
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state.DMZJiSHow" size="small" />
@@ -865,7 +873,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 省界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked7" />
@@ -876,7 +884,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 市界
                                 <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
                                     v-model:checked="state_layer.checked8" />
@@ -887,7 +895,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 县界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked4" size="small" />
@@ -898,7 +906,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 镇界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked5" size="small" />
@@ -909,7 +917,7 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #000">
+                            <div style="font-size: 12px; color: #fff">
                                 村界
                                 <a-switch checked-children="显示" un-checked-children="隐藏"
                                     v-model:checked="state_layer.checked6" size="small" />
@@ -918,8 +926,6 @@ defineProps({
                     </a-card>
                 </div>
             </div>
-
-
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>二三维切换</span>
@@ -929,7 +935,6 @@ defineProps({
                     <Globe v-else />
                 </a-button>
             </a-tooltip>
-
             <a-tooltip placement="top">
                 <template #title>
                     <span>{{ !ruler ? "开始量测" : "关闭量测" }}</span>
@@ -977,7 +982,6 @@ defineProps({
                     </div>
                 </div>
             </a-tooltip>
-
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
@@ -991,14 +995,8 @@ defineProps({
                     <span>绘制</span>
                 </template>
                 <div>
-                    <!-- {{ draw }} -->
                     <a-button @click="onDraw()" size="large" class="boxshadow">
                         <Pencil />
-
-                        <!-- <div style="position:absolute;left:8px;top:10px">
-            <Pentagon :size="40" />
-           </div> -->
-
                         <span class="arrow">◣</span>
                     </a-button>
                     <!--绘制列表 -->
@@ -1047,8 +1045,6 @@ defineProps({
                     </div>
                 </div>
             </a-tooltip>
-            <br />
-
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>放大</span>
@@ -1119,9 +1115,9 @@ defineProps({
 
 .switch-layer {
     position: absolute;
-    right: 81px;
-    top: 140px;
-    width: 600px;
+    right: 70px;
+    top: 0px;
+    width: 400px;
     z-index: 1000;
     border: 0;
 }
@@ -1137,12 +1133,10 @@ defineProps({
 
 .boxshadow {
     cursor: pointer;
-
-    /* background-color: rgba(0, 0, 0, 0.6); */
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
     border-radius: 3px;
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     color: #ccc;
     border: 1px double #99999986;
     display: flex;
@@ -1198,14 +1192,11 @@ defineProps({
 .pst {}
 
 .pst>img {
-    height: 64px;
-    width: 54px;
+    height: 50px;
+    width: 50px;
     cursor: pointer;
 }
 
-.pst:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-}
 
 
 .arrow {

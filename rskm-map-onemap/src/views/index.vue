@@ -297,29 +297,16 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- <a-page-header class="header" :title="page.name" :sub-title="page.cnname + ' V' + page.version"
-    :avatar="{ src: logo }" style="color: #ccc">
-    <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="handleMenuClick"
-      style="position: absolute; left: 600px; top: 0px; line-height: 92px" />
-
-
-    <template #extra>
-      <a-space direction="vertical" :size="5">
-        <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
-          @panelChange="panelChangeRL" />
-      </a-space>
-      <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
-    </template>
-</a-page-header> -->
 
     <div class="header">
-
         <Header></Header>
     </div>
 
     <div class="page">
         <!--一张图平台-->
-        <SDMap ref="mapRef" :MapToolPosition="{ top: '140px', right: ' 15px' }"></SDMap>
+        <SDMap ref="mapRef" :MapToolPosition="{ top: '110px', right: ' 15px' }"></SDMap>
+
+
         <div v-if="activeKey == '1'">
             <!--检索搜索-->
             <div class="search" style="width: 600px">

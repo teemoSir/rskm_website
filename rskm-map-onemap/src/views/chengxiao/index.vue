@@ -3637,6 +3637,8 @@ const state_layer = reactive({
 
 const placement = ref('right');
 const opens = ref(false);
+
+
 const showDrawers = () => {
     opens.value = true;
 };
@@ -3655,13 +3657,6 @@ const onClose = () => {
     <!-- 地图 -->
 
     <div class="verification" :style="{ width: !opens ? '100%' : 'calc(100% - 520px)' }">
-        <!-- <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
-            <div id="before" class="map">
-            </div>
-            <div id="after" style="map">
-            </div>
-        </div> -->
-
         <div>
             <div id="before" :style="{
                 width: '50%',
@@ -3700,14 +3695,7 @@ const onClose = () => {
                 <template #title>
                     <span>统计信息</span>
                 </template>
-                <!-- <a-button v-if="rightHeight != '215px'" @click="rightHeight = '215px'" size="large" class="boxshadow">
-                    <Menu color="RGB(58,123,251)"></Menu>
-                </a-button>
-                <a-button v-if="rightHeight == '215px'" @click="rightHeight = '-3000px'" size="large" class="boxshadow"
-                    style="">
-                    <ChevronRight color="RGB(58,123,251)" />
-                </a-button> -->
-
+                {{ opens }}
                 <a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
                     <Menu color="RGB(58,123,251)"></Menu>
                 </a-button>
@@ -4186,102 +4174,8 @@ const onClose = () => {
 
 
             </p>
-            <!-- <template #footer>
-                <a-button style="margin-right: 8px" @click="onClose">Cancel</a-button>
-                <a-button type="primary" @click="onClose">Submit</a-button>
-            </template> -->
+
         </a-drawer>
-
-
-
-        <!-- <a-menu v-model:selectedKeys="current" mode="horizontal" :items="itemsref" inlineIndent="100"
-            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;" />
-        <br />
-        <br />
-       -->
-        <!-- <a-segmented v-model:value="segmented" :options="data" size="large"
-            style="width: 300px;position: absolute;right: 15px;top: 100px;z-index: 1000;">
-            <template #label="{ payload }">
-                <div style="padding: 20px 10px">
-                    <div>{{ payload.title }}</div>
-                    <div>{{ payload.subTitle }}</div>
-                </div>
-            </template>
-        </a-segmented> -->
-
-
-        <!-- 
-        <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
-            :footer="null">
-            <a-table :columns="columns" :data-source="dataSource" v-if="activeKey == 1" bordered size="middle">
-                <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'i_area'">
-                        {{ record.i_area ? record.i_area + ' 亩' : '' }}
-                    </template>
-                    <template v-if="column.key === 'rs_area'">
-                        {{ record.rs_area ? record.rs_area + ' 亩' : '' }}
-                    </template>
-                    <template v-if="column.key === 'i_coverage'">
-                        {{ record.i_coverage ? Number(record.i_coverage).toFixed(2) + ' %' : '' }}
-                    </template>
-
-                    <template v-if="column.key === 'pass'">
-                        <a-tag color="green" v-if="record.pass"> 合格</a-tag>
-                        <a-tag color="red" v-else> 不合格</a-tag>
-                    </template>
-                </template>
-            </a-table>
-            <div v-if="activeKey == 2">
-                <a-table :columns="columnsDk" :data-source="dataSourceDk" bordered size="middle"
-                    :pagination="pagination">
-                    <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'city'">
-                            {{ record.city + record.quxian + record.xiangzhen + record.cun }}
-                        </template>
-                        <template v-if="column.key === 'cbsl'">
-                            {{ record.cbsl ? record.cbsl + ' 亩' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v1'">
-                            {{ record.v1 ? record.v1 + ' 亩' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v2'">
-                            {{ record.v2 ? record.v2 + ' %' : '' }}
-                        </template>
-                        <template v-if="column.key === 'v6'">
-                            {{ record.v6 ? record.v6 + ' %' : '' }}
-                        </template>
-                        <template v-if="column.key === 'name'">
-                            {{ record.name ? record.name : '' }}
-                        </template>
-                        <template v-if="column.key === 'v3'">
-                            <a-tag color="green" v-if="record.v3 == 1"> 一致</a-tag>
-                            <a-tag color="red" v-else> 不一致</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v4'">
-                            <a-tag color="green" v-if="record.v3 == 1"> 无重叠</a-tag>
-                            <a-tag color="red" v-else> 有重叠</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v7'">
-                            <a-tag color="green" v-if="record.v7 == 1"> 达标</a-tag>
-                            <a-tag color="red" v-else> 未达标</a-tag>
-                        </template>
-                        <template v-if="column.key === 'v8'">
-                            <a-tag color="#87d068" v-if="record.v8 == 1"> 合格</a-tag>
-                            <a-tag color="#f50" v-else> 不合格</a-tag>
-                        </template>
-                        <template v-if="column.key === 'bdh'">
-                            保单号:{{ record.bdh }} <br>
-                            保险期间:{{ record.bxqj }}
-                        </template>
-
-                    </template>
-                </a-table>
-            </div>
-        </a-modal>
-
-        <a-modal v-model:open="lockDownOpen" width="90%" title="" :footer="null">
-            <div v-html="lockDownHtml" class="lockDownHtml"></div>
-        </a-modal> -->
 
         <!-- 左侧菜单栏 -->
         <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
@@ -4292,26 +4186,42 @@ const onClose = () => {
                 :items="items" @click="handleClick"></a-menu>
         </div>
         <!-- 中间 -->
-        <div class="center-card" :style="{ cursor: 'all-scroll', left: !opens ? '50%' : '40%' }">
+        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-160px' : '-420px') }">
+
             <table style="width: 100%;">
                 <tr>
-                    <td style="display: flex;justify-content: right;">
-                        <a-page-header
-                            style="background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));  "
-                            title="第一次比对" sub-title="2024年09月13日">
-                            <template #tags>
-                                <a-tag color="green">已完成</a-tag>
-                            </template>
-                        </a-page-header>
+                    <td colspan="2">
+                        <div
+                            style="font-size: 35px;color: #fff;text-shadow: 1px 2px #000; text-align: center;   width: 100%;  font-family: FZZongYi-M05;">
+                            2024年玉米成效分析
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+
+                            <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
+                                第一次比对
+                            </div>
+                            <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
+                                2024年09月13日
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        <a-page-header
-                            style="background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));  "
-                            title="第二次比对" sub-title="2024年11月25日">
-                            <template #tags>
-                                <a-tag color="green">已完成</a-tag>
-                            </template>
-                        </a-page-header>
+                        <div
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+
+                            <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
+                                第二次比对
+                            </div>
+                            <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
+                                2024年11月25日
+                            </div>
+                        </div>
                     </td>
                 </tr>
 
@@ -4725,12 +4635,13 @@ const onClose = () => {
     /* display: flex;
     justify-content: center;
     justify-items: center; */
-    width: 400px;
+
     z-index: 1000;
     position: absolute;
     top: 100px;
 
-    margin-left: -335px;
+
+    left: 50%;
     /* background-color: #ccc */
     /* background: linear-gradient(to bottom, rgba(19, 18, 18, 0.39), rgba(3, 11, 85, 0)); */
 
