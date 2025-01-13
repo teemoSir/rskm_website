@@ -2542,6 +2542,31 @@
                 key: "google"
 
             },
+            Bing: {
+                Satellite: {
+                    Map: "http://39.102.63.192:3002/bingmaps/satellite/{z}/{x}/{y}.jpg",
+                    minzoom: 3,
+                    maxzoom: 20
+                },
+                Subdomains: [""],
+                key: ""
+
+            },
+            SWTX: {
+                Satellite: {
+                    Map: "https://services.minedata.cn/service/data/satellite?x={x}&y={y}&z={z}",
+                    minzoom: 3,
+                    maxzoom: 20
+                },
+                Normal: {
+                    Map: "https://services.minedata.cn/service/data/raster-basemap?style=standard&z={z}&x={x}&y={y}",
+                    minzoom: 3,
+                    maxzoom: 20
+                },
+                Subdomains: [""],
+                key: ""
+
+            },
             Mapbox: {
                 Satellite: {
                     Map: "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?sku=101JndH6ILf88&access_token=pk.eyJ1IjoibHV3ZW5qdW4iLCJhIjoiY2xpODV0c2s2MWV5YjNrcmJneTJ5OHljcyJ9.STONixPRitDkS9dxJSSbHw",
@@ -2586,7 +2611,7 @@
         var tileType = providers[providerName].tileType;
 
         var tilelayer;
-        if (providerName === 'TianDiTu' || providerName === 'OSM' || providerName === 'Geovisearth' || providerName === 'ArcGIS' || providerName === 'Mapbox' || providerName === 'JLONE' || providerName === 'Google') {
+        if (providerName === 'TianDiTu' || providerName === 'OSM' || providerName === 'Geovisearth' || providerName === 'ArcGIS' || providerName === 'Mapbox' || providerName === 'JLONE' || providerName === 'Google' || providerName === 'Bing' || providerName === 'SWTX') {
             //天地图使用大地2000坐标可以直接使用，不用偏移
             var key = _options.key || providers[providerName].key;
             var urls = [];

@@ -234,11 +234,16 @@ const loadBaseSource = () => {
  * 添加图层
  */
 const addTiles = () => {
-    //  历史缓存 重置底图  StateManager.get("MAP_LAYERS") || "{}"
-    //console.log(StateManager.get("MAP_LAYERS"));
-    let ts = StateManager.get("MAP_LAYERS") || layers.value[17];
-    //console.log(ts.param, ts.key);
-    addRasterTileLayer(ts.param, ts.key);
+
+    let type;
+
+    if (StateManager.get("MAP_LAYERS")) {
+        type = StateManager.get("MAP_LAYERS");
+    } else {
+        type = layers.value[layers.value.length - 1];
+        StateManager.set("MAP_LAYERS", type);
+    }
+    addRasterTileLayer(type.param, type.key);
 };
 
 let loadLayer = [];
@@ -315,18 +320,18 @@ const Zero = () => {
 
 // 图层切换
 const switchTile = (layer) => {
+    // 历史缓存
+    StateManager.set("MAP_LAYERS", layer);
+
     layers.value.forEach((ll) => {
         ll.isShow = false;
     });
     layer.isShow = true;
 
-    message.success("已更新为" + layer.name, 1);
-
     // 图层叠加
     addRasterTileLayer(layer.param, layer.key);
 
-    // 历史缓存
-    StateManager.set("MAP_LAYERS", layer);
+    message.success("已更新为" + layer.name, 1);
 
 };
 
@@ -816,13 +821,16 @@ defineProps({
                     </a-button>
                 </a-tooltip>
                 <!--图层列表 -->
-                <div class="switch-layer" v-if="rightLayer"><a-card title="">
+                <div class="switch-layer" v-if="rightLayer">
+
+                    <a-card title="">
+
                         <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
                             width: '25%',
                             textAlign: 'center',
-                            display: item.projection ? 'block' : 'none',
+
                         }">
-                            <img :src="item.url" style="width: 100%; height: 60px; border-radius: 2px"
+                            <img :src="item.url" style="width: 99%; height: 60px; border-radius: 2px"
                                 @click="switchTile(item)" />
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}

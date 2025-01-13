@@ -1,24 +1,45 @@
 
-import Baidu_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-import Baidu_BZ from "@/assets/images/map/Baidu_BZ.jpg";
-import Baidu_WX_WZJ from "@/assets/images/map/Baidu_WX_WZJ.jpg";
-import Baidu_WX from "@/assets/images/map/Baidu_WX.jpg";
-import ESRI_BZ from "@/assets/images/map/ESRI_BZ.jpg";
-import ESRI_SL from "@/assets/images/map/ESRI_SL.jpg";
-import ESRI_WS from "@/assets/images/map/ESRI_WS.jpg";
-import ESRI_WX from "@/assets/images/map/ESRI_WX.jpg";
-import Gaode_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-import Gaode_BZ from "@/assets/images/map/Gaode_BZ.jpg";
-import Gaode_WX_WZJ from "@/assets/images/map/Gaode_WX_WZJ.jpg";
-import Gaode_WX from "@/assets/images/map/Gaode_WX.jpg";
-import TDT_BZ_WZJ from "@/assets/images/map/TDT_BZ_WZJ.jpg";
-import TDT_BZ from "@/assets/images/map/TDT_BZ.jpg";
-import TDT_WX_WZJ from "@/assets/images/map/TDT_WX_WZJ.jpg";
-import TDT_WX from "@/assets/images/map/TDT_WX.jpg";
+// import Baidu_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
+// import Baidu_BZ from "@/assets/images/map/Baidu_BZ.jpg";
+// import Baidu_WX_WZJ from "@/assets/images/map/Baidu_WX_WZJ.jpg";
+// import Baidu_WX from "@/assets/images/map/Baidu_WX.jpg";
+// import ESRI_BZ from "@/assets/images/map/ESRI_BZ.jpg";
+// import ESRI_SL from "@/assets/images/map/ESRI_SL.jpg";
+// import ESRI_WS from "@/assets/images/map/ESRI_WS.jpg";
+// import ESRI_WX from "@/assets/images/map/ESRI_WX.jpg";
+// import Gaode_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
+// import Gaode_BZ from "@/assets/images/map/Gaode_BZ.jpg";
+// import Gaode_WX_WZJ from "@/assets/images/map/Gaode_WX_WZJ.jpg";
+// import Gaode_WX from "@/assets/images/map/Gaode_WX.jpg";
+// import TDT_BZ_WZJ from "@/assets/images/map/TDT_BZ_WZJ.jpg";
+// import TDT_BZ from "@/assets/images/map/TDT_BZ.jpg";
+// import TDT_WX_WZJ from "@/assets/images/map/TDT_WX_WZJ.jpg";
+import Google from "@/assets/images/map/Google.jpg";
+import JL from "@/assets/images/map/JL.jpg";
+import MB from "@/assets/images/map/MB.jpg";
+import ZKXT_2 from "@/assets/images/map/ZKXT_2.jpg";
+import ZKXT_1 from "@/assets/images/map/ZKXT_1.jpg";
+import TDT_2 from "@/assets/images/map/TDT_2.jpg";
+import TDT_1 from "@/assets/images/map/TDT_1.jpg";
+import ESRI from "@/assets/images/map/ESRI.jpg";
+
 import { config } from "@/config/tileserver.js";
 import { ref } from "vue";
+import StateManager from "@/utils/state_manager";
+
+
 
 let layers = ref([
+    {
+        id: 1,
+        name: "Google-影像",
+        projection: true,
+        st: "",
+        url: Google,
+        zj: false,
+        key: "",
+        param: [["google", "Google.Satellite.Map"]],
+    },
     // {
     //     id: 1,
     //     projection: false,
@@ -32,36 +53,36 @@ let layers = ref([
     //         ["gdyxzj", "GaoDe.Satellite.Annotion"],
     //     ],
     // },
-    {
-        id: 2,
-        name: "高德地图-影像",
-        projection: false,
-        url: Gaode_WX_WZJ,
-        st: "GS(2023)4677号",
-        key: "",
-        zj: false,
-        param: [["gdyx", "GaoDe.Satellite.Map"]],
-    },
-    {
-        id: 3,
-        name: "高德地图-标准(注记)",
-        projection: false,
-        url: Gaode_BZ,
-        st: "GS(2023)4677号",
-        key: "",
-        zj: true,
-        param: [["gdsl", "GaoDe.Normal.Map"]],
-    },
-    {
-        id: 4,
-        name: "高德地图-标准",
-        projection: false,
-        url: Gaode_BZ_WZJ,
-        st: "GS(2023)4677号",
-        key: "",
-        zj: false,
-        param: [["gdslwzj", "GaoDe.Normal_NoTag.Map"]],
-    },
+    // {
+    //     id: 2,
+    //     name: "高德地图-影像",
+    //     projection: false,
+    //     url: Gaode_WX_WZJ,
+    //     st: "GS(2023)4677号",
+    //     key: "",
+    //     zj: false,
+    //     param: [["gdyx", "GaoDe.Satellite.Map"]],
+    // },
+    // {
+    //     id: 3,
+    //     name: "高德地图-标准(注记)",
+    //     projection: false,
+    //     url: Gaode_BZ,
+    //     st: "GS(2023)4677号",
+    //     key: "",
+    //     zj: true,
+    //     param: [["gdsl", "GaoDe.Normal.Map"]],
+    // },
+    // {
+    //     id: 4,
+    //     name: "高德地图-标准",
+    //     projection: false,
+    //     url: Gaode_BZ_WZJ,
+    //     st: "GS(2023)4677号",
+    //     key: "",
+    //     zj: false,
+    //     param: [["gdslwzj", "GaoDe.Normal_NoTag.Map"]],
+    // },
     // {
     //     id: 5,
     //     name: "百度地图-影像(注记)",
@@ -75,16 +96,16 @@ let layers = ref([
     //         ["bdyxzj", "Baidu.Satellite.Annotion"],
     //     ],
     // },
-    {
-        id: 6,
-        name: "百度地图-影像",
-        projection: false,
-        url: Baidu_WX_WZJ,
-        st: "GS(2023)3206号",
-        key: "11",
-        zj: false,
-        param: [["bdyx", "Baidu.Satellite.Map"]],
-    },
+    // {
+    //     id: 6,
+    //     name: "百度地图-影像",
+    //     projection: false,
+    //     url: Baidu_WX_WZJ,
+    //     st: "GS(2023)3206号",
+    //     key: "11",
+    //     zj: false,
+    //     param: [["bdyx", "Baidu.Satellite.Map"]],
+    // },
     // {
     //     id: 7,
     //     name: "百度地图-标准(注记)",
@@ -98,16 +119,16 @@ let layers = ref([
     //         ["bdsl", "Baidu.Normal_NoTag.Map"],
     //     ],
     // },
-    {
-        id: 8,
-        name: "百度地图-标准",
-        projection: false,
-        url: Baidu_BZ_WZJ,
-        st: "GS(2023)3206号",
-        key: "",
-        zj: false,
-        param: [["bdsl", "Baidu.Normal_NoTag.Map"]],
-    },
+    // {
+    //     id: 8,
+    //     name: "百度地图-标准",
+    //     projection: false,
+    //     url: Baidu_BZ_WZJ,
+    //     st: "GS(2023)3206号",
+    //     key: "",
+    //     zj: false,
+    //     param: [["bdsl", "Baidu.Normal_NoTag.Map"]],
+    // },
     // {
     //     id: 9,
     //     name: "天地图-影像(注记)",
@@ -122,10 +143,20 @@ let layers = ref([
     //     ],
     // },
     {
+        id: 9,
+        name: "天地图-地形",
+        projection: true,
+        url: TDT_1,
+        st: "GS(2023)336号",
+        key: "2d7a1be22646b7cad8e925293683e1e8",
+        zj: false,
+        param: [["tdtdx", "TianDiTu.Terrain.Map"]],
+    },
+    {
         id: 10,
         name: "天地图-影像",
         projection: true,
-        url: TDT_WX_WZJ,
+        url: TDT_1,
         st: "GS(2023)336号",
         key: "2d7a1be22646b7cad8e925293683e1e8",
         zj: false,
@@ -146,9 +177,9 @@ let layers = ref([
     // },
     {
         id: 12,
-        name: "天地图-标准",
+        name: "天地图-矢量",
         projection: true,
-        url: TDT_BZ_WZJ,
+        url: TDT_2,
         st: "GS(2023)336号",
         key: "5a77920c8a19898beea6943e2c0c5bad",
         zj: false,
@@ -157,9 +188,9 @@ let layers = ref([
 
     {
         id: 13,
-        name: "ESRI地图-影像",
+        name: "ESRI-影像",
         projection: true,
-        url: ESRI_WX,
+        url: ESRI,
         st: "",
         key: "",
         zj: true,
@@ -199,27 +230,37 @@ let layers = ref([
         name: "中科星图-影像",
         st: "GS(2023)1924号",
         projection: true,
-        url: ESRI_WX,
+        url: ZKXT_1,
         zj: false,
         key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",
-        param: [["xinqiu", "Geovisearth.Satellite.Map"]],
+        param: [["xtyx", "Geovisearth.Satellite.Map"]],
     },
     {
         id: 18,
-        name: "中科星图-标准",
+        name: "星图地球-矢量",
         st: "GS(2023)1924号",
         projection: true,
-        url: Gaode_BZ,
+        url: ZKXT_2,
         zj: true,
         key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",//44194e4bbd714ee9cd453c7ff3e5635b56bc9d61b26946f7631c69fa96d91e60
-        param: [["xinqiu1", "Geovisearth.Normal.Map"]],
+        param: [["xtsl", "Geovisearth.Normal.Map"]],
+    },
+    {
+        id: 19,
+        name: "星图地球-地形",
+        st: "GS(2023)1924号",
+        projection: true,
+        url: ZKXT_2,
+        zj: true,
+        key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",//44194e4bbd714ee9cd453c7ff3e5635b56bc9d61b26946f7631c69fa96d91e60
+        param: [["xtdx", "Geovisearth.Terrain.Map"]],
     },
     {
         id: 22,
         name: "Mapbox-影像",
         projection: true,
         st: "",
-        url: ESRI_WX,
+        url: MB,
         key: "",
         zj: true,
         param: [["mb", "Mapbox.Satellite.Map"]],
@@ -229,33 +270,30 @@ let layers = ref([
         name: "吉林一号-影像",
         projection: true,
         st: "GS吉(2023)011号",
-        url: ESRI_WX,
+        url: JL,
         zj: false,
         key: "",
         param: [["jilin", "JLONE.Satellite.Map"]],
     },
+
     {
-        id: 24,
-        name: "Google-影像",
+        id: 25,
+        name: "Bing-影像",
         projection: true,
         st: "",
-        url: ESRI_WX,
-        zj: false,
+        url: Google,
+        zj: true,
+        param: [["bing", "Bing.Satellite.Map"]],
         key: "",
-        param: [["google", "Google.Satellite.Map"]],
-        isShow: true,
     },
-    // {
-    //     id: 25,
-    //     name: "本地地图",
-    //     projection: true,
-    //     st: "",
-    //     url: ESRI_BZ,
-    //     zj: true,
-    //     key: "",
-
-    // },
 ])
+
+let isShowLayer = StateManager.get("MAP_LAYERS") || { id: '' };
+layers.value.forEach(layer => {
+    layer.isShow = (isShowLayer.id == layer.id ? true : false);
+});
+
+
 
 
 

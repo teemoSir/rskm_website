@@ -1955,8 +1955,16 @@ let machine = ref("globe");
  * 添加图层
  */
 const addTiles = () => {
-    let ts = StateManager.get("MAP_LAYERS") || layers.value[17];//
-    addRasterTileLayer(ts.param, ts.key);
+
+    let type;
+
+    if (StateManager.get("MAP_LAYERS")) {
+        type = StateManager.get("MAP_LAYERS");
+    } else {
+        type = layers.value[layers.value.length - 1];
+        StateManager.set("MAP_LAYERS", type);
+    }
+    addRasterTileLayer(type.param, type.key);
 };
 
 let loadLayer = [];
