@@ -6,7 +6,6 @@ import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer.js";
 import { config, mapbox } from "@/config/tileserver.js";
 import page from "../../../package.json";
-// import syncMove from '@mapbox/mapbox-gl-sync-move';
 import * as echarts from "echarts"
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
@@ -14,6 +13,8 @@ import { message } from "ant-design-vue";
 import Header from "@/components/header/index.vue";
 import c2 from "@/assets/images/map/c2.svg";
 import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons-vue';
+
+
 
 import {
     ScanSearch,
@@ -65,19 +66,17 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import 'dayjs/locale/zh-cn';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
-import html2canvas from 'html2canvas';
+
 import StateManager from "@/utils/state_manager";
 import { treeLeftData } from "./data.js"
-import { downloadAndReadExcel } from "@/utils/excel.js"
 
 import {
     popup, popupbig,
     addIcon
 } from "@/views/map/map.js";
 
-import VerificationLegend from "@/views/map/verificationLegend.vue"
-import JianceLegend from "@/views/map/jianceLegend.vue";
-import TucengLegend from "@/views/map/tucengLegend.vue";
+
+import FenbuLegend from "@/views/map/fenbuLegend.vue";
 import * as turf from "@turf/turf";
 
 import { layers, specYghy } from "@/config/spec-yghy.js";
@@ -145,116 +144,6 @@ const columns = [
 // 表格数据
 const dataSourceDk = ref([])
 
-
-///①地块面积合计（亩）	②地块面积合计/承保数量	③地块面积是否与承保数量一致？	④是否无地块存在重叠问题？	⑤地块内玉米种植面积合计（亩）	⑥地块内标的作物面积合计/承保数量	⑦玉米种植面积差异率是否达标？	⑧该大户的地块是否合格？
-
-const columnsDk = [
-    {
-        title: '被保险人信息',
-        children: [
-            {
-                title: '名称',
-                dataIndex: 'name',
-                key: 'name',
-            },
-            {
-                title: '证件号码',
-                dataIndex: 'sfz',
-                key: 'sfz',
-            },
-            {
-                title: '手机尾号',
-                dataIndex: 'telphone',
-                key: 'telphone',
-            }]
-    },
-
-
-    {
-        title: '保单信息',
-        children: [
-
-
-            {
-                title: '保单号',
-                dataIndex: 'bdh',
-                key: 'bdh',
-            },
-            {
-                title: '险种',
-                dataIndex: 'type_xl',
-                key: 'type_xl',
-            },
-            {
-                title: '保险机构',
-                dataIndex: 'bxjg',
-                key: 'bxjg',
-            },
-            {
-                title: '标的位置',
-                dataIndex: 'city',
-                key: 'city',
-            },
-
-            {
-                title: '承保数量',
-                dataIndex: 'cbsl',
-                key: 'cbsl',
-            }
-        ]
-    },
-
-
-
-    {
-        title: '地块核验结果',
-        children: [
-
-            {
-                title: '地块面积(亩)',
-                dataIndex: 'v1',
-                key: 'v1',
-            },
-            {
-                title: '覆盖率',
-                dataIndex: 'v2',
-                key: 'v2',
-            },
-            {
-                title: '地块与承保面积(亩)',
-                dataIndex: 'v3',
-                key: 'v3',
-            },
-            {
-                title: '地块重叠',
-                dataIndex: 'v4',
-                key: 'v4',
-            },
-            {
-                title: '地块内标的面积(亩)',
-                dataIndex: 'v5',
-                key: 'v5',
-            },
-            {
-                title: '标的占比',
-                dataIndex: 'v6',
-                key: 'v6',
-            },
-            {
-                title: '差异率是否达标',
-                dataIndex: 'v7',
-                key: 'v7',
-            },
-            {
-                title: '地块是否合格',
-                dataIndex: 'v8',
-                key: 'v8',
-            },
-
-        ]
-    },
-
-]
 
 
 // 任务弹窗
@@ -1096,107 +985,6 @@ const loadCountyFit = async (name, newMap) => {
     });
 }
 
-/**
- * 加载县级数据
- * @param {string} code - 市级行政区代码
- * @returns {Promise<void>}
- */
-const loadCounty = async (name) => {
-
-    //// console.log(String(code).substring(0, 4));
-    let features = await api.get_table_by_filter(
-        "admin_2022_county",
-        `and name in (${name})  order by county_code`,
-        `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,city_code,city_name,county_code,gid,name,province_name`
-    );
-
-
-    //echy_sql_qy_dq_county
-    let echy_sql_qy_dq_county = await api.get_table_tj_echy("echy_sql_qy_dq_county");
-
-
-
-    // console.log(echy_sql_qy_dq_county)
-    // console.log(features)
-
-    if (features.length == 1) {
-        let feature = JSON.parse(features[0].json);
-        let bbox = turf.bbox(feature)
-        map.fitBounds(bbox, {
-            padding: { left: 20, right: 20 }
-        });
-    } else {
-        let properties_1 = [];
-        let properties_2 = [];
-
-        geomClear();
-
-
-        features.map((feature) => {
-
-
-            let daa1 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.county == feature.name))
-            let daa2 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.county == feature.name))
-
-            let newFeature_1 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa1[0].fgl * 100,
-                    rs_area: daa1[0].rs_area,
-                    tbsl: daa1[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_1.properties.coverage = daa1[0].fgl * 100;
-                newFeature_1.properties.rs_area = daa1[0].rs_area;
-                newFeature_1.properties.tbsl = daa1[0].tbsl;
-            }
-            properties_1.push(newFeature_1)
-
-            let newFeature_2 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa2[0].fgl * 100,
-                    rs_area: daa2[0].rs_area,
-                    tbsl: daa2[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_2.properties.coverage = daa2[0].fgl * 100;
-                newFeature_2.properties.rs_area = daa2[0].rs_area;
-                newFeature_2.properties.tbsl = daa2[0].tbsl;
-            }
-            properties_2.push(newFeature_2)
-        })
-
-        // // console.log(geoms)
-
-        fitCenter()
-
-        drawGeom([properties_1, properties_2])
-
-
-    }
-
-};
 
 
 // 初始化视野
@@ -1322,22 +1110,8 @@ const activeKey = ref('1');
 
 watch(activeKey, () => {
     header.value = "";
-    // setTimeout(() => {
-    //     // map && loadLocalData()
-    //     // mapp && loadLocalData()
-
-    // }, 0)
-
-
-
-
     geomClear()
     removeLayerDk()
-    // if (activeKey.value == 2) {
-
-    // } else {
-
-    // }
     loadLocalData()
 })
 
@@ -1357,29 +1131,7 @@ const bzxz_val = ref(0);
 
 
 
-// const loadDataRight = async (filter) => {
 
-//     // 地块第二个柱状图
-//     if (!header.value) {
-//         await getAnalysisEchars2("yghy_sql_4")
-//         await getAnalysisEchars4('yghy_sql_6')
-
-//     } else {
-//         // 图表三统计
-//         await getAnalysisEchars3('yghy_sql_5', `and quxian in ('${filter}')`);
-//         await getAnalysisEchars4('yghy_sql_6', `and quxian in ('${filter}')`);
-//     }
-
-//     // 地块概况及饼图查询
-//     if (!filter) {
-//         await getAnalysisDK("yghy_sql_3")
-//     } else {
-//         await getAnalysisDK("yghy_sql_3", `and quxian in ('${filter}')`)
-
-//     }
-
-
-// }
 
 
 /**
@@ -1449,132 +1201,17 @@ const ydkdhsl = ref("")
 const wdkdhsl = ref("")
 const dkbhghs = ref("")
 
-/**
- * 地块统计
- * @param key 
- * @param name 
- */
-const getAnalysisDK = async (key, where = "") => {
 
-    let data = await api.get_table_tj(
-        key,
-        where,
-    );
-    //// console.log(data[0])
-
-    if (data[0]) {
-        bdmjbfhs.value = data[0].bdmjbfhs;
-        dhsl.value = data[0].dhsl;
-        dk_area.value = data[0].dk_area;
-        dkcd.value = data[0].dkcd;
-        dkmjbfs.value = data[0].dkmjbfs;
-        tb_area.value = data[0].tb_area;
-        ydkdhsl.value = data[0].ydkdhsl;
-        dkhghs.value = data[0].dkhghs;
-        wdkdhsl.value = data[0].wdkdhsl;
-        dkbhghs.value = data[0].dkbhghs;
-    }
-
-};
 
 
 
 let rightEcData = ref([])
-/**
- * 图表统计
- * @param key 
- * @param name 
- */
-const getAnalysisEchars2 = async (key, where = "") => {
-
-    let data = await api.get_table_tj(
-        key,
-        where,
-    );
-    //// console.log(data)
-
-    if (data) {
 
 
-        let county = []
-        let dhsl = []
-        let dkhghs = []
-        data.forEach(item => {
-            county.push(item.county)
-            dhsl.push(item.dhsl)
-            dkhghs.push(item.dkhghs)
-        });
-        rightEcData.value = [county, dkhghs, dhsl]
-    }
-
-
-};
-
-
-
-
-/**
- * 区域统计
- * @param key 
- * @param name 
- */
-const getAnalysisEchars3 = async (key, where = "") => {
-
-    let data = await api.get_table_tj(
-        key,
-        where,
-    );
-    // // console.log(data)
-
-    if (data) {
-
-
-        let xiangzhen = []
-        let dhsl = []
-        let dkhghs = []
-        data.forEach(item => {
-            xiangzhen.push(item.xiangzhen)
-            dhsl.push(item.dhsl)
-            dkhghs.push(item.dkhghs)
-        });
-        rightEcData.value = [xiangzhen, dkhghs, dhsl];
-        echartsDK02(...rightEcData.value);
-    }
-
-
-};
 
 
 
 let rightEcDataJG = ref([]);
-/**
- * 机构统计
- * @param key 
- * @param name 
- */
-const getAnalysisEchars4 = async (key, where = "") => {
-
-    let data = await api.get_table_tj(
-        key,
-        where,
-    );
-    // // console.log(data)
-
-    if (data) {
-        let bxjg = []
-        let dhsl = []
-        let dkhghs = []
-        data.forEach(item => {
-            bxjg.push(item.bxjg)
-            dhsl.push(item.dhsl)
-            dkhghs.push(item.dkhghs)
-        });
-        rightEcDataJG.value = [bxjg, dkhghs, dhsl];
-        echartsDK03(...rightEcDataJG.value);
-    }
-
-
-};
 
 let hzBaseData = [];
 
@@ -1933,17 +1570,14 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
         maxWidth: 150,
         unit: "metric",
     });
+
     !mapl.hasControl(cc) && mapl.addControl(cc, 'bottom-right');
 
     mapl.on("load", () => {
         addTiles();
     });
 
-    mapl.addControl(
-        new mapboxgl.AttributionControl({
-            customAttribution: "<div id='xyz'></div>",
-        })
-    );
+
 
     return mapl;
 };
@@ -2034,25 +1668,36 @@ const loadYGJG = async () => {
 }
 
 
-/** =
- * 数据加载
+/**
+ * 加载县级数据
+ * @param {string} code - 市级行政区代码
+ * @returns {Promise<void>}
  */
-const loadData = () => {
-    // console.log("loadData")
-    // loadCBSL()
-    // loadYGSL()
-    // loadCBHC()
-    // loadCBXZ()
-    // loadDK()
-    // loadDKDQ()
-    // loadQYDQ()
-    // loadQYJG()
-    // loadDKJG()
-    // loadYGJG()
-    // loadBDSL()
+const loadCounty = async (name) => {
+
+    let features = await api.get_table_by_filter(
+        "admin_2022_county",
+        `and name in (${name})  order by county_code`,
+        `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,city_code,city_name,county_code,gid,name,province_name`
+    );
 
 
-}
+    //echy_sql_qy_dq_county
+    let echy_sql_qy_dq_county = await api.get_table_tj_echy("echy_sql_qy_dq_county");
+
+
+    if (features.length == 1) {
+        let feature = JSON.parse(features[0].json);
+        let bbox = turf.bbox(feature)
+        mapp.fitBounds(bbox, {
+            padding: { left: 20, right: 20 }
+        });
+    } else {
+        drawGeom([properties_1, properties_2])
+    }
+
+};
+
 
 
 
@@ -2065,78 +1710,17 @@ onMounted(() => {
 
     loadDoubleMap()
 
-    // loadData()
-
     map && map.on("load", () => {
-
         addLayersYghy(map, specYghy);
         map && loadEvent(map);
-
-        // map.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
-
-        //     ],
-
-        //     'tileSize': 256 // 瓦片大小
-        // });
-
-        // map.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
-
-        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
-        //  map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
-
-        // map.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
     })
 
     mapp && mapp.on("load", () => {
         addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
-
-        // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
-
-        //     ],
-
-        //     'tileSize': 256 // 瓦片大小
-        // });
-
-        // mapp.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
-
-
-
-        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
-        //  mapp.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
-
-
-
-        // mapp.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
-
+        mapp.setLayoutProperty('procjet_2024_yghy_sense_v1', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_sense_v1_outline', 'visibility', 'visible');
+        // loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
 
 
         fitCenter()
@@ -2399,56 +1983,6 @@ const onClose = () => {
     opens.value = false;
 };
 
-
-/**
- * 选择器
- */
-const dataSegmented = reactive([{
-    value: '1月',
-    disabled: true,
-}, {
-    value: '2月',
-    disabled: true,
-}, {
-    value: '3月',
-    disabled: true,
-}, {
-    value: '4月',
-    disabled: false,
-},
-{
-    value: '5月',
-    disabled: false,
-},
-{
-    value: '6月',
-    disabled: false,
-}, {
-    value: '7月',
-    disabled: false,
-},
-{
-    value: '8月',
-    disabled: false,
-},
-{
-    value: '9月',
-    disabled: false,
-},
-{
-    value: '10月',
-    disabled: false,
-},
-{
-    value: '11月',
-    disabled: true,
-},
-{
-    value: '12月',
-    disabled: true,
-},
-]);
-const valueSegmented = ref('10月');
 
 
 /**
@@ -2740,201 +2274,17 @@ let observeSaLeft = ref();
 
     <!-- 页面 -->
     <div class="page">
-        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -275px;">
+        <div style="position: absolute;top: 100px;left: 50%; z-index: 1000;margin-left: -275px;">
 
 
             <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 1px 2px 2px #000;"> 2024年玉米长势监测 </span>
+                <span style="text-shadow: 1px 2px 2px #000;"> 山东省2024年玉米遥感种植分布 </span>
             </h1>
 
 
 
-            <a-segmented v-model:value="valueSegmented" :options="dataSegmented" />
+
         </div>
-
-
-        <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
-            <br>
-            <!-- <a-button style="margin-right: 8px" @click="onClose">关闭</a-button> -->
-            <a-button type="primary" @click="onClose" style="position: absolute;right:10px">
-                <X></X>
-            </a-button>
-            <br>
-            <br>
-            <p>
-
-                <a-typography-title :level="1"
-                    style="color: RGB(31,31,31);line-height: 80px;  font-family: 'FZZongYi-M05';">
-                    {{ header ?
-                        header :
-                        "试点县区域"
-                    }}
-                    <a-tag v-for="item in ygjg.filter(e => (e.quxian == header))" :key="item.quxian"
-                        style="z-index: 10000;" color="RGB(81,196,43)">{{ item.ygjg ? item.ygjg : '' }}</a-tag>
-
-                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
-                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
-                    <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
-
-
-
-                </a-typography-title>
-
-            <div style="margin: -25px 0 15px 0;">
-                <a-row type="flex">
-                    <a-statistic title="核验年份" value="2024年" />
-
-                    <a-statistic title="核验作物" value="玉米" :style="{
-                        margin: '0 32px',
-                    }" />
-
-                </a-row>
-            </div>
-
-            <div>
-                <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
-                    <a-tab-pane key="1" tab="整体">
-                        <div v-if="activeKey == 1">
-                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #suffix>
-                                    %
-                                </template>
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-                        <div v-else>
-                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ String(Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ String(
-                                                parseInt(Number(record.repayment) -
-                                                    Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-
-                    </a-tab-pane>
-                    <a-tab-pane key="2" tab="地区">
-
-                    </a-tab-pane>
-                    <a-tab-pane key="3" tab="机构">
-
-                    </a-tab-pane>
-                </a-tabs>
-
-                <div v-show="activeKeyChildren == '2'">
-
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered>
-                            <template #bodyCell="{ column, record }">
-
-                                <template v-if="column.dataIndex == 'repayment2'">
-
-                                    <div v-if="record.repayment2 > 1.05" style="color: red;">
-                                        超保
-                                    </div>
-
-                                    <div v-if="record.repayment2 < 0.6" style="color: orange;">
-                                        不足
-                                    </div>
-                                    <div v-if="(record.repayment2 >= 0.6 && record.repayment2 <= 1.05)"
-                                        style="color: green;">
-                                        合格
-                                    </div>
-
-                                </template>
-                                <template v-if="column.dataIndex == 'repayment'">
-
-                                    <div v-if="record.repayment > 0" style="color: red;">
-                                        <ArrowUp color="red"></ArrowUp><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment < 0" style="color: green;">
-                                        <ArrowDown color="green"></ArrowDown><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment == 0">
-                                        无变化
-                                    </div>
-
-                                </template>
-
-                            </template>
-                        </a-table>
-                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered></a-table>
-
-                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-                </div>
-
-                <div v-show="activeKeyChildren == '3'">
-
-
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
-
-
-                </div>
-            </div>
-
-
-
-
-            </p>
-
-        </a-drawer>
 
 
 
@@ -2957,172 +2307,6 @@ let observeSaLeft = ref();
 
         <div class="right-card" :style="{ top: rightHeight ? rightHeight : '-3000px' }">
 
-            <a-typography-title :level="1"
-                style="color: RGB(31,31,31);line-height: 80px;  font-family: 'FZZongYi-M05';">
-                {{ header ?
-                    header :
-                    "试点县区域"
-                }}
-                <a-tag v-for="item in ygjg.filter(e => (e.quxian == header))" :key="item.quxian" style="z-index: 10000;"
-                    color="RGB(81,196,43)">{{ item.ygjg ? item.ygjg : '' }}</a-tag>
-
-                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">测绘院</a-tag>
-                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">航天信德 </a-tag>
-                <a-tag v-if="!header" style="z-index: 10000;" color="RGB(81,196,43)">二十一世纪</a-tag>
-
-
-
-            </a-typography-title>
-
-            <div style="margin: -25px 0 15px 0;">
-                <a-row type="flex">
-                    <a-statistic title="核验年份" value="2024年" />
-
-                    <a-statistic title="核验作物" value="玉米" :style="{
-                        margin: '0 32px',
-                    }" />
-
-                </a-row>
-            </div>
-
-            <div>
-                <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
-                    <a-tab-pane key="1" tab="整体">
-                        <div v-if="activeKey == 1">
-                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #suffix>
-                                    %
-                                </template>
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-                        <div v-else>
-                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ String(Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ String(
-                                                parseInt(Number(record.repayment) -
-                                                    Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-
-                    </a-tab-pane>
-                    <a-tab-pane key="2" tab="地区">
-
-                    </a-tab-pane>
-                    <a-tab-pane key="3" tab="机构">
-
-                    </a-tab-pane>
-                </a-tabs>
-
-                <div v-show="activeKeyChildren == '2'">
-
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered>
-                            <template #bodyCell="{ column, record }">
-
-                                <template v-if="column.dataIndex == 'repayment2'">
-
-                                    <div v-if="record.repayment2 > 1.05" style="color: red;">
-                                        超保
-                                    </div>
-
-                                    <div v-if="record.repayment2 < 0.6" style="color: orange;">
-                                        不足
-                                    </div>
-                                    <div v-if="(record.repayment2 >= 0.6 && record.repayment2 <= 1.05)"
-                                        style="color: green;">
-                                        合格
-                                    </div>
-
-                                </template>
-                                <template v-if="column.dataIndex == 'repayment'">
-
-                                    <div v-if="record.repayment > 0" style="color: red;">
-                                        <ArrowUp color="red"></ArrowUp><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment < 0" style="color: green;">
-                                        <ArrowDown color="green"></ArrowDown><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment == 0">
-                                        无变化
-                                    </div>
-
-                                </template>
-
-                            </template>
-                        </a-table>
-                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered></a-table>
-
-                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-                </div>
-
-                <div v-show="activeKeyChildren == '3'">
-
-
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
-
-
-                </div>
-            </div>
-
 
 
 
@@ -3133,119 +2317,12 @@ let observeSaLeft = ref();
 
     <!--图例-->
 
-    <div style="position: absolute;bottom: 35px;right: 20px;z-index: 1000;">
-        <JianceLegend v-if="activeKey == 1" core="map"></JianceLegend>
-    </div>
-
-    <!--图层控制-->
-    <div class="tuli" :style="{ left: (observeSaLeft - 200) + 'px' }">
-        <TucengLegend v-if="activeKey == 1" core="map"></TucengLegend><br>
-
-    </div>
-
-    <div class="tuli-right" :style="{ left: observeSaLeft + 'px' }">
-        <TucengLegend v-if="activeKey == 1" core="mapp"></TucengLegend><br>
+    <div style="position: absolute;bottom: 15px;left: 20px;z-index: 1000;">
+        <FenbuLegend core="map"></FenbuLegend>
     </div>
 
 
 
-
-    <div id="text">
-        <table class="text">
-            <tr>
-                <th colspan="10">
-
-                    <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
-
-                        <ShieldCheck :size="22" />
-                        &nbsp;保单信息
-                    </div>
-                </th>
-            </tr>
-            <tr>
-
-                <th>被保险人：</th>
-                <td>{bbxrmc}</td>
-            </tr>
-            <tr>
-
-                <th>保单号：</th>
-                <td style="font-size: 15px;">{bdh}</td>
-            </tr>
-            <tr>
-
-                <th>投保地点：</th>
-                <td>{province_city_county_town_village} </td>
-            </tr>
-            <tr>
-
-                <th>保险机构：</th>
-                <td>{bxjg}</td>
-            </tr>
-            <tr>
-
-                <th>遥感机构：</th>
-                <td>{ygjg}</td>
-            </tr>
-            <tr>
-
-                <th>险种名称：</th>
-                <td>{xianzhong}</td>
-            </tr>
-            <tr>
-
-                <th>投保数量：</th>
-                <td>{tbsl}亩</td>
-            </tr>
-            <!-- <tr>
-
-                <th>保险期间：</th>
-                <td>{bxqj}</td>
-            </tr> -->
-            <tr>
-                <th colspan="10">
-                    <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
-                        <UserCheck :size="22" />&nbsp;大户信息
-                    </div>
-
-                </th>
-            </tr>
-            <tr>
-
-                <th>大户地块核验：</th>
-                <td>{v8} </td>
-            </tr>
-            <tr>
-
-                <th>地块面积核验：</th>
-                <td>{v3}</td>
-            </tr>
-            <tr>
-
-                <th>地块重叠核验：</th>
-                <td> {v4}</td>
-            </tr>
-            <tr>
-
-                <th>标的面积核验：</th>
-                <td> {v7}</td>
-            </tr>
-            <tr>
-                <th>地块面积信息：</th>
-                <td>面积：{v1} 亩 <br> 占比：{v2} %</td>
-            </tr>
-            <tr>
-
-                <th>地块标的信息：</th>
-                <td>标的面积：{v5} 亩<br>标的占比：{v6} %</td>
-            </tr>
-
-
-
-        </table>
-    </div>
 
 
 </template>

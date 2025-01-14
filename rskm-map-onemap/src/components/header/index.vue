@@ -2,32 +2,18 @@
 import { useRouter } from "vue-router";
 import page from "../../../package.json";
 import StateManager from "@/utils/state_manager";
-
-import { FileDigit, Home, Settings, TextSearch } from "lucide-vue-next";
-import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
-import dayjs from "dayjs";
+import { ref, onMounted, h } from "vue";
 import { message } from "ant-design-vue";
 import { storeToRefs } from "pinia";
 import { hedaerStore } from "@/store/store.js";
+import { House, Satellite, Vegan, SquareActivity, Settings } from "lucide-vue-next";
+import dayjs from "dayjs";
 
 const router = useRouter();
-import {
-    Shield,
-    Sprout,
-    House,
-    Satellite,
-    Vegan,
-    SquareActivity
-} from "lucide-vue-next";
-
-
-
-
 const hctive = hedaerStore();
 let { headerActive } = storeToRefs(hctive);
 
-
-//  初始化区域
+// 初始化区域
 const defaultAdmin = () => {
     if (!StateManager.get("defaultAdmin")) {
         StateManager.set("defaultAdmin", "山东省");
@@ -36,32 +22,23 @@ const defaultAdmin = () => {
 };
 
 // 年份
-const pageDateYear = ref(
-    dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString())
-);
+const pageDateYear = ref(dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString()));
 
-//跳转年份数据
-const panelChangeRL = (value, mode) => {
+// 跳转年份数据
+const panelChangeRL = (value) => {
     StateManager.clear("rskm_pt_year");
     StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
 
-    message.loading(
-        `进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`,
-        1000
-    );
+    message.loading(`进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`, 1000);
 
-    let ts = setTimeout((e) => {
+    let ts = setTimeout(() => {
         location.reload();
         clearTimeout(ts);
     }, 1000);
 };
 
-
-//菜单
-//const current = ref([headerActive.value || "home"]);
+// 菜单
 const current = ref(["home"]);
-
-
 
 const items = ref([
     {
@@ -109,14 +86,10 @@ const items = ref([
                     {
                         label: "核验任务(开发中)",
                         key: "renwu",
-                        // onClick: () => {
-                        //     router.push("/renwu");
-                        // },
                     },
                 ],
             },
         ],
-
     },
     {
         key: "chengxiao",
@@ -157,44 +130,37 @@ const items = ref([
                     router.push("/zaisun");
                 },
             },
-
         ],
-    }
+    },
 ]);
+
 defineProps({
     pageStyle: {
         type: Object,
-        default: () => ({})
-    }
-})
+        default: () => ({}),
+    },
+});
 
 onMounted(() => {
     const path = window.location.pathname;
     const keyword = path.split('/').pop();
     current.value = keyword ? [keyword] : ['home'];
-
-})
-
+});
 </script>
 
-
 <template>
-    <!-- :sub-title="page.name + ' V' + page.version" -->
     <a-page-header class="header" :title="page.cnname" :style="pageStyle">
-        <div style="position: absolute;left: 17px; top: 20px;">
+        <div style="position: absolute; left: 17px; top: 20px;">
             <Vegan :size="55" color="green" />
         </div>
-        <div style="position: absolute;left: 90px; top: 55px;color: green;">
+        <div style="position: absolute; left: 90px; top: 55px; color: green;">
             {{ page.name + ' V' + page.version }}
         </div>
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
             style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
-
-        <!--年份-->
         <template #extra>
             <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" @panelChange="panelChangeRL"
                 :popupStyle="{ zIndex: 2000000 }" />
-            <!-- <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button> -->
         </template>
     </a-page-header>
 </template>
@@ -202,9 +168,7 @@ onMounted(() => {
 <style scoped>
 ::v-deep .ant-menu {
     font-size: 1.1rem;
-
 }
-
 
 ::v-deep .ant-picker {
     background: transparent;
@@ -219,7 +183,6 @@ onMounted(() => {
 ::v-deep .ant-page-header-heading-title {
     font-size: 2rem;
     font-weight: normal;
-
 }
 
 :deep(.ant-menu-light) {
@@ -233,7 +196,6 @@ onMounted(() => {
 
 :deep(.ant-menu-item-icon) {
     scale: 2;
-    /* background-color: aquamarine; */
     position: relative;
     top: -2px;
 }
@@ -249,6 +211,5 @@ onMounted(() => {
     letter-spacing: 1.5px;
     padding-left: 90px;
     z-index: 200000;
-
 }
 </style>

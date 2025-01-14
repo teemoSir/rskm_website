@@ -2072,13 +2072,13 @@ onMounted(() => {
 
         addLayersYghy(map, specYghy);
         map && loadEvent(map);
-        loadTerrain(map);
+        // loadTerrain(map);
     })
 
     mapp && mapp.on("load", () => {
         addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
-        loadTerrain(mapp);
+        // loadTerrain(mapp);
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     })
     /**
