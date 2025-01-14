@@ -51,6 +51,16 @@ const router = createRouter({
             name: "jiance",
             component: () => import("@/views/jiance/index.vue"),
         }
+        , {
+            path: "/fenbu",
+            name: "fenbu",
+            component: () => import("@/views/fenbu/index.vue"),
+        }
+        , {
+            path: "/zaisun",
+            name: "zaisun",
+            component: () => import("@/views/zaisun/index.vue"),
+        }
     ],
 });
 // 将 router 暴露出去  （export default 抛出方式）

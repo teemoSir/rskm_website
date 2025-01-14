@@ -13,7 +13,11 @@ import { hedaerStore } from "@/store/store.js";
 const router = useRouter();
 import {
     Shield,
-    Sprout
+    Sprout,
+    House,
+    Satellite,
+    Vegan,
+    SquareActivity
 } from "lucide-vue-next";
 
 
@@ -62,20 +66,21 @@ const current = ref(["home"]);
 const items = ref([
     {
         key: "home",
-        icon: () => h(Home),
+        icon: () => h(House),
         label: "首页",
         title: "首页",
         onClick: () => {
-            // headerActive.value = 'home';
             router.push("/");
-            // router.replace({ path: '/home' })
         },
     },
     {
         key: "verification",
-        icon: () => h(TextSearch),
+        icon: () => h(Satellite),
         label: "遥感核验",
         title: "遥感核验",
+        onClick: () => {
+            router.push("/verification_n1");
+        },
         children: [
             {
                 type: "group",
@@ -97,71 +102,62 @@ const items = ref([
                     },
                 ],
             },
-            // {
-            //     type: "group",
-            //     label: "任务管理",
-            //     children: [
-            //         {
-            //             label: "核验任务",
-            //             key: "verification:3",
-            //             onClick: () => {
-            //                 router.push("/renwu");
-            //             },
-            //         },
-            //     ],
-            // },
+            {
+                type: "group",
+                label: "任务管理",
+                children: [
+                    {
+                        label: "核验任务(开发中)",
+                        key: "renwu",
+                        // onClick: () => {
+                        //     router.push("/renwu");
+                        // },
+                    },
+                ],
+            },
         ],
 
     },
     {
         key: "chengxiao",
-        icon: () => h(FileDigit),
-        label: "统计分析",
-        title: "统计分析",
-        children: [
-            {
-                type: "group",
-                label: "数据分析",
-                children: [
-                    {
-                        label: "成效分析",
-                        key: "chengxiao:1",
-                        onClick: () => {
-                            router.push("/chengxiao");
-                        },
-                    },
-                ],
-            },
-        ],
+        icon: () => h(SquareActivity),
+        label: "成效分析",
+        title: "成效分析",
+        onClick: () => {
+            router.push("/chengxiao");
+        },
     },
     {
         key: "jiance",
         icon: () => h(Settings),
         label: "遥感监测",
         title: "遥感监测",
+        onClick: () => {
+            router.push("/fenbu");
+        },
         children: [
             {
-                type: "group",
-                label: "基础监测",
-                children: [
-                    {
-                        label: "长势遥感监测",
-                        key: "jiance:1",
-                        onClick: () => {
-                            router.push("/jiance");
-                        },
-                    },
-                    // {
-                    //     label: "灾损遥感监测",
-                    //     key: "jiance:1",
-                    //     onClick: () => {
-                    //         router.push("/jiance");
-                    //     },
-
-                    // },
-
-                ],
+                label: "遥感种植分布",
+                key: "fenbu",
+                onClick: () => {
+                    router.push("/fenbu");
+                },
             },
+            {
+                label: "长势遥感监测",
+                key: "jiance",
+                onClick: () => {
+                    router.push("/jiance");
+                },
+            },
+            {
+                label: "灾损遥感监测",
+                key: "zaisun",
+                onClick: () => {
+                    router.push("/zaisun");
+                },
+            },
+
         ],
     }
 ]);
@@ -183,21 +179,22 @@ onMounted(() => {
 
 
 <template>
-
-    <a-page-header class="header" :title="page.cnname" :sub-title="page.name + ' V' + page.version" :style="pageStyle">
-        <div style="position: absolute;left: 20px; top: 15px;">
-            <Sprout :size="45" color="green" />
+    <!-- :sub-title="page.name + ' V' + page.version" -->
+    <a-page-header class="header" :title="page.cnname" :style="pageStyle">
+        <div style="position: absolute;left: 17px; top: 20px;">
+            <Vegan :size="55" color="green" />
+        </div>
+        <div style="position: absolute;left: 90px; top: 55px;color: green;">
+            {{ page.name + ' V' + page.version }}
         </div>
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
             style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
 
         <!--年份-->
         <template #extra>
-            <a-space direction="vertical" :size="5">
-                <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" :popupStyle="{ top: '150px' }"
-                    @panelChange="panelChangeRL" />
-            </a-space>
-            <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button>
+            <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" @panelChange="panelChangeRL"
+                :popupStyle="{ zIndex: 2000000 }" />
+            <!-- <a-button key="2" type="info" style="color: #ccc">{{ defaultAdmin() }}</a-button> -->
         </template>
     </a-page-header>
 </template>
@@ -221,6 +218,28 @@ onMounted(() => {
 
 ::v-deep .ant-page-header-heading-title {
     font-size: 2rem;
+    font-weight: normal;
+
+}
+
+:deep(.ant-menu-light) {
+    font-family: 'FZZongYi-M05';
+}
+
+:deep(.ant-menu-title-content) {
+    font-size: 22px;
+    font-weight: normal;
+}
+
+:deep(.ant-menu-item-icon) {
+    scale: 2;
+    /* background-color: aquamarine; */
+    position: relative;
+    top: -2px;
+}
+
+:deep(.ant-picker-dropdown) {
+    z-index: 200000;
 }
 </style>
 
@@ -228,7 +247,8 @@ onMounted(() => {
 .header {
     font-family: 'FZZongYi-M05';
     letter-spacing: 1.5px;
-    padding-left: 80px;
+    padding-left: 90px;
     z-index: 200000;
+
 }
 </style>
