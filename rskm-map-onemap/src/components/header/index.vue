@@ -82,19 +82,19 @@ const items = ref([
                 label: "核验管理",
                 children: [
                     {
-                        label: "遥感核验",
+                        label: "遥感核验（第一次）",
                         key: "verification:1",
                         onClick: () => {
-                            router.push("/verification"); router.push("/verification");
+                            router.push("/verification_n1");
                         },
                     },
-                    // {
-                    //     label: "遥感核验（第二次）",
-                    //     key: "verification:2",
-                    //     onClick: () => {
-                    //         router.push("/yaogan");
-                    //     },
-                    // },
+                    {
+                        label: "遥感核验（第二次）",
+                        key: "verification:2",
+                        onClick: () => {
+                            router.push("/verification_n2");
+                        },
+                    },
                 ],
             },
             // {

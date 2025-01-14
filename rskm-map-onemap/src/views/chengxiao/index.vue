@@ -4179,14 +4179,14 @@ const onClose = () => {
                 :items="items" @click="handleClick"></a-menu>
         </div>
         <!-- 中间 -->
-        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-160px' : '-420px') }">
+        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-214px' : '-474px') }">
 
             <table style="width: 100%;">
                 <tr>
                     <td colspan="2">
                         <div
                             style="font-size: 35px;color: #fff;text-shadow: 1px 2px #000; text-align: center;   width: 100%;  font-family: FZZongYi-M05;">
-                            2024年玉米成效分析
+                            山东省2024年玉米成效分析
                         </div>
                     </td>
                     <td></td>

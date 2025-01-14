@@ -2448,7 +2448,7 @@ const dataSegmented = reactive([{
     disabled: true,
 },
 ]);
-const valueSegmented = ref(dataSegmented[dataSegmented.length - 1]);
+const valueSegmented = ref('10月');
 
 
 /**

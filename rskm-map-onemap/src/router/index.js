@@ -22,20 +22,19 @@ const router = createRouter({
             component: () => import("@/views/map/index.vue"),
         },
         {
-            path: "/verification",
-            name: "verification",
-            component: () => import("@/views/verification/index.vue"),
+            path: "/verification_n1",
+            name: "verification_n1",
+            component: () => import("@/views/verification_n1/index.vue"),
+        },
+        {
+            path: "/verification_n2",
+            name: "verification_n2",
+            component: () => import("@/views/verification_n2/index.vue"),
         },
         {
             path: "/echars",
             name: "echars",
             component: () => import("@/views/echars/index.vue"),
-        },
-
-        {
-            path: "/yaogan",
-            name: "yaogan",
-            component: () => import("@/views/yaogan/index.vue"),
         },
         {
             path: "/renwu",

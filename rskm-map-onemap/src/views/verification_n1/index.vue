@@ -6,31 +6,14 @@ import { message } from "ant-design-vue";
 import SDMap from "@/views/map/index.vue";
 import Header from "@/components/header/index.vue";
 import {
-    ArrowDownSquareIcon,
     FoldersIcon,
-    ChevronDownIcon,
-    Info,
-    LucideAreaChart,
-    MapPinned,
-    ChevronUp,
-    MoreHorizontal,
     PanelRightOpenIcon,
     SidebarOpen,
-
     X,
-    Building2Icon,
-    CheckSquareIcon,
-    CheckCircleIcon,
     CheckCircle2Icon,
-    CircleX,
     CircleAlertIcon,
     LandPlotIcon,
-    LucidePanelsTopBottom,
-    LayoutPanelLeftIcon,
-    LandmarkIcon,
-    LayoutPanelTopIcon,
     LucideSquareMousePointer,
-    Download,
 } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
@@ -2660,6 +2643,13 @@ const lockDownOpen = ref(false)
 
     <!-- 页面 -->
     <div class="page">
+        <div style="position: absolute;top: 100px;left: 50%; z-index: 1000;margin-left: -275px;">
+            <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
+                <span style="text-shadow: 2px 2px 2px #000;">山东省2024年玉米遥感核验(一次) </span>
+                <a-tag color="#108ee9">2024年09月30日截止</a-tag>
+            </h1>
+        </div>
+
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
             :footer="null">
 
@@ -2753,7 +2743,7 @@ const lockDownOpen = ref(false)
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 遥感核验
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 区域
                             </label>
 
 
@@ -2816,7 +2806,7 @@ const lockDownOpen = ref(false)
                         </a-directory-tree>
 
 
-                        <a-alert message="提示：本期为2024年9月30日核验数据" type="success" show-icon />
+                        <a-alert message="提示：2024年9月30日截止" type="success" show-icon />
                     </a-card>
                 </a-col>
 
@@ -3340,7 +3330,7 @@ const lockDownOpen = ref(false)
 .left-card {
     position: absolute;
     width: 270px;
-    left: 0;
+    left: 10px;
     top: 100px;
     max-height: calc(100% - 100px);
     z-index: 1000;
