@@ -2062,6 +2062,8 @@ onMounted(() => {
 
     loadDoubleMap()
 
+    fitCenter()
+
     //loadData()
 
     map && map.on("load", () => {
