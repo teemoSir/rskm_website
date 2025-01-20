@@ -17,26 +17,22 @@ import {
     Grip,
     PanelBottomOpen,
     PanelTopOpen,
+    ChevronDown,
+
 } from "lucide-vue-next";
-
-
-// import StateManager from "@/utils/state_manager";
 import * as turf from "@turf/turf";
 import { storeToRefs } from "pinia";
 import { treeStore } from "@/store/store.js";
 import { filterRskm, addLayers, setPopup, popup, popupbig } from "@/views/map/map.js";
-
 import { useRouter } from "vue-router";
 import Header from "@/components/header/index.vue";
+import StateManager from "@/utils/state_manager";
 
 const router = useRouter();
-
 const mapRef = ref(null);
 
 const storeTree = treeStore();
 let { searchTypeStore, searchNameStore } = storeToRefs(storeTree);
-
-
 
 const value = ref("user1");
 dayjs.extend(updateLocale);
@@ -46,7 +42,6 @@ dayjs.updateLocale("zh-cn", {
 
 message.config({
     top: `200px`,
-    //   duration: 2,
     maxCount: 2,
     rtl: true,
     prefixCls: "提示",
@@ -280,18 +275,82 @@ const fitCenter = () => {
 };
 
 onMounted(() => {
+
+    loadMap()
+
+})
+
+const loadMap = () => {
     map && map.on("load", () => {
+
+
+
         addLayers();
 
         loadEvent();
 
         setTimeout(() => {
             fitCenter()
-        }, 500)
+        }, 1000)
     })
-})
+}
+
+const clearMap = () => {
+    // 清空地图
+
+    //    (map.getSource() map.removeSource('rskm_pt');
+
+    //     "rskm_pt_outline",
+    //         "rskm_pt",
+    //         "rskm_pt_name",
+    //         "rskm_pt_name_1",
+
+    // 清空缓存
+    // StateManager.clearAll();
+
+}
 
 
+
+// 年份
+//const pageDateYear = ref(dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString()));
+
+// 跳转年份数据
+const panelChangeRL = (value) => {
+
+    cursorYear.value = value;
+    StateManager.clear("rskm_pt_year");
+    StateManager.set("rskm_pt_year", value);
+
+
+
+
+
+    setTimeout(() => {
+        // clearMap();
+        // addLayers()
+
+        window.location.reload()
+    }, 1000)
+
+    message.success(`已进入 ${StateManager.get("rskm_pt_year", value)} 年度标的分布`);
+};
+
+const cursorYear = ref(StateManager.get("rskm_pt_year") || new Date().getFullYear())
+
+/**
+ * 年份选项
+ */
+const years = ref([
+    2025,
+    2024,
+    2023,
+    2022,
+    2021, 2020,
+])
+
+/**年份值 */
+const yearPopup = ref(false)
 
 
 </script>
@@ -320,7 +379,7 @@ onMounted(() => {
                         </a-tooltip>
                     </a-col>
 
-                    <a-col :span="21">
+                    <a-col :span="15">
                         <a-input-group compact>
                             <a-dropdown>
                                 <template #overlay>
@@ -332,17 +391,17 @@ onMounted(() => {
                                     </a-menu>
                                 </template>
                                 <a-button class="searchshadow">
-                                    <!-- <ChevronDown  />
-                  <ChevronUp  /> -->
 
-                                    <div style="display: flex; align-items: center">
+
+                                    <div
+                                        style="display: flex; align-items: center;font-family: 'FZZongYi-M05';font-size: 16px;">
                                         <ShieldCheck v-if="searchType == '单号'" :size="20" />
                                         <MapPinned v-else :size="20" />
                                         &nbsp; {{ searchType }}
                                     </div>
                                 </a-button>
                             </a-dropdown>
-                            <a-input ref="inSerchRef" size="large" v-model:value="searchValue" style="width: 300px"
+                            <a-input ref="inSerchRef" size="large" v-model:value="searchValue" style="width: 220px"
                                 class="searchshadow" :placeholder="searchType == '区域' ? '请输入查询区域' : '请输入保险单号'"
                                 :allowClear="true" @keyup.enter="searchByfilter" />
                             <a-tooltip placement="bottom">
@@ -352,11 +411,34 @@ onMounted(() => {
                                 </a-button>
                             </a-tooltip>
 
-                            <a-tooltip placement="bottom">
+
+
+                            <!-- <a-tooltip placement="bottom">
                                 <template #title>保单详情</template>
                                 <a-button size="large" class="searchshadow" @click="open = !open">
                                     <PanelBottomOpen v-if="!open" />
                                     <PanelTopOpen v-else />
+                                </a-button>
+                            </a-tooltip> -->
+                        </a-input-group>
+                    </a-col>
+                    <a-col :span="5">
+                        <a-input-group compact>
+                            <a-tooltip placement="right">
+                                <template #title>年份</template>
+                                <a-button type="primary" size="large" class="searchshadow"
+                                    @click="yearPopup = !yearPopup"
+                                    style="display: flex;align-items: center; font-family: 'FZZongYi-M05';width: 110px;font-size: 16px;">
+                                    <div>
+                                        {{ cursorYear }}年
+                                    </div>
+                                    <ChevronDown style="margin-left: 10px;" />
+                                    <div v-if="yearPopup" class="year-popup">
+                                        <div v-for="year in years" class="year" @click="panelChangeRL(year)">
+                                            {{ year
+                                            }}年</div>
+
+                                    </div>
                                 </a-button>
                             </a-tooltip>
                         </a-input-group>
@@ -384,6 +466,32 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.year-popup {
+    position: absolute;
+    left: 0;
+    top: 60px;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.year {
+    border: 1px solid #59595941;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.year:hover {
+    /* background-color: #57575749; */
+    color: #1677ff;
+}
+
 .searchshadow {
     cursor: pointer;
 

@@ -1,19 +1,4 @@
 
-// import Baidu_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-// import Baidu_BZ from "@/assets/images/map/Baidu_BZ.jpg";
-// import Baidu_WX_WZJ from "@/assets/images/map/Baidu_WX_WZJ.jpg";
-// import Baidu_WX from "@/assets/images/map/Baidu_WX.jpg";
-// import ESRI_BZ from "@/assets/images/map/ESRI_BZ.jpg";
-// import ESRI_SL from "@/assets/images/map/ESRI_SL.jpg";
-// import ESRI_WS from "@/assets/images/map/ESRI_WS.jpg";
-// import ESRI_WX from "@/assets/images/map/ESRI_WX.jpg";
-// import Gaode_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-// import Gaode_BZ from "@/assets/images/map/Gaode_BZ.jpg";
-// import Gaode_WX_WZJ from "@/assets/images/map/Gaode_WX_WZJ.jpg";
-// import Gaode_WX from "@/assets/images/map/Gaode_WX.jpg";
-// import TDT_BZ_WZJ from "@/assets/images/map/TDT_BZ_WZJ.jpg";
-// import TDT_BZ from "@/assets/images/map/TDT_BZ.jpg";
-// import TDT_WX_WZJ from "@/assets/images/map/TDT_WX_WZJ.jpg";
 import Google from "@/assets/images/map/Google.jpg";
 import JL from "@/assets/images/map/JL.jpg";
 import MB from "@/assets/images/map/MB.jpg";
@@ -255,16 +240,16 @@ let layers = ref([
         key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",//44194e4bbd714ee9cd453c7ff3e5635b56bc9d61b26946f7631c69fa96d91e60
         param: [["xtdx", "Geovisearth.Terrain.Map"]],
     },
-    {
-        id: 22,
-        name: "Mapbox-影像",
-        projection: true,
-        st: "",
-        url: MB,
-        key: "",
-        zj: true,
-        param: [["mb", "Mapbox.Satellite.Map"]],
-    },
+    // {
+    //     id: 22,
+    //     name: "Mapbox-影像",
+    //     projection: true,
+    //     st: "",
+    //     url: MB,
+    //     key: "",
+    //     zj: true,
+    //     param: [["mb", "Mapbox.Satellite.Map"]],
+    // },
     {
         id: 23,
         name: "吉林一号-影像",

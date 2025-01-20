@@ -223,16 +223,16 @@ let layers = ref([
         key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",//44194e4bbd714ee9cd453c7ff3e5635b56bc9d61b26946f7631c69fa96d91e60
         param: [["xinqiu1", "Geovisearth.Normal.Map"]],
     },
-    {
-        id: 22,
-        name: "Mapbox-影像",
-        projection: true,
-        st: "",
-        url: MB,
-        key: "",
-        zj: true,
-        param: [["mb", "Mapbox.Satellite.Map"]],
-    },
+    // {
+    //     id: 22,
+    //     name: "Mapbox-影像",
+    //     projection: true,
+    //     st: "",
+    //     url: MB,
+    //     key: "",
+    //     zj: true,
+    //     param: [["mb", "Mapbox.Satellite.Map"]],
+    // },
     {
         id: 23,
         name: "吉林一号-影像",
@@ -1097,7 +1097,144 @@ let specYghyEchy = [
 
     },
 
+    // 专属展示玉米分布
+    {
+        id: "procjet_2024_yghy_sense_s1",
+        name: "遥感成果一期",
+        "type": "fill",
+        source: config.procjet_2024_yghy_sense_s1.name,
+        "source-layer": config.procjet_2024_yghy_sense_s1.name,
+        minzoom: 4.4,
+        layout: {
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            'fill-color': 'yellow',
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                1,
+                7,
+                0.9,
+                10,
+                0.8,
+                14,
+                0.7, 16,
+                0.2,],
+        },
+        interactive: true,
+    },
 
+    {
+        id: "procjet_2024_yghy_sense_s1_outline",
+        name: "遥感成果一期外框",
+        type: "line",
+        source: config.procjet_2024_yghy_sense_s1.name,
+        "source-layer": config.procjet_2024_yghy_sense_s1.name,
+        layout: {
+            "line-join": "round",
+            "line-cap": "round",
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            // 'line-blur':0.5,
+            'line-color': 'RGBA(0,0,0,0.7)',
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                9,
+                0,
+                11,
+                0.5,
+                13,
+                0.8,
+                14,
+                1,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     0.5,
+            //     14,
+            //     0.7,
+            //     15,
+            //     1,],
+        },
+        interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_sense_s2",
+        name: "遥感成果一期",
+        "type": "fill",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        minzoom: 4.4,
+        layout: {
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            'fill-color': 'yellow',
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                1,
+                7,
+                0.9,
+                10,
+                0.8,
+                14,
+                0.7, 16,
+                0.5,],
+        },
+        interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_sense_s2_outline",
+        name: "遥感成果一期外框",
+        type: "line",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        layout: {
+            "line-join": "round",
+            "line-cap": "round",
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            // 'line-blur':0.5,
+            'line-color': 'RGBA(0,0,0,0.7)',
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                9,
+                0,
+                11,
+                0.5,
+                13,
+                0.8,
+                14,
+                1,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     0.5,
+            //     14,
+            //     0.7,
+            //     15,
+            //     1,],
+        },
+        interactive: true,
+    },
+
+    // 其他
     {
         id: "procjet_2024_yghy_sense",
         name: "遥感成果",
@@ -1183,8 +1320,6 @@ let specYghyEchy = [
         interactive: true,
     },
     {
-
-
         id: "procjet_2024_yghy_sense_v1_outline",
         name: "外框",
         type: "line",
@@ -1232,6 +1367,31 @@ let specYghyEchy = [
         },
         'slot': 'top',
         interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_sense_v1_name",
+        type: "symbol",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        layout: {
+            "symbol-avoid-edges": true,
+            "icon-rotation-alignment": "viewport",
+            "text-pitch-alignment": "viewport",
+            visibility: "none",
+            "text-font": ["Microsoft YaHei"],
+            "text-field": "{rs_area}",
+            "text-size": 13,
+
+        },
+        'slot': 'top',
+        paint: {
+            "text-color": "#fff", // 文字颜色
+            "text-halo-color": '#000', // 文字轮廓宽度
+            "text-halo-width": 1, // 文字轮廓宽度
+            "text-halo-blur": 0.8, // 文字轮廓模糊度
+        },
+        minzoom: 13,
     },
 
 
@@ -1307,22 +1467,6 @@ let specYghyEchy = [
         'slot': 'top',
         "paint": {
 
-            // 'line-color': [
-            //     'case',
-            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-            //     'RGB(76,127,217)',
-            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-            //     'RGB(233,124,203)',
-            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-            //     'RGB(147,138,87)',
-            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-            //     '#000',
-            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-            //     'RGB(126,72,225)',
-            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-            //     'RGB(250,131,86)',
-            //     '#ccc'
-            // ],
             'line-width': ["interpolate",
                 ["exponential", 1.5],
                 ["zoom"],
@@ -1337,25 +1481,6 @@ let specYghyEchy = [
         },
         interactive: true,
     },
-
-
-    // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
-    //     'type': 'raster',
-    //     'scheme': 'tms',
-    //     'tiles': [
-    //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
-
-    //     ],
-
-    //     'tileSize': 256 // 瓦片大小
-    // });
-
-    // 'id': 'procjet_2024_yghy_yumi_zhangshi',
-    // 'type': 'raster',
-    // 'source': 'procjet_2024_yghy_yumi_zhangshi',
-    // "paint": {
-    //     "raster-opacity": 0.7
-    // },
 
 
 
@@ -1423,23 +1548,6 @@ let specYghyEchy = [
         'slot': 'top',
         paint: {
             "text-color": "#fff", // 文字颜色
-            //   "text-halo-color": "yellow", // 文字轮廓颜色
-            // 'text-halo-color': [
-            //     'case',
-            //     [">", ["index-of", "国寿财", ['get', "bxjg"]], -1],
-            //     'RGB(76,127,217)',
-            //     [">", ["index-of", "安华", ['get', "bxjg"]], -1],
-            //     'RGB(233,124,203)',
-            //     [">", ["index-of", "太平", ['get', "bxjg"]], -1],
-            //     'RGB(147,138,87)',
-            //     [">", ["index-of", "人保", ['get', "bxjg"]], -1],
-            //     '#000',
-            //     [">", ["index-of", "太保", ['get', "bxjg"]], -1],
-            //     'RGB(126,72,225)',
-            //     [">", ["index-of", "中华", ['get', "bxjg"]], -1],
-            //     'RGB(250,131,86)',
-            //     '#ccc'
-            // ],
             'text-halo-color': [
                 'case',
                 ["==", ['get', "v8"], '1'],

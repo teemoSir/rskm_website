@@ -1,7 +1,7 @@
 {
-    "name": "OneMap",
+    "name": "OneMap Agricultural Insurance",
     "private": true,
-    "cnname": "农险一张图解决方案",
+    "cnname": "农险一张图",
     "version": "1.0.3",
     "type": "module",
     "scripts": {

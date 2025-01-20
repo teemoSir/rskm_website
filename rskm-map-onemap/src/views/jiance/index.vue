@@ -1873,7 +1873,7 @@ const loadDoubleMap = () => {
 const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
     mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
     mapboxgl.maxParallelImageRequests = 12;
-    mapboxgl.accessToken = mapbox.key;
+    // mapboxgl.accessToken = mapbox.key;
     mapboxgl.prewarm();
 
     const mapl = new mapboxgl.Map({

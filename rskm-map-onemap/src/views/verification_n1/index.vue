@@ -1099,18 +1099,24 @@ const loadTown = async (name) => {
     goGeomUn()
 
 
-    if (name == "'济阳区'") {
-        name = "'济阳县'"
-    }
+    // if (name == "'济阳区'") {
+    //     name = "'济阳县'"
+    // }
 
-    if (name == "'莱芜区'") {
-        name = "'莱芜市'"
-    }
+    // if (name == "'莱芜区'") {
+    //     name = "'莱芜市'"
+    // }
+
+    // let features = await api.get_table_by_filter(
+    //     "admin_2024_town",
+    //     `and (f_xzqhmc in (${name}) or c_xzqmc in (${name})) `,
+    //     `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,c_xzqdm,c_xzqmc,f_xzqhmc,f_xzqhdm,gid,t_xzqmc,p_xzqmc,t_xzqdm`
+    // );
 
     let features = await api.get_table_by_filter(
-        "admin_2024_town",
-        `and (f_xzqhmc in (${name}) or c_xzqmc in (${name})) `,
-        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,c_xzqdm,c_xzqmc,f_xzqhmc,f_xzqhdm,gid,t_xzqmc,p_xzqmc,t_xzqdm`
+        "china_wgs84_town",
+        `and county_name in (${name}) `,
+        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,city_name,city_code,county_code,county_name,gid,province_code,town_code,province,town_name`
     );
 
     window.countylayer = [];
@@ -1118,19 +1124,20 @@ const loadTown = async (name) => {
     //console.log(features)
     features.forEach(feature => {
         let p = {
-            c_xzqdm: feature.c_xzqdm,
-            c_xzqmc: feature.c_xzqmc,
-            f_xzqhdm: feature.f_xzqhdm,
-            f_xzqhmc: feature.f_xzqhmc,
+            city_name: feature.city_name,
+            city_code: feature.city_code,
+            county_name: feature.county_name,
+            county_code: feature.county_code,
             gid: feature.gid,
-            p_xzqmc: feature.p_xzqmc,
-            t_xzqdm: feature.t_xzqdm,
-            t_xzqmc: feature.t_xzqmc,
+            town_code: feature.town_code,
+            town_name: feature.town_name,
+            province: feature.province,
+            province_code: feature.province_code,
         }
 
 
         // 计算是否超保
-        let hzBaseDataClone = hzBaseData.filter(item => item.town == p.t_xzqmc);
+        let hzBaseDataClone = hzBaseData.filter(item => item.town == p.town_name);
 
         p.rs = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.rs_area), 0);
         p.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.i_area), 0);
@@ -1188,128 +1195,7 @@ const goGeomUn = () => {
     map.getSource("adminGeom") && map.removeSource("adminGeom");
 };
 
-/**
- * 在地图上显示行政区边界
- * @param {string} data - GeoJSON格式的边界数据
- */
-const goGeomOne = (data, property) => {
 
-
-    // 判定颜色
-    let color = ""
-    if (property.coverage) {
-        if (property.coverage > 105) {
-            color = "RGB(236,102,103)"
-        } else if (property.coverage <= 60) {
-            color = "RGB(248,200,94)"
-        } else {
-            color = "RGB(144,204,120)"
-        }
-    } else {
-        color = "#ccc"
-    }
-
-
-    // map.addSource("adminGeom" , {
-    //   type: "geojson",
-    //   data: {
-    //     type: "FeatureCollection",
-    //     features: [json],
-    //   },
-    // });
-
-
-    //添加图层
-    map.addSource("adminGeom" + property.gid, {
-        type: "geojson",
-        // lineMetrics: true, // 线渐变必须条件
-        data: {
-            "type": "Feature",
-            "geometry": JSON.parse(data),
-            "properties": property
-        },
-    });
-    map.addLayer({
-        id: "adminGeom" + property.gid,
-        type: "fill",
-        source: "adminGeom" + property.gid,
-        paint: {
-            "fill-color": color,
-            "fill-opacity": 0.5,
-        },
-    });
-    if (header.value) {
-        // 点击区县
-        map.addLayer({
-            id: "adminGeomOut" + property.gid,
-            type: "line",
-            source: "adminGeom" + property.gid,
-            layout: {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            paint: {
-                "line-color": color,
-                "line-width": 2.5,
-            },
-        });
-
-        map.addLayer({
-            id: "textLayer" + property.gid,
-            type: "symbol",
-            source: "adminGeom" + property.gid,
-            layout: {
-                "text-field": "{f_xzahmc}{t_xzqmc}",
-                "text-size": 18,
-            },
-            paint: {
-                "text-halo-blur": 1,
-                "text-color": color,
-                "text-halo-color": "#000",
-                "text-halo-width": 1.5,
-                "text-halo-blur": 0.8, // 文字轮廓模糊度
-            },
-        });
-    } else {
-        map.addLayer({
-            id: "adminGeomOut" + property.gid,
-            type: "line",
-            source: "adminGeom" + property.gid,
-            layout: {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            paint: {
-                "line-color": color,
-                "line-width": 4.5,
-            },
-        });
-
-        map.addLayer({
-            id: "textLayer" + property.gid,
-            type: "symbol",
-            source: "adminGeom" + property.gid,
-            layout: {
-                "text-field": "{city_name}{name}",
-                "text-size": 18,
-            },
-            paint: {
-                "text-halo-blur": 1,
-                "text-color": color,
-                "text-halo-color": "#000",
-                "text-halo-width": 1.5,
-                "text-halo-blur": 0.8, // 文字轮廓模糊度
-            },
-        });
-    }
-
-
-
-
-
-
-
-};
 
 /**
  * 在地图上显示行政区边界
@@ -1376,7 +1262,7 @@ const goGeom = (data) => {
             type: "symbol",
             source: "adminGeom",
             layout: {
-                "text-field": "{f_xzahmc}{t_xzqmc}",
+                "text-field": "{town_name}",
                 "text-size": 18,
             },
             paint: {
@@ -1480,9 +1366,9 @@ const goGeomLine = (data) => {
                 "line-cap": "round",
             },
             paint: {
-                'line-color': '#fff',
+                'line-color': 'red',
                 "line-width": 5.5,
-                "line-opacity": 0.4,
+                "line-opacity": 0.8,
             },
         });
 
@@ -1491,7 +1377,7 @@ const goGeomLine = (data) => {
             type: "symbol",
             source: "adminGeom",
             layout: {
-                "text-field": "{t_xzqmc}",
+                "text-field": "{town_name}",
                 "text-size": 20,
             },
             paint: {
@@ -1696,14 +1582,13 @@ const setCountyPopup = async (data) => {
 
     let text = ``;
     text = `
-    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 18px;color:#5a5959"  title="区域核验" >
-        <tr style="line-height:1.5;"><th style="text-align: right;width:180px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">投保面积:</th><td >${data.properties.area ? Number(data.properties.area).toFixed(0) : 0}亩</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">遥感面积:</th><td >${data.properties.rs ? Number(data.properties.rs).toFixed(0) : 0}亩</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">地块与投保面积之比:</th><td >${parseInt(data.properties.coverage)}%</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:2px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
-        </table>`
-
+    <table style="width:100%;letter-spacing: -1px; font-size: 18px;color:#5a5959"  title="区域核验" >
+        <tr style="line-height:1.5;"><th style="text-align: left;width:100px;padding-right:5px">核验区域:</th><td >${(data.properties.town_name || data.properties.name)}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;padding-right:5px">投保面积:</th><td >${data.properties.area ? Number(data.properties.area).toFixed(0) : 0}亩</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;padding-right:5px">遥感面积:</th><td >${data.properties.rs ? Number(data.properties.rs).toFixed(0) : 0}亩</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;padding-right:5px;">地块与投保<br>面积之比:</th><td>${parseInt(data.properties.coverage)}%</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:2px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
+        </table>`;
 
     return text
 }
@@ -1867,8 +1752,6 @@ const selectedKeys = ref(['0-0']);
 
 
 watch(selectedKeys, () => {
-    //console.log(selectedKeys.value[0])
-
     switch (selectedKeys.value[0]) {
         case "0-0":
             loadLocalData();
@@ -1902,6 +1785,39 @@ watch(selectedKeys, () => {
             break;
         case "0-0-9":
             loadLocalData("无棣县");
+            break;
+        case "1-1":
+            loadLocalDataV2();
+            break;
+        case "1-1-0":
+            loadLocalDataV2("济阳区");
+            break;
+        case "1-1-1":
+            loadLocalDataV2("莱芜区");
+            break;
+        case "1-1-2":
+            loadLocalDataV2("桓台县");
+            break;
+        case "0-0-3":
+            loadLocalDataV2("高青县");
+            break;
+        case "1-1-4":
+            loadLocalDataV2("海阳市");
+            break;
+        case "1-1-5":
+            loadLocalDataV2("招远市");
+            break;
+        case "1-1-6":
+            loadLocalDataV2("汶上县");
+            break;
+        case "1-1-7":
+            loadLocalDataV2("冠县");
+            break;
+        case "1-1-8":
+            loadLocalDataV2("东阿县");
+            break;
+        case "1-1-9":
+            loadLocalDataV2("无棣县");
             break;
         default:
             break;
@@ -2122,6 +2038,150 @@ const loadLocalData = (filter) => {
 
             console.log(data)
             // loadEcharts03(bxjg, [zc, bz, cb])
+        })
+
+
+        let data = [
+            { name: '安华', zc: 5, bz: 1, cb: 0 },
+            { name: '国寿财', zc: 17, bz: 1, cb: 0 },
+            { name: '平安山东', zc: 4, bz: 0, cb: 0 },
+            { name: '人保', zc: 32, bz: 9, cb: 8 },
+            { name: '太保', zc: 19, bz: 6, cb: 0 },
+            { name: '太平', zc: 9, bz: 6, cb: 0 },
+            { name: '中华', zc: 24, bz: 3, cb: 4 },
+        ]
+
+        data.forEach((ca) => {
+            if (ca.zc >= 0 && ca.bz >= 0 && ca.cb >= 0) {
+                zc.push((ca.zc / (ca.zc + ca.bz + ca.cb)));
+                bz.push((ca.bz / (ca.zc + ca.bz + ca.cb)));
+                cb.push((ca.cb / (ca.zc + ca.bz + ca.cb)));
+            } else {
+                zc.push();
+                bz.push();
+                cb.push();
+            }
+
+            //  console.log(ca)
+
+            bxjg.push(ca.name)
+        });
+        loadEcharts03(bxjg, [zc, bz, cb])
+
+        // console.log(bxjg, [zc, bz, cb])
+
+    }
+
+}
+
+
+
+/**
+ * 初始化图表
+ * @param filter 
+ */
+const loadLocalDataV2 = (filter) => {
+    header.value = filter;
+    loadDataRight(filter)
+
+    goGeomUn()
+
+    if (activeKey.value == 1) {
+        loadLayers(header.value)
+    } else {
+        loadLayerDk()
+
+        if (!header.value) {
+            fitCenter()
+        } else {
+            loadCountyFit(`'${header.value}'`)
+            loadTown(`'${header.value}'`)
+        }
+
+    }
+
+
+    // 初始化
+    [cbmj, ygmj, bxfgl, cbxz, cbxz_val, zcxz, zcxz_val, bzxz, bzxz_val].forEach(ref => ref.value = 0);
+
+
+    // console.log(hzBaseData, hzBaseData.length, filter)
+    if (!hzBaseData) return false;
+
+
+    let hzBaseDataClone;
+    if (header.value) {
+        hzBaseDataClone = hzBaseData.filter(item => item.county == header.value);
+    } else {
+        hzBaseDataClone = hzBaseData;
+    }
+    // console.log(hzBaseDataClone)
+
+    let i_coverage = 0;
+    for (const hz in hzBaseDataClone) {
+        cbmj.value += Number(hzBaseDataClone[hz].i_area || 0);
+        ygmj.value += Number(hzBaseDataClone[hz].rs_area || 0);
+        i_coverage += Number(hzBaseDataClone[hz].i_coverage || 0);
+        cbxz.value += Number(hzBaseDataClone[hz].i_coverage || 0) > 105 ? 1 : 0;
+        zcxz.value += (Number(hzBaseDataClone[hz].i_coverage || 0) <= 105 && Number(hzBaseDataClone[hz].i_coverage || 0) > 60) ? 1 : 0;
+        bzxz.value += Number(hzBaseDataClone[hz].i_coverage || 0) <= 60 ? 1 : 0;
+    }
+    // 覆盖率
+    bxfgl.value = Number(i_coverage / hzBaseDataClone.length).toFixed(2);
+
+    //超保乡镇
+    cbxz_val.value = Number(cbxz.value / hzBaseDataClone.length * 100).toFixed(2);
+
+    //正常乡镇
+    zcxz_val.value = Number(zcxz.value / hzBaseDataClone.length * 100).toFixed(2);
+
+    //不足乡镇
+    bzxz_val.value = Number(bzxz.value / hzBaseDataClone.length * 100).toFixed(2);
+
+
+
+    // 图表一
+    let tbdata = [
+        { value: Number(cbxz.value), name: '超保' },
+        { value: Number(zcxz.value), name: '正常' },
+        { value: Number(bzxz.value), name: '不足' },
+    ]
+    loadEcharts(tbdata)
+
+
+
+    loadDataHgl()
+
+
+    // 图表三
+    // console.log(header.value)
+    if (!header.value) {
+        console.log(header.value)
+        let zc = [];
+        let bz = [];
+        let cb = [];
+        let bxjg = [];
+
+
+        let promise = api.get_table_tj("yghy_sql_7");
+        promise.then((data) => {
+            data.forEach((ca) => {
+                if (ca.zc && ca.bz && ca.cb) {
+                    zc.push((ca.zc / (ca.zc + ca.bz + ca.cb)));
+                    bz.push((ca.bz / (ca.zc + ca.bz + ca.cb)));
+                    cb.push((ca.cb / (ca.zc + ca.bz + ca.cb)));
+                } else {
+                    zc.push();
+                    bz.push();
+                    cb.push();
+                }
+
+                //  console.log(ca)
+
+                bxjg.push(ca.name)
+            });
+
+            console.log(data)
         })
 
 
@@ -2645,7 +2705,7 @@ const lockDownOpen = ref(false)
     <div class="page">
         <div style="position: absolute;top: 100px;left: 50%; z-index: 1000;margin-left: -275px;">
             <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 2px 2px 2px #000;">山东省2024年玉米遥感核验(一次) </span>
+                <span style="text-shadow: 2px 2px 2px #000;">山东省年玉米遥感核验(一次) </span>
                 <a-tag color="#108ee9">2024年09月30日截止</a-tag>
             </h1>
         </div>
@@ -2743,16 +2803,12 @@ const lockDownOpen = ref(false)
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 区域
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 遥感核验任务
                             </label>
-
-
                             <a-tooltip placement="right">
                                 <template #title>
                                     <span>隐藏菜单</span>
                                 </template>
-
-
                                 <X style="float: right;cursor: pointer;" color="#999" @click="xSquareShow = false"></X>
                             </a-tooltip>
 
@@ -2786,7 +2842,7 @@ const lockDownOpen = ref(false)
                                     <div style="float: left;margin-left: 100px;;width: 100px;">
                                         <a-tooltip placement="right">
                                             <template #title>{{ dataRef.title }}完成核验</template>
-                                            <CheckCircle2Icon color="RGB(144,204,120)" :size="20"></CheckCircle2Icon>
+                                            <CheckCircle2Icon color="green" :size="16"></CheckCircle2Icon>
                                         </a-tooltip>
                                     </div>
                                 </template>
@@ -2796,7 +2852,7 @@ const lockDownOpen = ref(false)
 
                                         <a-tooltip placement="right">
                                             <template #title>{{ dataRef.title }}暂未完成</template>
-                                            <CircleAlertIcon color="RGB(236,102,103)" :size="20"></CircleAlertIcon>
+                                            <CircleAlertIcon color="red" :size="16"></CircleAlertIcon>
                                         </a-tooltip>
                                     </div>
                                 </template>
@@ -2806,7 +2862,7 @@ const lockDownOpen = ref(false)
                         </a-directory-tree>
 
 
-                        <a-alert message="提示：2024年9月30日截止" type="success" show-icon />
+                        <!-- <a-alert message="提示：2024年9月30日截止" type="success" show-icon /> -->
                     </a-card>
                 </a-col>
 
@@ -2833,35 +2889,41 @@ const lockDownOpen = ref(false)
             </a-tooltip>
         </div>
         <div class="right-card" v-show="xRightSquareShow">
+            <a-tooltip placement="left">
+                <template #title>
+                    <span>隐藏统计栏</span>
+                </template>
+                <X style="float: right;cursor: pointer;z-index: 10000;position: absolute;right: 25px;top: 25px;"
+                    color="#999" @click="xRightSquareShow = false">
+                </X>
+            </a-tooltip>
 
-            <a-card size="small" title="" style="height: 99%;">
+            <a-card size="small" title="" style="height: 55px;">
 
-                <a-tabs v-model:activeKey="activeKey" type="card" style="position: absolute;top: 0;left: 0; ">
+                <a-tabs v-model:activeKey="activeKey" style="position: absolute;top: 0;left: 0; z-index: 10000;">
                     <a-tab-pane key="1">
                         <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                            <div
+                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
                                 <LandPlotIcon :size="20"></LandPlotIcon>
-                                &nbsp;区域
+                                &nbsp;&nbsp;&nbsp;区域
                             </div>
                         </template>
                     </a-tab-pane>
                     <a-tab-pane key="2">
                         <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                            <div
+                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
                                 <LucideSquareMousePointer :size="20"></LucideSquareMousePointer>
-                                &nbsp;地块
+                                &nbsp;&nbsp;&nbsp;地块
                             </div>
                         </template>
                     </a-tab-pane>
-
-
                 </a-tabs>
-                <a-tooltip placement="left">
-                    <template #title>
-                        <span>隐藏统计栏</span>
-                    </template>
-                    <X style="float: right;cursor: pointer;" color="#999" @click="xRightSquareShow = false"></X>
-                </a-tooltip>
+
+            </a-card>
+
+            <a-card size="small" title="" style="height: 100%; margin-top: -45px;">
                 <!--区域核验-->
                 <div v-show="activeKey == '1'"
                     style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
@@ -3343,7 +3405,7 @@ const lockDownOpen = ref(false)
     width: 550px;
 
     z-index: 1000;
-    height: calc(100% - 100px);
+    height: calc(100% - 130px);
     padding: 10px;
 }
 
@@ -3525,5 +3587,9 @@ p {
 ::v-deep .ant-statistic .ant-statistic-content {
     font-size: 22px;
     line-height: 30px;
+}
+
+:deep(.mapboxgl-popup-content) {
+    background-color: #f8f5f5b6;
 }
 </style>

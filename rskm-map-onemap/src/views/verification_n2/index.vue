@@ -1099,18 +1099,24 @@ const loadTown = async (name) => {
     goGeomUn()
 
 
-    if (name == "'济阳区'") {
-        name = "'济阳县'"
-    }
+    // if (name == "'济阳区'") {
+    //     name = "'济阳县'"
+    // }
 
-    if (name == "'莱芜区'") {
-        name = "'莱芜市'"
-    }
+    // if (name == "'莱芜区'") {
+    //     name = "'莱芜市'"
+    // }
+
+    // let features = await api.get_table_by_filter(
+    //     "admin_2024_town",
+    //     `and (f_xzqhmc in (${name}) or c_xzqmc in (${name})) `,
+    //     `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,c_xzqdm,c_xzqmc,f_xzqhmc,f_xzqhdm,gid,t_xzqmc,p_xzqmc,t_xzqdm`
+    // );
 
     let features = await api.get_table_by_filter(
-        "admin_2024_town",
-        `and (f_xzqhmc in (${name}) or c_xzqmc in (${name})) `,
-        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,c_xzqdm,c_xzqmc,f_xzqhmc,f_xzqhdm,gid,t_xzqmc,p_xzqmc,t_xzqdm`
+        "china_wgs84_town",
+        `and county_name in (${name}) `,
+        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,city_name,city_code,county_code,county_name,gid,province_code,town_code,province,town_name`
     );
 
     window.countylayer = [];
@@ -1118,16 +1124,16 @@ const loadTown = async (name) => {
     //console.log(features)
     features.forEach(feature => {
         let p = {
-            c_xzqdm: feature.c_xzqdm,
-            c_xzqmc: feature.c_xzqmc,
-            f_xzqhdm: feature.f_xzqhdm,
-            f_xzqhmc: feature.f_xzqhmc,
+            city_name: feature.city_name,
+            city_code: feature.city_code,
+            county_name: feature.county_name,
+            county_code: feature.county_code,
             gid: feature.gid,
-            p_xzqmc: feature.p_xzqmc,
-            t_xzqdm: feature.t_xzqdm,
-            t_xzqmc: feature.t_xzqmc,
+            town_code: feature.town_code,
+            town_name: feature.town_name,
+            province: feature.province,
+            province_code: feature.province_code,
         }
-
 
         // 计算是否超保
         let hzBaseDataClone = hzBaseData.filter(item => item.town == p.t_xzqmc);
@@ -1376,7 +1382,7 @@ const goGeom = (data) => {
             type: "symbol",
             source: "adminGeom",
             layout: {
-                "text-field": "{f_xzahmc}{t_xzqmc}",
+                "text-field": "{town_name}",
                 "text-size": 18,
             },
             paint: {
@@ -2833,35 +2839,41 @@ const lockDownOpen = ref(false)
             </a-tooltip>
         </div>
         <div class="right-card" v-show="xRightSquareShow">
+            <a-tooltip placement="left">
+                <template #title>
+                    <span>隐藏统计栏</span>
+                </template>
+                <X style="float: right;cursor: pointer;z-index: 10000;position: absolute;right: 25px;top: 25px;"
+                    color="#999" @click="xRightSquareShow = false">
+                </X>
+            </a-tooltip>
 
-            <a-card size="small" title="" style="height: 99%;">
+            <a-card size="small" title="" style="height: 55px;">
 
-                <a-tabs v-model:activeKey="activeKey" type="card" style="position: absolute;top: 0;left: 0; ">
+                <a-tabs v-model:activeKey="activeKey" style="position: absolute;top: 0;left: 0; z-index: 10000;">
                     <a-tab-pane key="1">
                         <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                            <div
+                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
                                 <LandPlotIcon :size="20"></LandPlotIcon>
-                                &nbsp;区域
+                                &nbsp;&nbsp;&nbsp;区域
                             </div>
                         </template>
                     </a-tab-pane>
                     <a-tab-pane key="2">
                         <template #tab>
-                            <div style="font-size: 16px;display: flex;align-items: center;justify-content: center;">
+                            <div
+                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
                                 <LucideSquareMousePointer :size="20"></LucideSquareMousePointer>
-                                &nbsp;地块
+                                &nbsp;&nbsp;&nbsp;地块
                             </div>
                         </template>
                     </a-tab-pane>
-
-
                 </a-tabs>
-                <a-tooltip placement="left">
-                    <template #title>
-                        <span>隐藏统计栏</span>
-                    </template>
-                    <X style="float: right;cursor: pointer;" color="#999" @click="xRightSquareShow = false"></X>
-                </a-tooltip>
+
+            </a-card>
+
+            <a-card size="small" title="" style="height: 100%; margin-top: -45px;">
                 <!--区域核验-->
                 <div v-show="activeKey == '1'"
                     style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
@@ -3343,9 +3355,10 @@ const lockDownOpen = ref(false)
     width: 550px;
 
     z-index: 1000;
-    height: calc(100% - 100px);
+    height: calc(100% - 130px);
     padding: 10px;
 }
+
 
 .center-card {
     display: flex;

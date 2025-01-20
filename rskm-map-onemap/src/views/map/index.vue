@@ -57,7 +57,7 @@ import {
 const initMap = () => {
     mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
     mapboxgl.maxParallelImageRequests = 12;
-    mapboxgl.accessToken = mapbox.key;
+    // mapboxgl.accessToken = mapbox.key;
     mapboxgl.prewarm();
 
     window.map = new mapboxgl.Map({
@@ -226,7 +226,7 @@ const loadBaseSource = () => {
 
         //loadDraw();
         // 最后
-        loadTerrain();
+        // loadTerrain();
     });
 };
 
@@ -990,14 +990,14 @@ defineProps({
                     </div>
                 </div>
             </a-tooltip>
-            <a-tooltip placement="leftTop">
+            <!-- <a-tooltip placement="leftTop">
                 <template #title>
                     <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
                 </template>
                 <a-button @click="onTerrain()" size="large" class="boxshadow">
                     <MountainSnow :color="!terrainSP ? '#fff' : '#3277fc'" />
                 </a-button>
-            </a-tooltip>
+            </a-tooltip> -->
             <a-tooltip placement="leftTop" v-if="1 == 2">
                 <template #title>
                     <span>绘制</span>

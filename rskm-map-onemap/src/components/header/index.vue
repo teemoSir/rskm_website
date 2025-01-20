@@ -6,7 +6,7 @@ import { ref, onMounted, h } from "vue";
 import { message } from "ant-design-vue";
 import { storeToRefs } from "pinia";
 import { hedaerStore } from "@/store/store.js";
-import { House, Satellite, Vegan, SquareActivity, Settings } from "lucide-vue-next";
+import { House, Satellite, Vegan, SquareActivity, Settings, Map, LandPlot } from "lucide-vue-next";
 import dayjs from "dayjs";
 
 const router = useRouter();
@@ -14,28 +14,28 @@ const hctive = hedaerStore();
 let { headerActive } = storeToRefs(hctive);
 
 // 初始化区域
-const defaultAdmin = () => {
-    if (!StateManager.get("defaultAdmin")) {
-        StateManager.set("defaultAdmin", "山东省");
-    }
-    return StateManager.get("defaultAdmin");
-};
+// const defaultAdmin = () => {
+//     if (!StateManager.get("defaultAdmin")) {
+//         StateManager.set("defaultAdmin", "山东省");
+//     }
+//     return StateManager.get("defaultAdmin");
+// };
 
-// 年份
-const pageDateYear = ref(dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString()));
+// // 年份
+// const pageDateYear = ref(dayjs(StateManager.get("rskm_pt_year") || new Date().toLocaleDateString()));
 
-// 跳转年份数据
-const panelChangeRL = (value) => {
-    StateManager.clear("rskm_pt_year");
-    StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
+// // 跳转年份数据
+// const panelChangeRL = (value) => {
+//     StateManager.clear("rskm_pt_year");
+//     StateManager.set("rskm_pt_year", dayjs(value).format("YYYY"));
 
-    message.loading(`进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`, 1000);
+//     message.loading(`进入 ${StateManager.get("rskm_pt_year", dayjs(value).format("YYYY"))} 年度`, 1000);
 
-    let ts = setTimeout(() => {
-        location.reload();
-        clearTimeout(ts);
-    }, 1000);
-};
+//     let ts = setTimeout(() => {
+//         location.reload();
+//         clearTimeout(ts);
+//     }, 1000);
+// };
 
 // 菜单
 const current = ref(["home"]);
@@ -43,9 +43,9 @@ const current = ref(["home"]);
 const items = ref([
     {
         key: "home",
-        icon: () => h(House),
-        label: "首页",
-        title: "首页",
+        icon: () => h(LandPlot),
+        label: "保险分布",
+        title: "保险分布",
         onClick: () => {
             router.push("/");
         },
@@ -57,39 +57,44 @@ const items = ref([
         title: "遥感核验",
         onClick: () => {
             router.push("/verification_n1");
-        },
-        children: [
+        }, children: [
             {
-                type: "group",
-                label: "核验管理",
-                children: [
-                    {
-                        label: "遥感核验（第一次）",
-                        key: "verification:1",
-                        onClick: () => {
-                            router.push("/verification_n1");
-                        },
-                    },
-                    {
-                        label: "遥感核验（第二次）",
-                        key: "verification:2",
-                        onClick: () => {
-                            router.push("/verification_n2");
-                        },
-                    },
-                ],
+                label: "遥感成果",
+                key: "verification:1",
+                onClick: () => {
+                    router.push("/verification_n1");
+                },
             },
+            // {
+            //     label: "遥感核验（第二次）",
+            //     key: "verification:2",
+            //     onClick: () => {
+            //         router.push("/verification_n2");
+            //     },
+            // },
             {
-                type: "group",
-                label: "任务管理",
-                children: [
-                    {
-                        label: "核验任务(开发中)",
-                        key: "renwu",
-                    },
-                ],
+                label: "核验任务(开发中)",
+                key: "renwu",
             },
+
         ],
+        // children: [
+        //     {
+        //         type: "group",
+        //         label: "核验管理",
+
+        //     },
+        //     {
+        //         type: "group",
+        //         label: "任务管理",
+        //         children: [
+        //             {
+        //                 label: "核验任务(开发中)",
+        //                 key: "renwu",
+        //             },
+        //         ],
+        //     },
+        // ],
     },
     {
         key: "chengxiao",
@@ -102,7 +107,7 @@ const items = ref([
     },
     {
         key: "jiance",
-        icon: () => h(Settings),
+        icon: () => h(Map),
         label: "遥感监测",
         title: "遥感监测",
         onClick: () => {
@@ -149,19 +154,18 @@ onMounted(() => {
 </script>
 
 <template>
-    <a-page-header class="header" :title="page.cnname" :style="pageStyle">
+    <a-page-header class="header" :title="page.cnname" :sub-title="'Version ' + page.version" :style="pageStyle">
         <div style="position: absolute; left: 17px; top: 20px;">
             <Vegan :size="55" color="green" />
+
         </div>
         <div style="position: absolute; left: 90px; top: 55px; color: green;">
-            {{ page.name + ' V' + page.version }}
+            {{ String(page.name) }}
         </div>
+
+
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
-            style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
-        <template #extra>
-            <a-date-picker v-model:value="pageDateYear" picker="year" format="YYYY 年" @panelChange="panelChangeRL"
-                :popupStyle="{ zIndex: 2000000 }" />
-        </template>
+            style="position: absolute; left: 400px; top: 0px; line-height: 80px" />
     </a-page-header>
 </template>
 

@@ -208,16 +208,16 @@ let layers = ref([
         key: "0a4f0eda380b7d267046c9c385e423580079e75fa7384905b53b332bf147794c",//44194e4bbd714ee9cd453c7ff3e5635b56bc9d61b26946f7631c69fa96d91e60
         param: [["xinqiu1", "Geovisearth.Normal.Map"]],
     },
-    {
-        id: 22,
-        name: "Mapbox-影像",
-        projection: true,
-        st: "",
-        url: MB,
-        key: "",
-        zj: true,
-        param: [["mb", "Mapbox.Satellite.Map"]],
-    },
+    // {
+    //     id: 22,
+    //     name: "Mapbox-影像",
+    //     projection: true,
+    //     st: "",
+    //     url: MB,
+    //     key: "",
+    //     zj: true,
+    //     param: [["mb", "Mapbox.Satellite.Map"]],
+    // },
     {
         id: 23,
         name: "吉林一号-影像",
@@ -1081,10 +1081,152 @@ let specYghy = [
 
     },
 
+    // 专属展示玉米分布
+    {
+        id: "procjet_2024_yghy_sense_s1",
+        name: "遥感成果一期",
+        "type": "fill",
+        source: config.procjet_2024_yghy_sense_s1.name,
+        "source-layer": config.procjet_2024_yghy_sense_s1.name,
+        minzoom: 4.4,
+        layout: {
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            'fill-color': 'yellow',
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                1,
+                7,
+                0.9,
+                10,
+                0.8,
+                14,
+                0.7, 16,
+                0.2,],
+        },
+        interactive: true,
+    },
+
+    {
+
+
+        id: "procjet_2024_yghy_sense_s1_outline",
+        name: "遥感成果一期外框",
+        type: "line",
+        source: config.procjet_2024_yghy_sense_s1.name,
+        "source-layer": config.procjet_2024_yghy_sense_s1.name,
+        layout: {
+            "line-join": "round",
+            "line-cap": "round",
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            // 'line-blur':0.5,
+            'line-color': 'RGBA(0,0,0,0.7)',
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                9,
+                0,
+                11,
+                0.5,
+                13,
+                0.8,
+                14,
+                1,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     0.5,
+            //     14,
+            //     0.7,
+            //     15,
+            //     1,],
+        },
+        interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_sense_s2",
+        name: "遥感成果一期",
+        "type": "fill",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        minzoom: 4.4,
+        layout: {
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            'fill-color': 'yellow',
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                1,
+                7,
+                0.9,
+                10,
+                0.8,
+                14,
+                0.7, 16,
+                0.5,],
+        },
+        interactive: true,
+    },
+
+    {
+
+
+        id: "procjet_2024_yghy_sense_s2_outline",
+        name: "遥感成果一期外框",
+        type: "line",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        layout: {
+            "line-join": "round",
+            "line-cap": "round",
+            visibility: 'none'
+        },
+        'slot': 'top',
+        "paint": {
+            // 'line-blur':0.5,
+            'line-color': 'RGBA(0,0,0,0.7)',
+            'line-width': ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                9,
+                0,
+                11,
+                0.5,
+                13,
+                0.8,
+                14,
+                1,],
+            // "line-opacity": ["interpolate",
+            //     ["exponential", 1.5],
+            //     ["zoom"],
+            //     7,
+            //     0.5,
+            //     14,
+            //     0.7,
+            //     15,
+            //     1,],
+        },
+        interactive: true,
+    },
+
+
 
     {
         id: "procjet_2024_yghy_sense",
-        name: "遥感成果",
+        name: "遥感成果二期",
         "type": "fill",
         source: config.procjet_2024_yghy_sense.name,
         "source-layer": config.procjet_2024_yghy_sense.name,
@@ -1106,30 +1248,10 @@ let specYghy = [
                 0.8,
                 14,
                 0.7, 16,
-                0.2,],
+                0.5,],
         },
         interactive: true,
-    },
-
-
-
-    {
-        id: "procjet_2024_yghy_yumi_zhangshi",
-        type: "raster",
-        source: config.procjet_2024_yghy_yumi_zhangshi.name,
-        "source-layer": config.procjet_2024_yghy_yumi_zhangshi.name,
-        //  minzoom: 6,
-        layout: {
-            visibility: "none",
-        },
-        "paint": {
-            "raster-opacity": 0.7
-        },
-        //    'slot': 'top',
-        // interactive: true,
-    },
-
-    {
+    }, {
 
 
         id: "procjet_2024_yghy_sense_outline",
@@ -1168,6 +1290,27 @@ let specYghy = [
             //     1,],
         },
         interactive: true,
+    },
+
+
+
+
+
+
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.7
+        },
+        //    'slot': 'top',
+        // interactive: true,
     },
 
 

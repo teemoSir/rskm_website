@@ -60,6 +60,20 @@ const config = {
         }
     },
 
+    procjet_2024_yghy_sense_s1: {
+        name: 'procjet_2024_yghy_sense_s1',
+        tile: {
+            type: "vector",
+            scheme: 'tms',
+            tiles: [
+                // `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
+                'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_sense_s1@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf'
+            ],
+            minzoom: 3,
+            maxzoom: 14
+        }
+    },
+
 
     wpoi: {
         name: "world_poi",

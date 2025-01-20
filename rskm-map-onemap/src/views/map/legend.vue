@@ -16,7 +16,7 @@ let legends = [
         isShow: ref(true),
         type: "polygon",
         outlineColor: "RGB(248,200,94)",
-        fillColor: "RGBA(248,200,94,0.7)",
+        fillColor: "RGBA(248,200,94,1)",
         outlineWidth: 3,
     },
     {
@@ -25,69 +25,10 @@ let legends = [
         isShow: ref(true),
         type: "polygon",
         outlineColor: "RGB(158,224,132)",
-        fillColor: "RGBA(158,224,132,0.7)",
+        fillColor: "RGBA(158,224,132,1)",
         outlineWidth: 3,
     },
 
-
-    //   {
-    //     key: 1,
-    //     title: "耕地地块",
-    //     isShow: ref(false),
-    //     type: "polygon",
-    //     outlineColor: "RGBA(255,255,251,1)",
-    //     fillColor: "RGBA(43,128,251,0.5)",
-    //     outlineWidth: 1,
-    //   },
-    //   {
-    //     key: 3,
-    //     title: "不合格地块",
-    //     isShow: ref(true),
-    //     type: "polygon",
-    //     outlineColor: "RGBA(0,0,0,0.8",
-    //     fillColor: "RGBA(237,28,36,0.8)",
-    //     outlineWidth: 3,
-    //   },
-    //   {
-    //     key: 4,
-    //     title: "县级界线",
-    //     isShow: ref(false),
-    //     type: "line",
-    //     fillColor: "yellow",
-    //     outlineWidth: 4,
-    //   },
-    //   {
-    //     key: 5,
-    //     title: "镇级界线",
-    //     isShow: ref(false),
-    //     type: "line",
-    //     fillColor: "#faad14",
-    //     outlineWidth: 4,
-    //   },
-    //   {
-    //     key: 6,
-    //     title: "村级界线",
-    //     isShow: ref(false),
-    //     type: "line-dotted",
-    //     fillColor: "#faad14",
-    //     outlineWidth: 4,
-    //   },
-    //   {
-    //     key: 7,
-    //     title: "省级界线",
-    //     isShow: ref(false),
-    //     type: "line",
-    //     fillColor: "#ccc",
-    //     outlineWidth: 2,
-    //   },
-    //   {
-    //     key: 8,
-    //     title: "市级界线",
-    //     isShow: ref(false),
-    //     type: "line",
-    //     fillColor: "#ccc",
-    //     outlineWidth: 1,
-    //   },
 ];
 
 const tuli = ref(false);
@@ -95,26 +36,18 @@ const tuli = ref(false);
 const state = reactive({
     checked1: true,
     checked2: true,
-    //   checked3: true,
-    //   checked4: true,
-    //   checked5: true,
-    //   checked6: true,
-    //   checked7: true,
-    //   checked8: true,
 });
 
 const menu = ref(false);
 
 message.config({
     top: `200px`,
-    //   duration: 2,
     maxCount: 2,
     rtl: true,
     prefixCls: "提示",
 });
 
 watch(state, () => {
-    //耕地 StateManager
     let hgdks = [
         "rskm_pt_outline",
         "rskm_pt",
@@ -125,22 +58,6 @@ watch(state, () => {
     let ymFilter = [">", ["index-of", "玉米", ['get', "i_type_name"]], -1];
     let xmFilter = [">", ["index-of", "小麦", ['get', "i_type_name"]], -1];
     let noAllFilter = [">", ["index-of", "小麦", ['get', "i_type_name"]], 100];
-    // gds.forEach((gd) => {
-    //   if (!state.checked1) {
-    //     map.setFilter(gd, ymFilter);
-    //   } else {
-    //     map.setFilter(gd, null);
-    //   }
-    //   if (!state.checked2) {
-    //     map.setFilter(gd, xmFilter);
-    //   } else {
-    //     map.setFilter(gd, null);
-    //   }
-
-    //   if(!state.checked1 && state.checked2){
-    //     map.setFilter(gd, ymFilter);
-    //   }
-    // });
 
 
     if (!state.checked1 && state.checked2) {
@@ -169,37 +86,7 @@ watch(state, () => {
         });
     }
 
-    // //县级界线
-    // let xjjx = ["admin_2024_county"];
-    // xjjx.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked4);
-    // });
-
-    // //镇级界线
-    // let zjjx = ["admin_2024_town"];
-    // zjjx.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked5);
-    // });
-
-    // //村级界线
-    // let cjjx = ["admin_2024_village"];
-    // cjjx.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked6);
-    // });
-
-    // //省级界线
-    // let pjjx = ["admin_2022_province"];
-    // pjjx.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked7);
-    // });
-
-    // //市级界线
-    // let cicyjjx = ["admin_2022_city"];
-    // cicyjjx.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked8);
-    // });
-
-    message.success("地图已更新", 1);
+    message.success("要素已更新", 1);
 });
 
 // 切换图层可见性函数
@@ -213,17 +100,14 @@ const toggleLayerVisibility = (layerId, isVisible) => {
 </script>
 
 <template>
-    <div class="tuli" :style="{
-        background: tuli ? 'rgba(253, 250, 250, 0.9)' : 'rgba(0, 0, 0, 0.7)',
-        color: tuli ? 'rgba(0, 0, 0, 0.7)' : 'rgba(253, 250, 250, 0.8)',
-    }">
-        <div style="display: flex; align-items: center" @click="tuli = !tuli">
+    <div class="tuli">
+        <div style="display: flex; align-items: center;padding: 16px;" @click="tuli = !tuli">
             <Logs />
 
             <label v-if="tuli" style="padding-left: 15px"> 图例</label>
         </div>
 
-        <div v-if="tuli" style="padding: 5px 0px 10px 5px; width: 200px">
+        <div v-if="tuli" style=" width: 200px;padding: 15px; border-top: 1px solid rgba(255, 255, 255, 0.3);">
             <a-row v-for="tar in legends" :key="tar.key" style="display: flex; align-items: center; line-height: 30px">
                 <a-col :span="6">
                     <div v-if="tar.type == 'polygon'" :style="{
@@ -270,7 +154,9 @@ const toggleLayerVisibility = (layerId, isVisible) => {
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 10px;
-    border-radius: 2px;
+
+    border-radius: 5px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+    color: aliceblue;
 }
 </style>
