@@ -1106,7 +1106,7 @@ let specYghy = [
                 0.8,
                 14,
                 0.7, 16,
-                0.2,],
+                0.5,],
         },
         interactive: true,
     },
@@ -1223,6 +1223,53 @@ let specYghy = [
     },
 
 
+    {
+        id: "procjet_2024_yghy_sense_s1_outline_highlight",
+        name: "高亮",
+        type: "fill",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        minzoom: 10,
+        //     maxzoom: 18,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            'fill-color': '#fff',
+            // 'line-width': 2,
+            'fill-opacity': 0.4,
+            //    "line-dasharray": [0.8, 0.2]
+        },
+        'slot': 'top',
+        interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_sense_s1_name",
+        type: "symbol",
+        source: config.procjet_2024_yghy_sense.name,
+        "source-layer": config.procjet_2024_yghy_sense.name,
+        layout: {
+            "symbol-avoid-edges": true,
+            "icon-rotation-alignment": "viewport",
+            "text-pitch-alignment": "viewport",
+            visibility: "none",
+            "text-font": ["Microsoft YaHei"],
+            "text-field": "{rs_area}",
+            "text-size": 13,
+
+        },
+        'slot': 'top',
+        paint: {
+            "text-color": "#fff", // 文字颜色
+            "text-halo-color": '#000', // 文字轮廓宽度
+            "text-halo-width": 1, // 文字轮廓宽度
+            "text-halo-blur": 0.8, // 文字轮廓模糊度
+        },
+        minzoom: 13,
+    },
+
+
 
     {
         id: "procjet_2024_yghy_sense",
@@ -1251,7 +1298,8 @@ let specYghy = [
                 0.5,],
         },
         interactive: true,
-    }, {
+    },
+    {
 
 
         id: "procjet_2024_yghy_sense_outline",

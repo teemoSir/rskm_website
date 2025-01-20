@@ -1122,7 +1122,7 @@ let specYghyEchy = [
                 0.8,
                 14,
                 0.7, 16,
-                0.2,],
+                0.5,],
         },
         interactive: true,
     },
@@ -1302,54 +1302,54 @@ let specYghyEchy = [
         interactive: true,
     },
 
-    {
-        id: "procjet_2024_yghy_sense_v1",
-        name: "种植分布",
-        "type": "fill",
-        source: config.procjet_2024_yghy_sense.name,
-        "source-layer": config.procjet_2024_yghy_sense.name,
-        minzoom: 4.4,
-        layout: {
-            visibility: 'none'
-        },
-        'slot': 'top',
-        "paint": {
-            'fill-color': 'RGB(112,131,194)',
-            "fill-opacity": 0.9
-        },
-        interactive: true,
-    },
-    {
-        id: "procjet_2024_yghy_sense_v1_outline",
-        name: "外框",
-        type: "line",
-        source: config.procjet_2024_yghy_sense.name,
-        "source-layer": config.procjet_2024_yghy_sense.name,
-        layout: {
-            "line-join": "round",
-            "line-cap": "round",
-            visibility: 'none'
-        },
-        'slot': 'top',
-        "paint": {
-            'line-color': 'RGBA(0,0,0,0.7)',
-            'line-width': ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                9,
-                0,
-                11,
-                0.5,
-                13,
-                0.8,
-                14,
-                1,],
-        },
-        interactive: true,
-    },
+    // {
+    //     id: "procjet_2024_yghy_sense_v1",
+    //     name: "种植分布",
+    //     "type": "fill",
+    //     source: config.procjet_2024_yghy_sense.name,
+    //     "source-layer": config.procjet_2024_yghy_sense.name,
+    //     minzoom: 4.4,
+    //     layout: {
+    //         visibility: 'none'
+    //     },
+    //     'slot': 'top',
+    //     "paint": {
+    //         'fill-color': 'RGB(112,131,194)',
+    //         "fill-opacity": 0.9
+    //     },
+    //     interactive: true,
+    // },
+    // {
+    //     id: "procjet_2024_yghy_sense_v1_outline",
+    //     name: "外框",
+    //     type: "line",
+    //     source: config.procjet_2024_yghy_sense.name,
+    //     "source-layer": config.procjet_2024_yghy_sense.name,
+    //     layout: {
+    //         "line-join": "round",
+    //         "line-cap": "round",
+    //         visibility: 'none'
+    //     },
+    //     'slot': 'top',
+    //     "paint": {
+    //         'line-color': 'RGBA(0,0,0,0.7)',
+    //         'line-width': ["interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             9,
+    //             0,
+    //             11,
+    //             0.5,
+    //             13,
+    //             0.8,
+    //             14,
+    //             1,],
+    //     },
+    //     interactive: true,
+    // },
 
     {
-        id: "procjet_2024_yghy_sense_v1_outline_highlight",
+        id: "procjet_2024_yghy_sense_s1_outline_highlight",
         name: "高亮",
         type: "fill",
         source: config.procjet_2024_yghy_sense.name,
@@ -1370,7 +1370,7 @@ let specYghyEchy = [
     },
 
     {
-        id: "procjet_2024_yghy_sense_v1_name",
+        id: "procjet_2024_yghy_sense_s1_name",
         type: "symbol",
         source: config.procjet_2024_yghy_sense.name,
         "source-layer": config.procjet_2024_yghy_sense.name,
