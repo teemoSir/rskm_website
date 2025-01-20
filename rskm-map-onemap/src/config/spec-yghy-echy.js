@@ -1396,10 +1396,26 @@ let specYghyEchy = [
 
 
     {
-        id: "procjet_2024_yghy_yumi_zhangshi",
+        id: "procjet_2024_yghy_yumi_zhangshi_chy",
         type: "raster",
-        source: config.procjet_2024_yghy_yumi_zhangshi.name,
-        "source-layer": config.procjet_2024_yghy_yumi_zhangshi.name,
+        source: config.procjet_2024_yghy_yumi_zhangshi_chy.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi_chy.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.7
+        },
+        //    'slot': 'top',
+        // interactive: true,
+    },
+
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi_htxd",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi_htxd.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi_htxd.name,
         //  minzoom: 6,
         layout: {
             visibility: "none",

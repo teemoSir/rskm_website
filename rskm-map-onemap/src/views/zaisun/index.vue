@@ -2072,27 +2072,10 @@ onMounted(() => {
         addLayersYghy(map, specYghy);
         map && loadEvent(map);
 
-        // map.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
 
-        //     ],
 
-        //     'tileSize': 256 // 瓦片大小
-        // });
-
-        // map.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
-
-        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
         //  map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
 
         // map.setLayoutProperty('rskm_pt', 'visibility', 'visible');
@@ -2105,29 +2088,10 @@ onMounted(() => {
         addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
 
-        // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
-
-        //     ],
-
-        //     'tileSize': 256 // 瓦片大小
-        // });
-
-        // mapp.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
 
 
-
-        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
         //  mapp.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
 
 
