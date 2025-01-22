@@ -1111,90 +1111,13 @@ const loadCounty = async (name) => {
     );
 
 
-    //echy_sql_qy_dq_county
-    let echy_sql_qy_dq_county = await api.get_table_tj_echy("echy_sql_qy_dq_county");
 
+    let feature = JSON.parse(features[0].json);
+    let bbox = turf.bbox(feature)
+    map.fitBounds(bbox, {
+        padding: { left: 20, right: 20 }
+    });
 
-
-    // console.log(echy_sql_qy_dq_county)
-    // console.log(features)
-
-    if (features.length == 1) {
-        let feature = JSON.parse(features[0].json);
-        let bbox = turf.bbox(feature)
-        map.fitBounds(bbox, {
-            padding: { left: 20, right: 20 }
-        });
-    } else {
-        let properties_1 = [];
-        let properties_2 = [];
-
-        geomClear();
-
-
-        features.map((feature) => {
-
-
-            let daa1 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.county == feature.name))
-            let daa2 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.county == feature.name))
-
-            let newFeature_1 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa1[0].fgl * 100,
-                    rs_area: daa1[0].rs_area,
-                    tbsl: daa1[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_1.properties.coverage = daa1[0].fgl * 100;
-                newFeature_1.properties.rs_area = daa1[0].rs_area;
-                newFeature_1.properties.tbsl = daa1[0].tbsl;
-            }
-            properties_1.push(newFeature_1)
-
-            let newFeature_2 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa2[0].fgl * 100,
-                    rs_area: daa2[0].rs_area,
-                    tbsl: daa2[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_2.properties.coverage = daa2[0].fgl * 100;
-                newFeature_2.properties.rs_area = daa2[0].rs_area;
-                newFeature_2.properties.tbsl = daa2[0].tbsl;
-            }
-            properties_2.push(newFeature_2)
-        })
-
-        // // console.log(geoms)
-
-        fitCenter()
-
-        drawGeom([properties_1, properties_2])
-
-
-    }
 
 };
 
@@ -2056,6 +1979,16 @@ const loadData = () => {
 
 
 
+const jinace =
+    [
+        { time: "6月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_1", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+        { time: "7月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_2", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+        { time: "8月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_3"] },
+        { time: "9月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+        { time: "10月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+    ]
+
+
 // 挂载
 onMounted(() => {
 
@@ -2072,70 +2005,24 @@ onMounted(() => {
         addLayersYghy(map, specYghy);
         map && loadEvent(map);
 
-        // map.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
 
-        //     ],
 
-        //     'tileSize': 256 // 瓦片大小
-        // });
+        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
+        // map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
 
-        // map.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
 
-        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
-        //  map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
-
-        // map.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
     })
 
     mapp && mapp.on("load", () => {
         addLayersYghy(mapp, specYghyEchy);
         mapp && loadEvent(mapp);
 
-        // mapp.addSource('procjet_2024_yghy_yumi_zhangshi', {
-        //     'type': 'raster',
-        //     'scheme': 'tms',
-        //     'tiles': [
-        //         'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png'
-
-        //     ],
-
-        //     'tileSize': 256 // 瓦片大小
-        // });
-
-        // mapp.addLayer({
-        //     'id': 'procjet_2024_yghy_yumi_zhangshi',
-        //     'type': 'raster',
-        //     'source': 'procjet_2024_yghy_yumi_zhangshi',
-        //     "paint": {
-        //         "raster-opacity": 0.7
-        //     },
-        // });
 
 
 
-        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi', 'visibility', 'visible');
-        //  mapp.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
+        // mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
 
-
-
-        // mapp.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
 
 
 
@@ -2414,11 +2301,11 @@ const dataSegmented = reactive([{
     disabled: true,
 }, {
     value: '4月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '5月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '6月',
@@ -2449,6 +2336,24 @@ const dataSegmented = reactive([{
 },
 ]);
 const valueSegmented = ref('10月');
+
+
+watch(valueSegmented, () => {
+    jinace.forEach((jc) => {
+        jc.tile.forEach((t) => {
+            map.setLayoutProperty(t, 'visibility', 'none');
+            mapp.setLayoutProperty(t, 'visibility', 'none');
+        })
+    })
+    jinace.forEach((jc) => {
+        if (jc.time == valueSegmented.value) {
+            jc.tile.forEach((t) => {
+                map.setLayoutProperty(t, 'visibility', 'visible');
+                mapp.setLayoutProperty(t, 'visibility', 'visible');
+            })
+        }
+    })
+})
 
 
 /**
@@ -2740,11 +2645,11 @@ let observeSaLeft = ref();
 
     <!-- 页面 -->
     <div class="page">
-        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -275px;">
+        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -365px;">
 
 
             <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 1px 2px 2px #000;"> 2024年玉米长势监测 </span>
+                <span style="text-shadow: 1px 2px 2px #000;"> 作物长势遥感监测 </span>
             </h1>
 
 
@@ -3673,5 +3578,19 @@ p {
     width: 20px;
     opacity: 1;
     box-shadow: 1px 1px 2px #000;
+}
+
+:deep(.ant-segmented-item-label) {
+    padding: 0;
+    margin: 0;
+    width: 60px;
+
+
+}
+
+:deep(.ant-segmented) {
+    background-color: rgba(246, 242, 242, 0.692);
+    font-size: 1.1rem;
+
 }
 </style>

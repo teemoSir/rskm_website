@@ -333,7 +333,7 @@ const panelChangeRL = (value) => {
         window.location.reload()
     }, 1000)
 
-    message.success(`已进入 ${StateManager.get("rskm_pt_year", value)} 年度标的分布`);
+    message.success(`已进入 ${StateManager.get("rskm_pt_year", value)} 年度保险分布`);
 };
 
 const cursorYear = ref(StateManager.get("rskm_pt_year") || new Date().getFullYear())

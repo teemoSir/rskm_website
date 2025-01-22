@@ -64,129 +64,12 @@ let legends = [
         order: "长势分布"
     },
 
-    {
-        key: 6,
-        title: "长势图层",
-        isShow: ref(true),
-        type: "polygon",
-        outlineColor: "RGB(236,102,103)",
-        fillColor: "#006400",
-        outlineWidth: 0,
-        order: "图层"
-    },
-    {
-        key: 7,
-        title: "大户地块",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(236,102,103)",
-        fillColor: "#006400",
-        outlineWidth: 0,
-        order: "图层"
-    },
-    {
-        key: 8,
-        title: "遥感地块",
-        isShow: ref(false),
-        type: "polygon",
-        outlineColor: "RGB(236,102,103)",
-        fillColor: "#006400",
-        outlineWidth: 0,
-        order: "图层"
-    },
+
 
 ];
 
 const tuli = ref(true);
 
-const state = reactive({
-    checked1: true,
-    checked2: false,
-    checked3: false,
-    //   checked4: true,
-    //   checked5: true,
-    //   checked6: true,
-    //   checked7: true,
-    //   checked8: true,
-});
-
-const menu = ref(false);
-
-message.config({
-    top: `200px`,
-    //   duration: 2,
-    maxCount: 2,
-    rtl: true,
-    prefixCls: "提示",
-});
-
-watch(state, () => {
-    //耕地 StateManager
-    // let gds = ["procjet_2024_wxsd_name", "procjet_2024_wxsd", "procjet_2024_wxsd_outine","rskm_pt_name_1"];
-    // gds.forEach((gd) => {
-    //   toggleLayerVisibility(gd, state.checked1);
-    // });
-
-    //保单地块
-    let hgdks = [
-        "rskm_pt_outline",
-        "rskm_pt",
-        "rskm_pt_name",
-        "rskm_pt_name_1",
-    ];
-    hgdks.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked2);
-    });
-
-
-
-    //县级界线
-    let xjjx = ["admin_2024_county"];
-    xjjx.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked4);
-    });
-
-    //镇级界线
-    let zjjx = ["admin_2024_town"];
-    zjjx.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked5);
-    });
-
-    //村级界线
-    let cjjx = ["admin_2024_village"];
-    cjjx.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked6);
-    });
-
-    //省级界线
-    let pjjx = ["admin_2022_province"];
-    pjjx.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked7);
-    });
-
-    //市级界线
-    let cicyjjx = ["admin_2022_city"];
-    cicyjjx.forEach((gd) => {
-        toggleLayerVisibility(gd, state.checked8);
-    });
-
-    message.success("地图已更新", 1);
-});
-
-// 切换图层可见性函数
-const toggleLayerVisibility = (layerId, isVisible) => {
-
-    if (isVisible) {
-        window[props.core || 'map'].setLayoutProperty(layerId, "visibility", "visible");
-    } else {
-        window[props.core || 'map'].setLayoutProperty(layerId, "visibility", "none");
-    }
-};
-
-
-const props = defineProps({
-    core: String,
-})
 
 </script>
 
@@ -201,30 +84,9 @@ const props = defineProps({
             </div>
 
         </template>
-        <div v-if="tuli" style="width: 100px;">
+        <div v-if="tuli">
 
 
-            <!--图层-->
-            <!-- <a-row v-for="tar in legends.filter(le => le.order == '图层')" :key="tar.key"
-                style="display: flex; align-items: center; line-height: 30px">
-                <a-col :span="24" v-if="tar.key == legends.filter(le => le.order == '图层')[0].key">
-                    <div class="legendTitle">{{
-                        tar.order }}</div>
-                </a-col>
-
-                <a-col :span="14"> {{ tar.title }}
-                </a-col>
-                <a-col :span="4">
-                </a-col>
-                <a-col :span="6" style="font-size: 14px;">
-                    <a-switch v-if="tar.key == 6" checked-children="显示" un-checked-children="隐藏"
-                        v-model:checked="state.checked1" />
-                    <a-switch v-if="tar.key == 7" checked-children="显示" un-checked-children="隐藏"
-                        v-model:checked="state.checked2" />
-                    <a-switch v-if="tar.key == 8" checked-children="显示" un-checked-children="隐藏"
-                        v-model:checked="state.checked3" />
-                </a-col>
-            </a-row> -->
 
             <a-row v-for="tar in legends.filter(le => le.order == '长势分布')" :key="tar.key"
                 style="display: flex; align-items: center; line-height: 30px">
@@ -254,9 +116,9 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="4" style="font-size: 0.8rem;">
+                <a-col :span="1" style="font-size: 0.8rem;">
                 </a-col>
-                <a-col :span="10" style="font-size: 0.8rem;">
+                <a-col :span="13" style="font-size: 0.8rem;">
                     {{ tar.title }}
 
 
@@ -285,7 +147,7 @@ const props = defineProps({
 }
 
 .legendTitle {
-    font-size: 16px;
+
 
     padding: 10px 0 0 0;
     width: 100%;

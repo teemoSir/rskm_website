@@ -1067,90 +1067,14 @@ const loadCounty = async (name) => {
     );
 
 
-    //echy_sql_qy_dq_county
-    let echy_sql_qy_dq_county = await api.get_table_tj_echy("echy_sql_qy_dq_county");
 
 
+    let feature = JSON.parse(features[0].json);
+    let bbox = turf.bbox(feature)
+    map.fitBounds(bbox, {
+        padding: { left: 20, right: 20 }
+    });
 
-    // console.log(echy_sql_qy_dq_county)
-    // console.log(features)
-
-    if (features.length == 1) {
-        let feature = JSON.parse(features[0].json);
-        let bbox = turf.bbox(feature)
-        map.fitBounds(bbox, {
-            padding: { left: 20, right: 20 }
-        });
-    } else {
-        let properties_1 = [];
-        let properties_2 = [];
-
-        geomClear();
-
-
-        features.map((feature) => {
-
-
-            let daa1 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.county == feature.name))
-            let daa2 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.county == feature.name))
-
-            let newFeature_1 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa1[0].fgl * 100,
-                    rs_area: daa1[0].rs_area,
-                    tbsl: daa1[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_1.properties.coverage = daa1[0].fgl * 100;
-                newFeature_1.properties.rs_area = daa1[0].rs_area;
-                newFeature_1.properties.tbsl = daa1[0].tbsl;
-            }
-            properties_1.push(newFeature_1)
-
-            let newFeature_2 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa2[0].fgl * 100,
-                    rs_area: daa2[0].rs_area,
-                    tbsl: daa2[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_2.properties.coverage = daa2[0].fgl * 100;
-                newFeature_2.properties.rs_area = daa2[0].rs_area;
-                newFeature_2.properties.tbsl = daa2[0].tbsl;
-            }
-            properties_2.push(newFeature_2)
-        })
-
-        // // console.log(geoms)
-
-        fitCenter()
-
-        drawGeom([properties_1, properties_2])
-
-
-    }
 
 };
 
@@ -4185,14 +4109,14 @@ const onClose = () => {
                 :items="items" @click="handleClick"></a-menu>
         </div>
         <!-- 中间 -->
-        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-214px' : '-474px') }">
+        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-140px' : '-474px') }">
 
             <table style="width: 100%;">
                 <tr>
                     <td colspan="2">
                         <div
                             style="font-size: 35px;color: #fff;text-shadow: 1px 2px #000; text-align: center;   width: 100%;  font-family: FZZongYi-M05;">
-                            山东省2024年玉米种植分布
+                            种植分布遥感监测
                         </div>
                     </td>
                     <td></td>

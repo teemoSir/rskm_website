@@ -6,7 +6,6 @@ import "../../../public/mapboxgl/pulgins/mapbox-gl-compare.js";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer.js";
 import { config, mapbox } from "@/config/tileserver.js";
 import page from "../../../package.json";
-// import syncMove from '@mapbox/mapbox-gl-sync-move';
 import * as echarts from "echarts"
 import { ref, computed, watch, onMounted, nextTick, reactive, h } from "vue";
 import { api } from "@/config/api.js";
@@ -76,8 +75,8 @@ import {
 } from "@/views/map/map.js";
 
 import VerificationLegend from "@/views/map/verificationLegend.vue"
-import JianceLegend from "@/views/map/jianceLegend.vue";
-import TucengLegend from "@/views/map/tucengLegend.vue";
+import ZaihaiLegend from "@/views/map/zaihaiLegend.vue";
+import ZaihaiLayerLegend from "@/views/map/zaihaiLayerLegend.vue";
 import * as turf from "@turf/turf";
 
 import { layers, specYghy } from "@/config/spec-yghy.js";
@@ -1110,91 +1109,11 @@ const loadCounty = async (name) => {
         `ST_AsGeoJSON(ST_Simplify(geom,0.001)) as json,city_code,city_name,county_code,gid,name,province_name`
     );
 
-
-    //echy_sql_qy_dq_county
-    let echy_sql_qy_dq_county = await api.get_table_tj_echy("echy_sql_qy_dq_county");
-
-
-
-    // console.log(echy_sql_qy_dq_county)
-    // console.log(features)
-
-    if (features.length == 1) {
-        let feature = JSON.parse(features[0].json);
-        let bbox = turf.bbox(feature)
-        map.fitBounds(bbox, {
-            padding: { left: 20, right: 20 }
-        });
-    } else {
-        let properties_1 = [];
-        let properties_2 = [];
-
-        geomClear();
-
-
-        features.map((feature) => {
-
-
-            let daa1 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.county == feature.name))
-            let daa2 = echy_sql_qy_dq_county.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.county == feature.name))
-
-            let newFeature_1 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa1[0].fgl * 100,
-                    rs_area: daa1[0].rs_area,
-                    tbsl: daa1[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_1.properties.coverage = daa1[0].fgl * 100;
-                newFeature_1.properties.rs_area = daa1[0].rs_area;
-                newFeature_1.properties.tbsl = daa1[0].tbsl;
-            }
-            properties_1.push(newFeature_1)
-
-            let newFeature_2 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    city_code: feature.city_code,
-                    city_name: feature.city_name,
-                    county_code: feature.county_code,
-                    gid: feature.gid,
-                    name: feature.name,
-                    province_name: feature.province_name,
-                    pass: feature.pass,
-                    coverage: daa2[0].fgl * 100,
-                    rs_area: daa2[0].rs_area,
-                    tbsl: daa2[0].tbsl,
-                }
-            }
-
-            if (!header.value) {
-                newFeature_2.properties.coverage = daa2[0].fgl * 100;
-                newFeature_2.properties.rs_area = daa2[0].rs_area;
-                newFeature_2.properties.tbsl = daa2[0].tbsl;
-            }
-            properties_2.push(newFeature_2)
-        })
-
-        // // console.log(geoms)
-
-        fitCenter()
-
-        drawGeom([properties_1, properties_2])
-
-
-    }
+    let feature = JSON.parse(features[0].json);
+    let bbox = turf.bbox(feature)
+    map.fitBounds(bbox, {
+        padding: { left: 20, right: 20 }
+    });
 
 };
 
@@ -2055,6 +1974,16 @@ const loadData = () => {
 }
 
 
+const jinace =
+    [
+        { time: "6月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_1", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+        { time: "7月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_2", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+        { time: "8月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_3"] },
+        { time: "9月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+        { time: "10月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+    ]
+
+
 
 // 挂载
 onMounted(() => {
@@ -2073,15 +2002,9 @@ onMounted(() => {
         map && loadEvent(map);
 
 
-
-        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
-        map.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
-        //  map.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
-
-        // map.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // map.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_yghy_zaihai_esysj', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_yghy_zaihai_chy', 'visibility', 'visible');
+        map.setLayoutProperty('procjet_2024_yghy_zaihai_htxd', 'visibility', 'visible');
     })
 
     mapp && mapp.on("load", () => {
@@ -2089,18 +2012,9 @@ onMounted(() => {
         mapp && loadEvent(mapp);
 
 
-
-        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_chy', 'visibility', 'visible');
-        mapp.setLayoutProperty('procjet_2024_yghy_yumi_zhangshi_htxd', 'visibility', 'visible');
-        //  mapp.setLayoutProperty('procjet_2024_yghy_sense', 'visibility', 'visible');
-
-
-
-        // mapp.setLayoutProperty('rskm_pt', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_outline', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name', 'visibility', 'visible');
-        // mapp.setLayoutProperty('rskm_pt_name_1', 'visibility', 'visible');
-
+        mapp.setLayoutProperty('procjet_2024_yghy_zaihai_esysj', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_zaihai_chy', 'visibility', 'visible');
+        mapp.setLayoutProperty('procjet_2024_yghy_zaihai_htxd', 'visibility', 'visible');
 
 
         fitCenter()
@@ -2378,22 +2292,22 @@ const dataSegmented = reactive([{
     disabled: true,
 }, {
     value: '4月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '5月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '6月',
-    disabled: false,
+    disabled: true,
 }, {
     value: '7月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '8月',
-    disabled: false,
+    disabled: true,
 },
 {
     value: '9月',
@@ -2413,6 +2327,10 @@ const dataSegmented = reactive([{
 },
 ]);
 const valueSegmented = ref('10月');
+
+
+
+
 
 
 /**
@@ -2704,18 +2622,14 @@ let observeSaLeft = ref();
 
     <!-- 页面 -->
     <div class="page">
-        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -275px;">
+        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -365px;">
 
 
             <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 1px 2px 2px #000;"> 2024年玉米长势监测 </span>
+                <span style="text-shadow: 1px 2px 2px #000;"> 作物灾损遥感监测 </span>
             </h1>
-
-
-
             <a-segmented v-model:value="valueSegmented" :options="dataSegmented" />
         </div>
-
 
         <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
             <br>
@@ -3098,17 +3012,17 @@ let observeSaLeft = ref();
     <!--图例-->
 
     <div style="position: absolute;bottom: 35px;right: 20px;z-index: 1000;">
-        <JianceLegend v-if="activeKey == 1" core="map"></JianceLegend>
+        <ZaihaiLegend v-if="activeKey == 1" core="map"></ZaihaiLegend>
     </div>
 
     <!--图层控制-->
     <div class="tuli" :style="{ left: (observeSaLeft - 200) + 'px' }">
-        <TucengLegend v-if="activeKey == 1" core="map"></TucengLegend><br>
+        <ZaihaiLayerLegend v-if="activeKey == 1" core="map"></ZaihaiLayerLegend><br>
 
     </div>
 
     <div class="tuli-right" :style="{ left: observeSaLeft + 'px' }">
-        <TucengLegend v-if="activeKey == 1" core="mapp"></TucengLegend><br>
+        <ZaihaiLayerLegend v-if="activeKey == 1" core="mapp"></ZaihaiLayerLegend><br>
     </div>
 
 
@@ -3637,5 +3551,18 @@ p {
     width: 20px;
     opacity: 1;
     box-shadow: 1px 1px 2px #000;
+}
+
+:deep(.ant-segmented-item-label) {
+    padding: 0;
+    margin: 0;
+    width: 60px;
+
+}
+
+:deep(.ant-segmented) {
+    background-color: rgba(246, 242, 242, 0.692);
+    font-size: 1.1rem;
+
 }
 </style>

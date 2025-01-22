@@ -115,7 +115,7 @@ const items = ref([
         },
         children: [
             {
-                label: "遥感种植分布",
+                label: "种植遥感监测",
                 key: "fenbu",
                 onClick: () => {
                     router.push("/fenbu");

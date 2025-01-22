@@ -52,7 +52,6 @@ const config = {
             type: "vector",
             scheme: 'tms',
             tiles: [
-                // `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
                 'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_sense@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf'
             ],
             minzoom: 3,
@@ -66,14 +65,12 @@ const config = {
             type: "vector",
             scheme: 'tms',
             tiles: [
-                // `${host}/v1/pbf/procjet_2024_yghy_sense/{z}/{x}/{y}?geom_column=geom&columns=`,
                 'http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_sense_s1@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf'
             ],
             minzoom: 3,
             maxzoom: 14
         }
     },
-
 
     wpoi: {
         name: "world_poi",
@@ -162,32 +159,118 @@ const config = {
         }
     },
 
-    //3Aprocjet_2024_yghy_yumi_zhangshi
+    // 测绘院长势
     procjet_2024_yghy_yumi_zhangshi_chy: {
         name: "procjet_2024_yghy_yumi_zhangshi_chy",
         tile: {
             type: "raster",
             scheme: 'tms',
             tiles: [
-                //http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png
                 `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_yumi_zhangshi@EPSG%3A900913@png/{z}/{x}/{y}.png`,
             ],
-            minzoom: 6
+            minzoom: 6,
+            maxzoom: 17
         }
     },
+
+    // 航天信德长势
     procjet_2024_yghy_yumi_zhangshi_htxd: {
         name: "procjet_2024_yghy_yumi_zhangshi_htxd",
         tile: {
             type: "raster",
             scheme: 'tms',
             tiles: [
-                //http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Ahtxd_yumi_zhangshi_202408@EPSG%3A900913@png
-                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Ahtxd_yumi_zhangshi_202408@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Ahtxd_yumi_zhangshi_202408@EPSG%3A900913@png`,
             ],
-            minzoom: 6
+            minzoom: 6,
+            maxzoom: 17
         }
     },
 
+    // 二十一世纪长势 一次
+    procjet_2024_yghy_yumi_zhangshi_esysj_1: {
+        name: "procjet_2024_yghy_yumi_zhangshi_esysj_1",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zhangshi_season_6@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
+    // 二十一世纪长势 二次
+    procjet_2024_yghy_yumi_zhangshi_esysj_2: {
+        name: "procjet_2024_yghy_yumi_zhangshi_esysj_2",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zhangshi_season_7@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
+    // 二十一世纪长势 三次
+    procjet_2024_yghy_yumi_zhangshi_esysj_3: {
+        name: "procjet_2024_yghy_yumi_zhangshi_esysj_3",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zhangshi_season_8@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
+
+    // 二十一世纪灾害
+    procjet_2024_yghy_zaihai_esysj: {
+        name: "procjet_2024_yghy_zaihai_esysj",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zaihai_esysj@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
+
+    // 测绘院 灾害
+
+    procjet_2024_yghy_zaihai_chy: {
+        name: "procjet_2024_yghy_zaihai_chy",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zaihai_chy@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
+
+    //航天信德 灾害
+
+
+    procjet_2024_yghy_zaihai_htxd: {
+        name: "procjet_2024_yghy_zaihai_htxd",
+        tile: {
+            type: "raster",
+            scheme: 'tms',
+            tiles: [
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Aprocjet_2024_yghy_zaihai_htxd@EPSG%3A900913@png/{z}/{x}/{y}.png`,
+            ],
+            minzoom: 6,
+            maxzoom: 17
+        }
+    },
 
 
 };

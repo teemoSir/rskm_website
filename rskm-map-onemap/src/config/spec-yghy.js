@@ -1355,10 +1355,8 @@ let specYghy = [
             visibility: "none",
         },
         "paint": {
-            "raster-opacity": 0.7
+            "raster-opacity": 0.8
         },
-        //    'slot': 'top',
-        // interactive: true,
     },
 
     {
@@ -1371,11 +1369,99 @@ let specYghy = [
             visibility: "none",
         },
         "paint": {
-            "raster-opacity": 0.7
+            "raster-opacity": 0.8
         },
-        //    'slot': 'top',
-        // interactive: true,
     },
+
+    //procjet_2024_yghy_yumi_zhangshi_esysj_1
+
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi_esysj_1",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi_esysj_1.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi_esysj_1.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi_esysj_2",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi_esysj_2.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi_esysj_2.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+    {
+        id: "procjet_2024_yghy_yumi_zhangshi_esysj_3",
+        type: "raster",
+        source: config.procjet_2024_yghy_yumi_zhangshi_esysj_3.name,
+        "source-layer": config.procjet_2024_yghy_yumi_zhangshi_esysj_3.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+
+    // 二十一世纪灾害
+    {
+        id: "procjet_2024_yghy_zaihai_esysj",
+        type: "raster",
+        source: config.procjet_2024_yghy_zaihai_esysj.name,
+        "source-layer": config.procjet_2024_yghy_zaihai_esysj.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+
+    // 测绘院灾害
+
+    {
+        id: "procjet_2024_yghy_zaihai_chy",
+        type: "raster",
+        source: config.procjet_2024_yghy_zaihai_chy.name,
+        "source-layer": config.procjet_2024_yghy_zaihai_chy.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+
+    // 航天信德 灾害
+    {
+        id: "procjet_2024_yghy_zaihai_htxd",
+        type: "raster",
+        source: config.procjet_2024_yghy_zaihai_htxd.name,
+        "source-layer": config.procjet_2024_yghy_zaihai_htxd.name,
+        //  minzoom: 6,
+        layout: {
+            visibility: "none",
+        },
+        "paint": {
+            "raster-opacity": 0.8
+        },
+    },
+
+
 
 
 
