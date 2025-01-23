@@ -1984,7 +1984,7 @@ const jinace =
         { time: "6月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_1", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
         { time: "7月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_2", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
         { time: "8月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_3"] },
-        { time: "9月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+        { time: "9月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy", "procjet_2024_yghy_yumi_zhangshi_esysj_3"] },
         { time: "10月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
     ]
 
@@ -2335,7 +2335,7 @@ const dataSegmented = reactive([{
     disabled: true,
 },
 ]);
-const valueSegmented = ref('10月');
+const valueSegmented = ref('6月');
 
 
 watch(valueSegmented, () => {

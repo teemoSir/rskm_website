@@ -290,33 +290,15 @@ const getLabelByValue = (value) => {
 const loadTown = async (name) => {
 
     geomClear()
-    //   goGeomUn(window.mapp)
-
-
-    if (name == "'济阳区'") {
-        name = "'济阳县'"
-    }
-
-    if (name == "'莱芜区'") {
-        name = "'莱芜市'"
-    }
 
     let features = await api.get_table_by_filter(
-        "admin_2024_town",
-        `and (f_xzqhmc in (${name}) or c_xzqmc in (${name})) `,
-        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,c_xzqdm,c_xzqmc,f_xzqhmc,f_xzqhdm,gid,t_xzqmc,p_xzqmc,t_xzqdm`
+        "china_wgs84_town",
+        `and county_name in (${name}) `,
+        `ST_AsGeoJSON(ST_Simplify(geom,0.0001)) as json,city_name,city_code,county_code,county_name,gid,province_code,town_code,province,town_name`
     );
-
     //echy_sql_qy_dq_town
     let echy_sql_qy_dq_town = await api.get_table_tj_echy("echy_sql_qy_dq_town");
 
-
-
-    features.forEach(e => {
-        if (e.f_xzqhmc == '济阳县') {
-            e.f_xzqhmc = '济阳区'
-        }
-    })
 
     let properties_1 = [];
     let properties_2 = [];
@@ -326,60 +308,60 @@ const loadTown = async (name) => {
     if (echy_sql_qy_dq_town && features) {
         features.map((feature) => {
 
+            let daa1 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.town == feature.town_name))
+            let daa2 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.town == feature.town_name))
 
-            let daa1 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第一次_0913' && e.town == feature.t_xzqmc && (e.county == feature.f_xzqhmc || e.county == '莱芜区')))
-            let daa2 = echy_sql_qy_dq_town.filter(e => (e.version == '2024年_玉米_第二次_1125' && e.town == feature.t_xzqmc && (e.county == feature.f_xzqhmc || e.county == '莱芜区')))
-            // console.log(daa1)
-            // console.log(feature)
-            let newFeature_1 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    c_xzqdm: feature.c_xzqdm,
-                    c_xzqmc: feature.c_xzqmc,
-                    f_xzqhdm: feature.f_xzqhdm,
-                    f_xzqhmc: feature.f_xzqhmc,
-                    gid: feature.gid,
-                    p_xzqmc: feature.p_xzqmc,
-                    t_xzqdm: feature.t_xzqdm,
-                    t_xzqmc: feature.t_xzqmc,
-                    coverage: 0,
-                    rs_area: 0,
-                    tbsl: 0,
-                }
-            }
+
 
             if ((header.value) && daa1.length > 0) {
+
+                let newFeature_1 = {
+                    type: "Feature",
+                    geometry: JSON.parse(feature.json),
+                    properties: {
+                        city_name: feature.city_name,
+                        city_code: feature.city_code,
+                        county_name: feature.county_name,
+                        county_code: feature.county_code,
+                        gid: feature.gid,
+                        town_code: feature.town_code,
+                        town_name: feature.town_name,
+                        province: feature.province,
+                        province_code: feature.province_code,
+                    }
+                }
                 newFeature_1.properties.coverage = daa1[0].fgl * 100;
                 newFeature_1.properties.rs_area = daa1[0].rs_area;
                 newFeature_1.properties.tbsl = daa1[0].tbsl;
-            }
-            properties_1.push(newFeature_1)
 
-            let newFeature_2 = {
-                type: "Feature",
-                geometry: JSON.parse(feature.json),
-                properties: {
-                    c_xzqdm: feature.c_xzqdm,
-                    c_xzqmc: feature.c_xzqmc,
-                    f_xzqhdm: feature.f_xzqhdm,
-                    f_xzqhmc: feature.f_xzqhmc,
-                    gid: feature.gid,
-                    p_xzqmc: feature.p_xzqmc,
-                    t_xzqdm: feature.t_xzqdm,
-                    t_xzqmc: feature.t_xzqmc,
-                    coverage: 0,
-                    rs_area: 0,
-                    tbsl: 0,
-                }
+                properties_1.push(newFeature_1)
             }
+
+
+
 
             if ((header.value) && daa2.length > 0) {
+                let newFeature_2 = {
+                    type: "Feature",
+                    geometry: JSON.parse(feature.json),
+                    properties: {
+                        city_name: feature.city_name,
+                        city_code: feature.city_code,
+                        county_name: feature.county_name,
+                        county_code: feature.county_code,
+                        gid: feature.gid,
+                        town_code: feature.town_code,
+                        town_name: feature.town_name,
+                        province: feature.province,
+                        province_code: feature.province_code,
+                    }
+                }
                 newFeature_2.properties.coverage = daa2[0].fgl * 100;
                 newFeature_2.properties.rs_area = daa2[0].rs_area;
                 newFeature_2.properties.tbsl = daa2[0].tbsl;
+                properties_2.push(newFeature_2)
             }
-            properties_2.push(newFeature_2)
+
         })
         // console.log(properties_1)
         drawGeom([properties_1, properties_2])
@@ -602,7 +584,7 @@ const drawGeom = (data) => {
 
 
     if (header.value) {
-        // 点击区县
+
         let adminGeomOut = {
             id: "adminGeomOut",
             type: "line",
@@ -613,6 +595,8 @@ const drawGeom = (data) => {
             },
             paint: {
                 'line-color': [
+
+
                     'case',
                     ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
                     'rgba(248,200,94,1)',
@@ -622,7 +606,7 @@ const drawGeom = (data) => {
                     'RGB(144,204,120)',
                     '#ccc',
                 ],
-                "line-width": 2.5,
+                "line-width": 3.5,
             },
         };
         map.addLayer(adminGeomOut);
@@ -633,8 +617,8 @@ const drawGeom = (data) => {
             type: "symbol",
             source: "adminGeom",
             layout: {
-                "text-field": "{f_xzahmc}{t_xzqmc}",
-                "text-size": 24,
+                "text-field": "{town_name}",
+                "text-size": 22,
             },
             paint: {
                 // 'text-color': "#fff",
@@ -667,6 +651,8 @@ const drawGeom = (data) => {
             },
             paint: {
                 'line-color': [
+
+
                     'case',
                     ['all', ['<', ['get', 'coverage'], 60], ['>', ['get', 'coverage'], 0]],
                     'rgba(248,200,94,1)',
@@ -676,7 +662,7 @@ const drawGeom = (data) => {
                     'RGB(144,204,120)',
                     '#ccc',
                 ],
-                "line-width": 2.5,
+                "line-width": 3.5,
             },
         };
 
@@ -689,7 +675,7 @@ const drawGeom = (data) => {
             source: "adminGeom",
             layout: {
                 "text-field": "{city_name}{name}",
-                "text-size": 24,
+                "text-size": 22,
             },
             paint: {
                 // 'text-color': "#fff",
@@ -838,14 +824,7 @@ const addEventGeomArea = async (e, newMap) => {
     popupbig && popupbig.setLngLat([0, 0]);
 
     const feature = e.features[0];
-    // console.log(feature)
     let text = await setCountyPopup(feature);
-
-    // newMap.setFilter("Highlight_DK_Line_Click", [
-    //     "all",
-    //     ["in", "name", feature.properties.name],
-    // ]);
-    // newMap.setPaintProperty("adminGeom", "fill-opacity", 1);
 
     popupbig.setLngLat(e.lngLat).setHTML(text).addTo(newMap);
 }
@@ -945,14 +924,9 @@ const setPopup = async (info, index) => {
     // console.log(info)
 
     if (!info) return false;
-    // let data = await api.get_table_by_filter("procjet_2024_yghy_hz10_excel", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
-    //     `gid, bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, type_xl, bxjg_code, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, bxqj, bdscsj, bdxgsj, v1, v2, v3, v4, v5, v6, v7, v8`);
-
     let data = await api.get_table_by_filter("procjet_2024_yghy_dahu", `and bdh in('${info.bdh}') and bbxrmc in ('${info.bbxrmc}') `,
         `bdh, bbxrmc, bbxrzjh, bbxrdh, xianzhong, bxjg, shi, shi_code, quxian, quxian_code, xiangzhen, xiangzhen_code, cun, cun_code, cbsl, v1, v2, v3, v4, v5, v6, v7, v8, version`);
 
-
-    console.log(info)
     let successData = data[index] || {};
     let meginfo = {}
 
@@ -1025,13 +999,13 @@ const setCountyPopup = async (data) => {
 
     let text = ``;
     text = `
-    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 18px;color:#5a5959"  title="区域核验" >
-        <tr style="line-height:1.5;"><th style="text-align: right;width:180px;padding-right:5px">核验区域:</th><td >${(data.properties.f_xzqhmc + data.properties.t_xzqmc) || data.properties.name}</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">投保面积:</th><td >${data.properties.tbsl ? Number(data.properties.tbsl).toFixed(0) : 0}亩</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">遥感面积:</th><td >${data.properties.rs_area ? Number(data.properties.rs_area).toFixed(0) : 0}亩</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;padding-right:5px">地块与投保面积之比:</th><td >${parseInt(data.properties.coverage)}%</td><tr>
-        <tr style="line-height:1.5;"><th style="text-align: right;;padding-right:5px">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:2px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
-        </table>`
+    <table style="width:100%;border-collapse: collapse;letter-spacing: -1px; font-size: 20px;color:#5a5959"  title="区域核验" >
+        <tr style="line-height:1.5;"><th style="text-align: left;" colspan="2">核验区域:</th><td >${data.properties.town_name || data.properties.name}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;" colspan="2">投保面积:</th><td >${data.properties.tbsl ? Number(data.properties.tbsl).toFixed(0) : 0}亩</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;" colspan="2">遥感面积:</th><td >${data.properties.rs_area ? Number(data.properties.rs_area).toFixed(0) : 0}亩</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left;" colspan="2">是否超保:</th><td >${data.properties.coverage >= 105 ? "<div style='background-color:RGB(236,102,103);color:#000;padding:2px;border-radius:2px'>超保</div>" : "<div  style='background-color:RGB(147,207,122);color:#000;padding:2px;border-radius:2px'>未超保</div>"}</td><tr>
+        <tr style="line-height:1.5;"><th style="text-align: left" colspan="2">地块与投保面积之比:</th><td >${parseInt(data.properties.coverage)}%</td><tr>
+            </table>`
 
 
     return text
@@ -3759,78 +3733,7 @@ const onClose = () => {
 
 
                     <br>
-                    <a-card v-if="1 == 2">
 
-                        <!--地名注记-->
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style=" font-size: 12px; color: #000">
-                                地名
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state.DMZJiSHow" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                省界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked7" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                市界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked8" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                县界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked4" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                镇界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked5" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                村界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked6" size="small" />
-                            </div>
-                        </a-card-grid>
-                    </a-card>
                 </div>
             </div>
 

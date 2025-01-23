@@ -7,7 +7,7 @@ const sql = (params, query) => {
         // 区域遥感
         case "echy_sql_qy_ygsl":
             sql = `
-            select SUM(rs_area) as rs_area,town,MAX(county) as county,MAX(city) as city from public.procjet_2024_yghy_sense where 1=1 GROUP  by town,county,city order by city
+            select SUM(rs_area) as rs_area,town,MAX(county) as county,MAX(city) as city from public.procjet_2024_yghy_sense_s2 where 1=1 GROUP  by town,county,city order by city
             `
             break;
 
@@ -49,7 +49,7 @@ const sql = (params, query) => {
                     MAX(county) AS county,
                     MAX(city) AS city 
                 FROM 
-                    public.procjet_2024_yghy_sense 
+                    public.procjet_2024_yghy_sense_s2 
                 GROUP BY 
                     town, county, city) AS a
             FULL OUTER JOIN 
@@ -166,7 +166,7 @@ const sql = (params, query) => {
                     MAX(county) AS county,
                     MAX(city) AS city 
                 FROM 
-                    public.procjet_2024_yghy_sense 
+                    public.procjet_2024_yghy_sense_s2 
                 GROUP BY 
                     town, county, city) AS a
             FULL OUTER JOIN 
@@ -204,7 +204,7 @@ const sql = (params, query) => {
                             MAX(county) AS county,
                             MAX(city) AS city 
                         FROM 
-                            public.procjet_2024_yghy_sense 
+                            public.procjet_2024_yghy_sense_s2 
                         GROUP BY 
                             county, city) AS a
                     FULL OUTER JOIN 
@@ -245,7 +245,7 @@ const sql = (params, query) => {
                                 MAX(county) AS county,
                                 MAX(city) AS city 
                             FROM 
-                                public.procjet_2024_yghy_sense 
+                                public.procjet_2024_yghy_sense_s2 
                             GROUP BY 
                                 town, county, city) AS a
                         FULL OUTER JOIN 

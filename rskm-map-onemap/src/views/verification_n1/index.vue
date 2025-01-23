@@ -2803,7 +2803,7 @@ const lockDownOpen = ref(false)
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 遥感核验任务
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 遥感核验
                             </label>
                             <a-tooltip placement="right">
                                 <template #title>

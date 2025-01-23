@@ -121,8 +121,18 @@ message.config({
 
 watch(state, () => {
     //保单地块
+
+    // { time: "6月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_1", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+    // { time: "7月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_2", "procjet_2024_yghy_yumi_zhangshi_htxd"] },
+    // { time: "8月", tile: ["procjet_2024_yghy_yumi_zhangshi_esysj_3"] },
+    // { time: "9月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
+    // { time: "10月", tile: ["procjet_2024_yghy_yumi_zhangshi_chy"] },
     let hgdks = [
-        "procjet_2024_yghy_yumi_zhangshi",
+        "procjet_2024_yghy_yumi_zhangshi_esysj_1",
+        "procjet_2024_yghy_yumi_zhangshi_htxd",
+        "procjet_2024_yghy_yumi_zhangshi_esysj_2",
+        "procjet_2024_yghy_yumi_zhangshi_esysj_3",
+        "procjet_2024_yghy_yumi_zhangshi_chy"
     ];
     hgdks.forEach((gd) => {
         toggleLayerVisibility(gd, state.checked1);

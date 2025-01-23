@@ -180,7 +180,7 @@ const config = {
             type: "raster",
             scheme: 'tms',
             tiles: [
-                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Ahtxd_yumi_zhangshi_202408@EPSG%3A900913@png`,
+                `http://39.102.63.192:3001/mapserver/gwc/service/tms/1.0.0/rskm%3Ahtxd_yumi_zhangshi_202408@EPSG%3A900913@png/{z}/{x}/{y}.png`,
             ],
             minzoom: 6,
             maxzoom: 17
