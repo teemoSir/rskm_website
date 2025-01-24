@@ -18,6 +18,9 @@ import {
     PanelBottomOpen,
     PanelTopOpen,
     ChevronDown,
+    CalendarCheck,
+    ListCheck,
+    ScanEye
 
 } from "lucide-vue-next";
 import * as turf from "@turf/turf";
@@ -345,8 +348,6 @@ const years = ref([
     2025,
     2024,
     2023,
-    2022,
-    2021, 2020,
 ])
 
 /**年份值 */
@@ -363,101 +364,123 @@ const yearPopup = ref(false)
 
     <div class="page">
         <!--一张图平台-->
-        <SDMap ref="mapRef" :MapToolPosition="{ top: '110px', right: ' 15px' }"></SDMap>
+        <SDMap ref="mapRef" :MapToolPosition="{ top: '200px', right: ' 15px' }"></SDMap>
 
 
-        <div v-if="activeKey == '1'">
-            <!--检索搜索-->
-            <div class="search" style="width: 600px">
-                <a-row>
-                    <a-col :span="3">
+
+        <!--检索搜索-->
+        <div class="searchTool" style="width: 500px">
+            <a-row>
+                <a-col :span="3">
+                    <a-tooltip placement="bottom">
+                        <template #title>高级筛查</template>
+                        <a-button size="large" class="searchshadow" @click="menu = !menu">
+                            <Grip :color="!menu ? '#fff' : 'RGB(36,172,242)'" />
+                        </a-button>
+                    </a-tooltip>
+                </a-col>
+
+                <a-col :span="20">
+                    <a-input-group compact>
+                        <a-dropdown>
+                            <template #overlay>
+                                <a-menu @click="handleMenuClick">
+                                    <a-menu-item v-for="s in searchListName" :key="s.type"
+                                        @click="setSearchListName(s)">
+                                        {{ s.name }}
+                                    </a-menu-item>
+                                </a-menu>
+                            </template>
+                            <a-button class="searchshadow">
+                                <div
+                                    style="display: flex; align-items: center;font-family: 'FZZongYi-M05';font-size: 16px;">
+                                    <ShieldCheck v-if="searchType == '单号'" :size="20" />
+                                    <MapPinned v-else :size="20" />
+                                    &nbsp; {{ searchType }}
+                                </div>
+                            </a-button>
+                        </a-dropdown>
+                        <a-input ref="inSerchRef" size="large" v-model:value="searchValue" style="width: 220px"
+                            class="searchshadow" :placeholder="searchType == '区域' ? '请输入查询区域' : '请输入保险单号'"
+                            :allowClear="true" @keyup.enter="searchByfilter" />
                         <a-tooltip placement="bottom">
-                            <template #title>高级筛查</template>
-                            <a-button size="large" class="searchshadow" @click="menu = !menu">
-                                <Grip :color="!menu ? '#fff' : 'RGB(36,172,242)'" />
+                            <template #title>查询</template>
+                            <a-button type="primary" size="large" class="searchshadow" @click="searchByfilter"
+                                style="border-left: 0;">
+                                <Search />
                             </a-button>
                         </a-tooltip>
-                    </a-col>
-
-                    <a-col :span="15">
-                        <a-input-group compact>
-                            <a-dropdown>
-                                <template #overlay>
-                                    <a-menu @click="handleMenuClick">
-                                        <a-menu-item v-for="s in searchListName" :key="s.type"
-                                            @click="setSearchListName(s)">
-                                            {{ s.name }}
-                                        </a-menu-item>
-                                    </a-menu>
-                                </template>
-                                <a-button class="searchshadow">
-
-
-                                    <div
-                                        style="display: flex; align-items: center;font-family: 'FZZongYi-M05';font-size: 16px;">
-                                        <ShieldCheck v-if="searchType == '单号'" :size="20" />
-                                        <MapPinned v-else :size="20" />
-                                        &nbsp; {{ searchType }}
-                                    </div>
-                                </a-button>
-                            </a-dropdown>
-                            <a-input ref="inSerchRef" size="large" v-model:value="searchValue" style="width: 220px"
-                                class="searchshadow" :placeholder="searchType == '区域' ? '请输入查询区域' : '请输入保险单号'"
-                                :allowClear="true" @keyup.enter="searchByfilter" />
-                            <a-tooltip placement="bottom">
-                                <template #title>查询</template>
-                                <a-button type="primary" size="large" class="searchshadow" @click="searchByfilter">
-                                    <Search />
-                                </a-button>
-                            </a-tooltip>
 
 
 
-                            <!-- <a-tooltip placement="bottom">
-                                <template #title>保单详情</template>
-                                <a-button size="large" class="searchshadow" @click="open = !open">
-                                    <PanelBottomOpen v-if="!open" />
-                                    <PanelTopOpen v-else />
-                                </a-button>
-                            </a-tooltip> -->
-                        </a-input-group>
-                    </a-col>
-                    <a-col :span="5">
-                        <a-input-group compact>
-                            <a-tooltip placement="right">
-                                <template #title>年份</template>
-                                <a-button type="primary" size="large" class="searchshadow"
-                                    @click="yearPopup = !yearPopup"
-                                    style="display: flex;align-items: center; font-family: 'FZZongYi-M05';width: 110px;font-size: 16px;">
-                                    <div>
-                                        {{ cursorYear }}年
-                                    </div>
-                                    <ChevronDown style="margin-left: 10px;" />
-                                    <div v-if="yearPopup" class="year-popup">
-                                        <div v-for="year in years" class="year" @click="panelChangeRL(year)">
-                                            {{ year
-                                            }}年</div>
 
-                                    </div>
-                                </a-button>
-                            </a-tooltip>
-                        </a-input-group>
-                    </a-col>
-                </a-row>
-            </div>
-            <!--类型控制单元-->
-            <div class="leftMenu" v-show="menu">
-                <Menu></Menu>
-            </div>
+                    </a-input-group>
+                </a-col>
 
-            <!--保单信息-->
-            <a-drawer title="" placement="bottom" :open="open" @close="onClose" :mask="true" bodyStyle="padding:0"
-                :height="500">
-                <Insurance ref="insuranceRef"></Insurance>
-            </a-drawer>
+            </a-row>
         </div>
 
-        <div v-if="activeKey == '2'"></div>
+        <!--检索搜索-->
+        <div class="yewuTool"> <!-- -->
+            <a-row>
+
+                <a-col :span="24">
+                    <a-input-group compact>
+                        <a-tooltip placement="left">
+                            <template #title>年份</template>
+                            <a-button size="large" class="searchshadow" @click="yearPopup = !yearPopup"
+                                style="display: flex;align-items: center; font-family: 'FZZongYi-M05';font-size: 16px; width: 140px;float: left;">
+
+                                <CalendarCheck />
+                                <div style="margin-left: 10px;"> {{ cursorYear }}年
+                                </div>
+                                <ChevronDown style="margin-left: 10px;" />
+
+                                <div v-if="yearPopup" class="year-popup">
+                                    <div v-for="year in years" class="year" @click="panelChangeRL(year)">
+                                        {{ year
+                                        }}年</div>
+
+                                </div>
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="bottom">
+                            <template #title>保单详情</template>
+                            <a-button size="large" class="searchshadow" @click="open = !open"
+                                style="display: flex;align-items: center; font-family: 'FZZongYi-M05';font-size: 16px;width: 130px;float: left;">
+                                <ListCheck />
+                                <div style="margin-left: 10px;"> 保单详情
+                                </div>
+                            </a-button>
+                        </a-tooltip>
+                        <a-tooltip placement="bottom">
+                            <template #title>回到全局视野</template>
+                            <a-button size="large" class="searchshadow" @click="fitCenter()"
+                                style="display: flex;align-items: center; font-family: 'FZZongYi-M05';font-size: 16px;width: 130px;float: left;">
+                                <ScanEye />
+                                <div style="margin-left: 10px;"> 重置视野
+                                </div>
+                            </a-button>
+                        </a-tooltip>
+                    </a-input-group>
+                </a-col>
+
+            </a-row>
+
+        </div>
+
+        <!--类型控制单元-->
+        <div class="leftMenu" v-show="menu">
+            <Menu></Menu>
+        </div>
+
+        <!--保单信息-->
+        <a-drawer title="" placement="bottom" :open="open" @close="onClose" :mask="false" bodyStyle="padding:0">
+            <Insurance ref="insuranceRef"></Insurance>
+        </a-drawer>
+
+
+
     </div>
     <!--图例-->
     <div class="tuli">
@@ -643,11 +666,18 @@ const yearPopup = ref(false)
     color: #ccc;
 }
 
-.search {
+.searchTool {
     position: absolute;
     left: 15px;
     top: 110px;
-    width: 650;
+    /* width: 650; */
+}
+
+.yewuTool {
+    position: absolute;
+    right: 15px;
+    top: 110px;
+    /* width: 650; */
 }
 
 .header-menu {

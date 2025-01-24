@@ -2705,7 +2705,7 @@ const lockDownOpen = ref(false)
     <div class="page">
         <div style="position: absolute;top: 100px;left: 50%; z-index: 1000;margin-left: -275px;">
             <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 2px 2px 2px #000;">山东省年玉米遥感核验(一次) </span>
+                <span style="text-shadow: 2px 2px 2px #000;">山东省玉米遥感核验(一次) </span>
                 <a-tag color="#108ee9">2024年09月30日截止</a-tag>
             </h1>
         </div>

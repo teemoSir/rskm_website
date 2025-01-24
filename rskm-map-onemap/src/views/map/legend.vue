@@ -31,7 +31,7 @@ let legends = [
 
 ];
 
-const tuli = ref(false);
+const tuli = ref(true);
 
 const state = reactive({
     checked1: true,

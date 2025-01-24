@@ -17,7 +17,31 @@ const sql = (params, query) => {
     }
 
 
-    let str = `select * from  ___get_paged_data('${params.table}',$$${ filter }$$,${query.page},${query.size} )`
+    //let str = `select * from  ___get_paged_data('${params.table}',$$${ filter }$$,${query.page},${query.size} )`;
+
+    let str = `
+    SELECT 
+        gid ,
+        insurancenum ,
+        insurcompany_code ,
+        insured ,
+        start_date,
+        end_date ,
+        insurance_id,
+        city,
+        county,
+        province,
+        village,
+        town,
+        insurancetarget,
+        insured_quantity ,
+        area_mi,
+        area_mu ,
+        ST_AsGeoJSON(geom) as geom,
+        i_type_name,
+        i_com_name
+    FROM ${params.table} WHERE 1=1 ${filter} ORDER BY start_date  DESC LIMIT ${query.size} OFFSET ${(query.page - 1) * query.size};
+    `
 
     return str
 }

@@ -798,19 +798,15 @@ defineProps({
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
 
-            <a-tooltip placement="leftTop">
+            <!-- <a-tooltip placement="leftTop">
                 <template #title>
                     <span>最佳视野</span>
                 </template>
-                <a-button @click="fitCenter()" size="large" class="boxshadow">
-                    <ScanSearch />
-                </a-button>
-            </a-tooltip>
-            <a-tooltip title="重置视角 " placement="left">
-                <div @click="Zero()" class="pst">
-                    <img id="Zero" :src="c2" @click="Zero()" />
-                </div>
-            </a-tooltip>
+<a-button @click="fitCenter()" size="large" class="boxshadow">
+    <ScanSearch />
+</a-button>
+</a-tooltip> -->
+
             <div>
 
                 <a-tooltip title="底图切换" placement="left">
@@ -934,6 +930,11 @@ defineProps({
                     </a-card>
                 </div>
             </div>
+            <a-tooltip title="重置视角 " placement="left">
+                <div @click="Zero()" class="pst">
+                    <img id="Zero" :src="c2" @click="Zero()" />
+                </div>
+            </a-tooltip>
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>二三维切换</span>
@@ -1116,7 +1117,7 @@ defineProps({
 .right-tool {
     position: absolute;
     right: 20px;
-    top: 20px;
+    bottom: 100px;
     /* width: 2rem; */
     z-index: 1000;
 }
