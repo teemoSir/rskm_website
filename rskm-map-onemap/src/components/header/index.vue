@@ -165,7 +165,7 @@ onMounted(() => {
 
 
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
-            style="position: absolute; left: 400px; top: 0px; line-height: 80px" />
+            style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
     </a-page-header>
 </template>
 

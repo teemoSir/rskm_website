@@ -64,7 +64,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name,first_gid`,
+                `${host}/v1/pbf/admin_2022_province/{z}/{x}/{y}?geom_column=geom&columns=name,province_code,gid`,
             ],
             minzoom: 2,
             maxzoom: 12.99
@@ -75,7 +75,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name,province_code,gid`,
+                `${host}/v1/pbf/admin_2022_city/{z}/{x}/{y}?geom_column=geom&columns=name,province_code,gid,code`,
             ],
             minzoom: 6,
             maxzoom: 12.99
@@ -86,7 +86,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid`,
+                `${host}/v1/pbf/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid,province_code,city_code`,
             ],
             minzoom: 8,
             maxzoom: 14
@@ -97,39 +97,18 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/china_wgs84_town/{z}/{x}/{y}?geom_column=geom&columns=gid,city_name,county_name,town_name`,
+                `${host}/v1/pbf/china_wgs84_town/{z}/{x}/{y}?geom_column=geom&columns=gid,city_name,county_name,town_name,city_code,province_code`,
             ],
             minzoom: 10,
             maxzoom: 13
         }
     },
-    // admin_2024_village: {
-    //     name: "admin_2024_village",
-    //     tile: {
-    //         type: "vector",
-    //         tiles: [
-    //             `${host}/v1/mvt/admin_2024_village/{z}/{x}/{y}?geom_column=geom&columns=name,t_xzqmc`,
-    //         ],
-    //         minzoom: 14,
-    //         maxzoom: 15
-    //     }
-    // },
-    // world_china_polygon: {
-    //     name: "world_china_polygon",
-    //     tile: {
-    //         type: "vector",
-    //         tiles: [
-    //             `${host}/v1/mvt/world_china_polygon/{z}/{x}/{y}?geom_column=geom&columns=building,naturals`,
-    //         ],
-    //         minzoom: 30
-    //     }
-    // },
     china_wgs84_all: {
         name: "china_wgs84_all",
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/pbf/china_wgs84_all/{z}/{x}/{y}?geom_column=geom&columns=gid,name,code,town_name,town_code`,
+                `${host}/v1/pbf/china_wgs84_all/{z}/{x}/{y}?geom_column=geom&columns=gid,name,code,town_name,town_code,province_code`,
             ],
             minzoom: 9
         }

@@ -10,48 +10,39 @@ import * as turf from "@turf/turf";
 // import MapboxDraw from "@mapbox/mapbox-gl-draw";
 // import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import StateManager from "@/utils/state_manager";
-import Shandong from "@/views/standard/shandong.vue";
 import {
     Ruler,
-    MountainSnow,
     Layers,
     Plus,
     Minus,
     ScanEye,
     Map,
     Globe,
-    //   MapPinned,
     LandPlot,
     PencilRuler,
     Pencil,
     Dot,
-    //   Waypoints,
     Pentagon,
-    //   Square,
     RectangleHorizontal,
-    //   Route,
-    //   Brush,
     Circle,
     Slash,
-    //   MoveHorizontal,
     ScanSearch,
     Scale3D,
     House,
     X,
+    RotateCcw
 } from "lucide-vue-next";
 import c2 from "@/assets/images/map/c2.svg";
 // import getCeliang from "@/utils/celiang";
 import {
     eventRotate,
     eventRender,
-    popupbig,
-    popup,
     addIcon,
-    setPopup,
 } from "@/views/map/map.js";
 import { config, mapbox } from "@/config/tileserver-echars.js";
 import { api } from "@/config/api.js";
-import { specEchars } from "@/config/spec-echars";
+import { layers, specEchars } from "@/config/spec-echars";
+
 
 /**
  * 初始化地图
@@ -60,15 +51,15 @@ import { specEchars } from "@/config/spec-echars";
 const initMap = () => {
     mapboxgl.workerCount = navigator.hardwareConcurrency + 2;
     mapboxgl.maxParallelImageRequests = 12;
-    mapboxgl.accessToken = mapbox.key;
+    //   mapboxgl.accessToken = mapbox.key;
     mapboxgl.prewarm();
 
     window.map = new mapboxgl.Map({
         container: "map",
-        center: [100, 36],
-        zoom: 2,
+        center: [106, 36],
+        zoom: 4.6,
         maxZoom: 20,
-        minZoom: 6,
+        minZoom: 3,
         style: {
             version: 8,
             sprite: `http://${window.location.host}/mapboxgl/sprites/sprite`,
@@ -108,7 +99,7 @@ const initMap = () => {
             ],
             _ssl: true,
         },
-        //  projection: machine.value,
+        projection: machine.value,
     });
     map.addControl(
         new mapboxgl.AttributionControl({
@@ -122,10 +113,23 @@ const initMap = () => {
     });
     !map.hasControl(cc) && map.addControl(cc);
 
-    // map.on("load", () => {
-    //   addTiles();
-    // });
+    /**
+ * Mapbox 小型弹出窗口实例
+ * @type {mapboxgl.Popup}
+ */
+    popup = new mapboxgl.Popup({
+        closeOnClick: false,
+        closeButton: false,
+    });
+
+    popup.setOffset(5);
+
+    map.on("load", () => {
+        addTiles();
+    });
 };
+
+let popup;
 
 /**
  * 量测
@@ -181,17 +185,7 @@ const switchLayer = () => {
     //console.log(rightLayer.value);
 };
 
-// 追加地形
-const loadTerrain = () => {
-    let bool = map.getSource("mapbox-dem");
-    !bool &&
-        map.addSource("mapbox-dem", {
-            type: "raster-dem",
-            url: "mapbox://mapbox.terrain-rgb",
-            tileSize: 512,
-            maxzoom: 16,
-        });
-};
+
 
 // 初始化视野
 const fitCenter = () => {
@@ -199,10 +193,6 @@ const fitCenter = () => {
         center: [118.223855, 36.315451],
         zoom: 7,
         speed: 1,
-        // curve: 2,
-        // easing (t) {
-        //     return t;
-        // },
     });
 };
 /**
@@ -221,11 +211,15 @@ const fitBox = (f) => {
  * 添加图层
  */
 const addTiles = () => {
-    //  历史缓存 重置底图  StateManager.get("MAP_LAYERS") || "{}"
-    //console.log(StateManager.get("MAP_LAYERS"));
-    // let ts = StateManager.get("MAP_LAYERS_ECHARS") || layers.value[17];
-    //console.log(ts.param, ts.key);
-    //addRasterTileLayer(ts.param, ts.key);
+    let type;
+
+    if (StateManager.get("MAP_LAYERS")) {
+        type = StateManager.get("MAP_LAYERS");
+    } else {
+        type = layers.value[layers.value.length - 1];
+        StateManager.set("MAP_LAYERS", type);
+    }
+    addRasterTileLayer(type.param, type.key);
 };
 
 let loadLayer = [];
@@ -379,11 +373,21 @@ const addMapStyle = () => {
 
 
 // 获取市区
+const getProvinceGeometry = async (gid) => {
+    return await api.get_table_by_filter(
+        "admin_2022_province",
+        `and  gid in (${gid}) `,
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.01)) as json,name,gid,province_code`
+    );
+}
+
+
+// 获取市区
 const getCityGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "admin_2022_city",
         `and  gid in (${gid}) `,
-        `ST_AsGeoJSON(geom) as json,name,gid`
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.01)) as json,name,gid,province_code,province,code`
     );
 }
 
@@ -392,7 +396,7 @@ const getCountyGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "admin_2022_county",
         `and  gid in (${gid}) `,
-        `ST_AsGeoJSON(geom) as json,name,gid`
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.001)) as json,name,gid`
     );
 }
 
@@ -401,7 +405,7 @@ const getTownGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "china_wgs84_town",
         `and  gid in (${gid}) `,
-        `ST_AsGeoJSON(geom) as json,town_name,county_name,gid`
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.0001)) as json,town_name,county_name,gid`
     );
 }
 
@@ -418,12 +422,7 @@ const getCunGeometry = async (gid) => {
 
 onMounted(() => {
     initMap();
-    // loadBaseSource();
     eventLoad();
-
-    // loadDraw();
-
-
 
     nextTick(() => {
 
@@ -432,11 +431,46 @@ onMounted(() => {
 
             // addTiles();
 
-            fitCenter();
+            // fitCenter();
         })
 
+
+
+        map.on("click", (e) => {
+
+            clearCoordinatesJSON
+
+            map.getCanvas().style.cursor = "";
+            popup.setLngLat([0, 0]);
+            popup.setHTML("");
+
+
+        });
+
+        map.on("click", "admin_2022_province_fill", async (e) => {
+
+
+            clearCoordinatesJSON()
+
+
+            map.getCanvas().style.cursor = "pointer";
+            let feature = await getProvinceGeometry(e.features[0].properties.gid);
+            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+
+            map.fitBounds(bbox, {
+                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+            });
+
+            drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+
+
+        });
+
         map.on("click", "admin_2022_city_fill", async (e) => {
-            console.log(e)
+            clearCoordinatesJSON()
+
+
             map.getCanvas().style.cursor = "pointer";
             let feature = await getCityGeometry(e.features[0].properties.gid);
 
@@ -445,44 +479,180 @@ onMounted(() => {
 
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 200, right: 200, bottom: 100 },
-                // linear: true,
-                // easing: (t) => {
-                //     return t * (1 - t);
-                // },
+                padding: { top: 100, left: 100, right: 100, bottom: 100 },
             });
+
+            drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+            // 条件筛选
+
+            // 市
+            // map.setFilter("admin_2022_city_fill", [
+            //     "all",
+            //     ["==", ["get", "code"], feature[0].code]
+            // ]);
+            // map.setFilter("admin_2022_city", [
+            //     "all",
+            //     ["==", ["get", "code"], feature[0].code]
+            // ]);
+
+            // // 县
+            // map.setFilter("admin_2024_county_fill", [
+            //     "all",
+            //     ["==", ["get", "city_code"], feature[0].code]
+            // ]);
+            // map.setFilter("admin_2024_county", [
+            //     "all",
+            //     ["==", ["get", "city_code"], feature[0].code]
+            // ]);
+
+            // // 镇
+            // let ncode = feature[0].code;
+            // //console.log(ncode)
+            // map.setFilter("china_wgs84_town_fill", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
+            // map.setFilter("china_wgs84_town", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
+
+            // // 村
+            // map.setFilter("china_wgs84_cun_fill", [
+            //     "all",
+            //     ["==", ["get", "city_code"], ncode]
+            // ]);
+            // map.setFilter("china_wgs84_cun", [
+            //     "all",
+            //     ["==", ["get", "city_code"], ncode]
+            // ]);
         });
 
         map.on("click", "admin_2024_county_fill", async (e) => {
-            console.log(e)
+            clearCoordinatesJSON()
+
             map.getCanvas().style.cursor = "pointer";
             let feature = await getCountyGeometry(e.features[0].properties.gid);
-            // console.log(feature)
 
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 200, right: 200, bottom: 100 },
-                // linear: true,
-                // easing: (t) => {
-                //     return t * (1 - t);
-                // },
+                padding: { top: 100, left: 100, right: 100, bottom: 100 },
             });
+
+            drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+            // // 修改镇的颜色
+            // map.setPaintProperty("china_wgs84_town_fill", "fill-color", [
+            //     "case",
+            //     ["==", ["get", "gid"], gid],
+            //     "red", // 选中的颜色
+            //     "RGB(130,170,253)" // 默认颜色
+            // ]);
+
+            // // 修改村的颜色
+            // map.setPaintProperty("china_wgs84_cun_fill", "fill-color", [
+            //     "case",
+            //     ["==", ["get", "gid"], gid],
+            //     "red", // 选中的颜色
+            //     "RGB(130,170,253)" // 默认颜色
+            // ]);
+
+
+            // 县
+            // map.setFilter("admin_2024_county_fill", [
+            //     "all",
+            //     ["==", ["get", "city_code"], feature[0].code]
+            // ]);
+            // map.setFilter("admin_2024_county", [
+            //     "all",
+            //     ["==", ["get", "city_code"], feature[0].code]
+            // ]);
+
+            // // 镇
+            // let ncode = feature[0].code;
+            // //console.log(ncode)
+            // map.setFilter("china_wgs84_town_fill", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
+            // map.setFilter("china_wgs84_town", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
+
+            // // 村
+            // map.setFilter("china_wgs84_cun_fill", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
+            // map.setFilter("china_wgs84_cun", [
+            //     "all",
+            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
+            // ]);
         });
 
         map.on("click", "china_wgs84_town_fill", async (e) => {
-            console.log(e)
+            clearCoordinatesJSON()
+
             map.getCanvas().style.cursor = "pointer";
             let feature = await getTownGeometry(e.features[0].properties.gid);
             // console.log(feature)
 
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 200, right: 200, bottom: 100 },
-                // linear: true,
-                // easing: (t) => {
-                //     return t * (1 - t);
-                // },
+                padding: { top: 100, left: 100, right: 100, bottom: 100 },
             });
+
+            drawCoordinatesJSON(JSON.parse(feature[0].json));
+        });
+
+        map.on("click", "china_wgs84_cun_fill", async (e) => {
+            clearCoordinatesJSON()
+
+            map.getCanvas().style.cursor = "pointer";
+            let feature = await getCunGeometry(e.features[0].properties.gid);
+            // console.log(feature)
+
+            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+            map.fitBounds(bbox, {
+                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+            });
+
+            drawCoordinatesJSON(JSON.parse(feature[0].json));
+        });
+
+
+        /**
+       * 省级别
+       */
+        map.on("mousemove", "admin_2022_province_fill", (e) => {
+            map.getCanvas().style.cursor = "pointer";
+            let feature = e.features[0];
+
+
+            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
+            let name = feature.properties.name ? feature.properties.name : "";
+
+
+
+            map.setFilter("Highlight_DK_Line_Province", ["all", ["in", "province_code", feature.properties.province_code]]);
+            map.setLayoutProperty("Highlight_DK_Line_Province", "visibility", "visible");
+
+            let text = `
+                <table style="line-height:1.0;font-size:18px;width:100px " >
+                <tr><td style="text-align: center;">${name} </td></tr>
+                </table>
+            `;
+            popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
+
+        });
+
+        map.on("mouseleave", "admin_2022_province_fill", () => {
+            map.getCanvas().style.cursor = "";
+            popup.setLngLat([0, 0]);
+            popup.setHTML("");
+            map.setLayoutProperty("Highlight_DK_Line_Province", "visibility", "none");
         });
 
 
@@ -500,8 +670,8 @@ onMounted(() => {
 
 
 
-            map.setFilter("Highlight_DK_Line", ["all", ["in", "gid", feature.properties.gid]]);
-            map.setLayoutProperty("Highlight_DK_Line", "visibility", "visible");
+            map.setFilter("Highlight_DK_Line_City", ["all", ["in", "gid", feature.properties.gid]]);
+            map.setLayoutProperty("Highlight_DK_Line_City", "visibility", "visible");
 
             let text = `
                 <table style="line-height:1.0;width:100%;letter-spacing: -1px; " >
@@ -516,7 +686,7 @@ onMounted(() => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
             popup.setHTML("");
-            map.setLayoutProperty("Highlight_DK_Line", "visibility", "none");
+            map.setLayoutProperty("Highlight_DK_Line_City", "visibility", "none");
         });
 
         /**
@@ -613,6 +783,63 @@ onMounted(() => {
 
 
 
+/**
+ * 清除地图上的 GeoJSON 数据
+ * 该函数会移除地图上的 GeojsonBuffLayer 图层和 GeojsonBuffSource 数据源
+ */
+const clearCoordinatesJSON = () => {
+    // 如果 GeojsonBuffLayer 图层存在，则将其移除
+    map.getLayer("GeojsonBuffLayerFill") && map.removeLayer("GeojsonBuffLayerFill")
+    // 如果 GeojsonBuffLayer 图层存在，则将其移除
+    map.getLayer("GeojsonBuffLayer") && map.removeLayer("GeojsonBuffLayer")
+    // 如果 GeojsonBuffSource 数据源存在，则将其移除
+    map.getSource("GeojsonBuffSource") && map.removeSource("GeojsonBuffSource")
+
+
+}
+
+/**
+ * 在地图上绘制 GeoJSON 数据
+ * @param {Object} geojson - 要绘制的 GeoJSON 数据
+ */
+const drawCoordinatesJSON = (geojson) => {
+    // 添加 GeoJSON 数据源
+    map.addSource('GeojsonBuffSource', {
+        'type': 'geojson',
+        'data': geojson
+    });
+
+    // 添加图层以显示 GeoJSON 数据
+    map.addLayer({
+        'id': 'GeojsonBuffLayer',
+        'type': 'line',
+        'source': 'GeojsonBuffSource',
+        'layout': {
+            "line-join": "round",
+            "line-cap": "round",
+        },
+        'paint': {
+            "line-color": "RGB(50,119,252)",
+            "line-width": 12,
+            "line-opacity": 0.6,
+        }
+    });
+
+    map.addLayer({
+        'id': 'GeojsonBuffLayerFill',
+        'type': 'fill',
+        'source': 'GeojsonBuffSource',
+        'layout': {
+            // "line-join": "round",
+            // "line-cap": "round",
+        },
+        'paint': {
+            'fill-color': 'RGB(50,119,252)', // 填充颜色
+            'fill-opacity': 0.2 // 填充透明度
+        }
+    });
+}
+
 // 获取所有坐标并计算边界框
 const getCoordinatesAndBbox = (features) => {
     let lng = [];
@@ -622,14 +849,17 @@ const getCoordinatesAndBbox = (features) => {
     // 遍历 GeoJSON 的 features
     [features].forEach(feature => {
         if (feature) {
-            console.log(feature)
-            // 获取当前几何体的坐标
+            console.log(feature) // 调试输出当前 feature
+
+            // 初始化坐标数组
             const coords = [];
             if (feature.type === 'Polygon') {
+                // 如果是多边形，提取第一个坐标数组
                 feature.coordinates[0].map(coord => {
                     coords.push(coord)
                 });
             } else if (feature.type === 'MultiPolygon') {
+                // 如果是多重多边形，遍历每个多边形并提取坐标
                 feature.coordinates.forEach(polygon => {
                     polygon[0].map(coord => {
                         coords.push(coord)
@@ -637,11 +867,13 @@ const getCoordinatesAndBbox = (features) => {
                 });
             }
 
+            // 将坐标分解为经度和纬度，并更新边界框
             coords.forEach(coord => {
                 lng.push(coord[0]);
                 lat.push(coord[1]);
             });
-            // 更新边界框
+
+            // 计算最小和最大经纬度以确定边界框
             minX = Math.min(...lng);
             minY = Math.min(...lat);
             maxX = Math.max(...lng);
@@ -649,9 +881,38 @@ const getCoordinatesAndBbox = (features) => {
         }
     });
 
+    // 返回边界框的四个角点
     return [minX, minY, maxX, maxY]
 }
 
+
+// 图层切换
+const switchTile = (layer) => {
+    // 历史缓存
+    StateManager.set("MAP_LAYERS", layer);
+
+    layers.forEach((ll) => {
+        ll.isShow = false;
+    });
+    layer.isShow = true;
+
+    // 图层叠加
+    addRasterTileLayer(layer.param, layer.key);
+
+    message.success("已更新为" + layer.name, 1);
+
+};
+
+const rectMap = () => {
+    clearCoordinatesJSON()
+
+    map.fitBounds([
+        [73.66, 18.17], // 西南角坐标
+        [135.05, 53.55] // 东北角坐标
+    ], {
+        padding: { top: 10, bottom: 10, left: 10, right: 10 }
+    });
+};
 
 onUnmounted(() => {
     delete window.map;
@@ -677,7 +938,7 @@ defineProps({
 
         <!--tree工具栏-->
         <div class="left-tool">
-            <Shandong></Shandong>
+
         </div>
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
@@ -690,6 +951,17 @@ defineProps({
 </a-button>
 </a-tooltip> -->
 
+
+            <a-tooltip placement="leftTop">
+                <template #title>
+                    <span>重置地图</span>
+                </template>
+                <a-button @click="rectMap()" size="large" class="boxshadow">
+                    <RotateCcw />
+
+                </a-button>
+            </a-tooltip>
+
             <a-tooltip placement="leftTop">
                 <template #title>
                     <span>最佳视野</span>
@@ -699,14 +971,14 @@ defineProps({
 
                 </a-button>
             </a-tooltip>
-            <br />
+
             <a-tooltip title="重置视角 " placement="left">
                 <div @click="Zero()" class="pst">
                     <img id="Zero" :src="c2" @click="Zero()" />
                 </div>
             </a-tooltip>
 
-            <!-- <br />
+
             <div>
 
                 <a-tooltip title="底图切换" placement="left">
@@ -716,7 +988,7 @@ defineProps({
                         <span class="arrow">◣</span>
                     </a-button>
                 </a-tooltip>
-             
+
                 <div class="switch-layer" v-if="rightLayer">
                     <a-card title="" v-show="machine != 'mercator'">
                         <a-card-grid v-for="item in layers" class="" :key="item.id" :style="{
@@ -724,8 +996,12 @@ defineProps({
                             textAlign: 'center',
                             display: item.projection ? 'block' : 'none',
                         }">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px"
+                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" v-if="item.url"
                                 @click="switchTile(item)" />
+                            <div v-else
+                                style="width: 100%; height: 100px; border-radius: 2px;background-color: aliceblue;"
+                                @click="switchTile(item)">
+                            </div>
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
                             </div>
@@ -736,7 +1012,12 @@ defineProps({
                             width: '25%',
                             textAlign: 'center',
                         }" @click="switchTile(item)">
-                            <img :src="item.url" style="width: 100%; height: 100px; border-radius: 2px" />
+                            <img :src="item.url" v-if="item.url"
+                                style="width: 100%; height: 100px; border-radius: 2px" />
+                            <div v-else
+                                style="width: 100%; height: 100px; border-radius: 2px;background-color: aliceblue;"
+                                @click="switchTile(item)">
+                            </div>
                             <div :class="item.isShow ? 'mmapcs-av' : 'mmapcs'">
                                 {{ item.name }}
                             </div>
@@ -744,77 +1025,10 @@ defineProps({
                     </a-card>
                     <br />
 
-                 
-                    <a-card>
-                   
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                地名
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state.DMZJiSHow" size="small" />
-                            </div>
-                        </a-card-grid>
 
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                省界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked7" />
-                            </div>
-                        </a-card-grid>
 
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                市界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked8" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                县界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked4" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                镇界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked5" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                        }">
-                            <div style="font-weight: 8000; font-size: 16px; color: #ffffff">
-                                村界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked6" size="small" />
-                            </div>
-                        </a-card-grid>
-                    </a-card>
                 </div>
-            </div> -->
+            </div>
 
 
             <a-tooltip placement="leftTop">
@@ -874,7 +1088,7 @@ defineProps({
     height: 100%;
 }
 
-/deep/.mapboxgl-ctrl-scale {
+::v-deep .mapboxgl-ctrl-scale {
     color: #fff;
 
     font-size: 12px;
@@ -1122,18 +1336,18 @@ defineProps({
 }
 
 .mapboxgl-popup-close-button:hover {
-    background-color: #fdfbfbb4;
+    background-color: #10101069;
 }
 
 ::v-deep .mapboxgl-popup-content {
-    background: #fdfbfbdb;
+    background: #10101092;
     border-radius: 2px;
     box-shadow: 0 10px 2px rgba(0, 0, 0, 0.1);
 
     padding: 10px 5px;
     pointer-events: auto;
     position: relative;
-    color: #444242e7;
-    font-size: 14px;
+    color: #f4eeeee7;
+    font-size: 16px;
 }
 </style>

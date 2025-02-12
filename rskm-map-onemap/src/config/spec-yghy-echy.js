@@ -1,19 +1,4 @@
 
-// import Baidu_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-// import Baidu_BZ from "@/assets/images/map/Baidu_BZ.jpg";
-// import Baidu_WX_WZJ from "@/assets/images/map/Baidu_WX_WZJ.jpg";
-// import Baidu_WX from "@/assets/images/map/Baidu_WX.jpg";
-// import ESRI_BZ from "@/assets/images/map/ESRI_BZ.jpg";
-// import ESRI_SL from "@/assets/images/map/ESRI_SL.jpg";
-// import ESRI_WS from "@/assets/images/map/ESRI_WS.jpg";
-// import ESRI_WX from "@/assets/images/map/ESRI_WX.jpg";
-// import Gaode_BZ_WZJ from "@/assets/images/map/Baidu_BZ_WZJ.jpg";
-// import Gaode_BZ from "@/assets/images/map/Gaode_BZ.jpg";
-// import Gaode_WX_WZJ from "@/assets/images/map/Gaode_WX_WZJ.jpg";
-// import Gaode_WX from "@/assets/images/map/Gaode_WX.jpg";
-// import TDT_BZ_WZJ from "@/assets/images/map/TDT_BZ_WZJ.jpg";
-// import TDT_BZ from "@/assets/images/map/TDT_BZ.jpg";
-// import TDT_WX_WZJ from "@/assets/images/map/TDT_WX_WZJ.jpg";
 import Google from "@/assets/images/map/Google.jpg";
 import JL from "@/assets/images/map/JL.jpg";
 import MB from "@/assets/images/map/MB.jpg";

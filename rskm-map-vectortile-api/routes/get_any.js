@@ -44,7 +44,24 @@ const sql = (params, query) => {
                     (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel where bbxrmc not in ('') and v1 in ('') ${query.where}) as wdkdhsl 
                     ;
             `
+            break;
 
+        case "yghy_sql_33":
+
+            sql = `
+            SELECT 
+                    (select sum(cbsl::numeric) from public.procjet_2024_yghy_hz10_excel_2 where cbsl not in ('') ${query.where})  as tb_area,
+                    (select sum(v1::numeric) from public.procjet_2024_yghy_hz10_excel_2 where v1 not in ('') ${query.where}) as dk_area,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') ${query.where}) as dhsl ,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') and v1 not in ('') ${query.where}) as ydkdhsl,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v8 in ('1') ${query.where}) as dkhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v8 in ('0') ${query.where}) as dkbhghs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v3 not in ('1') ${query.where}) as dkmjbfs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v4 not in ('1') ${query.where}) as dkcd,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v7 not in ('1') ${query.where}) as bdmjbfhs,
+                    (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') and v1 in ('') ${query.where}) as wdkdhsl 
+                    ;
+            `
             break;
         case "yghy_sql_4":
             let county = ['东阿县', '济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '无棣县'];
@@ -76,6 +93,36 @@ const sql = (params, query) => {
 
             break;
 
+        case "yghy_sql_44":
+            let county2 = ['东阿县', '济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '无棣县'];
+
+            for (let i = 0; i < county2.length; i++) {
+                let countyName = county2[i];
+                sql += `
+                    SELECT 
+                        '${countyName}' as county,
+                        (select sum(cbsl::numeric) from public.procjet_2024_yghy_hz10_excel_2 where cbsl not in ('') and quxian='${countyName}')  as tb_area,
+                        (select sum(v1::numeric) from public.procjet_2024_yghy_hz10_excel_2 where v1 not in ('') and quxian='${countyName}') as dk_area,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') and quxian='${countyName}') as dhsl ,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') and v1 not in ('') and quxian='${countyName}') as ydkdhsl,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v8 in ('1') and quxian='${countyName}') as dkhghs,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v8 in ('0') and quxian='${countyName}') as dkbhghs,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v3 not in ('1') and quxian='${countyName}') as dkmjbfs,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v4 not in ('1') and quxian='${countyName}') as dkcd,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where  v7 not in ('1') and quxian='${countyName}') as bdmjbfhs,
+                        (select count(bbxrmc) from public.procjet_2024_yghy_hz10_excel_2 where bbxrmc not in ('') and v1 in ('') and quxian='${countyName}') as wdkdhsl 
+                    `;
+
+                if (i < county2.length - 1) {
+                    sql += `UNION ALL `
+                }
+
+
+            }
+
+
+            break;
+
 
         case "yghy_sql_5":
             sql = `
@@ -94,6 +141,23 @@ const sql = (params, query) => {
 
             break
 
+        case "yghy_sql_55":
+            sql = `
+                SELECT 
+                        xiangzhen,
+                    count(bbxrmc) AS dhsl,
+                        count(CASE WHEN v8 = '1' THEN 1 END) AS dkhghs
+                    FROM 
+                        public.procjet_2024_yghy_hz10_excel_2
+                    WHERE 1=1   ${query.where} 
+                    GROUP BY 
+                        xiangzhen
+                    ORDER BY 
+                        xiangzhen;
+                `
+
+            break
+
         case "yghy_sql_6":
             sql = `
                 
@@ -109,6 +173,23 @@ const sql = (params, query) => {
                 ORDER BY 
                     bxjg;
                 `
+            break
+
+        case "yghy_sql_66":
+            sql = `
+                    
+                    SELECT 
+                        bxjg,
+                    count(bbxrmc) AS dhsl,
+                        count(CASE WHEN v8 = '1' THEN 1 END) AS dkhghs
+                    FROM 
+                        public.procjet_2024_yghy_hz10_excel_2
+                    WHERE  1=1   ${query.where} 
+                    GROUP BY 
+                        bxjg
+                    ORDER BY 
+                        bxjg;
+                    `
             break
 
 
