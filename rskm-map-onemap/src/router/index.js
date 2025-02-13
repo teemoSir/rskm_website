@@ -32,7 +32,7 @@ const router = createRouter({
             component: () => import("@/views/verification_n2/index.vue"),
         },
         {
-            path: "/echars",
+            path: "/echars/:id",
             name: "echars",
             component: () => import("@/views/echars/index.vue"),
         },

@@ -7,8 +7,6 @@ import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted, defineExpose
 
 import { message, notification, Button } from "ant-design-vue";
 import * as turf from "@turf/turf";
-// import MapboxDraw from "@mapbox/mapbox-gl-draw";
-// import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import StateManager from "@/utils/state_manager";
 import {
     Ruler,
@@ -33,15 +31,16 @@ import {
     RotateCcw
 } from "lucide-vue-next";
 import c2 from "@/assets/images/map/c2.svg";
-// import getCeliang from "@/utils/celiang";
 import {
     eventRotate,
     eventRender,
     addIcon,
-} from "@/views/map/map.js";
-import { config, mapbox } from "@/config/tileserver-echars.js";
-import { api } from "@/config/api.js";
+} from "@/views/map/map";
+import { config, mapbox } from "@/config/tileserver-echars";
+import { api } from "@/config/api";
 import { layers, specEchars } from "@/config/spec-echars";
+import { province_data } from "../../../public/data/message";
+import { useRoute } from 'vue-router';
 
 
 /**
@@ -372,7 +371,7 @@ const addMapStyle = () => {
 }
 
 
-// 获取市区
+// 获取省
 const getProvinceGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "admin_2022_province",
@@ -419,235 +418,153 @@ const getCunGeometry = async (gid) => {
     );
 }
 
+const loadDefault = async () => {
+    // 实现方法  province_code
+
+    const data = await api.get_table_by_filter(
+        "admin_2022_province",
+        `and  province_code ='${province_code}' `,
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.1)) as json,name,gid,province_code`
+    );
+    // 处理数据
+    //console.log(data);
+
+    let bbox = getCoordinatesAndBbox(JSON.parse(data[0].json));
+
+    map.fitBounds(bbox, {
+        padding: { top: 10, bottom: 10 },
+    });
+
+}
+
+const loadDefaultData = async () => {
+
+    let list = [];
+    province_data.data.forEach((p) => {
+        list.push(`${p.name}`)
+        list.push(`${p.name} \n ${p.value}`)
+    })
+
+
+
+    let dds = [
+        'match',
+        ['get', 'name'], ...list, ["get", "name"]
+    ];
+    console.log(dds)
+    map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', dds);
+}
+
+const route = useRoute(); // 获取当前路由对象
+const province_code = route.params.id || ''; // 获取路由参数，若未获得则设为空字符串
+
 
 onMounted(() => {
+    // 延迟加载默认数据
+    setTimeout(() => {
+        loadDefault()
+    }, 2000)
+
+    // 初始化地图
     initMap();
+
+    // 加载事件
     eventLoad();
 
     nextTick(() => {
-
+        // 地图加载完成后执行
         map.on("load", () => {
             addMapStyle()
 
-            // addTiles();
-
-            // fitCenter();
+            loadDefaultData()
         })
 
-
-
+        // 地图点击事件
         map.on("click", (e) => {
-
-            clearCoordinatesJSON
-
+            clearCoordinatesJSON()
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
             popup.setHTML("");
-
-
         });
 
+        // 点击省级填充图层事件
         map.on("click", "admin_2022_province_fill", async (e) => {
-
-
             clearCoordinatesJSON()
-
-
             map.getCanvas().style.cursor = "pointer";
             let feature = await getProvinceGeometry(e.features[0].properties.gid);
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
-
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+                padding: { top: 10, bottom: 10 },
             });
-
             drawCoordinatesJSON(JSON.parse(feature[0].json));
-
-
-
         });
 
+        // 点击市级填充图层事件
         map.on("click", "admin_2022_city_fill", async (e) => {
             clearCoordinatesJSON()
-
-
             map.getCanvas().style.cursor = "pointer";
             let feature = await getCityGeometry(e.features[0].properties.gid);
-
-
-            // console.log(feature)
-
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+                padding: { top: 10, bottom: 10 },
             });
-
             drawCoordinatesJSON(JSON.parse(feature[0].json));
-
-            // 条件筛选
-
-            // 市
-            // map.setFilter("admin_2022_city_fill", [
-            //     "all",
-            //     ["==", ["get", "code"], feature[0].code]
-            // ]);
-            // map.setFilter("admin_2022_city", [
-            //     "all",
-            //     ["==", ["get", "code"], feature[0].code]
-            // ]);
-
-            // // 县
-            // map.setFilter("admin_2024_county_fill", [
-            //     "all",
-            //     ["==", ["get", "city_code"], feature[0].code]
-            // ]);
-            // map.setFilter("admin_2024_county", [
-            //     "all",
-            //     ["==", ["get", "city_code"], feature[0].code]
-            // ]);
-
-            // // 镇
-            // let ncode = feature[0].code;
-            // //console.log(ncode)
-            // map.setFilter("china_wgs84_town_fill", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
-            // map.setFilter("china_wgs84_town", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
-
-            // // 村
-            // map.setFilter("china_wgs84_cun_fill", [
-            //     "all",
-            //     ["==", ["get", "city_code"], ncode]
-            // ]);
-            // map.setFilter("china_wgs84_cun", [
-            //     "all",
-            //     ["==", ["get", "city_code"], ncode]
-            // ]);
         });
 
+        // 点击县级填充图层事件
         map.on("click", "admin_2024_county_fill", async (e) => {
             clearCoordinatesJSON()
-
             map.getCanvas().style.cursor = "pointer";
             let feature = await getCountyGeometry(e.features[0].properties.gid);
-
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+                padding: { top: 10, bottom: 10 },
             });
-
             drawCoordinatesJSON(JSON.parse(feature[0].json));
-
-            // // 修改镇的颜色
-            // map.setPaintProperty("china_wgs84_town_fill", "fill-color", [
-            //     "case",
-            //     ["==", ["get", "gid"], gid],
-            //     "red", // 选中的颜色
-            //     "RGB(130,170,253)" // 默认颜色
-            // ]);
-
-            // // 修改村的颜色
-            // map.setPaintProperty("china_wgs84_cun_fill", "fill-color", [
-            //     "case",
-            //     ["==", ["get", "gid"], gid],
-            //     "red", // 选中的颜色
-            //     "RGB(130,170,253)" // 默认颜色
-            // ]);
-
-
-            // 县
-            // map.setFilter("admin_2024_county_fill", [
-            //     "all",
-            //     ["==", ["get", "city_code"], feature[0].code]
-            // ]);
-            // map.setFilter("admin_2024_county", [
-            //     "all",
-            //     ["==", ["get", "city_code"], feature[0].code]
-            // ]);
-
-            // // 镇
-            // let ncode = feature[0].code;
-            // //console.log(ncode)
-            // map.setFilter("china_wgs84_town_fill", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
-            // map.setFilter("china_wgs84_town", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
-
-            // // 村
-            // map.setFilter("china_wgs84_cun_fill", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
-            // map.setFilter("china_wgs84_cun", [
-            //     "all",
-            //     ["==", ["slice", ["get", "city_code"], 1, 4], ncode.slice(0, 4)]
-            // ]);
         });
 
+        // 点击镇级填充图层事件
         map.on("click", "china_wgs84_town_fill", async (e) => {
             clearCoordinatesJSON()
-
             map.getCanvas().style.cursor = "pointer";
             let feature = await getTownGeometry(e.features[0].properties.gid);
-            // console.log(feature)
-
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+                padding: { top: 10, bottom: 10 },
             });
-
             drawCoordinatesJSON(JSON.parse(feature[0].json));
         });
 
+        // 点击村级填充图层事件
         map.on("click", "china_wgs84_cun_fill", async (e) => {
             clearCoordinatesJSON()
-
             map.getCanvas().style.cursor = "pointer";
             let feature = await getCunGeometry(e.features[0].properties.gid);
-            // console.log(feature)
-
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 100, left: 100, right: 100, bottom: 100 },
+                padding: { top: 10, bottom: 10 },
             });
-
             drawCoordinatesJSON(JSON.parse(feature[0].json));
         });
 
-
         /**
-       * 省级别
-       */
+         * 省级别鼠标移动事件
+         */
         map.on("mousemove", "admin_2022_province_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-
-
-            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
             let name = feature.properties.name ? feature.properties.name : "";
-
-
-
             map.setFilter("Highlight_DK_Line_Province", ["all", ["in", "province_code", feature.properties.province_code]]);
             map.setLayoutProperty("Highlight_DK_Line_Province", "visibility", "visible");
-
             let text = `
                 <table style="line-height:1.0;font-size:18px;width:100px " >
                 <tr><td style="text-align: center;">${name} </td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
-
         });
 
+        // 省级别鼠标离开事件
         map.on("mouseleave", "admin_2022_province_fill", () => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
@@ -655,33 +572,26 @@ onMounted(() => {
             map.setLayoutProperty("Highlight_DK_Line_Province", "visibility", "none");
         });
 
-
-
         /**
-         * 市级别
+         * 市级别鼠标移动事件
          */
         map.on("mousemove", "admin_2022_city_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-
-
-            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
             let name = feature.properties.name ? feature.properties.name : "";
-
-
-
             map.setFilter("Highlight_DK_Line_City", ["all", ["in", "gid", feature.properties.gid]]);
             map.setLayoutProperty("Highlight_DK_Line_City", "visibility", "visible");
-
             let text = `
-                <table style="line-height:1.0;width:100%;letter-spacing: -1px; " >
-                <tr><td style="text-align: left;width:60px">行政区域</td><td style="text-align: right;width:60px">${name} </td></tr>
-                <tr><td style="text-align: left;width:60px">数据总量</td><td style="text-align: right;width:60px">123123</td></tr>
+             <table style="line-height:1.0;font-size:18px;" >
+                <tr><td style="text-align:center;">${name} </td></tr>
+                <tr><td style="text-align: center;">${province_data.data.filter((pro) => pro.name == name)[0] ? province_data.data.filter((pro) => pro.name == name)[0].value : ''
+                }</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 
+        // 市级别鼠标离开事件
         map.on("mouseleave", "admin_2022_city_fill", () => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
@@ -690,58 +600,51 @@ onMounted(() => {
         });
 
         /**
-         * 县级别
+         * 县级别鼠标移动事件
          */
         map.on("mousemove", "admin_2024_county_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-
-            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
             let name = feature.properties.name ? feature.properties.name : "";
-
             map.setFilter("Highlight_DK_Line_County", ["all", ["in", "gid", feature.properties.gid]]);
             map.setLayoutProperty("Highlight_DK_Line_County", "visibility", "visible");
-
             let text = `
-                <table style="line-height:1.0;width:100%;letter-spacing: -1px; " >
-                <tr><td style="text-align: left;width:60px">行政区域</td><td style="text-align: right;width:60px">${name} </td></tr>
-                <tr><td style="text-align: left;width:60px">数据总量</td><td style="text-align: right;width:60px">123123</td></tr>
+               <table style="line-height:1.0;font-size:18px;" >
+                <tr><td style="text-align:center;">${name} </td></tr>
+                <tr><td style="text-align: center;">123123</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 
+        // 县级别鼠标离开事件
         map.on("mouseleave", "admin_2024_county_fill", () => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
             popup.setHTML("");
-
-
             map.setLayoutProperty("Highlight_DK_Line_County", "visibility", "none");
         });
 
         /**
-        * 镇级别
-        */
+         * 镇级别鼠标移动事件
+         */
         map.on("mousemove", "china_wgs84_town_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-
-            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
             let town_name = feature.properties.town_name ? feature.properties.town_name : "";
-
             map.setFilter("Highlight_DK_Line_Town", ["all", ["in", "gid", feature.properties.gid]]);
             map.setLayoutProperty("Highlight_DK_Line_Town", "visibility", "visible");
-
             let text = `
-                <table style="line-height:1.0;width:100%;letter-spacing: -1px; " >
-                <tr><td style="text-align: left;width:60px">行政区域</td><td style="text-align: right;width:60px">${town_name} </td></tr>
-                <tr><td style="text-align: left;width:60px">数据总量</td><td style="text-align: right;width:60px">123123</td></tr>
+            
+                  <table style="line-height:1.0;font-size:18px;" >
+                <tr><td style="text-align:center;">${town_name} </td></tr>
+                <tr><td style="text-align: center;">123123</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 
+        // 镇级别鼠标离开事件
         map.on("mouseleave", "china_wgs84_town_fill", () => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
@@ -749,36 +652,36 @@ onMounted(() => {
             map.setLayoutProperty("Highlight_DK_Line_Town", "visibility", "none");
         });
 
-
         /**
-       * 村级别
-       */
+         * 村级别鼠标移动事件
+         */
         map.on("mousemove", "china_wgs84_cun_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-
-            let area_mu = feature.properties.area_mu ? feature.properties.area_mu : "31231";
             let name = feature.properties.name ? feature.properties.name : "";
-
             map.setFilter("Highlight_DK_Line_Cun", ["all", ["in", "gid", feature.properties.gid]]);
             map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "visible");
-
             let text = `
-                <table style="line-height:1.0;width:100%;letter-spacing: -1px; " >
-                <tr><td style="text-align: left;width:60px">行政区域</td><td style="text-align: right;width:60px">${name} </td></tr>
-                <tr><td style="text-align: left;width:60px">数据总量</td><td style="text-align: right;width:60px">123123</td></tr>
+                 <table style="line-height:1.0;font-size:18px;" >
+                <tr><td style="text-align:center;">${name} </td></tr>
+                <tr><td style="text-align: center;">123123</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 
+        // 村级别鼠标离开事件
         map.on("mouseleave", "china_wgs84_cun_fill", () => {
             map.getCanvas().style.cursor = "";
             popup.setLngLat([0, 0]);
             popup.setHTML("");
             map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "none");
         });
-    })
+
+    });
+
+
+
 });
 
 
@@ -925,7 +828,7 @@ defineExpose({
 
 });
 
-defineProps({
+const props = defineProps({
     MapToolPosition: Object
 })
 </script>
