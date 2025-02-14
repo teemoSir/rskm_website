@@ -7,6 +7,7 @@ let province_data = {
     "status": 0,
     "msg": null,
     "msgCode": null,
+    "type": "province",
     "data": [
         {
             "rcode": "371100",

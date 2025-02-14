@@ -323,10 +323,6 @@ watch(spin, () => {
 });
 
 
-
-
-
-
 message.config({
     top: `200px`,
     //   duration: 2,
@@ -347,7 +343,6 @@ const toggleLayerVisibility = (layerId, isVisible) => {
 
 
 const addMapStyle = () => {
-
 
     specEchars.forEach((layer) => {
         map.getLayer(layer.id) && map.removeLayer(layer.id);
@@ -418,6 +413,52 @@ const getCunGeometry = async (gid) => {
     );
 }
 
+// 获取code name
+const getAreaInfo = async (me) => {
+    let data;
+    switch (me.type) {
+        case "province":
+            data = await api.get_table_by_filter(
+                "admin_2022_province",
+                `and  province_code in ('${me.code}') `,
+                `province_code,name`
+            );
+            break;
+        case "city":
+            data = await api.get_table_by_filter(
+                "admin_2022_city",
+                `and  code in ('${me.code}') `,
+                `name,code`
+            );
+            break;
+        case "county":
+            data = await api.get_table_by_filter(
+                "admin_2022_county",
+                `and  code in ('${me.code}') `,
+                `name,code`
+            );
+            break;
+        case "town":
+            data = await api.get_table_by_filter(
+                "china_wgs84_town",
+                `and  town_code in ('${me.code}') `,
+                `town_name,town_code`
+            );
+            break;
+        case "cun":
+            data = await api.get_table_by_filter(
+                "china_wgs84_all",
+                `and  code in ('${me.code}') `,
+                `name,code`
+            );
+            break;
+    }
+
+
+
+    return data;
+}
+
 const loadDefault = async () => {
     // 实现方法  province_code
 
@@ -451,7 +492,7 @@ const loadDefaultData = async () => {
         'match',
         ['get', 'name'], ...list, ["get", "name"]
     ];
-    console.log(dds)
+    //console.log(dds)
     map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', dds);
 }
 
@@ -460,7 +501,10 @@ const province_code = route.params.id || ''; // 获取路由参数，若未获�
 
 
 onMounted(() => {
-    // 延迟加载默认数据
+
+
+
+    // 延迟自适应视野
     setTimeout(() => {
         loadDefault()
     }, 2000)
@@ -476,7 +520,13 @@ onMounted(() => {
         map.on("load", () => {
             addMapStyle()
 
-            loadDefaultData()
+            //loadDefaultData()
+
+            let res = getAreaInfo({ type: "province", code: province_code });
+            res.then((data) => {
+                //console.log(data);
+                sendMessageToIframe({ type: 'province', code: data[0].province_code, name: data[0].name });
+            })
         })
 
         // 地图点击事件
@@ -496,7 +546,18 @@ onMounted(() => {
             map.fitBounds(bbox, {
                 padding: { top: 10, bottom: 10 },
             });
+
+            // 高亮
             drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+
+            console.log(feature[0])
+            let res = getAreaInfo({ type: "province", code: feature[0].province_code });
+            res.then((data) => {
+                console.log(data);
+                sendMessageToIframe({ type: 'province', code: feature[0].province_code, name: feature[0].name });
+            })
+
         });
 
         // 点击市级填充图层事件
@@ -509,6 +570,14 @@ onMounted(() => {
                 padding: { top: 10, bottom: 10 },
             });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+            console.log(feature[0])
+            let res = getAreaInfo({ type: "city", code: feature[0].code });
+            res.then((data) => {
+                console.log(data);
+                sendMessageToIframe({ type: 'city', code: feature[0].code, name: feature[0].name });
+            })
+
         });
 
         // 点击县级填充图层事件
@@ -521,6 +590,13 @@ onMounted(() => {
                 padding: { top: 10, bottom: 10 },
             });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+            console.log(feature[0])
+            let res = getAreaInfo({ type: "county", code: feature[0].code });
+            res.then((data) => {
+                console.log(data);
+                sendMessageToIframe({ type: 'county', code: feature[0].code, name: feature[0].name });
+            })
         });
 
         // 点击镇级填充图层事件
@@ -533,6 +609,13 @@ onMounted(() => {
                 padding: { top: 10, bottom: 10 },
             });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
+
+            console.log(feature[0])
+            let res = getAreaInfo({ type: "town", code: feature[0].code });
+            res.then((data) => {
+                console.log(data);
+                sendMessageToIframe({ type: 'town', code: feature[0].town_code, name: feature[0].town_name });
+            })
         });
 
         // 点击村级填充图层事件
@@ -752,7 +835,7 @@ const getCoordinatesAndBbox = (features) => {
     // 遍历 GeoJSON 的 features
     [features].forEach(feature => {
         if (feature) {
-            console.log(feature) // 调试输出当前 feature
+            //  console.log(feature) // 调试输出当前 feature
 
             // 初始化坐标数组
             const coords = [];
@@ -831,6 +914,72 @@ defineExpose({
 const props = defineProps({
     MapToolPosition: Object
 })
+
+
+
+window.addEventListener('message', (event) => {
+    // if (event.origin !== 'http://sd-nh.weisys.net/') {
+    //     console.info("域名不符 http://sd-nh.weisys.net/")
+    //     return;
+    // }
+    let data = province_data;
+
+    if (!data.data) {
+        console.info("数据异常")
+        return;
+    }
+    // 处理接收到的数据
+    console.log('接收到的数据:', data);
+    console.log(map)
+
+    let list = [];
+
+    data.data.forEach((p) => {
+        list.push(`${p.name}`)
+        list.push(`${p.name} \n ${p.value}`)
+    })
+    switch (data.type) {
+        case "province":
+            let province = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', province);
+            break;
+
+        case "city":
+            let city = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
+            break;
+
+        case "county":
+            let county = [
+                'match',
+                ['get', 'town_name'], ...list, ["get", "town_name"]
+            ];
+            map.getLayer('china_wgs84_town_text') && map.setLayoutProperty('china_wgs84_town_text', 'text-field', county);
+            break;
+        case "town":
+            let town = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('china_wgs84_cun_text') && map.setLayoutProperty('china_wgs84_cun_text', 'text-field', town);
+            break;
+
+        default:
+            break;
+    }
+});
+
+const sendMessageToIframe = (message) => {
+    window.parent.postMessage(message, '*');
+}
+
+
 </script>
 
 <template>
