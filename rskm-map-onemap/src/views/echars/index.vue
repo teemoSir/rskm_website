@@ -459,7 +459,7 @@ const getAreaInfo = async (me) => {
     return data;
 }
 
-const loadDefault = async () => {
+const loadDefaultView = async () => {
     // 实现方法  province_code
 
     const data = await api.get_table_by_filter(
@@ -485,15 +485,223 @@ const loadDefaultData = async () => {
         list.push(`${p.name}`)
         list.push(`${p.name} \n ${p.value}`)
     })
-
-
-
     let dds = [
         'match',
         ['get', 'name'], ...list, ["get", "name"]
     ];
     //console.log(dds)
     map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', dds);
+}
+
+
+
+
+/**
+ * 清除地图上的 GeoJSON 数据
+ * 该函数会移除地图上的 GeojsonBuffLayer 图层和 GeojsonBuffSource 数据源
+ */
+const clearCoordinatesJSON = () => {
+    // 如果 GeojsonBuffLayer 图层存在，则将其移除
+    map.getLayer("GeojsonBuffLayerFill") && map.removeLayer("GeojsonBuffLayerFill")
+    // 如果 GeojsonBuffLayer 图层存在，则将其移除
+    map.getLayer("GeojsonBuffLayer") && map.removeLayer("GeojsonBuffLayer")
+    // 如果 GeojsonBuffSource 数据源存在，则将其移除
+    map.getSource("GeojsonBuffSource") && map.removeSource("GeojsonBuffSource")
+
+
+}
+
+/**
+ * 在地图上绘制 GeoJSON 数据
+ * @param {Object} geojson - 要绘制的 GeoJSON 数据
+ */
+const drawCoordinatesJSON = (geojson) => {
+    // 添加 GeoJSON 数据源
+    map.addSource('GeojsonBuffSource', {
+        'type': 'geojson',
+        'data': geojson
+    });
+
+    // 添加图层以显示 GeoJSON 数据
+    map.addLayer({
+        'id': 'GeojsonBuffLayer',
+        'type': 'line',
+        'source': 'GeojsonBuffSource',
+        'layout': {
+            "line-join": "round",
+            "line-cap": "round",
+        },
+        'paint': {
+            "line-color": "RGB(50,119,252)",
+            "line-width": 12,
+            "line-opacity": 0.6,
+        }
+    });
+
+    map.addLayer({
+        'id': 'GeojsonBuffLayerFill',
+        'type': 'fill',
+        'source': 'GeojsonBuffSource',
+        'layout': {
+            // "line-join": "round",
+            // "line-cap": "round",
+        },
+        'paint': {
+            'fill-color': 'RGB(50,119,252)', // 填充颜色
+            'fill-opacity': 0.2 // 填充透明度
+        }
+    });
+}
+
+// 获取所有坐标并计算边界框
+const getCoordinatesAndBbox = (features) => {
+    let lng = [];
+    let lat = [];
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+    // 遍历 GeoJSON 的 features
+    [features].forEach(feature => {
+        if (feature) {
+            //  console.log(feature) // 调试输出当前 feature
+
+            // 初始化坐标数组
+            const coords = [];
+            if (feature.type === 'Polygon') {
+                // 如果是多边形，提取第一个坐标数组
+                feature.coordinates[0].map(coord => {
+                    coords.push(coord)
+                });
+            } else if (feature.type === 'MultiPolygon') {
+                // 如果是多重多边形，遍历每个多边形并提取坐标
+                feature.coordinates.forEach(polygon => {
+                    polygon[0].map(coord => {
+                        coords.push(coord)
+                    });
+                });
+            }
+
+            // 将坐标分解为经度和纬度，并更新边界框
+            coords.forEach(coord => {
+                lng.push(coord[0]);
+                lat.push(coord[1]);
+            });
+
+            // 计算最小和最大经纬度以确定边界框
+            minX = Math.min(...lng);
+            minY = Math.min(...lat);
+            maxX = Math.max(...lng);
+            maxY = Math.max(...lat);
+        }
+    });
+
+    // 返回边界框的四个角点
+    return [minX, minY, maxX, maxY]
+}
+
+
+// 图层切换
+const switchTile = (layer) => {
+    // 历史缓存
+    StateManager.set("MAP_LAYERS", layer);
+
+    layers.forEach((ll) => {
+        ll.isShow = false;
+    });
+    layer.isShow = true;
+
+    // 图层叠加
+    addRasterTileLayer(layer.param, layer.key);
+
+    message.success("已更新为" + layer.name, 1);
+
+};
+
+const rectMap = () => {
+    clearCoordinatesJSON()
+
+    map.fitBounds([
+        [73.66, 18.17], // 西南角坐标
+        [135.05, 53.55] // 东北角坐标
+    ], {
+        padding: { top: 10, bottom: 10, left: 10, right: 10 }
+    });
+};
+
+onUnmounted(() => {
+    delete window.map;
+    delete window.gl_draw;
+});
+
+
+defineExpose({
+    fitCenter
+
+});
+
+const props = defineProps({
+    MapToolPosition: Object
+})
+
+
+
+window.addEventListener('message', (event) => {
+    // if (event.origin !== 'http://sd-nh.weisys.net/') {
+    //     console.info("域名不符 http://sd-nh.weisys.net/")
+    //     return;
+    // }
+    let data = event.data;
+
+    !data.data && (data = province_data);
+
+    // 处理接收到的数据
+    console.log('接收到的数据:', data);
+    console.log(map)
+
+    let list = [];
+
+    data.data.forEach((p) => {
+        list.push(`${p.name}`)
+        list.push(`${p.name} \n ${p.value}`)
+    })
+    switch (data.type) {
+        case "province":
+            let province = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', province);
+            break;
+
+        case "city":
+            let city = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
+            break;
+
+        case "county":
+            let county = [
+                'match',
+                ['get', 'town_name'], ...list, ["get", "town_name"]
+            ];
+            map.getLayer('china_wgs84_town_text') && map.setLayoutProperty('china_wgs84_town_text', 'text-field', county);
+            break;
+        case "town":
+            let town = [
+                'match',
+                ['get', 'name'], ...list, ["get", "name"]
+            ];
+            map.getLayer('china_wgs84_cun_text') && map.setLayoutProperty('china_wgs84_cun_text', 'text-field', town);
+            break;
+
+        default:
+            break;
+    }
+});
+
+const sendMessageToIframe = (message) => {
+    window.parent.postMessage(message, '*');
 }
 
 const route = useRoute(); // 获取当前路由对象
@@ -506,8 +714,8 @@ onMounted(() => {
 
     // 延迟自适应视野
     setTimeout(() => {
-        loadDefault()
-    }, 2000)
+        loadDefaultView()
+    }, 1500)
 
     // 初始化地图
     initMap();
@@ -527,6 +735,20 @@ onMounted(() => {
                 //console.log(data);
                 sendMessageToIframe({ type: 'province', code: data[0].province_code, name: data[0].name });
             })
+
+            // sendMessageToIframe({
+            //     "type": "province", data: [
+            //         {
+
+            //             "rcode": "370700",
+            //             "code": "370000",
+            //             "value": 13556.0,
+            //             "name": "潍坊市",
+
+            //         }
+
+            //     ]
+            // });
         })
 
         // 地图点击事件
@@ -767,217 +989,6 @@ onMounted(() => {
 
 });
 
-
-
-/**
- * 清除地图上的 GeoJSON 数据
- * 该函数会移除地图上的 GeojsonBuffLayer 图层和 GeojsonBuffSource 数据源
- */
-const clearCoordinatesJSON = () => {
-    // 如果 GeojsonBuffLayer 图层存在，则将其移除
-    map.getLayer("GeojsonBuffLayerFill") && map.removeLayer("GeojsonBuffLayerFill")
-    // 如果 GeojsonBuffLayer 图层存在，则将其移除
-    map.getLayer("GeojsonBuffLayer") && map.removeLayer("GeojsonBuffLayer")
-    // 如果 GeojsonBuffSource 数据源存在，则将其移除
-    map.getSource("GeojsonBuffSource") && map.removeSource("GeojsonBuffSource")
-
-
-}
-
-/**
- * 在地图上绘制 GeoJSON 数据
- * @param {Object} geojson - 要绘制的 GeoJSON 数据
- */
-const drawCoordinatesJSON = (geojson) => {
-    // 添加 GeoJSON 数据源
-    map.addSource('GeojsonBuffSource', {
-        'type': 'geojson',
-        'data': geojson
-    });
-
-    // 添加图层以显示 GeoJSON 数据
-    map.addLayer({
-        'id': 'GeojsonBuffLayer',
-        'type': 'line',
-        'source': 'GeojsonBuffSource',
-        'layout': {
-            "line-join": "round",
-            "line-cap": "round",
-        },
-        'paint': {
-            "line-color": "RGB(50,119,252)",
-            "line-width": 12,
-            "line-opacity": 0.6,
-        }
-    });
-
-    map.addLayer({
-        'id': 'GeojsonBuffLayerFill',
-        'type': 'fill',
-        'source': 'GeojsonBuffSource',
-        'layout': {
-            // "line-join": "round",
-            // "line-cap": "round",
-        },
-        'paint': {
-            'fill-color': 'RGB(50,119,252)', // 填充颜色
-            'fill-opacity': 0.2 // 填充透明度
-        }
-    });
-}
-
-// 获取所有坐标并计算边界框
-const getCoordinatesAndBbox = (features) => {
-    let lng = [];
-    let lat = [];
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
-    // 遍历 GeoJSON 的 features
-    [features].forEach(feature => {
-        if (feature) {
-            //  console.log(feature) // 调试输出当前 feature
-
-            // 初始化坐标数组
-            const coords = [];
-            if (feature.type === 'Polygon') {
-                // 如果是多边形，提取第一个坐标数组
-                feature.coordinates[0].map(coord => {
-                    coords.push(coord)
-                });
-            } else if (feature.type === 'MultiPolygon') {
-                // 如果是多重多边形，遍历每个多边形并提取坐标
-                feature.coordinates.forEach(polygon => {
-                    polygon[0].map(coord => {
-                        coords.push(coord)
-                    });
-                });
-            }
-
-            // 将坐标分解为经度和纬度，并更新边界框
-            coords.forEach(coord => {
-                lng.push(coord[0]);
-                lat.push(coord[1]);
-            });
-
-            // 计算最小和最大经纬度以确定边界框
-            minX = Math.min(...lng);
-            minY = Math.min(...lat);
-            maxX = Math.max(...lng);
-            maxY = Math.max(...lat);
-        }
-    });
-
-    // 返回边界框的四个角点
-    return [minX, minY, maxX, maxY]
-}
-
-
-// 图层切换
-const switchTile = (layer) => {
-    // 历史缓存
-    StateManager.set("MAP_LAYERS", layer);
-
-    layers.forEach((ll) => {
-        ll.isShow = false;
-    });
-    layer.isShow = true;
-
-    // 图层叠加
-    addRasterTileLayer(layer.param, layer.key);
-
-    message.success("已更新为" + layer.name, 1);
-
-};
-
-const rectMap = () => {
-    clearCoordinatesJSON()
-
-    map.fitBounds([
-        [73.66, 18.17], // 西南角坐标
-        [135.05, 53.55] // 东北角坐标
-    ], {
-        padding: { top: 10, bottom: 10, left: 10, right: 10 }
-    });
-};
-
-onUnmounted(() => {
-    delete window.map;
-    delete window.gl_draw;
-});
-
-
-defineExpose({
-    fitCenter
-
-});
-
-const props = defineProps({
-    MapToolPosition: Object
-})
-
-
-
-window.addEventListener('message', (event) => {
-    // if (event.origin !== 'http://sd-nh.weisys.net/') {
-    //     console.info("域名不符 http://sd-nh.weisys.net/")
-    //     return;
-    // }
-    let data = province_data;
-
-    if (!data.data) {
-        console.info("数据异常")
-        return;
-    }
-    // 处理接收到的数据
-    console.log('接收到的数据:', data);
-    console.log(map)
-
-    let list = [];
-
-    data.data.forEach((p) => {
-        list.push(`${p.name}`)
-        list.push(`${p.name} \n ${p.value}`)
-    })
-    switch (data.type) {
-        case "province":
-            let province = [
-                'match',
-                ['get', 'name'], ...list, ["get", "name"]
-            ];
-            map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', province);
-            break;
-
-        case "city":
-            let city = [
-                'match',
-                ['get', 'name'], ...list, ["get", "name"]
-            ];
-            map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
-            break;
-
-        case "county":
-            let county = [
-                'match',
-                ['get', 'town_name'], ...list, ["get", "town_name"]
-            ];
-            map.getLayer('china_wgs84_town_text') && map.setLayoutProperty('china_wgs84_town_text', 'text-field', county);
-            break;
-        case "town":
-            let town = [
-                'match',
-                ['get', 'name'], ...list, ["get", "name"]
-            ];
-            map.getLayer('china_wgs84_cun_text') && map.setLayoutProperty('china_wgs84_cun_text', 'text-field', town);
-            break;
-
-        default:
-            break;
-    }
-});
-
-const sendMessageToIframe = (message) => {
-    window.parent.postMessage(message, '*');
-}
 
 
 </script>
