@@ -420,21 +420,21 @@ const getAreaInfo = async (me) => {
         case "province":
             data = await api.get_table_by_filter(
                 "admin_2022_province",
-                `and  province_code in ('${me.code}') `,
+                `and  province_code in (${Number(me.code)}) `,
                 `province_code,name`
             );
             break;
         case "city":
             data = await api.get_table_by_filter(
                 "admin_2022_city",
-                `and  code in ('${me.code}') `,
+                `and  code in (${Number(me.code)}) `,
                 `name,code`
             );
             break;
         case "county":
             data = await api.get_table_by_filter(
                 "admin_2022_county",
-                `and  code in ('${me.code}') `,
+                `and  code in (${Number(me.code)}) `,
                 `name,code`
             );
             break;

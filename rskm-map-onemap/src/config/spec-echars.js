@@ -614,7 +614,7 @@ let specEchars = [
         layout: {
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 30,
+            "text-padding": 40,
             "text-field": "{name}",
             "text-size": 20,
         },
@@ -641,7 +641,7 @@ let specEchars = [
         layout: {
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 30,
+            "text-padding": 40,
             "text-field": "{name}",
             "text-size": 19,
         },
@@ -668,7 +668,7 @@ let specEchars = [
         layout: {
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 30,
+            "text-padding": 40,
             "text-field": "{town_name}",
             "text-size": 18,
         },
