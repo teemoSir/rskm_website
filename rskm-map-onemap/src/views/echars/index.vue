@@ -659,10 +659,15 @@ window.addEventListener('message', (event) => {
 
     let list = [];
 
-    data.data.forEach((p) => {
-        list.push(`${p.name}`)
-        list.push(`${p.name} \n ${p.value}`)
-    })
+    // data.data.forEach((p) => {
+
+    // });
+
+    for (let i in data.data) {
+        list.push(`${data.data[i].name}`)
+        list.push(`${data.data[i].name} \n ${data.data[i].value}`)
+    }
+
     switch (data.type) {
         case "province":
             let province = [
