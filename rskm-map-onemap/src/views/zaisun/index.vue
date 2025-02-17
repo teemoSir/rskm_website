@@ -3160,7 +3160,6 @@ let observeSaLeft = ref();
     height: calc(100% - 250px);
     background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
     padding: 10px;
-    /* box-shadow: 2px 2px 5px #f5f4f469 inset; */
     font-family: 'FZZongYi-M05';
 
 }
