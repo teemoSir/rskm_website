@@ -1143,17 +1143,14 @@ const getCount = async (key, name = "") => {
 
 
 const expandedKeys = ref(['0-0']);
-const selectedKeys = ref(['0-0']);
+const selectedKeys = ref(['0', '0-0']);
 
 
 watch(selectedKeys, () => {
-    //// console.log(selectedKeys.value[0])
+    console.log(selectedKeys.value[0])
 
     switch (selectedKeys.value[0]) {
-        case "0-0":
 
-            header.value = "";
-            break;
         case "0-0-0":
             header.value = "济阳区";
             break;
@@ -1185,9 +1182,10 @@ watch(selectedKeys, () => {
             header.value = "无棣县";
             break;
         default:
+            header.value = "";
             break;
     }
-    loadLocalData("无棣县");
+    // loadLocalData("无棣县");
 })
 
 
@@ -1202,22 +1200,10 @@ const activeKey = ref('1');
 
 watch(activeKey, () => {
     header.value = "";
-    // setTimeout(() => {
-    //     // map && loadLocalData()
-    //     // mapp && loadLocalData()
-
-    // }, 0)
-
-
-
 
     geomClear()
     removeLayerDk()
-    // if (activeKey.value == 2) {
 
-    // } else {
-
-    // }
     loadLocalData()
 })
 
@@ -1271,12 +1257,7 @@ const loadLayers = () => {
     if (!header.value) {
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
-        if (activeKey.value == 2) {
-            loadCounty("'" + header.value + "'");
-        } else if (activeKey.value == 1) {
-            loadCounty("'" + header.value + "'");
-            loadTown("'" + header.value + "'");
-        }
+        loadCounty(`'${header.value}'`);
     }
 
 
@@ -1299,19 +1280,21 @@ const loadLocalData = () => {
     popupbig && popupbig.setHTML(undefined);
     popupbig && popupbig.setLngLat([0, 0]);
 
-    if (activeKey.value == 1) {
-        loadLayers()
-    } else {
-        addLayerDk()
+    // if (activeKey.value == 1) {
+    //     loadLayers()
+    // } else {
+    //     addLayerDk()
 
-        // console.log("loadCountyFit")
-        if (!header.value) {
-            fitCenter()
-        } else {
-            loadCountyFit(`'${header.value}'`, window.map)
-            loadCountyFit(`'${header.value}'`, window.mapp)
-            loadTown(`'${header.value}'`)
-        }
+
+    // }
+
+    // console.log("loadCountyFit")
+    if (!header.value) {
+        fitCenter()
+    } else {
+        loadCountyFit(`'${header.value}'`, window.map)
+        loadCountyFit(`'${header.value}'`, window.mapp)
+        //loadTown(`'${header.value}'`)
     }
 }
 
@@ -1678,7 +1661,7 @@ const searchDrawGeom = (data) => {
 /**
  * 菜单栏显示
  */
-const xSquareShow = ref(false)
+const xSquareShow = ref(true)
 
 
 /**
@@ -2407,7 +2390,9 @@ const loadBDSL = async () => {
  * 根据改变重载
  */
 watch(header, () => {
-    loadData();
+    //  loadData();
+    loadLocalData(header.value);
+
 })
 
 
@@ -3336,16 +3321,6 @@ const columnsDkjg = ref([
     }
 ]);
 const dataDkjg = ref([
-    // {
-    //     key: '1',
-    //     name: '安华',
-    //     borrow: 10,
-    //     repayment: 33,
-    //     repayment1: 33,
-    //     repayment2: 33,
-    //     repayment3: 33,
-    //     repayment4: 33,
-    // },
 ]);
 
 
@@ -3432,9 +3407,6 @@ const handleClick = e => {
     openKeys.value = []
 
 };
-watch(openKeys, val => {
-    // console.log('openKeys', val);
-});
 
 
 const activeKeyChildren = ref("1")
@@ -3620,27 +3592,97 @@ const onClose = () => {
 
         </div>
 
+        <div class="xSquareShow" @click="xSquareShow = true">
+            <a-tooltip placement="right">
+                <template #title>
+                    <span>显示菜单</span>
+                </template>
+                <SidebarOpen :size="18" color="#ccc"></SidebarOpen>
+            </a-tooltip>
+        </div>
+        <div class="left-card" v-show="xSquareShow">
+
+            <a-row :gutter="16">
+                <a-col :span="24">
+                    <a-card size="small" title="">
 
 
+                        <p style="border-bottom: 1px solid #ccc;">
+                            <label style="font-size: 16px;font-weight: 1000;">
+                                <!-- <FoldersIcon s></FoldersIcon> -->
+                                <Satellite style="margin-bottom: -5px;" />
+                                遥感种植分布
+                            </label>
 
+
+                            <a-tooltip placement="right">
+                                <template #title>
+                                    <span>隐藏菜单</span>
+                                </template>
+
+
+                                <X style="float: right;cursor: pointer;" color="#999" @click="xSquareShow = false"></X>
+                            </a-tooltip>
+
+                        </p>
+
+                        <!-- <div v-if="activeKey == 2" style="padding: 10px 0px;">
+                            <a-space>
+                                <label style="font-weight: 600;">查询：</label>
+                                <a-auto-complete :allowClear="true" v-model:value="valueSearch" :options="options"
+                                    style="width: 180px;" @select="onSelect" @search="onSearch" placeholder="请输入大户名称">
+
+                                    <template #option="item">
+                                        <div style="display: flex; justify-content: space-between">
+                                            <span>
+                                                {{ item.value }}
+                                            </span>
+                                            <span>{{ item.cun }} </span>
+                                            <span>{{ item.bbxrzjh }} </span>
+                                        </div>
+                                    </template>
+                                </a-auto-complete>
+                            </a-space>
+                        </div> -->
+
+                        <a-directory-tree v-model:expandedKeys="expandedKeys" v-model:selectedKeys="selectedKeys"
+                            show-icon show-line default-expand-all :tree-data="treeLeftData">
+
+                            <template #icon="{ key, selected, dataRef }">
+                                <template v-if="dataRef.isPass === true && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;;width: 100px;">
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}完成核验</template>
+                                            <CheckCircle2Icon color="RGB(144,204,120)" :size="20"></CheckCircle2Icon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                                <template v-if="dataRef.isPass === false && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;width: 100px;">
+
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}暂未完成</template>
+                                            <CircleAlertIcon color="RGB(236,102,103)" :size="20"></CircleAlertIcon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                            </template>
+                        </a-directory-tree>
+
+
+                        <!-- <a-alert message="提示：2024年10月30日截止" type="success" show-icon /> -->
+                    </a-card>
+                </a-col>
+
+
+            </a-row>
+
+        </div>
 
         <!--地图工具栏-->
         <div class="right-tool" :style="MapToolPosition">
-            <!-- <a-segmented v-model:value="segmented" block :options="data" size="large"
-                style="width: 260px;position: absolute;right: 0;top: -50px;z-index: 1000;">
-            </a-segmented> -->
-            <!-- <a-tooltip placement="leftTop">
-                <template #title>
-                    <span>统计信息</span>
-                </template>
-
-<a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
-    <Menu color="RGB(58,123,251)"></Menu>
-</a-button>
-<a-button type="primary" @click="onClose" class="boxshadow" v-if="opens">
-    <ChevronRight color="RGB(58,123,251)" />
-</a-button>
-</a-tooltip> -->
 
             <a-tooltip placement="leftTop">
                 <template #title>
@@ -3689,78 +3731,7 @@ const onClose = () => {
 
 
                     <br>
-                    <a-card v-if="1 == 2">
 
-                        <!--地名注记-->
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style=" font-size: 12px; color: #000">
-                                地名
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state.DMZJiSHow" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                省界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked7" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center',
-                            padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                市界
-                                <a-switch checked-children="显示" un-checked-children="隐藏" size="small"
-                                    v-model:checked="state_layer.checked8" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                县界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked4" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                镇界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked5" size="small" />
-                            </div>
-                        </a-card-grid>
-
-                        <a-card-grid :style="{
-                            width: '25%',
-                            textAlign: 'center', padding: '10px'
-                        }">
-                            <div style="font-size: 12px; color: #000">
-                                村界
-                                <a-switch checked-children="显示" un-checked-children="隐藏"
-                                    v-model:checked="state_layer.checked6" size="small" />
-                            </div>
-                        </a-card-grid>
-                    </a-card>
                 </div>
             </div>
 
@@ -3824,14 +3795,6 @@ const onClose = () => {
                 </div>
             </a-tooltip>
 
-            <!-- <a-tooltip placement="leftTop">
-                <template #title>
-                    <span>{{ terrainSP ? "关闭地形" : "开启地形" }}</span>
-                </template>
-                <a-button @click="onTerrain()" size="large" class="boxshadow">
-                    <MountainSnow :color="!terrainSP ? 'RGB(58,123,251)' : '#3277fc'" />
-                </a-button>
-            </a-tooltip> -->
             <a-tooltip placement="leftTop" v-if="1 == 2">
                 <template #title>
                     <span>绘制</span>
@@ -3840,10 +3803,6 @@ const onClose = () => {
                     <!-- {{ draw }} -->
                     <a-button @click="onDraw()" size="large" class="boxshadow">
                         <Pencil color="RGB(58,123,251)" />
-
-                        <!-- <div style="position:absolute;left:8px;top:10px">
-            <Pentagon :size="40" />
-           </div> -->
 
                         <span class="arrow">◣</span>
                     </a-button>
@@ -3919,7 +3878,6 @@ const onClose = () => {
 
         <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
             <br>
-            <!-- <a-button style="margin-right: 8px" @click="onClose">关闭</a-button> -->
             <a-button type="primary" @click="onClose" style="position: absolute;right:10px">
                 <X></X>
             </a-button>
@@ -4101,13 +4059,13 @@ const onClose = () => {
         </a-drawer>
 
         <!-- 左侧菜单栏 -->
-        <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
+        <!-- <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
 
             <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
                 :inlineCollapsed="false"
                 style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
                 :items="items" @click="handleClick"></a-menu>
-        </div>
+        </div> -->
         <!-- 中间 -->
         <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-140px' : '-474px') }">
 
@@ -4127,7 +4085,7 @@ const onClose = () => {
                             style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
-                                第一次分布
+                                第一次遥感
                             </div>
                             <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
                                 2024年09月13日
@@ -4139,7 +4097,7 @@ const onClose = () => {
                             style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
-                                第二次分布
+                                第二次遥感
                             </div>
                             <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
                                 2024年11月25日
@@ -4188,136 +4146,23 @@ const onClose = () => {
             <div>
                 <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
                     <a-tab-pane key="1" tab="整体">
-                        <div v-if="activeKey == 1">
-                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #suffix>
-                                    %
-                                </template>
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-                        <div v-else>
-                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ String(Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ String(
-                                                parseInt(Number(record.repayment) -
-                                                    Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-
                     </a-tab-pane>
                     <a-tab-pane key="2" tab="地区">
-
                     </a-tab-pane>
                     <a-tab-pane key="3" tab="机构">
-
                     </a-tab-pane>
                 </a-tabs>
 
                 <div v-show="activeKeyChildren == '2'">
 
 
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered>
-                            <template #bodyCell="{ column, record }">
 
-                                <template v-if="column.dataIndex == 'repayment2'">
-
-                                    <div v-if="record.repayment2 > 1.05" style="color: red;">
-                                        超保
-                                    </div>
-
-                                    <div v-if="record.repayment2 < 0.6" style="color: orange;">
-                                        不足
-                                    </div>
-                                    <div v-if="(record.repayment2 >= 0.6 && record.repayment2 <= 1.05)"
-                                        style="color: green;">
-                                        合格
-                                    </div>
-
-                                </template>
-                                <template v-if="column.dataIndex == 'repayment'">
-
-                                    <div v-if="record.repayment > 0" style="color: red;">
-                                        <ArrowUp color="red"></ArrowUp><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment < 0" style="color: green;">
-                                        <ArrowDown color="green"></ArrowDown><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment == 0">
-                                        无变化
-                                    </div>
-
-                                </template>
-
-                            </template>
-                        </a-table>
-                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered></a-table>
-
-                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
                 </div>
 
                 <div v-show="activeKeyChildren == '3'">
 
 
 
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
 
 
                 </div>
@@ -4530,14 +4375,6 @@ const onClose = () => {
     bottom: 20px;
 }
 
-.left-card {
-    position: absolute;
-    width: 450px;
-    left: 0;
-    top: 100px;
-    max-height: calc(100% - 100px);
-    z-index: 1000;
-}
 
 .right-card {
     position: absolute;
@@ -4776,6 +4613,16 @@ p {
     margin: 0;
     padding: 0;
     background-color: #48b04c;
+}
+
+
+.left-card {
+    position: absolute;
+    width: 270px;
+    left: 10px;
+    top: 100px;
+    max-height: calc(100% - 100px);
+    z-index: 1000;
 }
 
 .right-tool {

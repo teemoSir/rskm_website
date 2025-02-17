@@ -1185,18 +1185,20 @@ const getCount = async (key, name = "") => {
 };
 
 
+// const expandedKeys = ref(['0-0']);
+// const selectedKeys = ref(['0-0']);
+
 const expandedKeys = ref(['0-0']);
-const selectedKeys = ref(['0-0']);
+const selectedKeys = ref(['0', '0-0']);
 
 
 watch(selectedKeys, () => {
     //// console.log(selectedKeys.value[0])
 
     switch (selectedKeys.value[0]) {
-        case "0-0":
-
-            header.value = "";
-            break;
+        // case "0-0":
+        //     header.value = "";
+        //     break;
         case "0-0-0":
             header.value = "济阳区";
             break;
@@ -1228,9 +1230,10 @@ watch(selectedKeys, () => {
             header.value = "无棣县";
             break;
         default:
+            header.value = "";
             break;
     }
-    loadLocalData("无棣县");
+    //("无棣县");
 })
 
 
@@ -1342,19 +1345,12 @@ const loadLocalData = () => {
     popupbig && popupbig.setHTML(undefined);
     popupbig && popupbig.setLngLat([0, 0]);
 
-    if (activeKey.value == 1) {
-        loadLayers()
+    if (!header.value) {
+        fitCenter()
     } else {
-        addLayerDk()
-
-        // console.log("loadCountyFit")
-        if (!header.value) {
-            fitCenter()
-        } else {
-            loadCountyFit(`'${header.value}'`, window.map)
-            loadCountyFit(`'${header.value}'`, window.mapp)
-            loadTown(`'${header.value}'`)
-        }
+        loadCountyFit(`'${header.value}'`, window.map)
+        loadCountyFit(`'${header.value}'`, window.mapp)
+        // loadTown(`'${header.value}'`)
     }
 }
 
@@ -1665,7 +1661,7 @@ const searchDrawGeom = (data) => {
 /**
  * 菜单栏显示
  */
-const xSquareShow = ref(false)
+const xSquareShow = ref(true)
 
 
 /**
@@ -2106,6 +2102,8 @@ watch(segmented, () => {
  */
 watch(header, () => {
     // loadData();
+
+    loadLocalData(header.value);
 })
 
 
@@ -2699,58 +2697,7 @@ let observeSaLeft = ref();
             <div>
                 <a-tabs v-model:activeKey="activeKeyChildren" tabBarGutter="2" :centered="true" tabPosition="top">
                     <a-tab-pane key="1" tab="整体">
-                        <div v-if="activeKey == 1">
-                            <a-table :columns="columnsQqzt" :data-source="dataQqzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #suffix>
-                                    %
-                                </template>
-                                <template #bodyCell="{ column, record }">
 
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(2) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
-                        <div v-else>
-                            <a-table :columns="columnsDkzt" :data-source="dataDkzt" :pagination="false" bordered
-                                size="small" :scroll="Ieight">
-                                <template #bodyCell="{ column, record }">
-
-                                    <template v-if="column.dataIndex == 'qushi'">
-
-                                        <div v-if="record.repayment > record.borrow" style="color: red;">
-                                            <ArrowUp color="red"></ArrowUp> {{ String(Number(Number(record.repayment) -
-                                                Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment < record.borrow" style="color: green;">
-                                            <ArrowDown color="green"></ArrowDown> {{ String(
-                                                parseInt(Number(record.repayment) -
-                                                    Number(record.borrow)).toFixed(0)) }}
-                                        </div>
-                                        <div v-if="record.repayment == record.borrow">
-                                            无变化
-                                        </div>
-
-                                    </template>
-
-                                </template>
-                            </a-table>
-                        </div>
 
                     </a-tab-pane>
                     <a-tab-pane key="2" tab="地区">
@@ -2761,77 +2708,7 @@ let observeSaLeft = ref();
                     </a-tab-pane>
                 </a-tabs>
 
-                <div v-show="activeKeyChildren == '2'">
 
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqdq" :data-source="dataQqdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered>
-                            <template #bodyCell="{ column, record }">
-
-                                <template v-if="column.dataIndex == 'repayment2'">
-
-                                    <div v-if="record.repayment2 > 1.05" style="color: red;">
-                                        超保
-                                    </div>
-
-                                    <div v-if="record.repayment2 < 0.6" style="color: orange;">
-                                        不足
-                                    </div>
-                                    <div v-if="(record.repayment2 >= 0.6 && record.repayment2 <= 1.05)"
-                                        style="color: green;">
-                                        合格
-                                    </div>
-
-                                </template>
-                                <template v-if="column.dataIndex == 'repayment'">
-
-                                    <div v-if="record.repayment > 0" style="color: red;">
-                                        <ArrowUp color="red"></ArrowUp><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment < 0" style="color: green;">
-                                        <ArrowDown color="green"></ArrowDown><br> {{ record.repayment }}
-                                    </div>
-                                    <div v-if="record.repayment == 0">
-                                        无变化
-                                    </div>
-
-                                </template>
-
-                            </template>
-                        </a-table>
-                        <a-button type="link" :href="'/data/20241226/区域-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkdq" :data-source="dataDkdq" :pagination="false" :scroll="Ieight"
-                            size="small" bordered></a-table>
-
-                        <a-button type="link" :href="'/data/20241226/区域-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-                </div>
-
-                <div v-show="activeKeyChildren == '3'">
-
-
-
-                    <div v-show="activeKey == 1">
-                        <a-table :columns="columnsQqjg" :data-source="dataQqjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-地区-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <div v-show="activeKey == 2">
-                        <a-table :columns="columnsDkjg" :data-source="dataDkjg" :pagination="false" bordered
-                            :scroll="Ieight" size="small"></a-table>
-                        <a-button type="link" :href="'/data/20241226/地块-机构-两次对比.xlsx'" :size="size">查看详细信息</a-button>
-                    </div>
-
-                    <!-- <a-button type="link" :size="size">查看详细信息</a-button> -->
-
-
-                </div>
             </div>
 
 
@@ -2845,18 +2722,81 @@ let observeSaLeft = ref();
 
 
         <!-- 左侧菜单栏 -->
-        <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
+        <!-- <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
 
             <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
                 :inlineCollapsed="false"
                 style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
                 :items="items" @click="handleClick"></a-menu>
-        </div>
+        </div> -->
         <!-- 中间 -->
         <div class="center-card" :style="{ cursor: 'all-scroll', left: !opens ? '50%' : '40%' }">
 
         </div>
 
+        <div class="left-card" v-show="xSquareShow">
+
+            <a-row :gutter="16">
+                <a-col :span="24">
+                    <a-card size="small" title="">
+
+
+                        <p style="border-bottom: 1px solid #ccc;">
+                            <label style="font-size: 16px;font-weight: 1000;">
+                                <!-- <FoldersIcon s></FoldersIcon> -->
+                                <Satellite style="margin-bottom: -5px;" />
+                                遥感种植分布
+                            </label>
+
+
+                            <a-tooltip placement="right">
+                                <template #title>
+                                    <span>隐藏菜单</span>
+                                </template>
+
+
+                                <X style="float: right;cursor: pointer;" color="#999" @click="xSquareShow = false"></X>
+                            </a-tooltip>
+
+                        </p>
+
+
+
+                        <a-directory-tree v-model:expandedKeys="expandedKeys" v-model:selectedKeys="selectedKeys"
+                            show-icon show-line default-expand-all :tree-data="treeLeftData">
+
+                            <template #icon="{ key, selected, dataRef }">
+                                <template v-if="dataRef.isPass === true && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;;width: 100px;">
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}完成核验</template>
+                                            <CheckCircle2Icon color="RGB(144,204,120)" :size="20"></CheckCircle2Icon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                                <template v-if="dataRef.isPass === false && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;width: 100px;">
+
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}暂未完成</template>
+                                            <CircleAlertIcon color="RGB(236,102,103)" :size="20"></CircleAlertIcon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                            </template>
+                        </a-directory-tree>
+
+
+                        <!-- <a-alert message="提示：2024年10月30日截止" type="success" show-icon /> -->
+                    </a-card>
+                </a-col>
+
+
+            </a-row>
+
+        </div>
 
         <!--右侧统计栏-->
 
@@ -3218,8 +3158,8 @@ let observeSaLeft = ref();
 
 .left-card {
     position: absolute;
-    width: 450px;
-    left: 0;
+    width: 270px;
+    left: 10px;
     top: 100px;
     max-height: calc(100% - 100px);
     z-index: 1000;

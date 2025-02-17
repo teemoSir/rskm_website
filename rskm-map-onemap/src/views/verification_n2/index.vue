@@ -2738,7 +2738,6 @@ const lockDownOpen = ref(false)
                 </template>
                 <SidebarOpen :size="18" color="#ccc"></SidebarOpen>
             </a-tooltip>
-
         </div>
         <div class="left-card" v-show="xSquareShow">
 

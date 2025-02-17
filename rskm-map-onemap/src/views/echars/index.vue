@@ -215,7 +215,7 @@ const addTiles = () => {
     if (StateManager.get("MAP_LAYERS")) {
         type = StateManager.get("MAP_LAYERS");
     } else {
-        type = layers.value[layers.value.length - 1];
+        type = layers[0];
         StateManager.set("MAP_LAYERS", type);
     }
     addRasterTileLayer(type.param, type.key);

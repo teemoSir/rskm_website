@@ -123,9 +123,9 @@ const items = ref([
             },
             {
                 label: "长势遥感监测",
-                key: "jiance",
+                key: "zhangshi",
                 onClick: () => {
-                    router.push("/jiance");
+                    router.push("/zhangshi");
                 },
             },
             {
