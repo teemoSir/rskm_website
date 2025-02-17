@@ -390,7 +390,7 @@ const getCountyGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "admin_2022_county",
         `and  gid in (${gid}) `,
-        `ST_AsGeoJSON(ST_Simplify(geom, 0.001)) as json,name,gid`
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.001)) as json,name,gid,code,province_code`
     );
 }
 
@@ -399,7 +399,7 @@ const getTownGeometry = async (gid) => {
     return await api.get_table_by_filter(
         "china_wgs84_town",
         `and  gid in (${gid}) `,
-        `ST_AsGeoJSON(ST_Simplify(geom, 0.0001)) as json,town_name,county_name,gid`
+        `ST_AsGeoJSON(ST_Simplify(geom, 0.0001)) as json,town_name,county_name,gid,province_code,town_code`
     );
 }
 
@@ -421,7 +421,7 @@ const getAreaInfo = async (me) => {
             data = await api.get_table_by_filter(
                 "admin_2022_province",
                 `and  province_code in (${Number(me.code)}) `,
-                `province_code,name`
+                `province_code as code,name`
             );
             break;
         case "city":
@@ -442,7 +442,7 @@ const getAreaInfo = async (me) => {
             data = await api.get_table_by_filter(
                 "china_wgs84_town",
                 `and  town_code in ('${me.code}') `,
-                `town_name,town_code`
+                `town_name as name,town_code as code`
             );
             break;
         case "cun":
@@ -656,6 +656,11 @@ window.addEventListener('message', (event) => {
     // 处理接收到的数据
     console.log('接收到的数据:', data);
 
+    if (!data.data || !data.data.length) {
+        console.log('暂无数据');
+        return;
+    }
+
     let list = [];
 
     for (let i in data.data) {
@@ -738,7 +743,7 @@ onMounted(() => {
             let res = getAreaInfo({ type: "province", code: province_code });
             res.then((data) => {
                 //console.log(data);
-                sendMessageToIframe({ type: 'province', code: data[0].province_code, name: data[0].name });
+                sendMessageToIframe({ type: 'province', code: data[0].code + `000000`, name: data[0].name });
             })
 
             // sendMessageToIframe({
@@ -782,7 +787,7 @@ onMounted(() => {
             let res = getAreaInfo({ type: "province", code: feature[0].province_code });
             res.then((data) => {
                 console.log(data);
-                sendMessageToIframe({ type: 'province', code: feature[0].province_code, name: feature[0].name });
+                sendMessageToIframe({ type: 'province', code: feature[0].province_code + `000000`, name: feature[0].name });
             })
 
         });
@@ -802,7 +807,7 @@ onMounted(() => {
             let res = getAreaInfo({ type: "city", code: feature[0].code });
             res.then((data) => {
                 console.log(data);
-                sendMessageToIframe({ type: 'city', code: feature[0].code, name: feature[0].name });
+                sendMessageToIframe({ type: 'city', code: feature[0].code + `000000`, name: feature[0].name });
             })
 
         });
@@ -822,7 +827,7 @@ onMounted(() => {
             let res = getAreaInfo({ type: "county", code: feature[0].code });
             res.then((data) => {
                 console.log(data);
-                sendMessageToIframe({ type: 'county', code: feature[0].code, name: feature[0].name });
+                sendMessageToIframe({ type: 'county', code: feature[0].code + `000000`, name: feature[0].name });
             })
         });
 
@@ -838,10 +843,10 @@ onMounted(() => {
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
             console.log(feature[0])
-            let res = getAreaInfo({ type: "town", code: feature[0].code });
+            let res = getAreaInfo({ type: "town", code: feature[0].town_code });
             res.then((data) => {
                 console.log(data);
-                sendMessageToIframe({ type: 'town', code: feature[0].town_code, name: feature[0].town_name });
+                sendMessageToIframe({ type: 'town', code: data[0].code, name: data[0].name });
             })
         });
 
