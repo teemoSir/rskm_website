@@ -642,7 +642,7 @@ const props = defineProps({
     MapToolPosition: Object
 })
 
-
+let province_list = [], city_list = [], county_list = [], town_list = [], cun_list = [];
 
 window.addEventListener('message', (event) => {
     // if (event.origin !== 'http://sd-nh.weisys.net/') {
@@ -651,17 +651,12 @@ window.addEventListener('message', (event) => {
     // }
     let data = event.data;
 
-    !data.data && (data = province_data);
+    // !data.data && (data = province_data);
 
     // 处理接收到的数据
     console.log('接收到的数据:', data);
-    console.log(map)
 
     let list = [];
-
-    // data.data.forEach((p) => {
-
-    // });
 
     for (let i in data.data) {
         list.push(`${data.data[i].name}`)
@@ -675,6 +670,8 @@ window.addEventListener('message', (event) => {
                 ['get', 'name'], ...list, ["get", "name"]
             ];
             map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', province);
+
+            city_list = data.data;
             break;
 
         case "city":
@@ -683,6 +680,7 @@ window.addEventListener('message', (event) => {
                 ['get', 'name'], ...list, ["get", "name"]
             ];
             map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
+            county_list = data.data;
             break;
 
         case "county":
@@ -691,6 +689,7 @@ window.addEventListener('message', (event) => {
                 ['get', 'town_name'], ...list, ["get", "town_name"]
             ];
             map.getLayer('china_wgs84_town_text') && map.setLayoutProperty('china_wgs84_town_text', 'text-field', county);
+            town_list = data.data;
             break;
         case "town":
             let town = [
@@ -698,6 +697,7 @@ window.addEventListener('message', (event) => {
                 ['get', 'name'], ...list, ["get", "name"]
             ];
             map.getLayer('china_wgs84_cun_text') && map.setLayoutProperty('china_wgs84_cun_text', 'text-field', town);
+            cun_list = data.data;
             break;
 
         default:
@@ -894,7 +894,7 @@ onMounted(() => {
             let text = `
              <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${province_data.data.filter((pro) => pro.name == name)[0] ? province_data.data.filter((pro) => pro.name == name)[0].value : ''
+                <tr><td style="text-align: center;">${city_list.filter((pro) => pro.name == name)[0] ? city_list.data.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
             `;
@@ -921,7 +921,8 @@ onMounted(() => {
             let text = `
                <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">123123</td></tr>
+                <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name)[0] ? county_list.data.filter((pro) => pro.name == name)[0].value : ''
+                }</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
@@ -948,7 +949,8 @@ onMounted(() => {
             
                   <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${town_name} </td></tr>
-                <tr><td style="text-align: center;">123123</td></tr>
+                <tr><td style="text-align: center;">${town_list.filter((pro) => pro.name == name)[0] ? town_list.data.filter((pro) => pro.name == name)[0].value : ''
+                }</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
@@ -974,7 +976,8 @@ onMounted(() => {
             let text = `
                  <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">123123</td></tr>
+                <tr><td style="text-align: center;">${cun_list.filter((pro) => pro.name == name)[0] ? cun_list.data.filter((pro) => pro.name == name)[0].value : ''
+                }</td></tr>
                 </table>
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
