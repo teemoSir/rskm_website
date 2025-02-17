@@ -642,7 +642,11 @@ const props = defineProps({
     MapToolPosition: Object
 })
 
-let province_list = [], city_list = [], county_list = [], town_list = [], cun_list = [];
+let province_list = [];
+let city_list = [];
+let county_list = [];
+let town_list = [];
+let cun_list = [];
 
 window.addEventListener('message', (event) => {
     // if (event.origin !== 'http://sd-nh.weisys.net/') {
@@ -899,7 +903,7 @@ onMounted(() => {
             let text = `
              <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${city_list.filter((pro) => pro.name == name)[0] ? city_list.data.filter((pro) => pro.name == name)[0].value : ''
+                <tr><td style="text-align: center;">${city_list.filter((pro) => pro.name == name).length ? city_list.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
             `;
@@ -926,7 +930,7 @@ onMounted(() => {
             let text = `
                <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name)[0] ? county_list.data.filter((pro) => pro.name == name)[0].value : ''
+                <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name).length ? county_list.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
             `;
@@ -954,7 +958,7 @@ onMounted(() => {
             
                   <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${town_name} </td></tr>
-                <tr><td style="text-align: center;">${town_list.filter((pro) => pro.name == name)[0] ? town_list.data.filter((pro) => pro.name == name)[0].value : ''
+                <tr><td style="text-align: center;">${town_list.filter((pro) => pro.name == name).length ? town_list.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
             `;
@@ -981,7 +985,7 @@ onMounted(() => {
             let text = `
                  <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${cun_list.filter((pro) => pro.name == name)[0] ? cun_list.data.filter((pro) => pro.name == name)[0].value : ''
+                <tr><td style="text-align: center;">${cun_list.filter((pro) => pro.name == name).length ? cun_list.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
             `;
