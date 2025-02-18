@@ -750,19 +750,6 @@ onMounted(() => {
                 sendMessageToIframe({ type: 'province', code: data[0].code + `000000`, name: data[0].name });
             })
 
-            // sendMessageToIframe({
-            //     "type": "province", data: [
-            //         {
-
-            //             "rcode": "370700",
-            //             "code": "370000",
-            //             "value": 13556.0,
-            //             "name": "潍坊市",
-
-            //         }
-
-            //     ]
-            // });
         })
 
         // 地图点击事件
@@ -941,10 +928,12 @@ onMounted(() => {
             let text = `
                <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name).length ? county_list.filter((pro) => pro.name == name)[0].value : ''
-                }</td></tr>
+           
                 </table>
             `;
+
+            // <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name).length ? county_list.filter((pro) => pro.name == name)[0].value : ''
+            //     }</td></tr>
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 
