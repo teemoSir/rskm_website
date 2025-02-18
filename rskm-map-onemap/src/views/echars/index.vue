@@ -841,23 +841,23 @@ onMounted(() => {
         });
 
         // 点击镇级填充图层事件
-        map.on("click", "china_wgs84_town_fill", async (e) => {
-            clearCoordinatesJSON()
-            map.getCanvas().style.cursor = "pointer";
-            let feature = await getTownGeometry(e.features[0].properties.gid);
-            // let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
-            // map.fitBounds(bbox, {
-            //     padding: { top: 0, bottom: 0 },
-            // });
-            drawCoordinatesJSON(JSON.parse(feature[0].json));
+        // map.on("click", "china_wgs84_town_fill", async (e) => {
+        //     clearCoordinatesJSON()
+        //     map.getCanvas().style.cursor = "pointer";
+        //     let feature = await getTownGeometry(e.features[0].properties.gid);
+        //     // let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+        //     // map.fitBounds(bbox, {
+        //     //     padding: { top: 0, bottom: 0 },
+        //     // });
+        //     drawCoordinatesJSON(JSON.parse(feature[0].json));
 
-            // console.log(feature[0])
-            let res = getAreaInfo({ type: "town", code: feature[0].town_code });
-            res.then((data) => {
-                //    console.log(data);
-                sendMessageToIframe({ type: 'town', code: data[0].code, name: data[0].name });
-            })
-        });
+        //     // console.log(feature[0])
+        //     let res = getAreaInfo({ type: "town", code: feature[0].town_code });
+        //     res.then((data) => {
+        //         //    console.log(data);
+        //         sendMessageToIframe({ type: 'town', code: data[0].code, name: data[0].name });
+        //     })
+        // });
 
         // 点击村级填充图层事件
         // map.on("click", "china_wgs84_cun_fill", async (e) => {

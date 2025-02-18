@@ -252,24 +252,24 @@ let specEchars = [
 
 
 
-    {
-        id: "china_wgs84_cun_fill",
-        'type': 'fill',
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
+    // {
+    //     id: "china_wgs84_cun_fill",
+    //     'type': 'fill',
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
 
-        layout: {
-            // visibility: "none",
-            "text-optional": true,
-        },
-        'slot': 'bottom',
-        'paint': {
-            'fill-color': '#fff',
-            "fill-opacity": 0.4,
-            'fill-outline-color': 'rgba(0,0,0,0)'
-        }, minzoom: 12,
+    //     layout: {
+    //         // visibility: "none",
+    //         "text-optional": true,
+    //     },
+    //     'slot': 'bottom',
+    //     'paint': {
+    //         'fill-color': '#fff',
+    //         "fill-opacity": 0.4,
+    //         'fill-outline-color': 'rgba(0,0,0,0)'
+    //     }, minzoom: 12,
 
-    },
+    // },
 
 
     {
@@ -353,48 +353,48 @@ let specEchars = [
     },
 
 
-    {
-        id: "Highlight_DK_Line_Cun",
-        name: "",
-        type: "fill",
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
+    // {
+    //     id: "Highlight_DK_Line_Cun",
+    //     name: "",
+    //     type: "fill",
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
 
-        //     maxzoom: 18,
-        layout: {
-            visibility: "none",
-            "line-join": "round",
-            "line-cap": "round",
-        },
-        "paint": {
-            'fill-color': 'red',
-            'fill-opacity': 0.3,
-        },
-        'slot': 'top',
-        interactive: true,
-    },
+    //     //     maxzoom: 18,
+    //     layout: {
+    //         visibility: "none",
+    //         "line-join": "round",
+    //         "line-cap": "round",
+    //     },
+    //     "paint": {
+    //         'fill-color': 'red',
+    //         'fill-opacity': 0.3,
+    //     },
+    //     'slot': 'top',
+    //     interactive: true,
+    // },
 
 
 
     // 线条
-    {
-        id: "china_wgs84_cun",
-        'type': 'line',
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
-        layout: {
-            visibility: "visible",
-            //     "text-optional": true,
-        },
-        'slot': 'bottom',
-        'paint': {
-            'line-width': 2,
-            'line-color': '#000',
-            'line-opacity': 0.5,
-        }
-        , minzoom: 12,
-        //  maxzoom: 20
-    },
+    // {
+    //     id: "china_wgs84_cun",
+    //     'type': 'line',
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
+    //     layout: {
+    //         visibility: "visible",
+    //         //     "text-optional": true,
+    //     },
+    //     'slot': 'bottom',
+    //     'paint': {
+    //         'line-width': 2,
+    //         'line-color': '#000',
+    //         'line-opacity': 0.5,
+    //     }
+    //     , minzoom: 12,
+    //     //  maxzoom: 20
+    // },
     {
         id: "china_wgs84_town",
         'type': 'line',
@@ -567,32 +567,32 @@ let specEchars = [
         minzoom: 10,
         maxzoom: 12
     },
-    {
-        id: "china_wgs84_cun_text",
-        type: "symbol",
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
-        filter: [
-            "==",
-            ["to-string", ["get", "province_code"]],
-            '370000',
-        ],
-        layout: {
-            "text-font": ["Microsoft YaHei"],
-            "text-optional": true,
-            "text-padding": 30,
-            "text-field": "{name}",
-            "text-size": 16,
+    // {
+    //     id: "china_wgs84_cun_text",
+    //     type: "symbol",
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
+    //     filter: [
+    //         "==",
+    //         ["to-string", ["get", "province_code"]],
+    //         '370000',
+    //     ],
+    //     layout: {
+    //         "text-font": ["Microsoft YaHei"],
+    //         "text-optional": true,
+    //         "text-padding": 30,
+    //         "text-field": "{name}",
+    //         "text-size": 16,
 
-        },
-        paint: {
-            "text-halo-color": "#000",
-            "text-color": "RGBA(255,255,255,1)",
-            'text-halo-width': 2.5
-        },
-        //       'slot': 'bottom',
-        minzoom: 12
-    },
+    //     },
+    //     paint: {
+    //         "text-halo-color": "#000",
+    //         "text-color": "RGBA(255,255,255,1)",
+    //         'text-halo-width': 2.5
+    //     },
+    //     //       'slot': 'bottom',
+    //     minzoom: 12
+    // },
 
     {
         id: "POI_WORLD_1",
