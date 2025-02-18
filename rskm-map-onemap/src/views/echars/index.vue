@@ -669,7 +669,11 @@ window.addEventListener('message', (event) => {
 
     for (let i in data.data) {
         list.push(`${data.data[i].name}`)
-        list.push(`${data.data[i].name} \n ${data.data[i].value}`)
+        if (data.data[i].value) {
+            list.push(`${data.data[i].name} \n ${data.data[i].value}`)
+        } else {
+            list.push(`${data.data[i].name}`)
+        }
     }
 
     switch (data.type) {
