@@ -522,8 +522,8 @@ let specEchars = [
         "source-layer": config.admin_2022_county.name,
         filter: [
             "==",
-            ["get", "province_code"],
-            370000,
+            ["to-string", ["get", "province_code"]],
+            '370000',
         ],
         layout: {
             "text-font": ["Microsoft YaHei"],
