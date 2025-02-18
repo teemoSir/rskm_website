@@ -986,7 +986,7 @@ onMounted(() => {
             let text = `
             
                   <table style="line-height:1.0;font-size:18px;" >
-                <tr><td style="text-align:center;">${town_name} </td></tr>
+                <tr><td style="text-align:center;">${name} </td></tr>
                 <tr><td style="text-align: center;">${town_list.filter((pro) => pro.name == name).length ? town_list.filter((pro) => pro.name == name)[0].value : ''
                 }</td></tr>
                 </table>
