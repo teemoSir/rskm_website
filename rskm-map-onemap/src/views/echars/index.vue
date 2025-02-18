@@ -935,12 +935,12 @@ onMounted(() => {
             let text = `
                <table style="line-height:1.0;font-size:18px;" >
                 <tr><td style="text-align:center;">${name} </td></tr>
-           
+             <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name).length ? county_list.filter((pro) => pro.name == name)[0].value : ''
+                }</td></tr>
                 </table>
             `;
 
-            // <tr><td style="text-align: center;">${county_list.filter((pro) => pro.name == name).length ? county_list.filter((pro) => pro.name == name)[0].value : ''
-            //     }</td></tr>
+
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
 

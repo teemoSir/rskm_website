@@ -529,7 +529,7 @@ let specEchars = [
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
             "text-padding": 40,
-            "text-field": "反反复复{name}",
+            "text-field": "{name}",
             "text-size": 19,
         },
         paint: {
