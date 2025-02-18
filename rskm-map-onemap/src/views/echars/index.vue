@@ -421,28 +421,28 @@ const getAreaInfo = async (me) => {
             data = await api.get_table_by_filter(
                 "admin_2022_province",
                 `and  province_code in (${Number(me.code)}) `,
-                `province_code as code,name`
+                `province_code as code,name,ST_AsGeoJSON(ST_Simplify(geom, 0.01)) as json`
             );
             break;
         case "city":
             data = await api.get_table_by_filter(
                 "admin_2022_city",
                 `and  code in (${Number(me.code)}) `,
-                `name,code`
+                `name,code,ST_AsGeoJSON(ST_Simplify(geom, 0.01)) as json`
             );
             break;
         case "county":
             data = await api.get_table_by_filter(
                 "admin_2022_county",
                 `and  code in (${Number(me.code)}) `,
-                `name,code`
+                `name,code,ST_AsGeoJSON(ST_Simplify(geom, 0.0001)) as json`
             );
             break;
         case "town":
             data = await api.get_table_by_filter(
                 "china_wgs84_town",
                 `and  town_code in ('${me.code}') `,
-                `town_name as name,town_code as code`
+                `town_name as name,town_code as code,ST_AsGeoJSON(ST_Simplify(geom, 0.0001)) as json`
             );
             break;
         case "cun":
@@ -719,6 +719,28 @@ window.addEventListener('message', (event) => {
         default:
             break;
     }
+
+    // 定位
+    if (data.data.length == 0) {
+        console.log("无数据")
+        return
+    }
+    let code = data.data[0].rcode;
+    let res = getAreaInfo({ type: data.type, code: code });
+    res.then((data) => {
+        console.log(data);
+        if (data.length > 0) {
+            clearCoordinatesJSON()
+            map.getCanvas().style.cursor = "pointer";
+
+            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+            map.fitBounds(bbox, {
+                padding: { top: 0, bottom: 0 },
+            });
+
+            drawCoordinatesJSON(JSON.parse(data[0].json));
+        }
+    })
 });
 
 const sendMessageToIframe = (message) => {
@@ -958,7 +980,7 @@ onMounted(() => {
         map.on("mousemove", "china_wgs84_town_fill", (e) => {
             map.getCanvas().style.cursor = "pointer";
             let feature = e.features[0];
-            let town_name = feature.properties.town_name ? feature.properties.town_name : "";
+            let name = feature.properties.town_name ? feature.properties.town_name : "";
             map.setFilter("Highlight_DK_Line_Town", ["all", ["in", "gid", feature.properties.gid]]);
             map.setLayoutProperty("Highlight_DK_Line_Town", "visibility", "visible");
             let text = `
