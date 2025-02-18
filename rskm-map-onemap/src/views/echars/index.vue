@@ -678,6 +678,7 @@ window.addEventListener('message', (event) => {
                 'match',
                 ['get', 'name'], ...list, ["get", "name"]
             ];
+            console.info(province)
             map.getLayer('admin_2022_city_text') && map.setLayoutProperty('admin_2022_city_text', 'text-field', province);
 
             city_list = data.data;
@@ -688,6 +689,7 @@ window.addEventListener('message', (event) => {
                 'match',
                 ['get', 'name'], ...list, ["get", "name"]
             ];
+            console.info(city)
             map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
             county_list = data.data;
             break;
@@ -697,6 +699,7 @@ window.addEventListener('message', (event) => {
                 'match',
                 ['get', 'town_name'], ...list, ["get", "town_name"]
             ];
+            console.info(county)
             map.getLayer('china_wgs84_town_text') && map.setLayoutProperty('china_wgs84_town_text', 'text-field', county);
             town_list = data.data;
             break;
@@ -768,11 +771,11 @@ onMounted(() => {
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
                 padding: { top: 0, bottom: 0 },
-                duration: 500
+                // duration: 500
             });
 
             setTimeout(() => {
-                map.setZoom(6.5)
+                //   map.setZoom(6.5)
             }, 1000)
 
             // 高亮
@@ -796,11 +799,11 @@ onMounted(() => {
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
                 padding: { top: 0, bottom: 0 },
-                duration: 500,
+                //  duration: 500,
 
             });
             setTimeout(() => {
-                map.setZoom(8.5)
+                //map.setZoom(8.5)
             }, 1000)
 
             drawCoordinatesJSON(JSON.parse(feature[0].json));
@@ -825,10 +828,10 @@ onMounted(() => {
             });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
-            console.log(feature[0])
+            //  console.log(feature[0])
             let res = getAreaInfo({ type: "county", code: feature[0].code });
             res.then((data) => {
-                console.log(data);
+                //  console.log(data);
                 sendMessageToIframe({ type: 'county', code: feature[0].code + `000000`, name: feature[0].name });
             })
         });
@@ -844,10 +847,10 @@ onMounted(() => {
             // });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
-            console.log(feature[0])
+            // console.log(feature[0])
             let res = getAreaInfo({ type: "town", code: feature[0].town_code });
             res.then((data) => {
-                console.log(data);
+                //    console.log(data);
                 sendMessageToIframe({ type: 'town', code: data[0].code, name: data[0].name });
             })
         });
