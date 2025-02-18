@@ -529,7 +529,7 @@ let specEchars = [
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
             "text-padding": 40,
-            "text-field": "{name}",
+            "text-field": "反反复复",
             "text-size": 19,
         },
         paint: {
@@ -538,7 +538,7 @@ let specEchars = [
             'text-halo-width': 2.5
         },
         //       'slot': 'bottom',
-        minzoom: 8.51,
+        minzoom: 8.50,
         maxzoom: 10
     },
 
