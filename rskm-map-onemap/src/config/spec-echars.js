@@ -220,7 +220,7 @@ let specEchars = [
             "fill-opacity": 0.4,
             'fill-outline-color': 'rgba(0,0,0,0)'
         },
-        minzoom: 8.5,
+        minzoom: 7.5,
         maxzoom: 10
     },
 
@@ -245,31 +245,31 @@ let specEchars = [
             'fill-color': '#fff',
             "fill-opacity": 0.4,
             'fill-outline-color': 'rgba(0,0,0,0)'
-        }, minzoom: 10,
-        maxzoom: 12
+        }, minzoom: 9,
+        //  maxzoom: 12
     },
 
 
 
 
-    {
-        id: "china_wgs84_cun_fill",
-        'type': 'fill',
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
+    // {
+    //     id: "china_wgs84_cun_fill",
+    //     'type': 'fill',
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
 
-        layout: {
-            // visibility: "none",
-            "text-optional": true,
-        },
-        'slot': 'bottom',
-        'paint': {
-            'fill-color': '#fff',
-            "fill-opacity": 0.4,
-            'fill-outline-color': 'rgba(0,0,0,0)'
-        }, minzoom: 12,
+    //     layout: {
+    //         // visibility: "none",
+    //         "text-optional": true,
+    //     },
+    //     'slot': 'bottom',
+    //     'paint': {
+    //         'fill-color': '#fff',
+    //         "fill-opacity": 0.4,
+    //         'fill-outline-color': 'rgba(0,0,0,0)'
+    //     }, minzoom: 12,
 
-    },
+    // },
 
 
     {
@@ -353,48 +353,48 @@ let specEchars = [
     },
 
 
-    {
-        id: "Highlight_DK_Line_Cun",
-        name: "",
-        type: "fill",
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
+    // {
+    //     id: "Highlight_DK_Line_Cun",
+    //     name: "",
+    //     type: "fill",
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
 
-        //     maxzoom: 18,
-        layout: {
-            visibility: "none",
-            "line-join": "round",
-            "line-cap": "round",
-        },
-        "paint": {
-            'fill-color': 'red',
-            'fill-opacity': 0.3,
-        },
-        'slot': 'top',
-        interactive: true,
-    },
+    //     //     maxzoom: 18,
+    //     layout: {
+    //         visibility: "none",
+    //         "line-join": "round",
+    //         "line-cap": "round",
+    //     },
+    //     "paint": {
+    //         'fill-color': 'red',
+    //         'fill-opacity': 0.3,
+    //     },
+    //     'slot': 'top',
+    //     interactive: true,
+    // },
 
 
 
     // 线条
-    {
-        id: "china_wgs84_cun",
-        'type': 'line',
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
-        layout: {
-            visibility: "visible",
-            //     "text-optional": true,
-        },
-        'slot': 'bottom',
-        'paint': {
-            'line-width': 2,
-            'line-color': '#000',
-            'line-opacity': 0.5,
-        }
-        , minzoom: 12,
-        //  maxzoom: 20
-    },
+    // {
+    //     id: "china_wgs84_cun",
+    //     'type': 'line',
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
+    //     layout: {
+    //         visibility: "visible",
+    //         //     "text-optional": true,
+    //     },
+    //     'slot': 'bottom',
+    //     'paint': {
+    //         'line-width': 2,
+    //         'line-color': '#000',
+    //         'line-opacity': 0.5,
+    //     }
+    //     , minzoom: 12,
+    //     //  maxzoom: 20
+    // },
     {
         id: "china_wgs84_town",
         'type': 'line',
@@ -411,8 +411,8 @@ let specEchars = [
             'line-opacity': 0.5,
 
         }
-        , minzoom: 10,
-        maxzoom: 12
+        , minzoom: 9,
+        // maxzoom: 12
     },
 
 
@@ -436,7 +436,7 @@ let specEchars = [
             'line-color': '#000',
             'line-opacity': 0.5,
         },
-        minzoom: 8.5,
+        minzoom: 7.5,
         maxzoom: 10
     },
 
@@ -500,10 +500,10 @@ let specEchars = [
         ],
         layout: {
             "text-font": ["Microsoft YaHei"],
-            "text-optional": true,
-            "text-padding": 40,
+            // "text-optional": true,
+            "text-padding": 50,
             "text-field": "{name}",
-            "text-size": 20,
+            "text-size": 21,
         },
         paint: {
             "text-halo-color": "#000",
@@ -530,7 +530,7 @@ let specEchars = [
             "text-optional": true,
             "text-padding": 40,
             "text-field": "{name}",
-            "text-size": 19,
+            "text-size": 20,
         },
         paint: {
             "text-halo-color": "#000",
@@ -538,7 +538,7 @@ let specEchars = [
             'text-halo-width': 2.5
         },
         //       'slot': 'bottom',
-        minzoom: 8.51,
+        minzoom: 7.50,
         maxzoom: 10
     },
 
@@ -555,88 +555,88 @@ let specEchars = [
         layout: {
             "text-font": ["Microsoft YaHei"],
             "text-optional": true,
-            "text-padding": 40,
-            "text-field": "{town_name}",
-            "text-size": 18,
-        },
-        paint: {
-            "text-halo-color": "#000",
-            "text-color": "RGBA(255,255,255,1)",
-            'text-halo-width': 2.5
-        },
-        minzoom: 10,
-        maxzoom: 12
-    },
-    {
-        id: "china_wgs84_cun_text",
-        type: "symbol",
-        source: config.china_wgs84_all.name,
-        "source-layer": config.china_wgs84_all.name,
-        filter: [
-            "==",
-            ["to-string", ["get", "province_code"]],
-            '370000',
-        ],
-        layout: {
-            "text-font": ["Microsoft YaHei"],
-            "text-optional": true,
             "text-padding": 30,
-            "text-field": "{name}",
-            "text-size": 16,
-
+            "text-field": "{town_name}",
+            "text-size": 19,
         },
         paint: {
             "text-halo-color": "#000",
             "text-color": "RGBA(255,255,255,1)",
             'text-halo-width': 2.5
         },
-        //       'slot': 'bottom',
-        minzoom: 12
+        minzoom: 9,
+        //   maxzoom: 12
     },
+    // {
+    //     id: "china_wgs84_cun_text",
+    //     type: "symbol",
+    //     source: config.china_wgs84_all.name,
+    //     "source-layer": config.china_wgs84_all.name,
+    //     filter: [
+    //         "==",
+    //         ["to-string", ["get", "province_code"]],
+    //         '370000',
+    //     ],
+    //     layout: {
+    //         "text-font": ["Microsoft YaHei"],
+    //         "text-optional": true,
+    //         "text-padding": 30,
+    //         "text-field": "{name}",
+    //         "text-size": 16,
 
-    {
-        id: "POI_WORLD_1",
-        type: "symbol",
-        source: config.wpoi.name,
-        "source-layer": config.wpoi.name,
-        filter: [
-            "in",
-            "priority",
-            //     "303", // 国家名称
-            "300", // 中华人民共和国
-        ],
-        layout: {
-            "symbol-avoid-edges": true,
-            "icon-rotation-alignment": "viewport",
-            "text-pitch-alignment": "viewport",
-            visibility: "visible",
-            "text-font": ["Microsoft YaHei"],
-            "text-optional": true,
-            // "text-padding": 10,
-            "text-padding": [
-                "interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                2,
-                5,
-                5,
-                10,
-                16,
-                20,
-            ],
-            "text-field": "{name_chn}",
-            "text-size": 22,
-        },
-        'slot': 'middle',
-        paint: {
-            "text-halo-color": "#000",
-            "text-color": "RGBA(255,255,255,1)",
-            'text-halo-width': 1.2
-        },
-        minzoom: 1,
-        maxzoom: 3.99,
+    //     },
+    //     paint: {
+    //         "text-halo-color": "#000",
+    //         "text-color": "RGBA(255,255,255,1)",
+    //         'text-halo-width': 2.5
+    //     },
+    //     //       'slot': 'bottom',
+    //     minzoom: 12
+    // },
 
-    },
+    // {
+    //     id: "POI_WORLD_1",
+    //     type: "symbol",
+    //     source: config.wpoi.name,
+    //     "source-layer": config.wpoi.name,
+    //     filter: [
+    //         "in",
+    //         "priority",
+    //         //     "303", // 国家名称
+    //         "300", // 中华人民共和国
+    //     ],
+    //     layout: {
+    //         "symbol-avoid-edges": true,
+    //         "icon-rotation-alignment": "viewport",
+    //         "text-pitch-alignment": "viewport",
+    //         visibility: "visible",
+    //         "text-font": ["Microsoft YaHei"],
+    //         "text-optional": true,
+    //         // "text-padding": 10,
+    //         "text-padding": [
+    //             "interpolate",
+    //             ["exponential", 1.5],
+    //             ["zoom"],
+    //             2,
+    //             5,
+    //             5,
+    //             10,
+    //             16,
+    //             20,
+    //         ],
+    //         "text-field": "{name_chn}",
+    //         "text-size": 22,
+    //     },
+    //     'slot': 'middle',
+    //     paint: {
+    //         "text-halo-color": "#000",
+    //         "text-color": "RGBA(255,255,255,1)",
+    //         'text-halo-width': 1.2
+    //     },
+    //     minzoom: 1,
+    //     maxzoom: 3.99,
+
+    // },
     {
         id: "POI_WORLD_2",
         type: "symbol",
@@ -678,7 +678,7 @@ let specEchars = [
             'text-halo-width': 1.5
         },
         'slot': 'middle',
-        minzoom: 4,
+        minzoom: 1,
         maxzoom: 5.99,
 
     },

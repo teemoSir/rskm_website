@@ -88,7 +88,7 @@ const config = {
             tiles: [
                 `${host}/v1/pbf/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid,province_code,city_code,code`,
             ],
-            minzoom: 8,
+            minzoom: 7,
             maxzoom: 14
         }
     },
@@ -99,7 +99,7 @@ const config = {
             tiles: [
                 `${host}/v1/pbf/china_wgs84_town/{z}/{x}/{y}?geom_column=geom&columns=gid,city_name,county_name,town_name,city_code,province_code,town_code`,
             ],
-            minzoom: 10,
+            minzoom: 9,
             maxzoom: 13
         }
     },

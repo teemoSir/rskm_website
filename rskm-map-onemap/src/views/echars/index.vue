@@ -780,17 +780,22 @@ onMounted(() => {
             let feature = await getProvinceGeometry(e.features[0].properties.gid);
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 10, bottom: 10 },
+                padding: { top: 0, bottom: 0 },
+                duration: 500
             });
 
+            setTimeout(() => {
+                map.setZoom(6.5)
+            }, 1000)
+
             // 高亮
-            drawCoordinatesJSON(JSON.parse(feature[0].json));
+            //  drawCoordinatesJSON(JSON.parse(feature[0].json));
 
 
-            console.log(feature[0])
+            //console.log(feature[0])
             let res = getAreaInfo({ type: "province", code: feature[0].province_code });
             res.then((data) => {
-                console.log(data);
+                // console.log(data);
                 sendMessageToIframe({ type: 'province', code: feature[0].province_code + `000000`, name: feature[0].name });
             })
 
@@ -803,8 +808,14 @@ onMounted(() => {
             let feature = await getCityGeometry(e.features[0].properties.gid);
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 10, bottom: 10 },
+                padding: { top: 0, bottom: 0 },
+                duration: 500,
+
             });
+            setTimeout(() => {
+                map.setZoom(8.5)
+            }, 1000)
+
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
             console.log(feature[0])
@@ -823,7 +834,7 @@ onMounted(() => {
             let feature = await getCountyGeometry(e.features[0].properties.gid);
             let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
             map.fitBounds(bbox, {
-                padding: { top: 10, bottom: 10 },
+                padding: { top: 0, bottom: 0 },
             });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
@@ -840,10 +851,10 @@ onMounted(() => {
             clearCoordinatesJSON()
             map.getCanvas().style.cursor = "pointer";
             let feature = await getTownGeometry(e.features[0].properties.gid);
-            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
-            map.fitBounds(bbox, {
-                padding: { top: 10, bottom: 10 },
-            });
+            // let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+            // map.fitBounds(bbox, {
+            //     padding: { top: 0, bottom: 0 },
+            // });
             drawCoordinatesJSON(JSON.parse(feature[0].json));
 
             console.log(feature[0])
@@ -855,16 +866,16 @@ onMounted(() => {
         });
 
         // 点击村级填充图层事件
-        map.on("click", "china_wgs84_cun_fill", async (e) => {
-            clearCoordinatesJSON()
-            map.getCanvas().style.cursor = "pointer";
-            let feature = await getCunGeometry(e.features[0].properties.gid);
-            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
-            map.fitBounds(bbox, {
-                padding: { top: 10, bottom: 10 },
-            });
-            drawCoordinatesJSON(JSON.parse(feature[0].json));
-        });
+        // map.on("click", "china_wgs84_cun_fill", async (e) => {
+        //     clearCoordinatesJSON()
+        //     map.getCanvas().style.cursor = "pointer";
+        //     let feature = await getCunGeometry(e.features[0].properties.gid);
+        //     let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+        //     map.fitBounds(bbox, {
+        //         padding: { top: 10, bottom: 10 },
+        //     });
+        //     drawCoordinatesJSON(JSON.parse(feature[0].json));
+        // });
 
         /**
          * 省级别鼠标移动事件
@@ -976,29 +987,29 @@ onMounted(() => {
         /**
          * 村级别鼠标移动事件 
          */
-        map.on("mousemove", "china_wgs84_cun_fill", (e) => {
-            map.getCanvas().style.cursor = "pointer";
-            let feature = e.features[0];
-            let name = feature.properties.name ? feature.properties.name : "";
-            map.setFilter("Highlight_DK_Line_Cun", ["all", ["in", "gid", feature.properties.gid]]);
-            map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "visible");
-            let text = `
-                 <table style="line-height:1.0;font-size:18px;" >
-                <tr><td style="text-align:center;">${name} </td></tr>
-                <tr><td style="text-align: center;">${cun_list.filter((pro) => pro.name == name).length ? cun_list.filter((pro) => pro.name == name)[0].value : ''
-                }</td></tr>
-                </table>
-            `;
-            popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
-        });
+        // map.on("mousemove", "china_wgs84_cun_fill", (e) => {
+        //     map.getCanvas().style.cursor = "pointer";
+        //     let feature = e.features[0];
+        //     let name = feature.properties.name ? feature.properties.name : "";
+        //     map.setFilter("Highlight_DK_Line_Cun", ["all", ["in", "gid", feature.properties.gid]]);
+        //     map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "visible");
+        //     let text = `
+        //          <table style="line-height:1.0;font-size:18px;" >
+        //         <tr><td style="text-align:center;">${name} </td></tr>
+        //         <tr><td style="text-align: center;">${cun_list.filter((pro) => pro.name == name).length ? cun_list.filter((pro) => pro.name == name)[0].value : ''
+        //         }</td></tr>
+        //         </table>
+        //     `;
+        //     popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
+        // });
 
-        // 村级别鼠标离开事件
-        map.on("mouseleave", "china_wgs84_cun_fill", () => {
-            map.getCanvas().style.cursor = "";
-            popup.setLngLat([0, 0]);
-            popup.setHTML("");
-            map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "none");
-        });
+        // // 村级别鼠标离开事件
+        // map.on("mouseleave", "china_wgs84_cun_fill", () => {
+        //     map.getCanvas().style.cursor = "";
+        //     popup.setLngLat([0, 0]);
+        //     popup.setHTML("");
+        //     map.setLayoutProperty("Highlight_DK_Line_Cun", "visibility", "none");
+        // });
 
     });
 
