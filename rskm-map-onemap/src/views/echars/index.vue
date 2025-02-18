@@ -905,7 +905,7 @@ onMounted(() => {
             let text = `
                 <table style="line-height:1.0;font-size:18px;width:100px " >
                 <tr><td style="text-align: center;">${name} </td></tr>
-                </table>
+                </table> 
             `;
             popup.setLngLat(e.lngLat).setHTML(text).addTo(map);
         });
