@@ -725,7 +725,7 @@ window.addEventListener('message', (event) => {
         console.log("无数据")
         return
     }
-    let code = data.data[0].code;
+    let code = data.data[0].code.substring(0, 6);
     let res = getAreaInfo({ type: data.type, code: code });
     res.then((data) => {
         console.log(data);
