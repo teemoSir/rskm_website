@@ -733,7 +733,7 @@ window.addEventListener('message', (event) => {
             clearCoordinatesJSON()
             map.getCanvas().style.cursor = "pointer";
 
-            let bbox = getCoordinatesAndBbox(JSON.parse(feature[0].json));
+            let bbox = getCoordinatesAndBbox(JSON.parse(data[0].json));
             map.fitBounds(bbox, {
                 padding: { top: 0, bottom: 0 },
             });
