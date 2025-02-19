@@ -196,12 +196,12 @@ const loadEcharts02 = (yAxis, series1, series2) => {
 
 
     const labelOption = {
-        show: true,
+        show: false,
         distance: app.config.distance,
         formatter: function (e) {
             return e.value ? Number(e.value).toFixed(0) : ''
         },
-        fontSize: 16,
+        fontSize: 10,
         // color: 'green',
         // textBorderColor: '#999',
         rich: {
@@ -254,7 +254,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
             {
                 type: 'value',
                 axisLabel: {
-                    fontSize: 16 // 文字大小
+                    fontSize: 14 // 文字大小
                 },
             }
 
@@ -267,11 +267,11 @@ const loadEcharts02 = (yAxis, series1, series2) => {
                 axisLabel: {
                     show: true, // 是否显示刻度标签，默认显示
                     interval: 0, // 坐标轴刻度标签的显示间隔，在类目轴中有效；默认会采用标签不重叠的策略间隔显示标签；可以设置成0强制显示所有标签；如果设置为1，表示『隔一个标签显示一个标签』，如果值为2，表示隔两个标签显示一个标签，以此类推。
-                    rotate: -40, // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从-90度到90度
+                    rotate: -60, // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从-90度到90度
                     inside: false, // 刻度标签是否朝内，默认朝外
-                    margin: 6, // 刻度标签与轴线之间的距离
+                    margin: 2, // 刻度标签与轴线之间的距离
                     //  formatter: '{value} Day', // 刻度标签的内容格式器
-                    fontSize: 16 // 文字大小
+                    fontSize: 14 // 文字大小
                 },
                 data: yAxis
             }
@@ -280,6 +280,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
         ]
     };
 
+    series2 = null;
     if (!series2) {
         option.legend.data = ['保险覆盖率']
         option.series = [];
@@ -1683,7 +1684,7 @@ const loadCounty = async (name) => {
             properties.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.i_area), 0);
             properties.coverage = (properties.area && properties.rs) ? (properties.area / properties.rs * 100) : 0;
             properties.bxjg = [...new Set(hzBaseDataClone.map(item => item.bxjg).filter(item => item !== null))].join(",");
-            properties.ygjg = hzBaseDataClone[0].ygjg;
+            properties.ygjg = hzBaseDataClone[0].ygjg || "";
 
             countylayer.push(properties)
             //feature && goGeom(feature.json, p)
@@ -1853,6 +1854,11 @@ watch(selectedKeys, (e) => {
     clearPopup()
 
     switch (selectedKeys.value[0]) {
+        case "0":
+            tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
+            tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].date;
+            loadLocalData();
+            break;
         case "0-0":
             tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
             tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].date;
@@ -1888,41 +1894,41 @@ watch(selectedKeys, (e) => {
         case "0-0-9":
             loadLocalData("无棣县");
             break;
-        case "1-1":
+        case "0-1":
 
-            tileH1.value = treeLeftData[0].children.filter(item => item.key == "1-1")[0].title;
-            tileSmall.value = treeLeftData[0].children.filter(item => item.key == "1-1")[0].date;
+            tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-1")[0].title;
+            tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-1")[0].date;
 
             loadLocalDataV2();
             break;
-        case "1-1-0":
+        case "0-1-0":
             loadLocalDataV2("济阳区");
             break;
-        case "1-1-1":
+        case "0-1-1":
             loadLocalDataV2("莱芜区");
             break;
-        case "1-1-2":
+        case "0-1-2":
             loadLocalDataV2("桓台县");
             break;
-        case "0-0-3":
+        case "0-1-3":
             loadLocalDataV2("高青县");
             break;
-        case "1-1-4":
+        case "0-1-4":
             loadLocalDataV2("海阳市");
             break;
-        case "1-1-5":
+        case "0-1-5":
             loadLocalDataV2("招远市");
             break;
-        case "1-1-6":
+        case "0-1-6":
             loadLocalDataV2("汶上县");
             break;
-        case "1-1-7":
+        case "0-1-7":
             loadLocalDataV2("冠县");
             break;
-        case "1-1-8":
+        case "0-1-8":
             loadLocalDataV2("东阿县");
             break;
-        case "1-1-9":
+        case "0-1-9":
             loadLocalDataV2("无棣县");
             break;
         default:
@@ -2331,7 +2337,7 @@ const loadDataHgl = () => {
             // 覆盖率
             let sa = hzBaseData.filter(item => item.county == ca)
             let totalIcoverage = sa.reduce((total, item) => total + Number(item.i_coverage || 0), 0);
-            fgl.push(Number(totalIcoverage / sa.length).toFixed(0));
+            fgl.push(Number(totalIcoverage * 100 / sa.length).toFixed(0));
 
             // 合格率
             let ha = hzBaseData.filter(item => item.county == ca)
@@ -2347,7 +2353,7 @@ const loadDataHgl = () => {
         let sa = hzBaseData.filter(item => item.county == header.value)
         sa.forEach((s) => {
             towns.push(s.town)
-            fgl.push(s.i_coverage)
+            fgl.push(s.i_coverage * 100)
             hgl.push(0)
 
         })
@@ -2569,15 +2575,15 @@ onMounted(() => {
 
     nextTick(() => {
 
-        // setTimeout(() => {
-        //   fitCenter()
-        // }, 1000)
+        setTimeout(() => {
+            loadLocalData()
+        }, 1000)
         map && loadEvent();
         /**
          * 基础数据加载
          */
         map && map.on("load", () => {
-            loadLocalData()
+
             addLayersYghy()
             loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
         })

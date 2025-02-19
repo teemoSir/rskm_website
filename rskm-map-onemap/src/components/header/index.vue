@@ -154,18 +154,15 @@ onMounted(() => {
 </script>
 
 <template>
-    <a-page-header class="header" :title="page.cnname" :sub-title="'Version ' + page.version" :style="pageStyle">
+    <a-page-header class="header" :title="page.cnname" :sub-title="'Version: ' + page.version" :style="pageStyle">
         <div style="position: absolute; left: 17px; top: 20px;">
             <Vegan :size="55" color="green" />
-
         </div>
         <div style="position: absolute; left: 90px; top: 55px; color: green;">
             {{ String(page.name) }}
         </div>
-
-
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
-            style="position: absolute; left: 600px; top: 0px; line-height: 80px" />
+            style="position: absolute; left: 600px; top: 0px; line-height: 80px;" />
     </a-page-header>
 </template>
 
