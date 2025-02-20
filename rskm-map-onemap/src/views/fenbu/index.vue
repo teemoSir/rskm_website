@@ -1842,6 +1842,8 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
     //     })
     // );
 
+    //
+
     const cc = new mapboxgl.ScaleControl({
         maxWidth: 150,
         unit: "metric",
