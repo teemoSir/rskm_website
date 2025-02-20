@@ -38,17 +38,17 @@ const eventRotate = () => {
 const eventRender = (double = undefined) => {
     const MAP_LAYERS = StateManager.get("MAP_LAYERS") || "{}";
     const ll = {
-        lng: window.lnglatrender?.lng.toFixed(6) ?? "0",
-        lat: window.lnglatrender?.lat.toFixed(6) ?? "0"
+        lng: window.lnglatrender?.lng.toFixed(6) ?? "",
+        lat: window.lnglatrender?.lat.toFixed(6) ?? ""
     };
 
-    map && (document.getElementById("xyz").innerHTML = `
+    map && (document.getElementById("attribution-bottom-right").innerHTML = `
      <span style='padding-right: 10px;'>© ${page.name}</span>
     <span style='padding-right: 10px;'>${MAP_LAYERS.st ? `审图号：${MAP_LAYERS.st}` : ""}</span>
     <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
-    <span style='padding-right: 10px;'>等级：${map.getZoom().toFixed(2) || ""} </span>
-    <span style='padding-right: 10px;'>模式：${(map.getProjection().name || "default") === "globe" ? "三维" : "二维"} </span>
-    <span style='padding-right: 10px;'>${MAP_LAYERS.name || ""}</span>`);
+    <span style='padding-right: 10px;'>视野等级：${map.getZoom().toFixed(2) || ""} </span>
+    <span style='padding-right: 10px;'>显示模式：${(map.getProjection().name || "default") === "globe" ? "三维" : "二维"} </span>
+    <span style='padding-right: 10px;'>图层：${MAP_LAYERS.name || ""}</span>`);
 
 
 }
