@@ -1909,7 +1909,7 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
     });
     mapl.addControl(
         new mapboxgl.AttributionControl({
-            customAttribution: "<div id='xyz'></div>",
+            customAttribution: "<div id='attribution-bottom-right'></div>",
         })
     );
 
@@ -2060,7 +2060,7 @@ onMounted(() => {
        * 渲染运行时
        */
     map.on("move", (e) => {
-        eventRender();
+        //  eventRender();
     });
 
     map.on("mousemove", (e) => {
@@ -2068,7 +2068,7 @@ onMounted(() => {
             lng: e.lngLat.lng,
             lat: e.lngLat.lat,
         };
-        eventRender();
+        // eventRender();
     });
 })
 

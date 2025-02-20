@@ -8,7 +8,7 @@ const treeLeftData = [
         key: '0',
         children: [
             {
-                title: '2024年玉米(第一次)',
+                title: '2024年玉米',
                 key: '0-0',
                 children: [
                     {

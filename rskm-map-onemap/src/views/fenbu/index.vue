@@ -1835,11 +1835,11 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
         },
         projection: machine.value,
     });
-    mapl.addControl(
-        new mapboxgl.AttributionControl({
-            customAttribution: "<div id='xyz'></div>",
-        })
-    );
+    // mapl.addControl(
+    //     new mapboxgl.AttributionControl({
+    //         customAttribution: "<div id='xyz'></div>",
+    //     })
+    // );
 
     const cc = new mapboxgl.ScaleControl({
         maxWidth: 150,
@@ -1995,7 +1995,7 @@ onMounted(() => {
        * 渲染运行时
        */
     map.on("move", (e) => {
-        eventRender();
+        // eventRender();
     });
 
     map.on("mousemove", (e) => {
@@ -2003,7 +2003,7 @@ onMounted(() => {
             lng: e.lngLat.lng,
             lat: e.lngLat.lat,
         };
-        eventRender();
+        // eventRender();
     });
 })
 
@@ -3577,8 +3577,7 @@ const onClose = () => {
                 zIndex: 1000
             }">
             </div>
-            <div
-                style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;border-left: 3px dotted #fff;z-index: 1100;">
+            <div style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;z-index: 1100;">
             </div>
             <div id="after" :style="{
                 width: '50%',
@@ -4082,7 +4081,7 @@ const onClose = () => {
                 <tr>
                     <td>
                         <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.298));border-radius: 2px;  ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
                                 第一次遥感
@@ -4094,7 +4093,7 @@ const onClose = () => {
                     </td>
                     <td>
                         <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.298)); border-radius: 2px; ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
                                 第二次遥感

@@ -14,6 +14,8 @@ import {
     CircleAlertIcon,
     LandPlotIcon,
     LucideSquareMousePointer,
+    AlignVerticalDistributeCenter,
+    MapPinned
 } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
@@ -3017,24 +3019,26 @@ const lockDownOpen = ref(false)
                 </X>
             </a-tooltip>
 
-            <a-card size="small" title="" style="height: 55px;">
+            <a-card size="small" title="" style="border: 0; height: 48px;">
 
                 <a-tabs v-model:activeKey="activeKey" style="position: absolute;top: 0;left: 0; z-index: 10000;">
                     <a-tab-pane key="1">
                         <template #tab>
                             <div
-                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
-                                <LandPlotIcon :size="20"></LandPlotIcon>
-                                &nbsp;&nbsp;&nbsp;区域
+                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';">
+                                <!-- <LandPlotIcon :size="20"></LandPlotIcon> -->
+                                区域
                             </div>
                         </template>
                     </a-tab-pane>
                     <a-tab-pane key="2">
                         <template #tab>
                             <div
-                                style="font-size: 18px;display: flex;align-items: center;justify-content: center;font-weight: 600;">
-                                <LucideSquareMousePointer :size="20"></LucideSquareMousePointer>
-                                &nbsp;&nbsp;&nbsp;地块
+                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';">
+                                <!-- <LucideSquareMousePointer :size="20"></LucideSquareMousePointer> -->
+                                地块
+
+
                             </div>
                         </template>
                     </a-tab-pane>
@@ -3042,15 +3046,18 @@ const lockDownOpen = ref(false)
 
             </a-card>
 
-            <a-card size="small" title="" style="height: 100%; margin-top: -45px;">
+            <a-card size="small" title="" style="height: calc(100% - 35px); margin-top: 3px;">
                 <!--区域核验-->
                 <div v-show="activeKey == '1'"
-                    style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
+                    style="position: absolute;top: 0;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
 
                     <div style="width: 100%; height: 100%;overflow-y: hidden;overflow-x: hidden;">
                         <div style="width: 100%;height: 260px;">
                             <div class="headerbg">
-                                <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> {{ header ? header :
+                                <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
+                                <!-- <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> -->
+
+                                {{ header ? header :
                                     '试点区县' }}
                                 <table style="position: absolute;right: 10px;margin-top: -30px">
                                     <tr>
@@ -3146,8 +3153,8 @@ const lockDownOpen = ref(false)
                             <div style="width: 100%;height: 55%;">
                                 <div class="headerbg">
 
-                                    <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart>
-                                    区域统计<small>&nbsp;
+                                    <!-- <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> -->
+                                    <AlignVerticalDistributeCenter style="margin-bottom: -5px;" /> 区域统计<small>&nbsp;
                                         <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
                                             <Info :size="16" color="#ccc"></Info>
                                         </a-tooltip>
@@ -3169,8 +3176,8 @@ const lockDownOpen = ref(false)
                             <div style="width: 100%;height: 45%;">
                                 <div class="headerbg">
 
-                                    <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon>
-                                    机构统计<small>&nbsp;
+                                    <!-- <Building2Icon :size="24" style="margin-bottom: -5px;"></Building2Icon> -->
+                                    <AlignVerticalDistributeCenter style="margin-bottom: -5px;" /> 机构统计<small>&nbsp;
                                         <a-tooltip title="合格(大于80%且小于105%)，超保(大于105%)，不足(小于80%)" :color="orange">
                                             <Info :size="16" color="#ccc"></Info>
                                         </a-tooltip>
@@ -3188,13 +3195,14 @@ const lockDownOpen = ref(false)
                     </div>
                 </div>
 
-
                 <!--地块核验-->
                 <div v-if="activeKey == '2'"
-                    style="position: absolute;top: 50px;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
+                    style="position: absolute;top: 0;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
                     <div style="width: 100%;height: 300px;">
                         <div class="headerbg">
-                            <MapPinned :size="25" style="margin-bottom: -5px;"></MapPinned> {{ header ? header : '试点区县'
+                            <!-- <MapPinned :size="25" style="margin-bottom: -5px;"></MapPinned> -->
+                            <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
+                            {{ header ? header : '试点区县'
                             }}
                             <a-tag color="red"> 重点乡镇 </a-tag>
 
@@ -3273,7 +3281,9 @@ const lockDownOpen = ref(false)
                     <div style="width: 100%; height: calc(100% - 300px);">
                         <div style="width: 100%;height: 60%;">
                             <div class="headerbg">
-                                <LucideAreaChart :size="20" style="margin-bottom: -5px;"></LucideAreaChart> 地块统计
+                                <!-- <LucideAreaChart :size="20" style="margin-bottom: -5px;"></LucideAreaChart>  -->
+                                <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
+                                地块统计
                                 <small>&nbsp;
                                     <a-tooltip title="大户数量(大于50亩被保险人)，合格大户(地块重叠，标的占比均符合)" :color="orange">
                                         <Info :size="16" color="#ccc"></Info>
@@ -3294,7 +3304,9 @@ const lockDownOpen = ref(false)
                         </div>
                         <div style="width: 100%;height: 40%;">
                             <div class="headerbg">
-                                <LucideAreaChart :size="25" style="margin-bottom: -5px;"></LucideAreaChart> 机构统计
+                                <!-- <LucideAreaChart :size="25" style="margin-bottom: -5px;"></LucideAreaChart>  -->
+                                <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
+                                机构统计
                                 <small>&nbsp;
                                     <a-tooltip title="大户数量(大于50亩被保险人)，合格大户(地块重叠，标的占比均符合)" :color="orange">
                                         <Info :size="16" color="#ccc"></Info>
@@ -3317,6 +3329,8 @@ const lockDownOpen = ref(false)
 
 
             </a-card>
+
+
 
         </div>
 
@@ -3505,7 +3519,7 @@ const lockDownOpen = ref(false)
 .tuli {
     position: absolute;
     left: 5px;
-    bottom: 20px;
+    bottom: 30px;
 }
 
 .layer {
@@ -3586,7 +3600,7 @@ p {
 
 .tjfx th {
     font-size: 16px;
-    color: #5a5959;
+    color: #5a5959bc;
     text-align: left;
     letter-spacing: -1px;
 
@@ -3615,17 +3629,18 @@ p {
     color: #ee6666;
     color: #73c0de;
     color: #3ba272;
-    color: #5470c6;
+    color: rgb(84, 112, 198);
 }
 
 
 .headerbg {
-    background: linear-gradient(0deg, rgba(89, 112, 196, 0.1), rgba(89, 112, 196, 0.01));
-    padding: 5px;
+    /* background: linear-gradient(0deg, rgba(84, 112, 196, 0.2), rgba(89, 112, 196, 0.01)); */
+    padding: 8px 0 6px 0;
     border-bottom: 1px solid #cccccc86;
-    color: #5a5959;
-    font-size: 18px;
-    font-weight: 1000;
+    color: #101010c1;
+    font-size: 1.2rem;
+    font-family: FZZongYi-M05;
+
 
 }
 
@@ -3715,6 +3730,6 @@ p {
 }
 
 :deep(.mapboxgl-popup-content) {
-    background-color: #f8f5f5b6;
+    /* background-color: #f8f5f5b6; */
 }
 </style>

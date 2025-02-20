@@ -1077,7 +1077,7 @@ defineProps({
 
     <div id='attribution-bottom-right' class="attribution-bottom-right"></div>
 
-    <div id='attribution-bottom-left' class="attribution-bottom-left">比例尺</div>
+
 
     <table>
         <tr>
@@ -1100,42 +1100,29 @@ defineProps({
     height: 100%;
 }
 
-.attribution-bottom-left {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40%;
-
-    background-color: #0000008e;
-    font-family: Arial, sans-serif;
-    color: #fff;
-    font-size: 0.8rem;
-    padding: 6px 3px 3px 6px;
-    cursor: default;
-}
 
 .attribution-bottom-right {
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 60%;
+    width: 100%;
     background-color: #0000008e;
     font-family: Arial, sans-serif;
-    color: #fff;
+    color: #fdfdfdb3;
     font-size: 0.8rem;
     text-align: right;
-    padding: 8px 3px 3px 0;
+    padding: 7px 3px 3px 0;
     cursor: default;
 }
 
 :deep(.mapboxgl-ctrl-scale) {
-    color: #fff;
-    font-size: 0.8rem;
+    color: #fdfdfdb3;
+    font-size: 0.7rem;
     border-bottom: 1px solid #fff;
     border-left: 1px solid #fff;
     border-right: 1px solid #fff;
     position: absolute;
-    left: 60px;
+    left: 10px;
     bottom: 3px;
     background-color: transparent;
     text-align: center;

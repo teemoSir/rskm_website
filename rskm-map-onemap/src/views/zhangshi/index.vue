@@ -1842,11 +1842,11 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
         },
         projection: machine.value,
     });
-    mapl.addControl(
-        new mapboxgl.AttributionControl({
-            customAttribution: "<div id='xyz'></div>",
-        })
-    );
+    // mapl.addControl(
+    //     new mapboxgl.AttributionControl({
+    //         customAttribution: "<div id='xyz'></div>",
+    //     })
+    // );
 
     const cc = new mapboxgl.ScaleControl({
         maxWidth: 150,
@@ -1858,11 +1858,11 @@ const initMap = (id, color = "rgba(186, 210, 235,0.3)") => {
         addTiles();
     });
 
-    mapl.addControl(
-        new mapboxgl.AttributionControl({
-            customAttribution: "<div id='xyz'></div>",
-        })
-    );
+    // mapl.addControl(
+    //     new mapboxgl.AttributionControl({
+    //         customAttribution: "<div id='xyz'></div>",
+    //     })
+    // );
 
     return mapl;
 };
