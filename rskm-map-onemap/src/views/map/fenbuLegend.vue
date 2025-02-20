@@ -182,8 +182,10 @@ const props = defineProps({
 }
 
 
+
 :deep(.ant-card-head) {
     border-bottom: 0;
+    font-family: FZZongYi-M05;
     font-weight: normal;
 }
 

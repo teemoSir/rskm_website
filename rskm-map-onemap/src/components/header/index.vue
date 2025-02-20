@@ -6,7 +6,7 @@ import { ref, onMounted, h } from "vue";
 import { message } from "ant-design-vue";
 import { storeToRefs } from "pinia";
 import { hedaerStore } from "@/store/store.js";
-import { House, Satellite, Vegan, SquareActivity, Settings, Map, LandPlot } from "lucide-vue-next";
+import { House, Satellite, Vegan, SquareActivity, Settings, Map, LandPlot, MapPinned, Activity, FileClock, Info } from "lucide-vue-next";
 import dayjs from "dayjs";
 
 const router = useRouter();
@@ -43,7 +43,7 @@ const current = ref(["home"]);
 const items = ref([
     {
         key: "home",
-        icon: () => h(LandPlot),
+        icon: () => h(MapPinned),
         label: "保险分布",
         title: "保险分布",
         onClick: () => {
@@ -98,7 +98,7 @@ const items = ref([
     },
     {
         key: "chengxiao",
-        icon: () => h(SquareActivity),
+        icon: () => h(Activity),
         label: "成效分析",
         title: "成效分析",
         onClick: () => {
@@ -107,7 +107,7 @@ const items = ref([
     },
     {
         key: "jiance",
-        icon: () => h(Map),
+        icon: () => h(FileClock),
         label: "遥感监测",
         title: "遥感监测",
         onClick: () => {
@@ -162,36 +162,51 @@ onMounted(() => {
             {{ String(page.name) }}
         </div>
         <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
-            style="position: absolute; left: 600px; top: 0px; line-height: 80px;" />
+            style="position: absolute; right: 550px; top: 0px; line-height: 90px;" />
+
+        <div style="position: absolute;top: 0;right: 0;">
+            <table>
+                <tr style="line-height: 100px;">
+                    <td style="padding-right: 10px;color: aliceblue;display: flex;align-items: center;">
+                        <span>版本历史 </span>
+                    </td>
+                    <td style="padding-right: 10px;color: aliceblue"> </td>
+                </tr>
+            </table>
+        </div>
     </a-page-header>
 </template>
 
 <style scoped>
-::v-deep .ant-menu {
+:deep(.ant-menu) {
     font-size: 1.1rem;
 }
 
-::v-deep .ant-picker {
+:deep(.ant-picker) {
     background: transparent;
     border: 0;
     padding: 0;
 }
 
-::v-deep .ant-picker input {
+
+
+
+
+:deep(.ant-page-header-heading-sub-title) {
     color: #ccc;
 }
 
-::v-deep .ant-page-header-heading-title {
-    font-size: 2rem;
+
+:deep(.ant-page-header-heading-title) {
+    font-size: 1.5rem;
     font-weight: normal;
+    color: #fff;
 }
 
-:deep(.ant-menu-light) {
-    font-family: 'FZZongYi-M05';
-}
+
 
 :deep(.ant-menu-title-content) {
-    font-size: 22px;
+    font-size: 1rem;
     font-weight: normal;
 }
 
@@ -204,12 +219,27 @@ onMounted(() => {
 :deep(.ant-picker-dropdown) {
     z-index: 200000;
 }
+
+:deep(.ant-page-header .ant-page-header-content) {
+    margin: 0;
+    padding: 0;
+}
+
+:deep(.ant-menu-light) {
+    color: #fff;
+    font-weight: 600;
+    font-family: 'FZZongYi-M05';
+}
+
+:deep(.ant-picker input) {
+    color: #fff;
+}
 </style>
 
 <style>
 .header {
     font-family: 'FZZongYi-M05';
-    letter-spacing: 1.5px;
+    /* letter-spacing: 2px; */
     padding-left: 90px;
     z-index: 200000;
 }

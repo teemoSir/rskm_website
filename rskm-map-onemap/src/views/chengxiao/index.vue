@@ -1196,8 +1196,9 @@ const getCount = async (key, name = "") => {
 };
 
 
+
 const expandedKeys = ref(['0-0']);
-const selectedKeys = ref(['0-0']);
+const selectedKeys = ref(['0', '0-0']);
 
 
 watch(selectedKeys, () => {
@@ -1732,7 +1733,7 @@ const searchDrawGeom = (data) => {
 /**
  * 菜单栏显示
  */
-const xSquareShow = ref(false)
+const xSquareShow = ref(true)
 
 
 /**
@@ -3649,8 +3650,7 @@ const onClose = () => {
                 zIndex: 1000
             }">
             </div>
-            <div
-                style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;border-left: 3px dotted #fff;z-index: 1100;">
+            <div style="height: 100%;width: 0px;position: absolute;top: 0;left: 50%;z-index: 1100;">
             </div>
             <div id="after" :style="{
                 width: '50%',
@@ -3665,6 +3665,87 @@ const onClose = () => {
         </div>
 
 
+        <div class="left-card" v-show="xSquareShow">
+
+            <a-row :gutter="16">
+                <a-col :span="24">
+                    <a-card size="small" title="">
+
+
+                        <p style="border-bottom: 1px solid #ccc;">
+                            <label style="font-size: 16px;font-weight: 1000;">
+                                <!-- <FoldersIcon s></FoldersIcon> -->
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <span
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">遥感种植分布</span>
+                            </label>
+
+
+                            <a-tooltip placement="right">
+                                <template #title>
+                                    <span>隐藏菜单</span>
+                                </template>
+
+
+                                <X style="float: right;cursor: pointer;" color="#999" @click="xSquareShow = false"></X>
+                            </a-tooltip>
+
+                        </p>
+
+                        <!-- <div v-if="activeKey == 2" style="padding: 10px 0px;">
+                <a-space>
+                    <label style="font-weight: 600;">查询：</label>
+                    <a-auto-complete :allowClear="true" v-model:value="valueSearch" :options="options"
+                        style="width: 180px;" @select="onSelect" @search="onSearch" placeholder="请输入大户名称">
+
+                        <template #option="item">
+                            <div style="display: flex; justify-content: space-between">
+                                <span>
+                                    {{ item.value }}
+                                </span>
+                                <span>{{ item.cun }} </span>
+                                <span>{{ item.bbxrzjh }} </span>
+                            </div>
+                        </template>
+                    </a-auto-complete>
+                </a-space>
+            </div> -->
+
+                        <a-directory-tree v-model:expandedKeys="expandedKeys" v-model:selectedKeys="selectedKeys"
+                            show-icon show-line default-expand-all :tree-data="treeLeftData">
+
+                            <template #icon="{ key, selected, dataRef }">
+                                <template v-if="dataRef.isPass === true && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;;width: 100px;">
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}完成核验</template>
+                                            <CheckCircle2Icon color="RGB(144,204,120)" :size="20"></CheckCircle2Icon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                                <template v-if="dataRef.isPass === false && key != '0-0'">
+
+                                    <div style="float: left;margin-left: 100px;width: 100px;">
+
+                                        <a-tooltip placement="right">
+                                            <template #title>{{ dataRef.title }}暂未完成</template>
+                                            <CircleAlertIcon color="RGB(236,102,103)" :size="20"></CircleAlertIcon>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
+                            </template>
+                        </a-directory-tree>
+
+
+                        <!-- <a-alert message="提示：2024年10月30日截止" type="success" show-icon /> -->
+                    </a-card>
+                </a-col>
+
+
+            </a-row>
+
+        </div>
 
 
 
@@ -4074,13 +4155,12 @@ const onClose = () => {
         </a-drawer>
 
         <!-- 左侧菜单栏 -->
-        <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
-
-            <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
+        <!-- <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
+           <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
                 :inlineCollapsed="false"
                 style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
                 :items="items" @click="handleClick"></a-menu>
-        </div>
+        </div> -->
         <!-- 中间 -->
         <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-214px' : '-474px') }">
 
@@ -4097,24 +4177,24 @@ const onClose = () => {
                 <tr>
                     <td>
                         <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.198)); border-radius: 2px; ">
 
-                            <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
+                            <div style="padding: 5px;font-size: 1rem;">
                                 第一次比对
                             </div>
-                            <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
+                            <div style="padding: 0 0 5px 0;">
                                 2024年09月13日
                             </div>
                         </div>
                     </td>
                     <td>
                         <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.698));  ">
+                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.198));border-radius: 2px;  ">
 
-                            <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
+                            <div style="padding: 5px;font-size: 1rem;">
                                 第二次比对
                             </div>
-                            <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
+                            <div style="padding: 0 0 5px 0;">
                                 2024年11月25日
                             </div>
                         </div>
@@ -4457,10 +4537,10 @@ const onClose = () => {
     left: 0;
     top: 0;
     width: 100%;
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.4));
+    /* background-color: #fff; */
     z-index: 100000;
-    color: #0e0e0e;
-    outline: 1px solid #ccc;
+
 
 }
 
@@ -4468,17 +4548,17 @@ const onClose = () => {
 
 
 
-::v-deep .ant-menu-item svg {
+:deep(.ant-menu-item svg) {
     width: 15px;
     height: 15px;
 }
 
-::v-deep .ant-menu-submenu-horizontal svg {
+:deep(.ant-menu-submenu-horizontal svg) {
     width: 15px;
     height: 15px;
 }
 
-::v-deep .ant-menu-light {
+:deep(.ant-menu-light) {
     background-color: transparent;
     color: #ccc;
 }
@@ -4504,9 +4584,10 @@ const onClose = () => {
 }
 
 .left-card {
+
     position: absolute;
-    width: 450px;
-    left: 0;
+    width: 270px;
+    left: 10px;
     top: 100px;
     max-height: calc(100% - 100px);
     z-index: 1000;
@@ -4558,7 +4639,7 @@ p {
 
 
 
-::v-deep .ant-select-selector {
+:deep(.ant-select-selector) {
     border: 0;
     background-color: transparent;
 }
@@ -4571,7 +4652,7 @@ p {
 
 
 
-::v-deep .ant-tabs-tab .ant-tabs-tab-btn {
+:deep(.ant-tabs-tab .ant-tabs-tab-btn) {
     width: 180px;
     text-align: center;
 }
@@ -4600,7 +4681,7 @@ p {
 }
 
 
-::v-deep .ant-divider-with-text {
+:deep(.ant-divider-with-text) {
     margin: 5px 0;
 }
 
@@ -4618,24 +4699,22 @@ p {
 
 
 
-::v-deep .ant-page-header-heading-title {
-    color: #323334;
+/* :deep(.ant-page-header-heading-title) {
+    color: aliceblue;
 }
 
-::v-deep .ant-page-header-heading-sub-title {
+:deep(.ant-page-header-heading-sub-title) {
+    color: #ccc;
+} */
+
+/* :deep(.ant-menu-light) {
     color: #66757f;
     font-weight: 600;
-
 }
 
-::v-deep .ant-menu-light {
+:deep(.ant-picker input) {
     color: #66757f;
-    font-weight: 600;
-}
-
-::v-deep .ant-picker input {
-    color: #66757f;
-}
+} */
 
 
 .xRightSquareShow {
@@ -4700,18 +4779,18 @@ p {
     padding: 0;
 }
 
-::v-deep .ant-statistic .ant-statistic-title {
+:deep(.ant-statistic .ant-statistic-title) {
     padding: 0;
     margin: 0;
     color: rgb(93, 91, 91);
     font-size: 16px;
 }
 
-::v-deep .ant-statistic {
+:deep(.ant-statistic) {
     padding: 0 10px;
 }
 
-::v-deep .ant-statistic .ant-statistic-content {
+:deep(.ant-statistic .ant-statistic-content) {
     font-size: 22px;
     line-height: 30px;
 }
@@ -4719,37 +4798,37 @@ p {
 
 
 
-::v-deep .ant-segmented-item-selected {
+:deep(.ant-segmented-item-selected) {
     background-color: #3277fc;
     color: #fff;
 
 }
 
 
-::v-deep .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
+:deep(.ant-tabs .ant-tabs-tab+.ant-tabs-tab) {
     margin: 0
 }
 
-::v-deep .ant-tabs-nav .ant-tabs-nav-operations {
+:deep(.ant-tabs-nav .ant-tabs-nav-operations) {
     display: none;
 }
 
 
-::v-deep .ant-tabs-tab .ant-tabs-tab-btn {
+:deep(.ant-tabs-tab .ant-tabs-tab-btn) {
     width: 160px;
 }
 
-::v-deep .ant-timeline-item-tail {
+:deep(.ant-timeline-item-tail) {
     border-inline-start: 3px solid rgba(249, 249, 249, 0);
 
 
 }
 
-::v-deep .ant-page-header .ant-page-header-content {
+/* :deep(.ant-page-header .ant-page-header-content) {
     margin: 0;
     padding: 0;
     background-color: #48b04c;
-}
+} */
 
 .right-tool {
     position: absolute;
@@ -4834,8 +4913,8 @@ p {
 
 }
 
-::v-deep .mapboxgl-popup-content {
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.83), rgba(251, 250, 250, 0.83));
+:deep(.mapboxgl-popup-content) {
+    /* background: linear-gradient(to bottom, rgba(251, 250, 250, 0.83), rgba(251, 250, 250, 0.43)); */
 }
 
 .map {
@@ -4844,5 +4923,12 @@ p {
     top: 0;
     bottom: 0;
     width: 100%;
+}
+
+:deep(.ant-segmented-item-label) {
+    /* padding: 0;
+    margin: 0; */
+    font-family: FZZongYi-M05;
+    font-weight: normal;
 }
 </style>

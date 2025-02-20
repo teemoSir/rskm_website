@@ -83,8 +83,10 @@ const tuli = ref(true);
             rgba(204, 204, 204, 0.898));
 }
 
+
 :deep(.ant-card-head) {
     border-bottom: 0;
+    font-family: FZZongYi-M05;
     font-weight: normal;
 }
 

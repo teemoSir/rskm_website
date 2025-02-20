@@ -3609,9 +3609,9 @@ const onClose = () => {
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <!-- <FoldersIcon s></FoldersIcon> -->
-                                <Satellite style="margin-bottom: -5px;" />
-                                遥感种植分布
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <span
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">种植遥感监测</span>
                             </label>
 
 
@@ -4329,11 +4329,9 @@ const onClose = () => {
     left: 0;
     top: 0;
     width: 100%;
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.4));
+    /* background-color: #fff; */
     z-index: 100000;
-    color: #0e0e0e;
-    outline: 1px solid #ccc;
-
 }
 
 
@@ -4482,7 +4480,7 @@ p {
 
 
 
-::v-deep .ant-page-header-heading-title {
+/* ::v-deep .ant-page-header-heading-title {
     color: #323334;
 }
 
@@ -4490,16 +4488,16 @@ p {
     color: #66757f;
     font-weight: 600;
 
-}
+} */
 
-::v-deep .ant-menu-light {
-    color: #66757f;
+/* ::v-deep .ant-menu-light {
+    color: #f8f9fa81;
     font-weight: 600;
 }
 
 ::v-deep .ant-picker input {
-    color: #66757f;
-}
+    color: #f8f9fa81;
+} */
 
 
 .xRightSquareShow {
@@ -4609,11 +4607,11 @@ p {
 
 }
 
-::v-deep .ant-page-header .ant-page-header-content {
+/* ::v-deep .ant-page-header .ant-page-header-content {
     margin: 0;
     padding: 0;
     background-color: #48b04c;
-}
+} */
 
 
 .left-card {

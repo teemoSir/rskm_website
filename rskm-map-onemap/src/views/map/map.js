@@ -59,7 +59,7 @@ const eventRender = (double = undefined) => {
  */
 const popup = new mapboxgl.Popup({
     closeOnClick: false,
-    //  closeButton: false,
+    closeButton: false,
 });
 
 popup.setOffset(5);
@@ -70,7 +70,7 @@ popup.setOffset(5);
  */
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
-    //  closeButton: true,
+    closeButton: false,
     maxWidth: "480px",
 
 });

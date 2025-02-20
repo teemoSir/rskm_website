@@ -1085,7 +1085,7 @@ defineProps({
     height: 100%;
 }
 
-/deep/.mapboxgl-ctrl-scale {
+:deep(.mapboxgl-ctrl-scale) {
     color: #fff;
 
     font-size: 12px;
@@ -1095,22 +1095,22 @@ defineProps({
     border: 0;
 }
 
-::v-deep .ant-btn {
+:deep(.ant-btn) {
     margin-top: 4px;
 }
 
-::v-deep .ant-card {
+:deep(.ant-card) {
     border-radius: 2px;
     background-color: rgba(0, 0, 0, 0.6);
     border: 0;
 }
 
-::v-deep .ant-card-grid {
+:deep(.ant-card-grid) {
     padding: 5px 5px;
     box-shadow: none;
 }
 
-::v-deep .mapboxgl-ctrl-top-right {
+:deep(.mapboxgl-ctrl-top-right) {
     display: none;
 }
 
@@ -1192,11 +1192,13 @@ defineProps({
     font-size: 14px;
 }
 
-::v-deep .mapboxgl-ctrl-attrib {
+:deep(.mapboxgl-ctrl-attrib) {
     background-color: rgba(0, 0, 0, 0.5);
     color: #eee9e9e7;
-    padding: 3px;
+    padding: 2px 5px;
+    width: 100%;
 }
+
 
 .pst {}
 

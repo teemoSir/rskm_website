@@ -35,7 +35,7 @@ const eventRender = () => {
     document.getElementById("xyz").innerHTML = `
     <span style='padding-right: 10px;'>${sth}</span>
     <span style='padding-right: 10px;' >© ${mc}</span>
-    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ ll.lat}°</span>
+    <span style='padding-right: 10px;'>经纬度：${ll.lng}° ${ll.lat}°</span>
     <span style='padding-right: 10px;'>等级：${zoom} </span>
      <span style='padding-right: 10px;'>模式：${(pro == "globe") ? "三维" : "二维"} </span>
     <span style='padding-right: 10px;'>图源：${ty}</span>`;
@@ -48,12 +48,12 @@ const eventRender = () => {
 }
 
 
-const convertDMSToDD=(dms) => {
+const convertDMSToDD = (dms) => {
     var [degrees, minutes, seconds] = dms.split(/[^\\d\\.]+/).map(parseFloat);
     return degrees + minutes / 60 + seconds / 3600;
 }
 
-const convertDDToDMS=(dd) => {
+const convertDDToDMS = (dd) => {
     var degrees = Math.floor(dd);
     var minutes = (dd - degrees) * 60;
     var seconds = ((minutes - Math.floor(minutes)) * 60).toFixed(2);
@@ -75,7 +75,7 @@ const popup = new mapboxgl.Popup({
  */
 const popupbig = new mapboxgl.Popup({
     closeOnClick: true,
-    closeButton: true,
+    closeButton: false,
     maxWidth: "380px",
 });
 

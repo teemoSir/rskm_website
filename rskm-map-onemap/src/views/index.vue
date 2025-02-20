@@ -20,7 +20,8 @@ import {
     ChevronDown,
     CalendarCheck,
     ListCheck,
-    ScanEye
+    ScanSearch,
+    ReceiptText
 
 } from "lucide-vue-next";
 import * as turf from "@turf/turf";
@@ -448,7 +449,7 @@ const yearPopup = ref(false)
                             <template #title>保单详情</template>
                             <a-button size="large" class="searchshadow" @click="open = !open"
                                 style="display: flex;align-items: center; font-family: 'FZZongYi-M05';font-size: 16px;width: 130px;float: left;">
-                                <ListCheck />
+                                <ReceiptText :size="20" />
                                 <div style="margin-left: 10px;"> 保单详情
                                 </div>
                             </a-button>
@@ -457,7 +458,7 @@ const yearPopup = ref(false)
                             <template #title>回到全局视野</template>
                             <a-button size="large" class="searchshadow" @click="fitCenter()"
                                 style="display: flex;align-items: center; font-family: 'FZZongYi-M05';font-size: 16px;width: 130px;float: left;">
-                                <ScanEye />
+                                <ScanSearch />
                                 <div style="margin-left: 10px;"> 重置视野
                                 </div>
                             </a-button>
@@ -589,7 +590,7 @@ const yearPopup = ref(false)
 
 ::v-deep .ant-menu-light {
     background-color: transparent;
-    color: #ccc;
+
 }
 
 ::v-deep .ant-drawer .ant-drawer-body {
@@ -604,13 +605,13 @@ const yearPopup = ref(false)
     padding: 0;
 }
 
-::v-deep .ant-page-header-heading-title {
+/* ::v-deep .ant-page-header-heading-title {
     color: aliceblue;
 }
 
 ::v-deep .ant-page-header-heading-sub-title {
     color: #ccc;
-}
+} */
 
 ::v-deep .ant-tabs-tab-btn {
     font-size: 16px;

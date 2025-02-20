@@ -1684,7 +1684,7 @@ const loadCounty = async (name) => {
             properties.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.i_area), 0);
             properties.coverage = (properties.area && properties.rs) ? (properties.area / properties.rs * 100) : 0;
             properties.bxjg = [...new Set(hzBaseDataClone.map(item => item.bxjg).filter(item => item !== null))].join(",");
-            properties.ygjg = hzBaseDataClone[0].ygjg || "";
+            properties.ygjg = hzBaseDataClone[0] ? hzBaseDataClone[0].ygjg : "";
 
             countylayer.push(properties)
             //feature && goGeom(feature.json, p)
@@ -1954,21 +1954,15 @@ const activeKey = ref('1');
 watch(activeKey, () => {
     header.value = "";
     selectedKeys.value = ['0-0'];
-
-
-
     setTimeout(() => {
         loadLocalData()
-
         if (activeKey.value == 2) {
             // 地块统计图
             reloadEChats()
-
         } else {
             removeLayerDk()
         }
     }, 500)
-
 })
 
 /**
@@ -2026,11 +2020,8 @@ const loadLayers = (filter) => {
     if (!filter) {
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
-
         loadCounty("'" + filter + "'");
-
         (activeKey.value == 1) && loadTown("'" + filter + "'");
-
     }
 }
 
@@ -2042,7 +2033,6 @@ const loadLayersV2 = (filter) => {
     } else {
         loadCountyV2("'" + filter + "'");
         (activeKey.value == 1) && loadTown("'" + filter + "'");
-
     }
 }
 
@@ -2113,7 +2103,7 @@ const loadLocalData = (filter) => {
 
 
     // 图表三
-    console.log(header.value)
+    // console.log(header.value)
     if (!header.value) {
         console.log(header.value)
         let zc = [];
@@ -2139,20 +2129,7 @@ const loadLocalData = (filter) => {
 
                 bxjg.push(ca.name)
             });
-
-            // 保险机构				zc		bz		cb
-            // 安华				5		1		
-            // 国寿财				17		1		
-            // 平安山东				4				
-            // 人保				32		9		8
-            // 太保				19		6		
-            // 太平				9		6		
-            // 中华				24		3		4
-
-
-
-
-            console.log(data)
+            //  console.log(data)
             // loadEcharts03(bxjg, [zc, bz, cb])
         })
 
@@ -2262,7 +2239,7 @@ const loadLocalDataV2 = (filter) => {
     // 图表三
     // console.log(header.value)
     if (!header.value) {
-        console.log(header.value)
+        // console.log(header.value)
         let zc = [];
         let bz = [];
         let cb = [];
@@ -2287,7 +2264,7 @@ const loadLocalDataV2 = (filter) => {
                 bxjg.push(ca.name)
             });
 
-            console.log(data)
+            //  console.log(data)
         })
 
 
@@ -2329,7 +2306,7 @@ const loadLocalDataV2 = (filter) => {
 const loadDataHgl = () => {
     // 图表二
     let countys = ['济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '东阿县', '无棣县'];
-    console.log(header.value)
+    //   console.log(header.value)
     if (!header.value) {
         let fgl = [];
         let hgl = [];
@@ -2942,7 +2919,10 @@ const lockDownOpen = ref(false)
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon> 遥感核验
+                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <span
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">遥感核验</span>
+
                             </label>
                             <a-tooltip placement="right">
                                 <template #title>
@@ -3495,23 +3475,29 @@ const lockDownOpen = ref(false)
     /* background-color: #fff; */
     z-index: 100000;
 
+
 }
 
+/* 
+:deep(.ant-page-header .ant-page-header-content) {
+    margin: 0;
+    padding: 0;
+    background-color: #48b04c;
+} */
 
 
 
-
-::v-deep .ant-menu-item svg {
+:deep(.ant-menu-item svg) {
     width: 15px;
     height: 15px;
 }
 
-::v-deep .ant-menu-submenu-horizontal svg {
+:deep(.ant-menu-submenu-horizontal svg) {
     width: 15px;
     height: 15px;
 }
 
-::v-deep .ant-menu-light {
+:deep(.ant-menu-light) {
     background-color: transparent;
     color: #ccc;
 }
@@ -3575,7 +3561,7 @@ p {
 
 
 
-::v-deep .ant-select-selector {
+:deep(.ant-select-selector) {
     border: 0;
     background-color: transparent;
 }
@@ -3588,7 +3574,7 @@ p {
 
 
 
-::v-deep .ant-tabs-tab .ant-tabs-tab-btn {
+:deep(.ant-tabs-tab .ant-tabs-tab-btn) {
     width: 180px;
     text-align: center;
 }
@@ -3616,7 +3602,7 @@ p {
 }
 
 
-::v-deep .ant-divider-with-text {
+:deep(.ant-divider-with-text) {
     margin: 5px 0;
 }
 
@@ -3643,13 +3629,13 @@ p {
 
 }
 
-::v-deep .ant-page-header-heading-title {
+/* :deep(.ant-page-header-heading-title) {
     color: aliceblue;
 }
 
-::v-deep .ant-page-header-heading-sub-title {
+:deep(.ant-page-header-heading-sub-title) {
     color: #ccc;
-}
+} */
 
 
 .xRightSquareShow {
@@ -3712,18 +3698,18 @@ p {
     padding: 0;
 }
 
-::v-deep .ant-statistic .ant-statistic-title {
+:deep(.ant-statistic .ant-statistic-title) {
     padding: 0;
     margin: 0;
     color: rgb(93, 91, 91);
     font-size: 16px;
 }
 
-::v-deep .ant-statistic {
+:deep(.ant-statistic) {
     padding: 0 10px;
 }
 
-::v-deep .ant-statistic .ant-statistic-content {
+:deep(.ant-statistic .ant-statistic-content) {
     font-size: 22px;
     line-height: 30px;
 }
