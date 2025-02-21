@@ -2533,6 +2533,7 @@ const LoadHzBaseData = async () => {
     // 在这里实现你的方法
     let data = await api.get_table_by_filter("procjet_2024_yghy_area_excel", "", "gid, city, city_code, county, county_code, town, town_code, jg_count, bxjg, fbxjg, i_area, rs_area, i_coverage, hg, pass, ygjg, exprot_date, version, cun, cun_code, type")
 
+    console.log(data)
 
     data.length > 0 && (hzBaseData = data);
     dataSource.value = hzBaseData;
@@ -2555,8 +2556,8 @@ onMounted(() => {
     nextTick(() => {
 
         setTimeout(() => {
-            loadLocalData()
-        }, 1000)
+            loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
+        }, 1500)
         map && loadEvent();
         /**
          * 基础数据加载
@@ -2564,7 +2565,8 @@ onMounted(() => {
         map && map.on("load", () => {
 
             addLayersYghy()
-            loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
+            loadLocalData()
+
         })
 
     })
