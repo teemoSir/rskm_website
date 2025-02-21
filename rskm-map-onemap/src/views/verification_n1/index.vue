@@ -2786,7 +2786,7 @@ const pagination = ref({
 const loadCount = async (filter = "") => {
     const data = await api.get_count("procjet_2024_yghy_hz10_excel", filter);
     pagination.value.total = Number(data[0].count);
-    // console.log(data[0].count)
+
 };
 
 
