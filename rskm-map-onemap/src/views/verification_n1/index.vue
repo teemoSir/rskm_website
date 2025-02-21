@@ -1679,7 +1679,7 @@ const loadCounty = async (name) => {
 
             // 计算是否超保
 
-            let hzBaseDataClone = hzBaseData.filter(item => item.county === properties.name).filter(item => item.version === 1);
+            let hzBaseDataClone = hzBaseData.filter(item => item.county === properties.name).filter(item => Number(item.version) == 1);
             // console.log(hzBaseData)
             // console.log(hzBaseDataClone)
             properties.rs = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.rs_area), 0);
