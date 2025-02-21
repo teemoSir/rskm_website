@@ -2982,8 +2982,6 @@ const lockDownOpen = ref(false)
 
                         </a-directory-tree>
 
-
-                        <!-- <a-alert message="提示：2024年9月30日截止" type="success" show-icon /> -->
                     </a-card>
                 </a-col>
 
