@@ -2032,7 +2032,7 @@ onMounted(() => {
        * 渲染运行时
        */
     mapp.on("move", (e) => {
-        eventRender();
+        //eventRender();
     });
 
     mapp.on("mousemove", (e) => {
@@ -2040,7 +2040,7 @@ onMounted(() => {
             lng: e.lngLat.lng,
             lat: e.lngLat.lat,
         };
-        eventRender();
+        //  eventRender();
     });
 
 })
