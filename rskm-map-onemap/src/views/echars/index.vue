@@ -1174,9 +1174,42 @@ onMounted(() => {
 
 
     </div>
+
+    <div id='attribution-bottom-right' class="attribution-bottom-right"></div>
 </template>
 
 <style scoped>
+.attribution-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    background-color: #0000008e;
+    font-family: Arial, sans-serif;
+    color: #fdfdfdb3;
+    font-size: 0.8rem;
+    text-align: right;
+    padding: 7px 3px 3px 0;
+    cursor: default;
+}
+
+:deep(.mapboxgl-ctrl-scale) {
+    color: #fdfdfdb3;
+    font-size: 0.7rem;
+    border-bottom: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
+    position: absolute;
+    left: 10px;
+    bottom: 3px;
+    background-color: transparent;
+    text-align: center;
+    height: 18px;
+
+
+
+}
+
 .deeff {
     color: #fc8452;
     color: #9a60b4;

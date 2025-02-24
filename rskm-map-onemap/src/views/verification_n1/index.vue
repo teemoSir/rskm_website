@@ -1370,9 +1370,9 @@ const goGeomLine = (data) => {
                 "line-cap": "round",
             },
             paint: {
-                'line-color': 'red',
-                "line-width": 5.5,
-                "line-opacity": 0.8,
+                'line-color': '#fff',
+                "line-width": 3.5,
+                "line-opacity": 0.5,
             },
         });
 
@@ -1392,6 +1392,19 @@ const goGeomLine = (data) => {
                 "text-halo-blur": 1.8, // 文字轮廓模糊度
             },
         });
+
+        console.log(header.value)
+        // 高亮
+
+        // map.setFilter("admin_2024_county_yghy", ["==", ["get", "county_name"], '汶上县']);
+
+        // map.setFilter("admin_2024_county_yghy", [
+        //     "==",
+        //     ["to-string", ["get", "county_name"]],
+        //     '汶上县',
+        // ]);
+        // map.setPaintProperty("admin_2024_county_yghy", 'fill-color', 'red'); // 设置填充颜色
+        // map.setPaintProperty("admin_2024_county_yghy", 'fill-opacity', 0.6); // 设置填充透明度
 
     }
 }

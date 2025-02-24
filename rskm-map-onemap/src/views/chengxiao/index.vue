@@ -973,13 +973,11 @@ const setPopup = async (info, index) => {
 
     let text = document.getElementById("text").innerHTML;
 
-
     for (let key in meginfo) {
         text = text.replace(`{${key}}`, meginfo[key])
     }
 
     return text;
-
 
 }
 

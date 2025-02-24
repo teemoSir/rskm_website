@@ -110,7 +110,7 @@ const config = {
         tile: {
             type: "vector",
             tiles: [
-                `${host}/v1/mvt/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid`,
+                `${host}/v1/mvt/admin_2022_county/{z}/{x}/{y}?geom_column=geom&columns=name,county_code,gid,county_name`,
             ],
             minzoom: 8,
             maxzoom: 14

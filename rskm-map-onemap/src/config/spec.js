@@ -435,12 +435,12 @@ let spec = [
     {
         id: "admin_2024_county_yghy_outline",
         'type': 'line',
-        source: config.admin_2022_province.name,
-        "source-layer": config.admin_2022_province.name,
+        source: config.admin_2022_county.name,
+        "source-layer": config.admin_2022_county.name,
         filter: [
             "in",
-            ["to-string", ["get", "first_gid"]],
-            '370000',
+            ["to-string", ["get", "county_name"]],
+            '汶上县',
         ],
         layout: {
             //  visibility: "visible",
@@ -457,13 +457,13 @@ let spec = [
     {
         id: "admin_2024_county_yghy",
         'type': 'fill',
-        source: config.admin_2022_province.name,
-        "source-layer": config.admin_2022_province.name,
-        filter: [
-            "!=",
-            ["to-string", ["get", "first_gid"]],
-            '370000',
-        ],
+        source: config.admin_2022_county.name,
+        "source-layer": config.admin_2022_county.name,
+        // filter: [
+        //     "!=",
+        //     ["to-string", ["get", "county_name"]],
+        //     '汶上县',
+        // ],
         layout: {
             //  visibility: "visible",
             //   "text-optional": true,
@@ -471,66 +471,57 @@ let spec = [
         'slot': 'bottom',
         'paint': {
 
-            'fill-color': '#000',//RGB(89,112,196)
-
-            "fill-opacity": ["interpolate",
-                ["exponential", 1.5],
-                ["zoom"],
-                7,
-                0.4,
-                13,
-                0.2,
-                14,
-                0.0,],
+            'fill-color': 'red',//RGB(89,112,196)
+            "fill-opacity": 1,
         },
     },
 
-    {
-        id: "world_china_building",
-        name: "建筑",
-        type: "fill-extrusion",
-        source: config.world_china_polygon.name,
-        "source-layer": config.world_china_polygon.name,
-        minzoom: 15,
-        filter: [
-            "in",
-            "building",
-            "yes"
-        ],
-        paint: {
-            "fill-extrusion-height": 30,
-            "fill-extrusion-color": "#fff",
-            "fill-extrusion-opacity": 0.6
-        },
-        interactive: true,
-    },
+    // {
+    //     id: "world_china_building",
+    //     name: "建筑",
+    //     type: "fill-extrusion",
+    //     source: config.world_china_polygon.name,
+    //     "source-layer": config.world_china_polygon.name,
+    //     minzoom: 15,
+    //     filter: [
+    //         "in",
+    //         "building",
+    //         "yes"
+    //     ],
+    //     paint: {
+    //         "fill-extrusion-height": 30,
+    //         "fill-extrusion-color": "#fff",
+    //         "fill-extrusion-opacity": 0.6
+    //     },
+    //     interactive: true,
+    // },
 
-    {
-        id: "world_china_polygon",
-        name: "基础地物",
-        type: "fill",
-        source: config.world_china_polygon.name,
-        "source-layer": config.world_china_polygon.name,
-        minzoom: 10,
-        // filter: [
-        //     "in",
-        //     "naturals",
-        //     "water"
-        // ],
-        paint: {
-            "fill-color": [
-                "match",
-                ["get", "naturals"],
-                "water", "#7acfef",
-                "land", "#a2e29c",
-                "#fff",
-            ],
+    // {
+    //     id: "world_china_polygon",
+    //     name: "基础地物",
+    //     type: "fill",
+    //     source: config.world_china_polygon.name,
+    //     "source-layer": config.world_china_polygon.name,
+    //     minzoom: 10,
+    //     // filter: [
+    //     //     "in",
+    //     //     "naturals",
+    //     //     "water"
+    //     // ],
+    //     paint: {
+    //         "fill-color": [
+    //             "match",
+    //             ["get", "naturals"],
+    //             "water", "#7acfef",
+    //             "land", "#a2e29c",
+    //             "#fff",
+    //         ],
 
-            //"#7acfef",
-            "fill-opacity": 1
-        },
-        interactive: true,
-    },
+    //         //"#7acfef",
+    //         "fill-opacity": 1
+    //     },
+    //     interactive: true,
+    // },
 
     {
         id: "POI_WORLD_1",
