@@ -3503,16 +3503,22 @@ p {
 }
 
 :deep(.ant-segmented-item-label) {
-    padding: 0;
-    margin: 0;
-    width: 60px;
+    padding: 5px 0px;
+    width: 50px;
 
 
 }
 
 :deep(.ant-segmented) {
-    background-color: rgba(246, 242, 242, 0.692);
+    background-color: rgba(20, 19, 19, 0.674);
     font-size: 1.1rem;
+    color: #fff;
 
+}
+
+:deep(.ant-segmented-item-disabled) {
+
+
+    color: #ebe6e636;
 }
 </style>

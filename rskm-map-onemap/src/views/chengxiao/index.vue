@@ -4403,7 +4403,7 @@ const onClose = () => {
                 <th colspan="10">
 
                     <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
+                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff; font-family: 'FZZongYi-M05';font-weight: normal;">
 
                         <ShieldCheck :size="22" />
                         &nbsp;保单信息
@@ -4453,7 +4453,7 @@ const onClose = () => {
             <tr>
                 <th colspan="10">
                     <div
-                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
+                        style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff;   font-family: 'FZZongYi-M05';font-weight: normal;">
                         <UserCheck :size="22" />&nbsp;大户信息
                     </div>
 

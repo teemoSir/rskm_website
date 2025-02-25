@@ -519,8 +519,9 @@ const props = defineProps({
 
         <template #extra>
             <div style="display: flex;align-items: center;">
-                <ChevronDownIcon v-if="tuli" style="cursor: pointer;" @click="tuli = !tuli"></ChevronDownIcon>
-                <ChevronUp v-else style="cursor: pointer;" @click="tuli = !tuli"></ChevronUp>
+                <ChevronDownIcon v-if="tuli" style="cursor: pointer;" @click="tuli = !tuli" color="#fff">
+                </ChevronDownIcon>
+                <ChevronUp v-else style="cursor: pointer;" @click="tuli = !tuli" color="#fff"></ChevronUp>
             </div>
         </template>
 
@@ -556,7 +557,7 @@ const props = defineProps({
                                     paddingTop: '3.5px',
                                 }"></div>
                             </td>
-                            <td style="text-align: center;"> {{ tar.title }}
+                            <td style="text-align: center;color: #fff;"> {{ tar.title }}
                             </td>
                         </tr>
                     </table>
@@ -594,7 +595,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 12px;">
+                <a-col :span="17" style="font-size: 12px;color: #fff;">
                     {{ tar.title }}
 
                     <div style="position: absolute; right: 10px; bottom: 0">
@@ -602,7 +603,7 @@ const props = defineProps({
                             v-model:checked="radioValue" />
                     </div>
                 </a-col>
-                <a-col :span="24" style="font-size: 12px;">
+                <a-col :span="24" style="font-size: 12px;color: #fff;">
                 </a-col>
             </a-row>
 
@@ -637,7 +638,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 12px;">
+                <a-col :span="17" style="font-size: 12px;color: #fff;">
                     {{ tar.title }}
 
                     <div style="position: absolute; right: 10px; bottom: 0">
@@ -683,7 +684,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 12px;">
+                <a-col :span="17" style="font-size: 12px;color: #fff;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
 
@@ -726,7 +727,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 12px;">
+                <a-col :span="17" style="font-size: 12px;color: #fff;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
                         <a-switch v-if="tar.key == 11" checked-children="显示" un-checked-children="隐藏"
@@ -766,7 +767,7 @@ const props = defineProps({
                     }"></div>
                 </a-col>
 
-                <a-col :span="17" style="font-size: 12px;">
+                <a-col :span="17" style="font-size: 12px;color: #fff;">
                     {{ tar.title }}
                     <div style="position: absolute; right: 10px; bottom: 0">
                         <a-switch v-if="tar.key == 13" checked-children="显示" un-checked-children="隐藏"
@@ -785,7 +786,7 @@ const props = defineProps({
 <style scoped>
 .legendTitle {
     font-size: 14px;
-
+    color: #fff;
     width: 100%;
 
 
@@ -807,6 +808,10 @@ const props = defineProps({
 
 :deep(.ant-card-body) {
     padding: 0px 15px 15px 15px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #cccccc46;
+}
+
+:deep(.ant-card-head-title) {
+    color: #fff;
 }
 </style>

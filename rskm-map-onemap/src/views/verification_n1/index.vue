@@ -75,9 +75,10 @@ const loadEcharts = (data) => {
         },
         legend: {
             top: '30%',
-            right: 'right',
+            right: 'bottom',
             textStyle: {
-                fontSize: 16 // 图例文字大小
+                fontSize: 16,// 图例文字大小
+                color: '#fff',
             }
         },
         series: [
@@ -204,7 +205,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
             return e.value ? Number(e.value).toFixed(0) : ''
         },
         fontSize: 10,
-        // color: 'green',
+        color: '#ffffffce',
         // textBorderColor: '#999',
         rich: {
             name: {}
@@ -235,6 +236,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
         legend: {
             // data: [],
             textStyle: {
+                color: '#ffffffce',
                 fontSize: 16 // 图例文字大小
             }
         },
@@ -256,7 +258,8 @@ const loadEcharts02 = (yAxis, series1, series2) => {
             {
                 type: 'value',
                 axisLabel: {
-                    fontSize: 14 // 文字大小
+                    color: '#ffffffce',
+                    fontSize: 16 // 文字大小
                 },
             }
 
@@ -267,6 +270,7 @@ const loadEcharts02 = (yAxis, series1, series2) => {
                 type: 'category',
                 axisTick: { show: false },
                 axisLabel: {
+                    color: '#ffffffce',
                     show: true, // 是否显示刻度标签，默认显示
                     interval: 0, // 坐标轴刻度标签的显示间隔，在类目轴中有效；默认会采用标签不重叠的策略间隔显示标签；可以设置成0强制显示所有标签；如果设置为1，表示『隔一个标签显示一个标签』，如果值为2，表示隔两个标签显示一个标签，以此类推。
                     rotate: -60, // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从-90度到90度
@@ -366,6 +370,7 @@ const loadEcharts03 = (data, rawdata) => {
 
             label: {
                 show: true,
+                color: "#000",
                 formatter: (params) => Math.round(params.value * 1000) / 10 + '%'
             },
             data: rawData[sid].map((d, did) =>
@@ -403,12 +408,14 @@ const loadEcharts03 = (data, rawdata) => {
         ],
         legend: {
             textStyle: {
+                color: "#ffffffce",
                 fontSize: 16 // 图例文字大小
             }
         },
         grid,
         yAxis: {
             axisLabel: {
+                color: "#ffffffce",
                 fontSize: 16 // 文字大小
             },
             type: 'category',
@@ -417,6 +424,7 @@ const loadEcharts03 = (data, rawdata) => {
         xAxis: {
             type: 'value',
             axisLabel: {
+                color: "#ffffffce",
                 fontSize: 16 // 文字大小
             },
         },
@@ -449,6 +457,7 @@ const echartsDK01 = (a = 11, b = 22, c = 66) => {
             trigger: 'item'
         },
         legend: {
+            show: false,
             bottom: '-3.5%',
             left: 'center',
             textStyle: {
@@ -586,17 +595,18 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
         // rotate: app.config.rotate,
         //  formatter: '{c}%',
         // formatter: '{c}',
-        fontSize: 16,
+        color: '#000',
+        fontSize: 14,
         rich: {
             name: {}
         }
     };
 
     const grid = {
-        left: 60,
+        left: 80,
         right: 30,
         top: 30,
-        bottom: 50
+        bottom: 70
     };
     option = {
         grid,
@@ -622,6 +632,7 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
         legend: {
             data: ['合格大户', '大户数量'],
             textStyle: {
+                color: '#ffffffce',
                 fontSize: 16 // 图例文字大小
             }
         },
@@ -641,6 +652,7 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
         xAxis: [{
             type: 'value',
             axisLabel: {
+                color: '#ffffffce',
                 fontSize: 16 // 文字大小
             },
         }
@@ -649,6 +661,7 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
         yAxis: [
             {
                 axisLabel: {
+                    color: '#ffffffce',
                     fontSize: 16 // 文字大小
                 },
                 type: 'category',
@@ -788,17 +801,18 @@ const echartsDK03 = (names, data1, data2) => {
         // rotate: app.config.rotate,
         // formatter: '{c}  {name|{a}}',
         formatter: '{c}',
-        fontSize: 16,
+        color: '#000',
+        fontSize: 14,
         rich: {
             name: {}
         }
     };
 
     const grid = {
-        left: 60,
+        left: 80,
         right: 30,
         top: 30,
-        bottom: 60
+        bottom: 30
     };
     option = {
         grid,
@@ -822,6 +836,7 @@ const echartsDK03 = (names, data1, data2) => {
         legend: {
             data: ['合格数量', '大户数量'],
             textStyle: {
+                color: '#ffffffce',
                 fontSize: 16 // 图例文字大小
             }
         },
@@ -841,6 +856,7 @@ const echartsDK03 = (names, data1, data2) => {
         xAxis: [{
             type: 'value',
             axisLabel: {
+                color: '#ffffffce',
                 fontSize: 16 // 文字大小
             },
         }
@@ -849,6 +865,7 @@ const echartsDK03 = (names, data1, data2) => {
         yAxis: [
             {
                 axisLabel: {
+                    color: '#ffffffce',
                     fontSize: 16 // 文字大小
                 },
                 type: 'category',
@@ -1097,7 +1114,7 @@ const getLabelByValue = (value) => {
  * @param {string} code - 市级行政区代码
  * @returns {Promise<void>}
  */
-const loadTown = async (name) => {
+const loadTown = async (name, version = 1) => {
 
     goGeomUn()
 
@@ -1127,7 +1144,7 @@ const loadTown = async (name) => {
     //console.log(features)
     features.forEach(feature => {
 
-        let p = {
+        let properties = {
             city_name: feature.city_name,
             city_code: feature.city_code,
             county_name: feature.county_name,
@@ -1141,20 +1158,22 @@ const loadTown = async (name) => {
 
 
         // 计算是否超保
-        let hzBaseDataClone = hzBaseData.filter(item => item.town == p.town_name);
+        let hzBaseDataClone = hzBaseData.filter(item => item.town == properties.town_name).filter(item => Number(item.version) == version);
 
-        p.rs = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.rs_area), 0);
-        p.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.i_area), 0);
-        p.coverage = (p.area && p.rs) ? (p.area / p.rs * 100) : 0;
+        properties.rs = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.rs_area), 0);
+        properties.area = hzBaseDataClone.reduce((acc, item) => Number(acc) + Number(item.i_area), 0);
+        properties.coverage = (properties.area && properties.rs) ? (properties.area / properties.rs * 100) : 0;
+        properties.bxjg = [...new Set(hzBaseDataClone.map(item => item.bxjg).filter(item => item !== null))].join(",");
+        properties.ygjg = hzBaseDataClone[0] ? hzBaseDataClone[0].ygjg : "";
         // console.log(p)
-        window.countylayer.push(p)
+        window.countylayer.push(properties)
 
         //feature && goGeom(feature.json, p)
 
         ps.push({
             type: "Feature",
             geometry: JSON.parse(feature.json),
-            properties: p
+            properties: properties
         })
     })
 
@@ -1455,7 +1474,7 @@ const addEventArea = async (e) => {
 
     map.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
-    //console.log(feature)
+    console.log(feature)
     let text = await setCountyPopup(feature);
 
     map.setFilter("Highlight_DK_Line_Click", [
@@ -1599,7 +1618,7 @@ const setPopup = async (info) => {
 const setCountyPopup = async (data) => {
 
 
-    //console.log(data, data.properties.name)
+    console.log(data)
 
     let text = ``;
     text = `
@@ -1661,18 +1680,6 @@ const loadCounty = async (name) => {
             // },
         });
 
-        // map.setFilter("admin_2024_county", [
-        //     "all",
-        //     ["==", ['get', "name"], '济阳区'],
-        //   ]);
-        // map.setPaintProperty('admin_2024_county', 'fill-color',
-        //   [
-        //     'case',
-        //     ["==", ['get', "name"], '高青县'],
-        //     'red',
-        //     'blue'
-        //   ]
-        // );
     } else {
         goGeomUn();
 
@@ -1870,12 +1877,12 @@ watch(selectedKeys, (e) => {
 
     switch (selectedKeys.value[0]) {
         case "0":
-            tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
+            // tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
             tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].date;
             loadLocalData();
             break;
         case "0-0":
-            tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
+            //  tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].title;
             tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-0")[0].date;
             loadLocalData();
             break;
@@ -1911,10 +1918,10 @@ watch(selectedKeys, (e) => {
             break;
         case "0-1":
 
-            tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-1")[0].title;
+            // tileH1.value = treeLeftData[0].children.filter(item => item.key == "0-1")[0].title;
             tileSmall.value = treeLeftData[0].children.filter(item => item.key == "0-1")[0].date;
 
-            loadLocalDataV2();
+            loadLocalData();
             break;
         case "0-1-0":
             loadLocalDataV2("济阳区");
@@ -2036,7 +2043,7 @@ const loadLayers = (filter) => {
         loadCounty("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
         loadCounty("'" + filter + "'");
-        (activeKey.value == 1) && loadTown("'" + filter + "'");
+        (activeKey.value == 1) && loadTown("'" + filter + "'", 1);
     }
 }
 
@@ -2047,7 +2054,7 @@ const loadLayersV2 = (filter) => {
         loadCountyV2("'东阿县','济阳区','莱芜区','桓台县','高青县','海阳市','招远市','汶上县','冠县','无棣县'");
     } else {
         loadCountyV2("'" + filter + "'");
-        (activeKey.value == 1) && loadTown("'" + filter + "'");
+        (activeKey.value == 1) && loadTown("'" + filter + "'", 2);
     }
 }
 
@@ -2189,13 +2196,14 @@ const loadLocalData = (filter) => {
  * @param filter 
  */
 const loadLocalDataV2 = (filter) => {
+    console.log("loadLocalDataV2")
     header.value = filter;
     loadDataRightV2(filter)
 
     goGeomUn()
 
 
-    activeKey.value == 1 ? loadLayers(header.value) : (loadLayerDk(), !header.value ? fitCenter() : (loadCountyFit(`'${header.value}'`), loadTown(`'${header.value}'`)));
+    activeKey.value == 1 ? loadLayers(header.value) : (loadLayerDk(), !header.value ? fitCenter() : (loadCountyFit(`'${header.value}'`), loadTown(`'${header.value}'`, 2)));
 
 
 
@@ -2357,7 +2365,7 @@ const loadDataHgl = () => {
 const loadDataHglV2 = () => {
     // 图表二
     let countys = ['济阳区', '莱芜区', '桓台县', '高青县', '海阳市', '招远市', '汶上县', '冠县', '东阿县', '无棣县'];
-    //  console.log(header.value)
+    console.log('loadDataHglV2')
     if (!header.value) {
         let fgl = [];
         let hgl = [];
@@ -2837,10 +2845,10 @@ const lockDownOpen = ref(false)
     <!-- 页面 -->
     <div class="page">
         <div style="position: absolute;top: 100px;left: 50%; z-index: 1000;margin-left: -275px;">
-            <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
-                <span style="text-shadow: 2px 2px 2px #000;">{{ tileH1 }} </span>
-                <a-tag color="#108ee9">{{ tileSmall }}截止</a-tag>
-            </h1>
+            <div style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
+                <span style="text-shadow: 2px 2px 2px #000;line-height: 40px;font-size: 2rem;">山东省玉米遥感核验</span><br>
+                <a-tag color="green">{{ tileSmall }}截止</a-tag>
+            </div>
         </div>
 
         <a-modal v-model:open="open" :title="activeKey == 1 ? '试点区域详情' : '试点大户详情'" @ok="open = !open" width="95%"
@@ -2936,9 +2944,9 @@ const lockDownOpen = ref(false)
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <FoldersIcon style="margin-bottom: -5px;" color="#fff"></FoldersIcon>
                                 <span
-                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">遥感核验</span>
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;color: #fff;">遥感核验</span>
 
                             </label>
                             <a-tooltip placement="right">
@@ -2950,7 +2958,7 @@ const lockDownOpen = ref(false)
 
                         </p>
 
-                        <div v-if="activeKey == 2" style="padding: 10px 0px;">
+                        <!-- <div v-if="activeKey == 2" style="padding: 10px 0px;">
                             <a-space>
                                 <label style="font-weight: 600;">查询：</label>
                                 <a-auto-complete :allowClear="true" v-model:value="valueSearch" :options="options"
@@ -2967,7 +2975,7 @@ const lockDownOpen = ref(false)
                                     </template>
                                 </a-auto-complete>
                             </a-space>
-                        </div>
+                        </div> -->
 
                         <a-directory-tree v-model:expandedKeys="expandedKeys" v-model:selectedKeys="selectedKeys"
                             show-icon show-line default-expand-all :tree-data="treeLeftData">
@@ -3038,7 +3046,7 @@ const lockDownOpen = ref(false)
                     <a-tab-pane key="1">
                         <template #tab>
                             <div
-                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';">
+                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';font: #ccc;">
                                 <!-- <LandPlotIcon :size="20"></LandPlotIcon> -->
                                 区域
                             </div>
@@ -3047,7 +3055,7 @@ const lockDownOpen = ref(false)
                     <a-tab-pane key="2">
                         <template #tab>
                             <div
-                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';">
+                                style="font-size: 1rem;display: flex;align-items: center;justify-content: center;font-family: 'FZZongYi-M05';color: #ccc;">
                                 <!-- <LucideSquareMousePointer :size="20"></LucideSquareMousePointer> -->
                                 地块
 
@@ -3059,13 +3067,12 @@ const lockDownOpen = ref(false)
 
             </a-card>
 
-            <a-card size="small" title="" style="height: calc(100% - 35px); margin-top: 3px;">
+            <a-card size="small" title="" style="height: calc(100% - 35px); margin-top: 5px;">
                 <!--区域核验-->
-                <div v-show="activeKey == '1'"
-                    style="position: absolute;top: 0;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
+                <div v-show="activeKey == '1'" style="position: absolute;top: 0;left: 0; height:100%;width: 100%;">
 
-                    <div style="width: 100%; height: 100%;overflow-y: hidden;overflow-x: hidden;">
-                        <div style="width: 100%;height: 260px;">
+                    <div style=" height: 100%;overflow-y: hidden;overflow-x: hidden;">
+                        <div>
                             <div class="headerbg">
                                 <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
                                 <!-- <MapPinned :size="24" style="margin-bottom: -5px;"></MapPinned> -->
@@ -3101,7 +3108,7 @@ const lockDownOpen = ref(false)
 
                                 </table>
                             </div>
-                            <a-row :gutter="16">
+                            <!-- <a-row :gutter="16">
 
                                 <a-col :span="8">
 
@@ -3159,20 +3166,110 @@ const lockDownOpen = ref(false)
                                 <a-col :span="18">
                                     <div id="main" style="height:100%;"></div>
                                 </a-col>
-                            </a-row>
+                            </a-row> -->
+
+                            <div style="width: 100%;padding: 0 20px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 40%;">
+                                            <div class="mmodel">
+                                                承保面积<span style="float: right;">{{ Number(cbmj).toFixed(0) + ' 亩'
+                                                }}</span>
+                                            </div>
+
+                                        </td>
+                                        <td rowspan="6" style="width: 70%;">
+
+                                            <div id="main" style="height: 200px;"></div>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="mmodel">
+                                                遥感面积<span style="float: right;">{{ Number(ygmj).toFixed(0) + ' 亩'
+                                                }}</span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mmodel">
+                                                保险覆盖率 <span style="float: right;">{{ bxfgl }}%</span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class="mmodel">
+                                                正常乡镇<span style="float: right;">{{ zcxz_val }}%</span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mmodel">
+                                                超保乡镇 <span style="float: right;">{{ cbxz_val }}%</span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mmodel">
+                                                不足乡镇 <span style="float: right;">{{ bzxz_val }}%</span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </div>
 
                         </div>
                         <div style="width: 100%; height: calc(100% - 260px);">
                             <div style="width: 100%;height: 55%;">
                                 <div class="headerbg">
-
                                     <!-- <LucideAreaChart :size="24" style="margin-bottom: -5px;"></LucideAreaChart> -->
                                     <AlignVerticalDistributeCenter style="margin-bottom: -5px;" /> 区域统计<small>&nbsp;
                                         <a-tooltip title="保险覆盖率(承保面积/遥感面积×100%))，承保合格率(非超保和不足面积占比)" :color="orange">
                                             <Info :size="16" color="#ccc"></Info>
                                         </a-tooltip>
                                     </small>
-
 
                                     <a-button type="link" primary style="position: absolute;right: 10px;"
                                         @click="open = true">
@@ -3210,14 +3307,14 @@ const lockDownOpen = ref(false)
 
                 <!--地块核验-->
                 <div v-if="activeKey == '2'"
-                    style="position: absolute;top: 0;left: 0; height: calc(100% - 60px);width: 100%;padding:0 10px;">
-                    <div style="width: 100%;height: 300px;">
+                    style="position: absolute;top: 0;left: 0; height: calc(100% - 60px);width: 100%;">
+                    <div style="width: 100%;">
                         <div class="headerbg">
                             <!-- <MapPinned :size="25" style="margin-bottom: -5px;"></MapPinned> -->
                             <AlignVerticalDistributeCenter style="margin-bottom: -5px;" />
                             {{ header ? header : '试点区县'
                             }}
-                            <a-tag color="red"> 重点乡镇 </a-tag>
+                            <span style="color: red;font-size: 0.8rem;"> 重点乡镇 </span>
 
                             <table style="position: absolute;right: 10px;margin-top: -30px">
                                 <tr>
@@ -3246,52 +3343,54 @@ const lockDownOpen = ref(false)
                         </div>
 
 
-                        <a-row :gutter="16">
-                            <a-col :span="11">
-                                <table class="tjfx">
+                        <div style="padding: 0 20px;">
+                            <a-row :gutter="16">
+                                <a-col :span="11">
+                                    <table class="tjfx">
 
-                                    <tr>
-                                        <th>投保面积：</th>
-                                        <td>{{ tb_area ? Number(tb_area).toFixed(0) : '-' }}亩</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块面积：</th>
-                                        <td>{{ dk_area ? Number(dk_area).toFixed(0) : '-' }}亩</td>
-                                    </tr>
-                                    <tr>
-                                        <th>大户数量：</th>
-                                        <td>{{ dhsl }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>有地块大户数：</th>
-                                        <td>{{ ydkdhsl }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块合格户数：</th>
-                                        <td>{{ dkhghs }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块面积不符户数：</th>
-                                        <td>{{ dkmjbfs }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>地块重叠户数：</th>
-                                        <td>{{ dkcd }} 户</td>
-                                    </tr>
-                                    <tr>
-                                        <th>标的面积不符户数：</th>
-                                        <td>{{ bdmjbfhs }} 户</td>
-                                    </tr>
+                                        <tr>
+                                            <th>投保面积</th>
+                                            <td>{{ tb_area ? Number(tb_area).toFixed(0) : '-' }}亩</td>
+                                        </tr>
+                                        <tr>
+                                            <th>地块面积</th>
+                                            <td>{{ dk_area ? Number(dk_area).toFixed(0) : '-' }}亩</td>
+                                        </tr>
+                                        <tr>
+                                            <th>大户数量</th>
+                                            <td>{{ dhsl }} 户</td>
+                                        </tr>
+                                        <tr>
+                                            <th>有地块大户数</th>
+                                            <td>{{ ydkdhsl }} 户</td>
+                                        </tr>
+                                        <tr>
+                                            <th>地块合格户数</th>
+                                            <td>{{ dkhghs }} 户</td>
+                                        </tr>
+                                        <tr>
+                                            <th>地块面积不符户数</th>
+                                            <td>{{ dkmjbfs }} 户</td>
+                                        </tr>
+                                        <tr>
+                                            <th>地块重叠户数</th>
+                                            <td>{{ dkcd }} 户</td>
+                                        </tr>
+                                        <tr>
+                                            <th>标的面积不符户数</th>
+                                            <td>{{ bdmjbfhs }} 户</td>
+                                        </tr>
 
-                                </table>
-                            </a-col>
-                            <a-col :span="13">
-                                <div id="echartsDK01" style="height:97%;"></div>
-                            </a-col>
-                        </a-row>
+                                    </table>
+                                </a-col>
+                                <a-col :span="13">
+                                    <div id="echartsDK01" style="height:100%;"></div>
+                                </a-col>
+                            </a-row>
+                        </div>
 
                     </div>
-                    <div style="width: 100%; height: calc(100% - 300px);">
+                    <div style="width: 100%; height: 80%">
                         <div style="width: 100%;height: 60%;">
                             <div class="headerbg">
                                 <!-- <LucideAreaChart :size="20" style="margin-bottom: -5px;"></LucideAreaChart>  -->
@@ -3312,7 +3411,7 @@ const lockDownOpen = ref(false)
 
                             </div>
 
-                            <div id="echartsDK02" style="height:99%;"></div>
+                            <div id="echartsDK02" style="height:100%;"></div>
 
                         </div>
                         <div style="width: 100%;height: 40%;">
@@ -3330,7 +3429,7 @@ const lockDownOpen = ref(false)
 
                             </div>
 
-                            <div id="echartsDK03" style="height:99%"></div>
+                            <div id="echartsDK03" style="height:100%"></div>
                         </div>
 
 
@@ -3581,9 +3680,9 @@ const lockDownOpen = ref(false)
 p {
     padding: 5px;
     /* background: linear-gradient(to bottom, rgba(204, 204, 204, 0.1), rgba(204, 204, 204, 0.2)); */
-    border-radius: 2px;
-    border-bottom: 1px dotted #cccccc38;
-    background: rgba(204, 204, 204, 0.08)
+    /* border-radius: 2px; */
+    border-bottom: 1px dotted #fdfdfd1a;
+    /* background: rgba(204, 204, 204, 0.08) */
 }
 
 
@@ -3607,22 +3706,23 @@ p {
 }
 
 .tjfx {
-    height: 240px
+    /* height: 240px */
 }
 
 
 .tjfx th {
     font-size: 16px;
-    color: #5a5959bc;
+    color: #ffffffce;
     text-align: left;
     letter-spacing: -1px;
+    font-weight: normal;
 
 
 }
 
 .tjfx td {
-    font-size: 18px;
-    color: #5a5959;
+    font-size: 16px;
+    color: #ffffffce;
     text-align: right;
 
 
@@ -3648,9 +3748,10 @@ p {
 
 .headerbg {
     /* background: linear-gradient(0deg, rgba(84, 112, 196, 0.2), rgba(89, 112, 196, 0.01)); */
-    padding: 8px 0 6px 0;
-    border-bottom: 1px solid #cccccc86;
-    color: #101010c1;
+    padding: 6px 0 6px 10px;
+    border-top: 1px solid #cccccc34;
+    border-bottom: 1px solid #cccccc34;
+    color: #f0efefc1;
     font-size: 1.2rem;
     font-family: FZZongYi-M05;
 
@@ -3744,5 +3845,32 @@ p {
 
 :deep(.mapboxgl-popup-content) {
     /* background-color: #f8f5f5b6; */
+}
+
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
+}
+
+:deep(.ant-tree) {
+    color: #fff;
+    background-color: transparent;
+}
+
+:deep(.ant-statistic .ant-statistic-title) {
+    color: #e1dede93;
+}
+
+:deep(.ant-statistic-content) {
+    color:
+        #fff
+}
+
+.mmodel {
+    line-height: 30px;
+    color: #ffffffce;
+    font-size: 16px;
+
 }
 </style>

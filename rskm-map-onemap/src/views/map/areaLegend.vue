@@ -179,10 +179,8 @@ const props = defineProps({
 
                 <a-col :span="4" style="font-size: 12px;">
                 </a-col>
-                <a-col :span="10" style="font-size: 12px;">
+                <a-col :span="10" style="font-size: 12px;color: #ffffffce;">
                     {{ tar.title }}
-
-
                 </a-col>
             </a-row>
 
@@ -206,6 +204,14 @@ const props = defineProps({
 
 :deep(.ant-card-body) {
     padding: 5px 15px 15px 15px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #cccccc3d;
 }
+
+:deep(.ant-card-head-title) {
+    color: #fff;
+}
+
+/* :deep(.ant-tabs-tab .ant-tabs-tab-btn) {
+    color: #ccc;
+} */
 </style>
