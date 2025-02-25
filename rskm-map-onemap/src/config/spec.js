@@ -432,15 +432,40 @@ let spec = [
         maxzoom: 20
     },
 
+
     {
-        id: "admin_2024_county_yghy_outline",
+        id: "admin_2024_province_yghy_outline",
         'type': 'line',
-        source: config.admin_2022_county.name,
-        "source-layer": config.admin_2022_county.name,
+        source: config.admin_2022_province.name,
+        "source-layer": config.admin_2022_province.name,
         filter: [
             "in",
-            ["to-string", ["get", "county_name"]],
-            '汶上县',
+            ["to-string", ["get", "first_gid"]],
+            '370000',
+        ],
+        layout: {
+            //  visibility: "visible",
+            //   "text-optional": true,
+            'line-join': 'round', // 设置线条连接处为圆角
+            'line-cap': 'round', // 设置线条端点为圆角
+        },
+        'slot': 'bottom',
+        'paint': {
+            'line-width': 10,
+            'line-color': '#cccccc',
+
+            "line-opacity": 0.7,
+        },
+    },
+    {
+        id: "admin_2024_province_yghy",
+        'type': 'fill',
+        source: config.admin_2022_province.name,
+        "source-layer": config.admin_2022_province.name,
+        filter: [
+            "!=",
+            ["to-string", ["get", "first_gid"]],
+            '370000',
         ],
         layout: {
             //  visibility: "visible",
@@ -448,31 +473,18 @@ let spec = [
         },
         'slot': 'bottom',
         'paint': {
-            'line-width': 6,
-            'line-color': '#cccccc',
 
-            "line-opacity": 1,
-        },
-    },
-    {
-        id: "admin_2024_county_yghy",
-        'type': 'fill',
-        source: config.admin_2022_county.name,
-        "source-layer": config.admin_2022_county.name,
-        // filter: [
-        //     "!=",
-        //     ["to-string", ["get", "county_name"]],
-        //     '汶上县',
-        // ],
-        layout: {
-            //  visibility: "visible",
-            //   "text-optional": true,
-        },
-        'slot': 'bottom',
-        'paint': {
+            'fill-color': '#000',
 
-            'fill-color': 'red',//RGB(89,112,196)
-            "fill-opacity": 1,
+            "fill-opacity": ["interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                7,
+                0.4,
+                13,
+                0.2,
+                14,
+                0.0,],
         },
     },
 
@@ -1095,53 +1107,7 @@ let spec = [
         minzoom: 13,
 
     },
-    // {
-    //     id: "procjet_2024_wxsd",
-    //     name: "耕地地块",
-    //     "type": "fill",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 8,
-    //     layout: {
-    //         visibility: "none",
-    //     },
-    //     // 'slot': 'top',
-    //     "paint": {
-    //         "fill-color": "#bae1ff",
-    //         "fill-opacity": 0.2
-    //         // ["interpolate",
-    //         //     ["exponential", 1.5],
-    //         //     ["zoom"],
-    //         //     2,
-    //         //     0.6,
-    //         //     13,
-    //         //     0.35,
-    //         //     14,
-    //         //     0.25,],
-    //     },
-    //     interactive: true,
-    // },
 
-    // {
-    //     id: "procjet_2024_wxsd_outine",
-    //     name: "耕地地块边框",
-    //     type: "line",
-    //     source: config.procjet_2024_wxsd.name,
-    //     "source-layer": config.procjet_2024_wxsd.name,
-    //     minzoom: 13,
-    //     layout: {
-    //         "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-    //         "line-join": ["step", ["zoom"], "miter", 1, "round"],
-    //         visibility: "none",
-    //     },
-    //     "paint": {
-    //         'line-color': '#bae1ff',
-    //         'line-width': 1.8,
-    //         'line-opacity': 0.7,
-
-    //     },
-    //     interactive: true,
-    // },
     {
         id: "rskm_pt",
         name: "保单地块",
@@ -1368,385 +1334,8 @@ let spec = [
         minzoom: 14,
     },
 
-    // {
-    //     'id': 'dem_hillshading',
-    //     'source': 'mapbox-dem',
-    //     'type': 'hillshade'
-    // },
-
-
-
-
-
-
-    // {
-    //     id: "AREA_CHINA_1",
-    //     'type': 'line',
-    //     source: config.world_china_province.name,
-    //     "source-layer": config.world_china_province.name,
-    //     'paint': {
-    //         'line-width': 1.8,
-    //         'line-color': '#ccc',
-    //         'line-opacity': 0.8
-    //     },
-    //     minzoom: 1,
-
-    // },
-    // {
-    //     id: "AREA_CHINA_2",
-    //     'type': 'line',
-    //     source: config.world_china_county.name,
-    //     "source-layer": config.world_china_county.name,
-
-    //     'paint': {
-    //         'line-width': 1,
-    //         'line-color': '#fff',
-    //         'line-opacity': 0.6
-    //     },
-    //     minzoom: 1,
-
-    // },
-    // {
-    //     id: "AREA_CHINA_3",
-    //     'type': 'line',
-    //     source: config.world_china_city.name,
-    //     "source-layer": config.world_china_city.name,
-    //     'paint': {
-    //         'line-width': 2,
-    //         'line-color': '#fff',
-    //         'line-opacity': 0.4
-    //     },
-    //     minzoom: 1,
-    // }
-
 
 ]
-
-
-
-
-// let waySpecs = [
-
-//     {
-//         id: "WAY_HAINAN_OUTLINE_4_8",
-//         name: "国道/省道",
-//         type: "line",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         minzoom: 3,
-//         maxzoom: 10.99,
-//         // filter: [
-//         //     "in",
-//         //     ["get", "roadtype"],
-//         //     "高速公路",
-//         // ],
-//         layout: {
-//             "line-cap": "round",
-//             "line-join": "round",
-//         },
-//         paint: {
-//             "line-width": [
-//                 "interpolate",
-//                 ["exponential", 1.5],
-//                 ["zoom"],
-//                 3,
-//                 0.5,
-//                 4,
-//                 1,
-//                 5,
-//                 3,
-//                 6,
-//                 6,
-//             ],
-//             "line-translate-anchor": "viewport",
-//             "line-color": "RGBA(225,255,255,0.5)",
-//             "line-opacity":
-//                 [
-//                     "match",
-//                     ["get", "roadtype"],
-//                     "高速公路",
-//                     0.5,
-//                     0
-//                 ],
-
-//         },
-//         interactive: true,
-//     },
-//     {
-//         id: "WAY_HAINAN_4_8",
-//         name: "国道/省道",
-//         type: "line",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         minzoom: 3,
-//         maxzoom: 10.99,
-//         layout: {
-//             "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-//             "line-join": ["step", ["zoom"], "miter", 1, "round"],
-//         },
-//         // filter: [
-//         //     "in",
-//         //     ["get", "roadtype"],
-//         //     "高速公路",
-//         // ],
-//         paint: {
-//             "line-translate-anchor": "viewport",
-//             "line-width": [
-//                 "interpolate",
-//                 ["exponential", 1.5],
-//                 ["zoom"],
-//                 3,
-//                 0.3,
-//                 4,
-//                 0.8,
-//                 5,
-//                 1.5,
-//                 6,
-//                 5,
-//             ],
-//             "line-color": "RGBA(225,77,98,0.8)",
-//             "line-opacity":
-//                 [
-//                     "match",
-//                     ["get", "roadtype"],
-//                     "高速公路",
-//                     1,
-//                     0
-//                 ],
-
-//         },
-//         interactive: true,
-//     },
-//     {
-//         id: "WAY_HAINAN_11",
-//         name: "国道/省道",
-//         type: "line",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         minzoom: 9,
-//         maxzoom: 10.99,
-
-//         // 'filter': ['in', ['get', 'roadtype'], '普通公路'],
-//         layout: {
-//             "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-//             "line-join": ["step", ["zoom"], "miter", 1, "round"],
-//         },
-//         paint: {
-//             "line-translate-anchor": "viewport",
-//             "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 4, 1, 10, 4, 16, 10],
-//             "line-color": [
-//                 "match",
-//                 ["slice", ["to-string", ["get", "ref"]], 0, 1],
-//                 "G",
-//                 "RGBA(225,77,98,1)",
-//                 "S",
-//                 "RGBA(110,164,226,0.8)",
-//                 "X",
-//                 "RGBA(220,148,237,0.7)",
-//                 "Y",
-//                 "RGBA(119,229,235,0.5)",
-//                 "RGBA(235,215,143,1)",
-//             ],
-//             "line-opacity":
-//                 [
-//                     "match",
-//                     ["get", "roadtype"],
-//                     "普通公路",
-//                     1,
-//                     0
-//                 ],
-//         },
-//         interactive: true,
-//     },
-//     {
-//         id: "WAY_HAINAN_11_20",
-//         name: "国道/省道",
-//         type: "line",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         minzoom: 11,
-//         maxzoom: 20,
-//         layout: {
-//             "line-cap": ["step", ["zoom"], "butt", 1, "round"],
-//             "line-join": ["step", ["zoom"], "miter", 1, "round"],
-//         },
-//         paint: {
-//             "line-translate-anchor": "viewport",
-//             "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 4, 1, 10, 4, 16, 10],
-//             "line-color": [
-//                 "match",
-//                 ["slice", ["to-string", ["get", "ref"]], 0, 1],
-//                 "G",
-//                 "RGBA(225,77,98,1)",
-//                 "S",
-//                 "RGBA(110,164,226,8)",
-//                 "X",
-//                 "RGBA(220,148,237,7)",
-//                 "Y",
-//                 "RGBA(119,229,235,0.5)",
-//                 "RGBA(235,215,143,0.5)",
-//             ],
-//         },
-//         interactive: true,
-//     },
-//     {
-//         id: "WAY_HAINAN_NAME",
-//         type: "symbol",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-
-//         layout: {
-//             "symbol-avoid-edges": true,
-//             "icon-rotation-alignment": "viewport",
-//             "text-pitch-alignment": "viewport",
-//             visibility: "visible",
-//             "text-rotation-alignment": "map",
-//             "symbol-placement": "line",
-//             "text-font": ["Microsoft YaHei"],
-//             "text-field": "{name} {ref}",
-//             "text-size": ["interpolate", ["linear"], ["zoom"], 8, 0, 12, 15, 15, 20],
-//             "text-padding": 200,
-//         },
-//         paint: {
-//             'text-halo-width': 1.2,
-//             "text-color": "#000000",
-//             "text-size": [
-//                 "match",
-//                 ["slice", ["to-string", ["get", "ref"]], 0, 1],
-//                 "G",
-//                 16,
-//                 "S",
-//                 14,
-//                 "X",
-//                 13,
-//                 "Y",
-//                 12,
-//                 10,
-//             ],
-//             "text-halo-color": "rgba(255, 255, 255, 0.8)",
-//         },
-//         minzoom: 11,
-//         maxzoom: 22,
-//     },
-
-//     {
-//         id: "WAY_HAINAN_NAME_8_20",
-//         type: "symbol",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         // filter: [
-//         //     "in",
-//         //     "roadtype",
-//         //     "高速公路",
-//         // ],
-//         layout: {
-//             "symbol-avoid-edges": true,
-//             "icon-rotation-alignment": "viewport",
-//             "text-pitch-alignment": "viewport",
-//             visibility: "visible",
-//             "text-font": ["Microsoft YaHei"],
-//             "text-optional": true,
-//             "text-padding": 50,
-//             "icon-padding": 50,
-//             "text-field": "{ref}",
-//             "text-size": 13,
-//             'icon-image': [
-//                 "match",
-//                 ["slice", ["to-string", ["get", "ref"]], 0, 1],
-//                 "G",
-//                 "153",
-//                 "S",
-//                 "153",
-//                 "",
-//             ],
-//             'icon-size': 1.5
-//         },
-//         paint: {
-//             "text-color": "rgba(255, 255, 255, 1)",
-//             // "text-halo-color": "RGBA(19,163,131,1)",
-//             'text-halo-width': 1.2,
-//             "line-opacity":
-//                 [
-//                     "match",
-//                     ["get", "roadtype"],
-//                     "高速公路",
-//                     1,
-//                     0
-//                 ],
-
-//         },
-//         minzoom: 4,
-//         maxzoom: 10.99,
-//     },
-
-
-
-//     {
-//         id: "WAY_HAINAN_HEIGHT",
-//         name: "国道",
-//         type: "line",
-//         source: config.way.name,
-//         "source-layer": config.way.name,
-//         minzoom: 6,
-//         layout: {
-//             visibility: "none"
-//         },
-//         paint: {
-//             "line-translate-anchor": "viewport",
-//             "line-width": [
-//                 "interpolate",
-//                 ["exponential", 1.5],
-//                 ["zoom"],
-//                 4,
-//                 5,
-//                 10,
-//                 8,
-//                 16,
-//                 10,
-//             ],
-//             "line-color": "blue",
-//             "line-opacity": 0.8,
-//         },
-//         interactive: true,
-//     },
-
-//     {
-//         id: "POI_HAINAN",
-//         type: "symbol",
-//         source: config.poi.name,
-//         "source-layer": config.poi.name,
-//         // filter: [
-//         //     "in",
-//         //     ["get", "roadtype"],
-//         //     "高速公路",
-//         // ],
-//         layout: {
-//             "symbol-avoid-edges": true,
-//             "icon-rotation-alignment": "viewport",
-//             "text-pitch-alignment": "viewport",
-//             visibility: "visible",
-//             "text-font": ["Microsoft YaHei"],
-//             "text-optional": true,
-//             "text-padding": 30,
-//             "icon-padding": 30,
-//             "text-offset": [0, -1.5],
-//             "icon-anchor": "bottom",
-//             "text-field": "{name}",
-//             "text-size": 16,
-//             'icon-image': '334'
-//         },
-//         paint: {
-//             "text-color": "rgba(50,42, 42, 1)",
-//             "text-halo-color": "RGBA(255,255,255,.6)",
-//             'text-halo-width': 1
-//         },
-//         minzoom: 14,
-
-//     },
-
-
-
-
 
 
 
