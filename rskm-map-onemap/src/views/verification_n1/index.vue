@@ -3174,7 +3174,7 @@ const lockDownOpen = ref(false)
                                         <td style="width: 40%;">
                                             <div class="mmodel">
                                                 承保面积<span style="float: right;">{{ Number(cbmj).toFixed(0) + ' 亩'
-                                                }}</span>
+                                                    }}</span>
                                             </div>
 
                                         </td>
@@ -3190,7 +3190,7 @@ const lockDownOpen = ref(false)
                                         <td>
                                             <div class="mmodel">
                                                 遥感面积<span style="float: right;">{{ Number(ygmj).toFixed(0) + ' 亩'
-                                                }}</span>
+                                                    }}</span>
                                             </div>
 
                                         </td>
@@ -3681,7 +3681,7 @@ p {
     padding: 5px;
     /* background: linear-gradient(to bottom, rgba(204, 204, 204, 0.1), rgba(204, 204, 204, 0.2)); */
     /* border-radius: 2px; */
-    border-bottom: 1px dotted #fdfdfd1a;
+    /* border-bottom: 1px dotted #fdfdfd1a; */
     /* background: rgba(204, 204, 204, 0.08) */
 }
 

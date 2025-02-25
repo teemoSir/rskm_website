@@ -3673,9 +3673,9 @@ const onClose = () => {
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
                                 <!-- <FoldersIcon s></FoldersIcon> -->
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <FoldersIcon style="margin-bottom: -5px;color: #ffffffce;"></FoldersIcon>
                                 <span
-                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">遥感种植分布</span>
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;color: #ffffffce;">遥感种植分布</span>
                             </label>
 
 
@@ -4160,7 +4160,7 @@ const onClose = () => {
                 :items="items" @click="handleClick"></a-menu>
         </div> -->
         <!-- 中间 -->
-        <div class="center-card" :style="{ cursor: 'all-scroll', marginLeft: (!opens ? '-214px' : '-474px') }">
+        <div class="center-card" :style="{ marginLeft: (!opens ? '-214px' : '-474px') }">
 
             <table style="width: 100%;">
                 <tr>
@@ -4174,25 +4174,27 @@ const onClose = () => {
                 </tr>
                 <tr>
                     <td>
-                        <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.198)); border-radius: 2px; ">
+                        <div style="text-align: center; ">
 
-                            <div style="padding: 5px;font-size: 1rem;">
+                            <div
+                                style="padding: 5px;font-size: 1rem;font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
                                 第一次比对
                             </div>
-                            <div style="padding: 0 0 5px 0;">
+                            <div
+                                style="font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
                                 2024年09月13日
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.198));border-radius: 2px;  ">
+                        <div style="text-align: center; ">
 
-                            <div style="padding: 5px;font-size: 1rem;">
+                            <div
+                                style="padding: 5px;font-size: 1rem;font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
                                 第二次比对
                             </div>
-                            <div style="padding: 0 0 5px 0;">
+                            <div
+                                style="font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
                                 2024年11月25日
                             </div>
                         </div>
@@ -4631,8 +4633,8 @@ p {
     padding: 5px;
     /* background: linear-gradient(to bottom, rgba(204, 204, 204, 0.1), rgba(204, 204, 204, 0.2)); */
     border-radius: 2px;
-    border-bottom: 1px dotted #cccccc38;
-    background: rgba(204, 204, 204, 0.08)
+    /* border-bottom: 1px dotted #cccccc0d; */
+    /* background: rgba(204, 204, 204, 0.08) */
 }
 
 
@@ -4928,5 +4930,36 @@ p {
     margin: 0; */
     font-family: FZZongYi-M05;
     font-weight: normal;
+}
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
+}
+
+:deep(.ant-tree) {
+    color: #fff;
+    background-color: transparent;
+}
+
+:deep(.ant-statistic .ant-statistic-title) {
+    color: #e1dede93;
+}
+
+:deep(.ant-statistic-content) {
+    color:
+        #fff
+}
+
+:deep(.ant-segmented) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+
+    display: flex;
+    align-items: center;
+    /* padding: 5px 20px; */
+}
+
+:deep(.ant-segmented-item-label) {
+    color: #ffffffce;
 }
 </style>

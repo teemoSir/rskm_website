@@ -207,8 +207,15 @@ const props = defineProps({
     border-top: 1px solid #cccccc3d;
 }
 
+
 :deep(.ant-card-head-title) {
     color: #fff;
+}
+
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
 }
 
 /* :deep(.ant-tabs-tab .ant-tabs-tab-btn) {
