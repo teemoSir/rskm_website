@@ -62,7 +62,7 @@ const router = createRouter({
             component: () => import("@/views/zaisun/index.vue"),
         },
         {
-            path: "/neimeng/:id",
+            path: "/neimeng",
             name: "neimeng",
             component: () => import("@/views/neimeng/index.vue"),
         },

@@ -187,12 +187,15 @@ const switchLayer = () => {
 
 // 初始化视野
 const fitCenter = () => {
-    map.fitBounds([
-        [97.12, 37.55], // 西南角坐标
-        [126.04, 53.33] // 东北角坐标
-    ], {
-        padding: { top: 10, bottom: 10, left: 10, right: 10 }
-    });
+    // map.fitBounds([
+    //     [97.12, 37.55], // 西南角坐标
+    //     [126.04, 53.33] // 东北角坐标
+    // ], {
+    //     padding: { top: 10, bottom: 10, left: 10, right: 10 }
+    // });
+
+    map.setCenter([111.796, 44.753])
+    map.setZoom(5.3)
 };
 /**
  * 设置视野到box
@@ -462,19 +465,26 @@ const getAreaInfo = async (me) => {
 const loadDefaultView = async () => {
     // 实现方法  province_code
 
-    const data = await api.get_table_by_filter(
-        "admin_2022_province",
-        `and  province_code ='${province_code}' `,
-        `ST_AsGeoJSON(ST_Simplify(geom, 0.1)) as json,name,gid,province_code`
-    );
-    // 处理数据
-    //console.log(data);
+    // const data = await api.get_table_by_filter(
+    //     "admin_2022_province",
+    //     `and  province_code ='${province_code}' `,
+    //     `ST_AsGeoJSON(ST_Simplify(geom, 0.1)) as json,name,gid,province_code`
+    // );
+    // // 处理数据
+    // //console.log(data);
 
-    let bbox = getCoordinatesAndBbox(JSON.parse(data[0].json));
+    // let bbox = getCoordinatesAndBbox(JSON.parse(data[0].json));
 
-    map.fitBounds(bbox, {
-        padding: { top: 10, bottom: 10 },
-    });
+    // map.fitBounds(bbox, {
+    //     padding: { top: 0, bottom: 0 },
+    // });
+
+    //111.796056° 44.753699°
+
+    //setTimeout(() => {
+    map.setCenter([111.796, 44.753])
+    map.setZoom(5.3)
+    // }, 500)
 
 }
 
@@ -619,12 +629,14 @@ const switchTile = (layer) => {
 const rectMap = () => {
     clearCoordinatesJSON()
 
-    map.fitBounds([
-        [97.12, 37.55], // 西南角坐标
-        [126.04, 53.33] // 东北角坐标
-    ], {
-        padding: { top: 10, bottom: 10, left: 10, right: 10 }
-    });
+    // map.fitBounds([
+    //     [97.12, 37.55], // 西南角坐标
+    //     [126.04, 53.33] // 东北角坐标
+    // ], {
+    //     padding: { top: 10, bottom: 10, left: 10, right: 10 }
+    // });
+    map.setCenter([111.796, 44.753])
+    map.setZoom(5.3)
 };
 
 onUnmounted(() => {
@@ -977,7 +989,7 @@ const sendMessageToIframe = (message) => {
 }
 
 const route = useRoute(); // 获取当前路由对象
-const province_code = route.params.id || ''; // 获取路由参数，若未获得则设为空字符串
+const province_code = ''; // 获取路由参数，若未获得则设为空字符串
 
 
 onMounted(() => {
