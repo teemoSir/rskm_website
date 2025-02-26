@@ -60,7 +60,12 @@ const router = createRouter({
             path: "/zaisun",
             name: "zaisun",
             component: () => import("@/views/zaisun/index.vue"),
-        }
+        },
+        {
+            path: "/neimeng/:id",
+            name: "neimeng",
+            component: () => import("@/views/neimeng/index.vue"),
+        },
     ],
 });
 // 将 router 暴露出去  （export default 抛出方式）
