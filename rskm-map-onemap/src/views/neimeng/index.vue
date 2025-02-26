@@ -792,15 +792,7 @@ const loadData = () => {
         ll.push(properties)
     }
 
-
-
-
     addPoint(ll, addList)
-
-    // 添加一个 point geojson 图形到map
-
-
-
 
 }
 
