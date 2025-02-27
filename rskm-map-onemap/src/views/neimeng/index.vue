@@ -844,6 +844,8 @@ const addPoint = (ll, addList) => {
 
     console.log(city)
 
+
+
     map.addLayer({
         id: "points",
         type: "symbol",
@@ -879,7 +881,14 @@ const addPoint = (ll, addList) => {
 
         },
         paint: {
-            "text-halo-color": "red",
+            "text-halo-color":
+                ["match",
+                    ["get", "name"],
+                    "乌兰布和", "red",
+                    "腾格里开发区", "red",
+                    "兴安盟农垦事业发展中心", "red",
+                    "#000"
+                ],
             "text-color": "RGBA(255,255,255,1)",
             'text-halo-width': 2.5
         },

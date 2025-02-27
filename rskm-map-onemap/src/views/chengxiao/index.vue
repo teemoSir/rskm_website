@@ -3758,10 +3758,10 @@ const onClose = () => {
                 </template>
 
                 <a-button type="primary" @click="showDrawers" class="boxshadow" v-if="!opens">
-                    <Menu color="RGB(58,123,251)"></Menu>
+                    <Menu></Menu>
                 </a-button>
                 <a-button type="primary" @click="onClose" class="boxshadow" v-if="opens">
-                    <ChevronRight color="RGB(58,123,251)" />
+                    <ChevronRight />
                 </a-button>
             </a-tooltip>
 
@@ -3770,7 +3770,7 @@ const onClose = () => {
                     <span>最佳视野</span>
                 </template>
                 <a-button @click="fitCenter()" size="large" class="boxshadow">
-                    <ScanSearch color="RGB(58,123,251)" />
+                    <ScanSearch />
                 </a-button>
             </a-tooltip>
             <br />
@@ -3822,8 +3822,8 @@ const onClose = () => {
                     <span>二三维切换</span>
                 </template>
                 <a-button @click="three3D()" size="large" class="boxshadow">
-                    <Map v-if="machine != 'mercator'" color="RGB(58,123,251)"></Map>
-                    <Globe v-else color="RGB(58,123,251)" />
+                    <Map v-if="machine != 'mercator'"></Map>
+                    <Globe v-else />
                 </a-button>
             </a-tooltip>
 
@@ -3832,48 +3832,6 @@ const onClose = () => {
                     <span>{{ !ruler ? "开始量测" : "关闭量测" }}</span>
                 </template>
 
-                <div v-if="2 == 3">
-                    <!-- {{ ruler }} -->
-                    <a-button @click="onPencilRuler()" size="large" class="boxshadow">
-                        <!-- <PencilRuler /> -->
-                        <Ruler v-if="!ruler" color="RGB(58,123,251)" />
-                        <X color="RGB(58,123,251)" v-else="ruler" />
-                        <span class="arrow">◣</span>
-                    </a-button>
-
-                    <!--量测列表 -->
-                    <div class="right-ruler" v-if="ruler">
-                        <a-tooltip placement="left">
-                            <template #title>
-                                <span>测量坐标<br />点击左键标记位置</span>
-                            </template>
-                            <a-button size="large" class="boxshadow" @click="celiang_point">
-                                <!-- <MapPinned /> -->
-                                <Scale3D color="RGB(58,123,251)" />
-                            </a-button>
-                        </a-tooltip>
-                        <a-tooltip placement="left">
-                            <template #title>
-                                <span>距离测量<br />点击左键绘制节点<br />双击左键完成测量</span>
-                            </template>
-                            <a-button size="large" class="boxshadow" @click="celiang_line_string">
-                                <Ruler color="RGB(58,123,251)" />
-                                <div>
-                                    <Minus color="RGB(58,123,251)" :size="30"
-                                        style="position: absolute; left: 12px; top: 26px" />
-                                </div>
-                            </a-button>
-                        </a-tooltip>
-                        <a-tooltip placement="left">
-                            <template #title>
-                                <span>面积测量<br />点击左键绘制节点<br />双击左键完成测量</span>
-                            </template>
-                            <a-button size="large" class="boxshadow" @click="celiang_polygon">
-                                <LandPlot />
-                            </a-button>
-                        </a-tooltip>
-                    </div>
-                </div>
             </a-tooltip>
 
             <!-- <a-tooltip placement="leftTop">
@@ -3891,7 +3849,7 @@ const onClose = () => {
                 <div>
                     <!-- {{ draw }} -->
                     <a-button @click="onDraw()" size="large" class="boxshadow">
-                        <Pencil color="RGB(58,123,251)" />
+                        <Pencil />
 
                         <!-- <div style="position:absolute;left:8px;top:10px">
             <Pentagon :size="40" />
@@ -3906,7 +3864,7 @@ const onClose = () => {
                                 <span>绘制点</span>
                             </template>
                             <a-button size="large" class="boxshadow">
-                                <Dot color="RGB(58,123,251)" />
+                                <Dot />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="leftTop">
@@ -3915,7 +3873,7 @@ const onClose = () => {
                             </template>
                             <a-button size="large" class="boxshadow">
                                 <!-- <Route /> -->
-                                <Slash color="RGB(58,123,251)" />
+                                <Slash />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="leftTop">
@@ -3923,7 +3881,7 @@ const onClose = () => {
                                 <span>绘制矩形</span>
                             </template>
                             <a-button size="large" class="boxshadow">
-                                <RectangleHorizontal color="RGB(58,123,251)" />
+                                <RectangleHorizontal />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="leftTop">
@@ -3931,7 +3889,7 @@ const onClose = () => {
                                 <span>绘制多边形</span>
                             </template>
                             <a-button size="large" class="boxshadow">
-                                <Pentagon color="RGB(58,123,251)" />
+                                <Pentagon />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="leftTop">
@@ -3939,7 +3897,7 @@ const onClose = () => {
                                 <span>绘制圆形</span>
                             </template>
                             <a-button size="large" class="boxshadow">
-                                <Circle color="RGB(58,123,251)" />
+                                <Circle />
                             </a-button>
                         </a-tooltip>
                     </div>
@@ -3952,7 +3910,7 @@ const onClose = () => {
                     <span>放大</span>
                 </template>
                 <a-button @click="zoomIn()" size="large" class="boxshadow">
-                    <Plus color="RGB(58,123,251)" />
+                    <Plus />
                 </a-button>
             </a-tooltip>
             <a-tooltip placement="leftTop">
@@ -3960,7 +3918,7 @@ const onClose = () => {
                     <span>缩小</span>
                 </template>
                 <a-button @click="zoomOut()" size="large" class="boxshadow">
-                    <Minus color="RGB(58,123,251)" />
+                    <Minus />
                 </a-button>
             </a-tooltip>
         </div>
@@ -4840,18 +4798,15 @@ p {
 
 .boxshadow {
     cursor: pointer;
-
-    /* background-color: rgba(0, 0, 0, 0.6); */
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
-    border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+    border-radius: 3px;
     width: 50px;
     height: 50px;
     color: #ccc;
-    outline: 1px solid #99999986;
+    border: 1px double #99999986;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px 0 5px 0;
 }
 
 .boxshadow:hover {
