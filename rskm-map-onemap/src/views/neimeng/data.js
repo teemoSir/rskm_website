@@ -113,6 +113,7 @@ let neimeng = [
     { "type": "Feature", "properties": { "name": "腾格里开发区", "coordinates": [111.333333, 40.833333], "code": null, "county_name": null, "county_code": null, "county_type": null, "city_name": null, "city_code": null, "city_type": null, "province_name": null, "province_code": null, "name_3": null, "var_name3": null, "gid_3": null, "type_3": null, "name_2": null, "var_name2": null, "name_1": null, "var_name1": null, "shuidao": null, "handixiaomai": null, "shuidixiaomai": null, "handiyumi": null, "shuidiyumi": 1630, "dadou": null }, "geometry": null },
     { "type": "Feature", "properties": { "name": "兴安盟农垦事业发展中心", "coordinates": [122.333333, 45.833333], "code": null, "county_name": null, "county_code": null, "county_type": null, "city_name": null, "city_code": null, "city_type": null, "province_name": null, "province_code": null, "name_3": null, "var_name3": null, "gid_3": null, "type_3": null, "name_2": null, "var_name2": null, "name_1": null, "var_name1": null, "shuidao": 1200, "handixiaomai": 340, "shuidixiaomai": null, "handiyumi": 770, "shuidiyumi": 900, "dadou": 510 }, "geometry": null },
 
+
 ]
 
 export { neimeng }
