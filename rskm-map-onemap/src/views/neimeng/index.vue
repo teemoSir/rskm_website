@@ -3,7 +3,7 @@ import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl.css";
 import "../../../public/mapboxgl/mapbox-gl-js-3.0.1/mapbox-gl";
 import "../../../public/mapboxgl/pulgins/rasterTileLayer";
 import { onMounted, ref, nextTick, watch, reactive, h, onUnmounted, defineExpose } from "vue";
-import { neimeng } from "./data2"
+import { neimeng } from "./data"
 
 import { message, notification, Button } from "ant-design-vue";
 import * as turf from "@turf/turf";

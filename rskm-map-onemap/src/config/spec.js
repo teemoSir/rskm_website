@@ -429,7 +429,7 @@ let spec = [
             //     0.2,],
         },
         minzoom: 9,
-        maxzoom: 20
+        maxzoom: 11.4
     },
 
 
@@ -1209,7 +1209,7 @@ let spec = [
             visibility: "none",
         },
         "paint": {
-            'fill-color': 'green',
+            'fill-color': 'red',
             // 'line-width': 2,
             'fill-opacity': 0.4,
             //    "line-dasharray": [0.8, 0.2]

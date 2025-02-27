@@ -618,9 +618,12 @@ const echartsDK02 = (names, hgdhValues, dhValues) => {
 
             // "#fc8452",
             // "#9a60b4",
-            "#3ba272",
-            "#5470c6",
+            // "#3ba272",
+            // "#5470c6",
             // "#ee6666",
+            "#91cc75",
+            "#fac858",
+            "#ee6666",
         ],
         tooltip: {
             trigger: 'axis',
@@ -823,9 +826,13 @@ const echartsDK03 = (names, data1, data2) => {
             // "#5470c6",
             // "#73c0de",
             // "#3ba272",
-            "#3ba272",
-            //"#5470c6",
-            "#73c0de",
+            // "#3ba272",
+            // //"#5470c6",
+            // "#73c0de",
+
+            "#91cc75",
+            "#fac858",
+            "#ee6666",
         ],
         tooltip: {
             trigger: 'axis',
@@ -3174,7 +3181,7 @@ const lockDownOpen = ref(false)
                                         <td style="width: 40%;">
                                             <div class="mmodel">
                                                 承保面积<span style="float: right;">{{ Number(cbmj).toFixed(0) + ' 亩'
-                                                    }}</span>
+                                                }}</span>
                                             </div>
 
                                         </td>
@@ -3190,7 +3197,7 @@ const lockDownOpen = ref(false)
                                         <td>
                                             <div class="mmodel">
                                                 遥感面积<span style="float: right;">{{ Number(ygmj).toFixed(0) + ' 亩'
-                                                    }}</span>
+                                                }}</span>
                                             </div>
 
                                         </td>
