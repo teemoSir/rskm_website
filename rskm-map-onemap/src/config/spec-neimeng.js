@@ -749,7 +749,7 @@ let specEchars = [
                 16,
                 20,
             ],
-            "text-field": "{name_chn}",
+            "text-field": "",
             "text-size": 20,
             "text-line-height": 1.2,
 
