@@ -753,10 +753,10 @@ let specEchars = [
             "text-size": 20,
             "text-line-height": 1.2,
 
-            "icon-image": "5500", // 引用精灵图中的图标
-            "icon-size": 1.5,// 根据需要调整图标大小
-            // "text-anchor": "top", // 设置文字的锚点位置
-            "text-offset": [0, -0.6], // 设置文字相对于图标的偏移量
+            // "icon-image": "5500", // 引用精灵图中的图标
+            // "icon-size": 1.5,// 根据需要调整图标大小
+            // // "text-anchor": "top", // 设置文字的锚点位置
+            // "text-offset": [0, -0.6], // 设置文字相对于图标的偏移量
 
         },
         paint: {
