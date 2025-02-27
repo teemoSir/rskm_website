@@ -736,7 +736,7 @@ const loadData = () => {
 
     let city = [
         'match',
-        ['get', 'name_chn'], ...list, ["get", "name_chn"]
+        ['get', 'name_chn'], ...list, ""
     ];
     console.info(city)
     //map.getLayer('admin_2022_county_text') && map.setLayoutProperty('admin_2022_county_text', 'text-field', city);
