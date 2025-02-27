@@ -394,7 +394,7 @@ let neimeng = [
     // { "type": "Feature", "properties": { "name": "兴安盟农垦事业发展中心", "code": null, "coordinates": [122.333333, 45.833333], "county_name": null, "county_code": null, "county_type": null, "city_name": null, "city_code": null, "city_type": null, "province_name": null, "province_code": null, "province_type": null, "eng_name": null, "var_name": null, "name_3": null, "var_name3": null, "gid_3": null, "type_3": null, "name_2": null, "var_name2": null, "name_1": null, "var_name1": null, "shuidao": 1200, "handixiaomai": 340, "shuidixiaomai": null, "handiyumi": 770, "shuidiyumi": 900, "dadou": 510 }, "geometry": null }
 
 
-    //
+    //sadf
 
 ]
 
