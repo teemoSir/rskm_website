@@ -251,13 +251,19 @@ const props = defineProps({
 
 <style scoped>
 .win {
-    /* background-color: transparent; */
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));
+    /* background: linear-gradient(to bottom,
+            rgba(251, 250, 250, 0.93),
+            rgba(204, 204, 204, 0.898)); */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
 }
 
 
 
 
+
+:deep(.ant-card-head-title) {
+    color: #fff;
+}
 
 :deep(.ant-card-head) {
     border-bottom: 0;
@@ -266,17 +272,19 @@ const props = defineProps({
 }
 
 :deep(.ant-card-body) {
-    padding: 1rem;
+    padding: 5px 15px 5px 15px;
+    /* border-top: 1px solid #ccc; */
     width: 160px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #cccccc3d;
+    color: #fff;
 }
 
-.legendTitle {
-    font-size: 1rem;
+/* .legendTitle {
+    padding: 10px;
+} */
 
-    padding: 10px 0 0 0;
-    width: 100%;
-
-
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
 }
 </style>

@@ -3787,7 +3787,7 @@ const onClose = () => {
             <div>
                 <a-tooltip title="底图切换" placement="left">
                     <a-button @click="switchLayer()" size="large" class="boxshadow">
-                        <Layers v-if="!rightLayer" color="RGB(58,123,251)" />
+                        <Layers v-if="!rightLayer" />
                         <X color="RGB(58,123,251)" v-else />
                         <span class="arrow">◣</span>
                     </a-button>
@@ -4807,6 +4807,7 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 5px 0;
 }
 
 .boxshadow:hover {

@@ -78,11 +78,19 @@ const tuli = ref(true);
 
 <style scoped>
 .win {
-    background: linear-gradient(to bottom,
+    /* background: linear-gradient(to bottom,
             rgba(251, 250, 250, 0.93),
-            rgba(204, 204, 204, 0.898));
+            rgba(204, 204, 204, 0.898)); */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
 }
 
+
+
+
+
+:deep(.ant-card-head-title) {
+    color: #fff;
+}
 
 :deep(.ant-card-head) {
     border-bottom: 0;
@@ -92,11 +100,22 @@ const tuli = ref(true);
 
 :deep(.ant-card-body) {
     padding: 5px 15px 5px 15px;
-    border-top: 1px solid #ccc;
+    /* border-top: 1px solid #ccc; */
     width: 160px;
+    border-top: 1px solid #cccccc3d;
+    color: #fff;
+
+
 }
 
-.legendTitle {
+/* .legendTitle {
     padding: 10px;
+} */
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+
+
+
 }
 </style>

@@ -13,7 +13,7 @@ import { message } from "ant-design-vue";
 import Header from "@/components/header/index.vue";
 import c2 from "@/assets/images/map/c2.svg";
 import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons-vue';
-
+import syncMove from '@mapbox/mapbox-gl-sync-move';
 import {
     ScanSearch,
     Layers,
@@ -1746,7 +1746,7 @@ const lockDownExcel = async (path, sheet) => {
 
 const lockDownOpen = ref(false)
 
-const loadDoubleMap2 = () => {
+const loadDoubleMap = () => {
 
 
     let map1 = initMap("before");
@@ -1764,7 +1764,7 @@ let compare;
 /**
  * 
  */
-const loadDoubleMap = () => {
+const loadDoubleMap3 = () => {
 
 
     let container = '#comparison-container';
@@ -1781,11 +1781,6 @@ const loadDoubleMap = () => {
     });
 
     compare.setSlider(0);
-
-
-
-
-
 
     document.body.addEventListener('mousemove', (event) => {
         observeSaLeft.value = compare.currentPosition;
@@ -2364,9 +2359,9 @@ let observeSaLeft = ref();
 
     <div class="verification" :style="{ width: !opens ? '100%' : 'calc(100% - 520px)' }">
         <div id="comparison-container" style="position: absolute;left: 0;top:0;z-index: 1000;width: 100%;height: 100%">
-            <div id="before" class="map">
+            <div id="before" class="map" style="width: 50%;position: absolute;left: 0;top:0;">
             </div>
-            <div id="after" class="map">
+            <div id="after" class="map" style="width: 50%;position: absolute;right: 0;top:0;">
             </div>
         </div>
 
@@ -2379,7 +2374,7 @@ let observeSaLeft = ref();
                     <span>最佳视野</span>
                 </template>
                 <a-button @click="fitCenter()" size="large" class="boxshadow">
-                    <ScanSearch color="RGB(58,123,251)" />
+                    <ScanSearch />
                 </a-button>
             </a-tooltip>
 
@@ -2392,7 +2387,7 @@ let observeSaLeft = ref();
             <div>
                 <a-tooltip title="底图切换" placement="left">
                     <a-button @click="switchLayer()" size="large" class="boxshadow">
-                        <Layers v-if="!rightLayer" color="RGB(58,123,251)" />
+                        <Layers v-if="!rightLayer" />
                         <X color="RGB(58,123,251)" v-else />
                         <span class="arrow">◣</span>
                     </a-button>
@@ -2495,8 +2490,8 @@ let observeSaLeft = ref();
                     <span>二三维切换</span>
                 </template>
                 <a-button @click="three3D()" size="large" class="boxshadow">
-                    <Map v-if="machine != 'mercator'" color="RGB(58,123,251)"></Map>
-                    <Globe v-else color="RGB(58,123,251)" />
+                    <Map v-if="machine != 'mercator'"></Map>
+                    <Globe v-else />
                 </a-button>
             </a-tooltip>
 
@@ -2509,7 +2504,7 @@ let observeSaLeft = ref();
                     <!-- {{ ruler }} -->
                     <a-button @click="onPencilRuler()" size="large" class="boxshadow">
                         <!-- <PencilRuler /> -->
-                        <Ruler v-if="!ruler" color="RGB(58,123,251)" />
+                        <Ruler v-if="!ruler" />
                         <X color="RGB(58,123,251)" v-else="ruler" />
                         <span class="arrow">◣</span>
                     </a-button>
@@ -2522,7 +2517,7 @@ let observeSaLeft = ref();
                             </template>
                             <a-button size="large" class="boxshadow" @click="celiang_point">
                                 <!-- <MapPinned /> -->
-                                <Scale3D color="RGB(58,123,251)" />
+                                <Scale3D />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="left">
@@ -2530,10 +2525,9 @@ let observeSaLeft = ref();
                                 <span>距离测量<br />点击左键绘制节点<br />双击左键完成测量</span>
                             </template>
                             <a-button size="large" class="boxshadow" @click="celiang_line_string">
-                                <Ruler color="RGB(58,123,251)" />
+                                <Ruler />
                                 <div>
-                                    <Minus color="RGB(58,123,251)" :size="30"
-                                        style="position: absolute; left: 12px; top: 26px" />
+                                    <Minus :size="30" style="position: absolute; left: 12px; top: 26px" />
                                 </div>
                             </a-button>
                         </a-tooltip>
@@ -2557,7 +2551,7 @@ let observeSaLeft = ref();
                 <div>
                     <!-- {{ draw }} -->
                     <a-button @click="onDraw()" size="large" class="boxshadow">
-                        <Pencil color="RGB(58,123,251)" />
+                        <Pencil />
 
 
                         <span class="arrow">◣</span>
@@ -2615,7 +2609,7 @@ let observeSaLeft = ref();
                     <span>放大</span>
                 </template>
                 <a-button @click="zoomIn()" size="large" class="boxshadow">
-                    <Plus color="RGB(58,123,251)" />
+                    <Plus />
                 </a-button>
             </a-tooltip>
             <a-tooltip placement="leftTop">
@@ -2623,21 +2617,19 @@ let observeSaLeft = ref();
                     <span>缩小</span>
                 </template>
                 <a-button @click="zoomOut()" size="large" class="boxshadow">
-                    <Minus color="RGB(58,123,251)" />
+                    <Minus />
                 </a-button>
             </a-tooltip>
         </div>
     </div>
 
     <!-- 页面 -->
-    <div class="page">
-        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -365px;">
-
-
-            <h1 style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;">
+    <div class="page" style="background-color: red;">
+        <div style="position: absolute;top: 90px;left: 50%; z-index: 1000;margin-left: -170px;">
+            <div
+                style="font-family: 'FZZongYi-M05'; text-align: center;color: #fff;font-size: 2.5rem;line-height: 60px;">
                 <span style="text-shadow: 1px 2px 2px #000;"> 作物灾损遥感监测 </span>
-            </h1>
-            <a-segmented v-model:value="valueSegmented" :options="dataSegmented" />
+            </div>
         </div>
 
         <a-drawer :width="520" title="" :placement="placement" :open="opens" @close="onClose" :mask="false">
@@ -2702,17 +2694,14 @@ let observeSaLeft = ref();
 
         </a-drawer>
 
-
+        <a-segmented v-model:value="valueSegmented" :options="dataSegmented"
+            style="position: absolute;left: 15%;bottom: 50px;z-index: 10000;" />
+        <a-segmented v-model:value="valueSegmented" :options="dataSegmented"
+            style="position: absolute;left: 65%;bottom: 50px;z-index: 10000;" />
 
 
         <!-- 左侧菜单栏 -->
-        <!-- <div style="position: absolute;left: 15px;top: 100px;z-index: 1000;">
 
-            <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeysNume"
-                :inlineCollapsed="false"
-                style=" background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.898));border-radius: 3px; "
-                :items="items" @click="handleClick"></a-menu>
-        </div> -->
         <!-- 中间 -->
         <div class="center-card" :style="{ cursor: 'all-scroll', left: !opens ? '50%' : '40%' }">
 
@@ -2727,9 +2716,9 @@ let observeSaLeft = ref();
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <FoldersIcon style="margin-bottom: -5px;color: #fff;"></FoldersIcon>
                                 <span
-                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">灾损遥感监测</span>
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;color: #fff;">灾损遥感监测</span>
                             </label>
 
 
@@ -2966,25 +2955,19 @@ let observeSaLeft = ref();
     <div style="position: absolute;bottom: 35px;right: 20px;z-index: 1000;">
         <ZaihaiLegend v-if="activeKey == 1" core="map"></ZaihaiLegend>
     </div>
-
     <!--图层控制-->
-    <div class="tuli" :style="{ left: (observeSaLeft - 200) + 'px' }">
+    <div class="tuli">
         <ZaihaiLayerLegend v-if="activeKey == 1" core="map"></ZaihaiLayerLegend><br>
-
     </div>
 
-    <div class="tuli-right" :style="{ left: observeSaLeft + 'px' }">
+    <div class="tuli-right">
         <ZaihaiLayerLegend v-if="activeKey == 1" core="mapp"></ZaihaiLayerLegend><br>
     </div>
-
-
-
 
     <div id="text">
         <table class="text">
             <tr>
                 <th colspan="10">
-
                     <div
                         style=" font-size: 18px;text-align: left;padding: 5px 2px;background-color: RGB(72,123,248) ;display: flex;align-items: center;color: #fff">
 
@@ -3131,7 +3114,7 @@ let observeSaLeft = ref();
     position: absolute;
     bottom: 10px;
     z-index: 1000;
-    margin-left: 20px;
+    left: calc(51% - 10px);
 }
 
 .layer {
@@ -3395,18 +3378,16 @@ p {
 
 .boxshadow {
     cursor: pointer;
-
-    /* background-color: rgba(0, 0, 0, 0.6); */
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
-    border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+    border-radius: 3px;
     width: 50px;
     height: 50px;
     color: #ccc;
-    border: 1px solid #99999986;
+    border: 1px double #99999986;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px 0 5px 0;
+    margin: 5px 0;
 }
 
 .boxshadow:hover {
@@ -3520,5 +3501,15 @@ p {
 
 
     color: #ebe6e636;
+}
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
+}
+
+:deep(.ant-tree) {
+    color: #fff;
+    background-color: transparent;
 }
 </style>

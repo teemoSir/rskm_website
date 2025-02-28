@@ -1481,7 +1481,7 @@ const addEventArea = async (e) => {
 
     map.getCanvas().style.cursor = "pointer";
     const feature = e.features[0];
-    console.log(feature)
+    //console.log(feature)
     let text = await setCountyPopup(feature);
 
     map.setFilter("Highlight_DK_Line_Click", [
@@ -3181,7 +3181,7 @@ const lockDownOpen = ref(false)
                                         <td style="width: 40%;">
                                             <div class="mmodel">
                                                 承保面积<span style="float: right;">{{ Number(cbmj).toFixed(0) + ' 亩'
-                                                }}</span>
+                                                    }}</span>
                                             </div>
 
                                         </td>
@@ -3197,7 +3197,7 @@ const lockDownOpen = ref(false)
                                         <td>
                                             <div class="mmodel">
                                                 遥感面积<span style="float: right;">{{ Number(ygmj).toFixed(0) + ' 亩'
-                                                }}</span>
+                                                    }}</span>
                                             </div>
 
                                         </td>

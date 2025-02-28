@@ -3611,9 +3611,9 @@ const onClose = () => {
 
                         <p style="border-bottom: 1px solid #ccc;">
                             <label style="font-size: 16px;font-weight: 1000;">
-                                <FoldersIcon style="margin-bottom: -5px;"></FoldersIcon>
+                                <FoldersIcon style="margin-bottom: -5px;color: #ffffff;"></FoldersIcon>
                                 <span
-                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;">种植遥感监测</span>
+                                    style="font-family: FZZongYi-M05;font-weight: normal;padding-left: 5px;color: #fff;">种植遥感监测</span>
                             </label>
 
 
@@ -3691,10 +3691,10 @@ const onClose = () => {
                     <span>最佳视野</span>
                 </template>
                 <a-button @click="fitCenter()" size="large" class="boxshadow">
-                    <ScanSearch color="RGB(58,123,251)" />
+                    <ScanSearch />
                 </a-button>
             </a-tooltip>
-            <br />
+
             <a-tooltip title="重置视角 " placement="left">
                 <!-- <a-button @click="Zero()" size="large" class="boxshadow">
                     <Layers color="RGB(58,123,251)" />
@@ -3704,11 +3704,11 @@ const onClose = () => {
                 </div>
             </a-tooltip>
 
-            <br />
+
             <div>
                 <a-tooltip title="底图切换" placement="left">
                     <a-button @click="switchLayer()" size="large" class="boxshadow">
-                        <Layers v-if="!rightLayer" color="RGB(58,123,251)" />
+                        <Layers v-if="!rightLayer" />
                         <X color="RGB(58,123,251)" v-else />
                         <span class="arrow">◣</span>
                     </a-button>
@@ -3732,7 +3732,7 @@ const onClose = () => {
                     </a-card>
 
 
-                    <br>
+
 
                 </div>
             </div>
@@ -3743,8 +3743,8 @@ const onClose = () => {
                     <span>二三维切换</span>
                 </template>
                 <a-button @click="three3D()" size="large" class="boxshadow">
-                    <Map v-if="machine != 'mercator'" color="RGB(58,123,251)"></Map>
-                    <Globe v-else color="RGB(58,123,251)" />
+                    <Map v-if="machine != 'mercator'"></Map>
+                    <Globe v-else />
                 </a-button>
             </a-tooltip>
 
@@ -3757,7 +3757,7 @@ const onClose = () => {
                     <!-- {{ ruler }} -->
                     <a-button @click="onPencilRuler()" size="large" class="boxshadow">
                         <!-- <PencilRuler /> -->
-                        <Ruler v-if="!ruler" color="RGB(58,123,251)" />
+                        <Ruler v-if="!ruler" />
                         <X color="RGB(58,123,251)" v-else="ruler" />
                         <span class="arrow">◣</span>
                     </a-button>
@@ -3770,7 +3770,7 @@ const onClose = () => {
                             </template>
                             <a-button size="large" class="boxshadow" @click="celiang_point">
                                 <!-- <MapPinned /> -->
-                                <Scale3D color="RGB(58,123,251)" />
+                                <Scale3D />
                             </a-button>
                         </a-tooltip>
                         <a-tooltip placement="left">
@@ -3778,10 +3778,9 @@ const onClose = () => {
                                 <span>距离测量<br />点击左键绘制节点<br />双击左键完成测量</span>
                             </template>
                             <a-button size="large" class="boxshadow" @click="celiang_line_string">
-                                <Ruler color="RGB(58,123,251)" />
+                                <Ruler />
                                 <div>
-                                    <Minus color="RGB(58,123,251)" :size="30"
-                                        style="position: absolute; left: 12px; top: 26px" />
+                                    <Minus :size="30" style="position: absolute; left: 12px; top: 26px" />
                                 </div>
                             </a-button>
                         </a-tooltip>
@@ -3861,7 +3860,7 @@ const onClose = () => {
                     <span>放大</span>
                 </template>
                 <a-button @click="zoomIn()" size="large" class="boxshadow">
-                    <Plus color="RGB(58,123,251)" />
+                    <Plus />
                 </a-button>
             </a-tooltip>
             <a-tooltip placement="leftTop">
@@ -3869,7 +3868,7 @@ const onClose = () => {
                     <span>缩小</span>
                 </template>
                 <a-button @click="zoomOut()" size="large" class="boxshadow">
-                    <Minus color="RGB(58,123,251)" />
+                    <Minus />
                 </a-button>
             </a-tooltip>
         </div>
@@ -4083,8 +4082,7 @@ const onClose = () => {
                 </tr>
                 <tr>
                     <td>
-                        <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.298));border-radius: 2px;  ">
+                        <!-- <div style="text-align: center;border-radius: 2px;  ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
                                 第一次遥感
@@ -4092,16 +4090,38 @@ const onClose = () => {
                             <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
                                 2024年09月13日
                             </div>
+                        </div> -->
+                        <div style="text-align: center; ">
+
+                            <div
+                                style="padding: 5px;font-size: 1rem;font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
+                                第一次遥感
+                            </div>
+                            <div
+                                style="font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
+                                2024年09月13日
+                            </div>
                         </div>
                     </td>
                     <td>
-                        <div
-                            style="text-align: center;background: linear-gradient(to bottom, rgba(251, 250, 250, 0.63), rgba(204, 204, 204, 0.298)); border-radius: 2px; ">
+                        <!-- <div style="text-align: center;border-radius: 2px; ">
 
                             <div style="font-family: FZZongYi-M05;padding: 5px;font-size: 1.4rem;">
                                 第二次遥感
                             </div>
                             <div style="font-family: FZZongYi-M05;padding: 0 0 5px 0;">
+                                2024年11月25日
+                            </div>
+                        </div> -->
+
+                        <div style="text-align: center; ">
+
+                            <div
+                                style="padding: 5px;font-size: 1rem;font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
+                                第二次遥感
+                            </div>
+                            <div
+                                style="font-family: Arial, Helvetica, sans-serif;color: #ffffffce;text-shadow: 2px 5px 4px #000;">
                                 2024年11月25日
                             </div>
                         </div>
@@ -4635,18 +4655,16 @@ p {
 
 .boxshadow {
     cursor: pointer;
-
-    /* background-color: rgba(0, 0, 0, 0.6); */
-    background: linear-gradient(to bottom, rgba(251, 250, 250, 0.93), rgba(204, 204, 204, 0.798));
-    border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.6));
+    border-radius: 3px;
     width: 50px;
     height: 50px;
     color: #ccc;
-    outline: 1px solid #99999986;
+    border: 1px double #99999986;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px 0 5px 0;
+    margin: 5px 0;
 }
 
 .boxshadow:hover {
@@ -4718,5 +4736,16 @@ p {
     top: 0;
     bottom: 0;
     width: 100%;
+}
+
+
+:deep(.ant-card) {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.5));
+    border: 0;
+}
+
+:deep(.ant-tree) {
+    color: #fff;
+    background-color: transparent;
 }
 </style>
